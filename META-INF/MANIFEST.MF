@@ -9,7 +9,6 @@ Bundle-ClassPath: org.xwiki.plugins.eclipse/,
  lib/xmlrpc-common-3.0.jar
 Bundle-Activator: org.xwiki.plugins.eclipse.Activator
 Bundle-Vendor: XWiki
-Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.jface.text,
