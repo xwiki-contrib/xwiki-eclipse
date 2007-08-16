@@ -1,0 +1,23 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.xwiki.eclipse</groupId>
+  <artifactId>eclipse-plugin</artifactId>
+  <packaging>zip</packaging>
+  <name>Eclipse Integration Plugin</name>
+  <version>1.0-SNAPSHOT</version>
+  <description>Eclipse Integration Plugin</description>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>pde-maven-plugin</artifactId>
+        <extensions>true</extensions>
+        <configuration>
+          <eclipseInstall>/Applications/eclipse-europa-pde</eclipseInstall>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
