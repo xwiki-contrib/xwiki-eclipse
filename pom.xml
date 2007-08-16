@@ -15,7 +15,25 @@
         <artifactId>pde-maven-plugin</artifactId>
         <extensions>true</extensions>
         <configuration>
-          <eclipseInstall>/Applications/eclipse-europa-pde</eclipseInstall>
+          <!-- You must provide a profiles.xml file containing the value of eclipseInstall, or set it up in your
+               settings.xml or pass it on the command line.
+               For example, create the following profiles.xml file next to this pom.xml file:
+               
+               <profilesXml>
+                 <profiles>
+                   <profile>
+                     <id>vmassol</id>
+                     <properties>
+                       <eclipseInstall>/Applications/eclipse-europa-pde/</eclipseInstall>
+                     </properties>
+                   </profile>
+                 </profiles>
+                 <activeProfiles>
+                   <activeProfile>vmassol</activeProfile>
+                 </activeProfiles>
+               </profilesXml>
+           -->
+          <eclipseInstall>${eclipseInstall}</eclipseInstall>
         </configuration>
       </plugin>
     </plugins>
