@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: XEclipse
-Bundle-SymbolicName: XEclipse;singleton:=true
+Bundle-Name: XWiki Eclipse Integration
+Bundle-SymbolicName: org.xwiki.eclipse;singleton:=true
 Bundle-Version: 1.0.0
 Bundle-ClassPath: org.xwiki.plugins.eclipse/,
  lib/ws-commons-util-1.0.1.jar,

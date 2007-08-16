@@ -3,7 +3,7 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.xwiki.eclipse</groupId>
-  <artifactId>eclipse-plugin</artifactId>
+  <artifactId>xwiki-eclipse</artifactId>
   <packaging>zip</packaging>
   <name>Eclipse Integration Plugin</name>
   <version>1.0-SNAPSHOT</version>
@@ -34,10 +34,6 @@
                </profilesXml>
            -->
           <eclipseInstall>${eclipseInstall}</eclipseInstall>
-          <buildProperties>
-            <javacSource>1.5</javacSource>
-            <javacTarget>1.5</javacTarget>
-          </buildProperties>
         </configuration>
       </plugin>
     </plugins>
