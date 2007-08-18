@@ -348,7 +348,9 @@ public class XWikiSpace implements IXWikiSpace, TreeAdapter
      */
     public String getName()
     {
-        return (String) this.summary.get(XWikiConstants.SPACE_SUMMARY_NAME);
+        // TODO : This is a hack, fix it ASAP.
+        // This was done to get around issues with empty space names.
+        return (String) this.summary.get(XWikiConstants.SPACE_SUMMARY_KEY);
     }
 
     /**

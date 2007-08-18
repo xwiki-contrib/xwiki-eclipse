@@ -127,7 +127,9 @@ public class XWikiConnection implements IXWikiConnection, TreeAdapter
      */
     protected void addSpace(IXWikiSpace space)
     {
-        spacesByName.put(space.getName(), space);
+        // TODO : This is a hack to avoid empty name issues. Sweep out the code ASAP.
+        // i.e. Remove spacesByName and all references to it.
+        spacesByName.put(space.getKey(), space);
         spacesByKey.put(space.getKey(), space);
     }
 
