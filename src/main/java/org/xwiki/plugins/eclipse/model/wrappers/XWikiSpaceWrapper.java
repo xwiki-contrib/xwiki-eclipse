@@ -162,9 +162,9 @@ public class XWikiSpaceWrapper implements IXWikiSpace
      * 
      * @see org.xwiki.plugins.eclipse.model.IXWikiSpace#getPageByTitle(java.lang.String)
      */
-    public IXWikiPage getPageByTitle(String pageTitle)
+    public IXWikiPage searchPage(String pageTitle)
     {
-        return space.getPageByTitle(pageTitle);
+        return space.searchPage(pageTitle);
     }
 
     /**

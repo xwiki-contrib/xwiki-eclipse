@@ -122,7 +122,7 @@ public interface IXWikiSpace
      * @param pageTitle Title of the Page.
      * @return Specific page with given id or null if no such page exists.
      */
-    public IXWikiPage getPageByTitle(String pageTitle);
+    public IXWikiPage searchPage(String pageTitle);
 
     /**
      * Adds a new page to this space with given parameters.

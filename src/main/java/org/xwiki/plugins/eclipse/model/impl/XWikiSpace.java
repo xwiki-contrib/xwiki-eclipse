@@ -52,11 +52,6 @@ public class XWikiSpace implements IXWikiSpace, TreeAdapter
     private HashMap<String, IXWikiPage> pagesByID;
 
     /**
-     * Set of pages under this space, mapped by Title.
-     */
-    private HashMap<String, IXWikiPage> pagesByTitle;
-
-    /**
      * Summary of this space.
      */
     private HashMap<String, Object> summary;
@@ -91,7 +86,7 @@ public class XWikiSpace implements IXWikiSpace, TreeAdapter
     protected XWikiSpace(IXWikiConnection parent, HashMap<String, Object> summary)
     {
         pagesByID = new HashMap<String, IXWikiPage>();
-        pagesByTitle = new HashMap<String, IXWikiPage>();
+      //  pagesByTitle = new HashMap<String, IXWikiPage>();
         data = new HashMap<String, Object>();
         setSummary(summary);
         setConnection(parent);
@@ -130,7 +125,7 @@ public class XWikiSpace implements IXWikiSpace, TreeAdapter
     protected void addPage(IXWikiPage page)
     {
         pagesByID.put(page.getId(), page);
-        pagesByTitle.put(page.getTitle(), page);
+      //  pagesByTitle.put(page.getTitle(), page);
     }
 
     /**
@@ -348,8 +343,7 @@ public class XWikiSpace implements IXWikiSpace, TreeAdapter
      */
     public String getName()
     {
-        // TODO : This is a hack, fix it ASAP.
-        // This was done to get around issues with empty space names.
+        // Only space keys are reffered inside XEclipse
         return (String) this.summary.get(XWikiConstants.SPACE_SUMMARY_KEY);
     }
 
@@ -368,9 +362,14 @@ public class XWikiSpace implements IXWikiSpace, TreeAdapter
      * 
      * @see org.xwiki.plugins.eclipse.model.IXWikiSpace#getPageByTitle(java.lang.String)
      */
-    public IXWikiPage getPageByTitle(String pageTitle)
+    public IXWikiPage searchPage(String pageTitle)
     {
-        return pagesByTitle.get(pageTitle);
+        for (IXWikiPage page : pagesByID.values()) {
+        	if (page.getTitle().equals(pageTitle)) {
+        		return page;
+        	}
+        }
+        return null;
     }
 
     /**
@@ -464,7 +463,7 @@ public class XWikiSpace implements IXWikiSpace, TreeAdapter
             XWikiRPCHandler.getInstance().removePage(getConnection().getLoginToken(), pageId);
             IXWikiPage pageToRemove = getPageByID(pageId);
             pagesByID.remove(pageToRemove.getId());
-            pagesByTitle.remove(pageToRemove.getTitle());
+          //  pagesByTitle.remove(pageToRemove.getTitle());
         } catch (CommunicationException e) {
             throw e;
         }

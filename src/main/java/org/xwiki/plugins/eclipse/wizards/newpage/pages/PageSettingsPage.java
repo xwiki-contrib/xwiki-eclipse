@@ -127,10 +127,11 @@ public class PageSettingsPage extends XWikiWizardPage implements ModifyListener
             return false;
         }        
         // check whether page already exists.
-        if (space.getPageByTitle(pageTitle) != null) {
+        if (space.searchPage(pageTitle) != null) {
             setErrorMessage(" Page Title Must be Unique : " + pageTitle);
             return false;
-        } else if (pageContent.trim().equals("")) {
+        }
+        else if (pageContent.trim().equals("")) {
             setErrorMessage(" Initial Page Content Cannot be Empty.");
             return false;
         } else {
