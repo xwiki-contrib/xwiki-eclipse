@@ -21,6 +21,7 @@
 
 package org.xwiki.plugins.eclipse.views.navigator;
 
+import org.codehaus.swizzle.confluence.SwizzleConfluenceException;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -52,7 +53,6 @@ import org.xwiki.plugins.eclipse.model.IXWikiPage;
 import org.xwiki.plugins.eclipse.model.IXWikiSpace;
 import org.xwiki.plugins.eclipse.model.wrappers.XWikiConnectionWrapper;
 import org.xwiki.plugins.eclipse.model.wrappers.XWikiSpaceWrapper;
-import org.xwiki.plugins.eclipse.rpc.exceptions.CommunicationException;
 import org.xwiki.plugins.eclipse.util.GuiUtils;
 import org.xwiki.plugins.eclipse.util.XWikiConstants;
 import org.xwiki.plugins.eclipse.wizards.XWikiWizardDialog;
@@ -234,7 +234,7 @@ public class XWikiNavigator extends ViewPart
                         new XWikiConnectionWrapper((IXWikiConnection) obj);
                     try {
                         connection.disconnect();
-                    } catch (CommunicationException e) {
+                    } catch (SwizzleConfluenceException e) {
                         // Will be logged else where.
                     }
                     viewer.refresh();
@@ -286,7 +286,7 @@ public class XWikiNavigator extends ViewPart
                     IXWikiSpace space = new XWikiSpaceWrapper(wikipage.getParentSpace());
                     try {
                         space.removeChildPage(wikipage.getId());
-                    } catch (CommunicationException e) {
+                    } catch (SwizzleConfluenceException e) {
                         // Will be logged else where.
                     }
                     viewer.refresh();
@@ -339,7 +339,7 @@ public class XWikiNavigator extends ViewPart
                         new XWikiConnectionWrapper(space.getConnection());
                     try {
                         connection.removeSpace(space.getKey());
-                    } catch (CommunicationException e) {
+                    } catch (SwizzleConfluenceException e) {
                         // Will be logged elsewhere.
                     }
                     viewer.refresh();

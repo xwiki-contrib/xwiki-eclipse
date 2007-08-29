@@ -23,11 +23,15 @@ package org.xwiki.plugins.eclipse.model.impl;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 
+import org.codehaus.swizzle.confluence.Confluence;
+import org.codehaus.swizzle.confluence.IdentityObjectConvertor;
+import org.codehaus.swizzle.confluence.SwizzleConfluenceException;
+import org.codehaus.swizzle.confluence.SwizzleXWiki;
 import org.xwiki.plugins.eclipse.model.IXWikiConnection;
 import org.xwiki.plugins.eclipse.model.IXWikiConnectionManager;
-import org.xwiki.plugins.eclipse.rpc.exceptions.CommunicationException;
-import org.xwiki.plugins.eclipse.rpc.impl.XWikiRPCHandler;
 
 /**
  * Default implementation of {@link IXWikiConnectionManager}.
@@ -43,14 +47,14 @@ public class XWikiConnectionManager implements IXWikiConnectionManager
     /**
      * Currently established connections.
      */
-    private HashMap<String, IXWikiConnection> connections;
+    private List<IXWikiConnection> connections;
 
     /**
      * Private constructor. (singleton)
      */
     private XWikiConnectionManager()
     {
-        connections = new HashMap<String, IXWikiConnection>();
+        connections = new LinkedList<IXWikiConnection>();
     }
 
     /**
@@ -71,15 +75,26 @@ public class XWikiConnectionManager implements IXWikiConnectionManager
      *      java.lang.String, java.lang.String, java.lang.String)
      */
     public IXWikiConnection connect(String serverUrl, String userName, String password,
-        String proxy) throws CommunicationException
+        String proxy) throws SwizzleConfluenceException
     {
-        XWikiConnection con = new XWikiConnection();
-        con.setServerUrl(serverUrl);
-        con.setUserName(userName);
-        con.setLoginToken(XWikiRPCHandler.getInstance().login(serverUrl, userName, password,
-            proxy));
-        connections.put(con.getLoginToken(), con);
-        return con;
+        // TODO the proxy part needs to be done here!
+    	SwizzleXWiki rpc = new SwizzleXWiki(serverUrl);
+        rpc.login(userName, password);
+        // Workaround for finding out xwiki version (server)
+        // (compatibility with <= XWiki 1.1.m4)
+        try {
+        	rpc.setNoConversion();
+        } catch (SwizzleConfluenceException e) {
+        	// Assume older version of xwiki and turn-off conversion on client.
+        	rpc.setConvertor(new IdentityObjectConvertor());
+        }
+        // Continue as usual.
+        XWikiConnection conection = new XWikiConnection();
+        conection.setServerUrl(serverUrl);
+        conection.setUserName(userName);
+        conection.setRpcProxy(rpc);        
+        connections.add(conection);
+        return conection;
     }
 
     /**
@@ -89,17 +104,17 @@ public class XWikiConnectionManager implements IXWikiConnectionManager
      */
     public Collection<IXWikiConnection> getAllConnections()
     {
-        return connections.values();
+        return connections;
     }
 
     /**
      * {@inheritDoc}
      * 
-     * @see org.xwiki.plugins.eclipse.model.IXWikiConnectionManager#removeConnection(java.lang.String)
+     * @see org.xwiki.plugins.eclipse.model.IXWikiConnectionManager#removeConnection(Confluence)
      */
-    public void removeConnection(String loginToken)
+    public void removeConnection(IXWikiConnection connection)
     {
-        connections.remove(loginToken);
+        connections.remove(connection);
     }
 
 }

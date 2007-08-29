@@ -23,7 +23,7 @@ package org.xwiki.plugins.eclipse.model;
 
 import java.util.Collection;
 
-import org.xwiki.plugins.eclipse.rpc.exceptions.CommunicationException;
+import org.codehaus.swizzle.confluence.SwizzleConfluenceException;
 
 /**
  * Responsible for making and managing {@link IXWikiConnection} objects.
@@ -41,7 +41,7 @@ public interface IXWikiConnectionManager
      * @throws CommunicationException - If XMLRPC call fails.
      */
     public IXWikiConnection connect(String serverUrl, String userName, String password,
-        String proxy) throws CommunicationException;
+        String proxy) throws SwizzleConfluenceException;
 
     /**
      * @return All live connections.
@@ -54,7 +54,7 @@ public interface IXWikiConnectionManager
      * closed at this point.
      * </p>
      * 
-     * @param logintoken Used as a key into connection pool.
+     * @param connection The connection to be closed.
      */
-    public void removeConnection(String loginToken);
+    public void removeConnection(IXWikiConnection connection);
 }

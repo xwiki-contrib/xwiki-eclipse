@@ -100,27 +100,27 @@ public class SpacesPage extends XWikiWizardPage implements SelectionListener
             importSpacesUI.getAvailableSpacesList().removeAll();
             for (String item : items) {
                 importSpacesUI.getSelectedSpacesList().add(item);
-                wizardState.getConnection().getSpaceByName(item).setMasked(false);
+                wizardState.getConnection().getSpace(item).setMasked(false);
             }
         } else if (importSpacesUI.getRemoveAllButton().equals(e.getSource())) {
             String[] items = importSpacesUI.getSelectedSpacesList().getItems();
             importSpacesUI.getSelectedSpacesList().removeAll();
             for (String item : items) {
                 importSpacesUI.getAvailableSpacesList().add(item);
-                wizardState.getConnection().getSpaceByName(item).setMasked(true);
+                wizardState.getConnection().getSpace(item).setMasked(true);
             }
         } else if (importSpacesUI.getAddButton().equals(e.getSource())) {
             String[] selections = importSpacesUI.getAvailableSpacesList().getSelection();
             for (String selection : selections) {
                 importSpacesUI.getSelectedSpacesList().add(selection);
-                wizardState.getConnection().getSpaceByName(selection).setMasked(false);
+                wizardState.getConnection().getSpace(selection).setMasked(false);
                 importSpacesUI.getAvailableSpacesList().remove(selection);
             }
         } else if (importSpacesUI.getRemoveButton().equals(e.getSource())) {
             String[] selections = importSpacesUI.getSelectedSpacesList().getSelection();
             for (String selection : selections) {
                 importSpacesUI.getAvailableSpacesList().add(selection);
-                wizardState.getConnection().getSpaceByName(selection).setMasked(true);
+                wizardState.getConnection().getSpace(selection).setMasked(true);
                 importSpacesUI.getSelectedSpacesList().remove(selection);
             }
         }

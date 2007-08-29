@@ -27,7 +27,8 @@ import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.xwiki.plugins.eclipse.model.IXWikiConnection;
 import org.xwiki.plugins.eclipse.model.IXWikiConnectionManager;
-import org.xwiki.plugins.eclipse.rpc.exceptions.CommunicationException;
+import org.codehaus.swizzle.confluence.Confluence;
+import org.codehaus.swizzle.confluence.SwizzleConfluenceException;
 import org.xwiki.plugins.eclipse.util.GuiUtils;
 import org.xwiki.plugins.eclipse.util.XWikiProgressRunner;
 
@@ -59,7 +60,7 @@ public class XWikiConnectionManagerWrapper implements IXWikiConnectionManager
      *      java.lang.String, java.lang.String, java.lang.String)
      */
     public IXWikiConnection connect(final String serverUrl, final String userName,
-        final String password, final String proxy) throws CommunicationException
+        final String password, final String proxy) throws SwizzleConfluenceException
     {
         XWikiProgressRunner operation = new XWikiProgressRunner()
         {
@@ -76,7 +77,7 @@ public class XWikiConnectionManagerWrapper implements IXWikiConnectionManager
                     IXWikiConnection con = manager.connect(serverUrl, userName, password, proxy);
                     setArtifact(con);
                     monitor.done();
-                } catch (CommunicationException e) {
+                } catch (SwizzleConfluenceException e) {
                     monitor.done();
                     setComEx(e);
                     throw new InvocationTargetException(e);
@@ -104,11 +105,11 @@ public class XWikiConnectionManagerWrapper implements IXWikiConnectionManager
     /**
      * {@inheritDoc}
      * 
-     * @see org.xwiki.plugins.eclipse.model.IXWikiConnectionManager#removeConnection(java.lang.String)
+     * @see org.xwiki.plugins.eclipse.model.IXWikiConnectionManager#removeConnection(Confluence)
      */
-    public void removeConnection(String loginToken)
+    public void removeConnection(IXWikiConnection connection)
     {
-        manager.removeConnection(loginToken);
+        manager.removeConnection(connection);
     }
 
 }

@@ -51,6 +51,7 @@ public class GuiUtils
                 dialog.run(true, false, operation);
             } catch (InvocationTargetException e) {
                 reportError(false, "Error", e.getTargetException().getMessage());
+                e.printStackTrace();
             } catch (InterruptedException e) {
                 reportError(false, "Internel Error",
                     "An error occured while servicing your request.");
@@ -63,6 +64,7 @@ public class GuiUtils
                 operation.run(new DummyProgressMonitor());
             } catch (InvocationTargetException e) {
                 reportError(false, "Error", e.getTargetException().getMessage());
+                e.printStackTrace();
             } catch (InterruptedException e) {
                 reportError(false, "Internel Error",
                     "An error occured while servicing your request.");

@@ -23,7 +23,7 @@ package org.xwiki.plugins.eclipse.model;
 
 import java.util.Collection;
 
-import org.xwiki.plugins.eclipse.rpc.exceptions.CommunicationException;
+import org.codehaus.swizzle.confluence.SwizzleConfluenceException;
 
 /**
  * Represents an XWiki Space.
@@ -36,7 +36,7 @@ public interface IXWikiSpace
      * 
      * @throws CommunicationException - If XMLRPC call fails.
      */
-    public void init() throws CommunicationException;
+    public void init() throws SwizzleConfluenceException;
 
     /**
      * @return Key of this space.
@@ -131,7 +131,7 @@ public interface IXWikiSpace
      * @param content Initial content of the page (XWikiMarkup).
      * @throws CommunicationException - If XMLRPC call fails.
      */
-    public void addPage(String title, String content) throws CommunicationException;
+    public void addPage(String title, String content) throws SwizzleConfluenceException;
 
     /**
      * Updates an existing page with given information.
@@ -143,7 +143,7 @@ public interface IXWikiSpace
      * @throws CommunicationException - If XMLRPC call fails.
      */
     public void updateChildPage(String pageId, String title, String content, int version)
-        throws CommunicationException;
+        throws SwizzleConfluenceException;
 
     /**
      * Removes the page with given ID from this space.
@@ -151,7 +151,7 @@ public interface IXWikiSpace
      * @param pageId Id of the page which is to be removed.
      * @throws CommunicationException - If XMLRPC call fails.
      */
-    public void removeChildPage(String pageId) throws CommunicationException;
+    public void removeChildPage(String pageId) throws SwizzleConfluenceException;
 
     /**
      * Saves this space. This method should be invoked in order to make local changes to the space
@@ -160,5 +160,5 @@ public interface IXWikiSpace
      * @return Updated space as returned from the server.
      * @throws CommunicationException - If XMLRPC call fails.
      */
-    public IXWikiSpace save() throws CommunicationException;
+    public IXWikiSpace save() throws SwizzleConfluenceException;
 }

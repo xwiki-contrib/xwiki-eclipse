@@ -21,9 +21,9 @@
 
 package org.xwiki.plugins.eclipse.wizards.newspace;
 
+import org.codehaus.swizzle.confluence.SwizzleConfluenceException;
 import org.eclipse.jface.wizard.Wizard;
 import org.xwiki.plugins.eclipse.model.IXWikiConnection;
-import org.xwiki.plugins.eclipse.rpc.exceptions.CommunicationException;
 import org.xwiki.plugins.eclipse.wizards.newspace.pages.SpaceSettingsPage;
 
 /**
@@ -75,7 +75,7 @@ public class NewSpaceWizard extends Wizard
         try {
             connection.addSpace(settingsPage.getSpaceName(), settingsPage.getSpaceKey(),
                 settingsPage.getSpaceDescription());
-        } catch (CommunicationException e) {
+        } catch (SwizzleConfluenceException e) {
             // Will be logged elsewhere.
         }
         return true;

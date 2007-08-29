@@ -23,15 +23,20 @@ package org.xwiki.plugins.eclipse.model.impl;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 
+import org.codehaus.swizzle.confluence.Confluence;
+import org.codehaus.swizzle.confluence.Page;
+import org.codehaus.swizzle.confluence.PageSummary;
+import org.codehaus.swizzle.confluence.Space;
+import org.codehaus.swizzle.confluence.SpaceSummary;
+import org.codehaus.swizzle.confluence.SwizzleConfluenceException;
 import org.eclipse.swt.graphics.Image;
 import org.xwiki.plugins.eclipse.model.IXWikiConnection;
 import org.xwiki.plugins.eclipse.model.IXWikiPage;
 import org.xwiki.plugins.eclipse.model.IXWikiSpace;
 import org.xwiki.plugins.eclipse.model.adapters.TreeAdapter;
 import org.xwiki.plugins.eclipse.model.wrappers.XWikiSpaceWrapper;
-import org.xwiki.plugins.eclipse.rpc.exceptions.CommunicationException;
-import org.xwiki.plugins.eclipse.rpc.impl.XWikiRPCHandler;
 import org.xwiki.plugins.eclipse.util.GuiUtils;
 import org.xwiki.plugins.eclipse.util.XWikiConstants;
 
@@ -52,14 +57,17 @@ public class XWikiSpace implements IXWikiSpace, TreeAdapter
     private HashMap<String, IXWikiPage> pagesByID;
 
     /**
-     * Summary of this space.
+     * Summary of this space. 
      */
-    private HashMap<String, Object> summary;
+    private SpaceSummary summary;
+    // TODO This is (almost) a subset of the space. Why do we need both ?
+    // -- in general summaries are exact subsets ... here it's an anomaly and should be treated as such
+    // -- especially since xwiki does not have a notion of space type
 
     /**
      * Complete data for this space.
      */
-    private HashMap<String, Object> data;
+    private Space space;
 
     /**
      * Whether this space should be displayed or not.
@@ -83,38 +91,38 @@ public class XWikiSpace implements IXWikiSpace, TreeAdapter
      * @param parent Parent connection of this space.
      * @param summary Summary of this space.
      */
-    protected XWikiSpace(IXWikiConnection parent, HashMap<String, Object> summary)
+    protected XWikiSpace(IXWikiConnection wikiConnection, SpaceSummary summary)
     {
         pagesByID = new HashMap<String, IXWikiPage>();
-      //  pagesByTitle = new HashMap<String, IXWikiPage>();
-        data = new HashMap<String, Object>();
+        space = new Space();
         setSummary(summary);
-        setConnection(parent);
+        setConnection(wikiConnection);
     }
 
     /**
      * Creates a new space. Clients should use {@link IXWikiConnection#getSpaces()} and similar
      * methods.
      * 
-     * @param parent Parent connection of this space.
+     * @param connection Parent connection of this space.
      * @param summary Summary of this space.
-     * @param data Data of this space.
+     * @param space Data of this space.
      */
-    protected XWikiSpace(IXWikiConnection parent, HashMap<String, Object> summary,
-        HashMap<String, Object> data)
+    protected XWikiSpace(IXWikiConnection connection, SpaceSummary summary, Space space)
     {
-        this(parent, summary);
-        this.data = data;
+        this(connection, summary);
+        this.space = space;
     }
+
+
 
     /**
      * Used by internal code to initialize this space.
      * 
-     * @param data Data (core) of this space.
+     * @param space Data (core) of this space.
      */
-    protected void setData(HashMap<String, Object> data)
+    protected void setSpace(Space space)
     {
-        this.data = data;
+        this.space = space;
     }
 
     /**
@@ -134,7 +142,7 @@ public class XWikiSpace implements IXWikiSpace, TreeAdapter
      * @param parent Parent connection of this space.
      */
     protected void setConnection(IXWikiConnection parent)
-    {
+    {    	
         this.parent = parent;
     }
 
@@ -143,7 +151,7 @@ public class XWikiSpace implements IXWikiSpace, TreeAdapter
      * 
      * @param summary Summary of this space.
      */
-    protected void setSummary(HashMap<String, Object> summary)
+    protected void setSummary(SpaceSummary summary)
     {
         this.summary = summary;
     }
@@ -179,7 +187,7 @@ public class XWikiSpace implements IXWikiSpace, TreeAdapter
             IXWikiSpace space = new XWikiSpaceWrapper(this);
             try {
                 space.init();
-            } catch (CommunicationException e) {
+            } catch (SwizzleConfluenceException e) {
                 // Will be logged elsewhere
             }
             if (!isPagesReady()) {
@@ -244,22 +252,20 @@ public class XWikiSpace implements IXWikiSpace, TreeAdapter
      * 
      * @see org.xwiki.plugins.eclipse.model.IXWikiSpace#initialize()
      */
-    public void init() throws CommunicationException
+    public void init() throws SwizzleConfluenceException
     {
-        if (!isDataReady()) {
-            String loginToken = getConnection().getLoginToken();
+        if (!isDataReady()) {        	
+            Confluence rpc = getConnection().getRpcProxy();
             String spaceKey = getKey();
-            this.data =
-                (HashMap<String, Object>) XWikiRPCHandler.getInstance().getSpace(loginToken,
-                    spaceKey);
+            this.space = rpc.getSpace(spaceKey);            
             setDataReady(true);
         }
         if (!isPagesReady()) {
-            Object[] pages =
-                XWikiRPCHandler.getInstance().getPageSummaries(getConnection().getLoginToken(),
-                    getKey());
-            for (Object page : pages) {
-                HashMap<String, Object> pageSummary = (HashMap<String, Object>) page;
+            Confluence rpc = getConnection().getRpcProxy();
+            String spaceKey = getKey();
+            List<Object> pages = rpc.getPages(spaceKey);
+            for (int i = 0; i<pages.size(); i++) {
+                PageSummary pageSummary = (PageSummary)pages.get(i);
                 IXWikiPage xwikiPage = new XWikiPage(this, pageSummary);
                 addPage(xwikiPage);
             }
@@ -272,27 +278,14 @@ public class XWikiSpace implements IXWikiSpace, TreeAdapter
      * 
      * @see org.xwiki.plugins.eclipse.model.IXWikiSpace#addPage(java.lang.String, java.lang.String)
      */
-    public void addPage(String title, String content) throws CommunicationException
+    public void addPage(String title, String content) throws SwizzleConfluenceException
     {
-        HashMap<String, Object> tempPage = new HashMap<String, Object>();
-        HashMap<String, Object> summary = new HashMap<String, Object>();
-        HashMap<String, Object> result;
-        tempPage.put(XWikiConstants.PAGE_SPACE, getKey());
-        tempPage.put(XWikiConstants.PAGE_TITLE, title);
-        tempPage.put(XWikiConstants.PAGE_CONTENT, content);
-        result =
-            (HashMap<String, Object>) XWikiRPCHandler.getInstance().storePage(
-                getConnection().getLoginToken(), tempPage);
-        // Now we need to construct the summary too...
-        summary.put(XWikiConstants.PAGE_SUMMARY_ID, result.get(XWikiConstants.PAGE_ID));
-        summary.put(XWikiConstants.PAGE_SUMMARY_LOCKS, result.get(XWikiConstants.PAGE_LOCKS));
-        summary.put(XWikiConstants.PAGE_SUMMARY_PARENT_ID, result
-            .get(XWikiConstants.PAGE_PARENT_ID));
-        summary.put(XWikiConstants.PAGE_SUMMARY_SPACE, result.get(XWikiConstants.PAGE_SPACE));
-        summary.put(XWikiConstants.PAGE_SUMMARY_TITLE, result.get(XWikiConstants.PAGE_TITLE));
-        summary.put(XWikiConstants.PAGE_SUMMARY_URL, result.get(XWikiConstants.PAGE_URL));
-        // Finally, we add the page into local model...
-        IXWikiPage wikiPage = new XWikiPage(this, summary, result);
+        Page page = new Page();
+        page.setSpace(getKey());
+        page.setTitle(title);
+        page.setContent(content);
+        Page result = getConnection().getRpcProxy().storePage(page);
+        IXWikiPage wikiPage = new XWikiPage(this, result);
         addPage(wikiPage);
     }
 
@@ -302,8 +295,8 @@ public class XWikiSpace implements IXWikiSpace, TreeAdapter
      * @see org.xwiki.plugins.eclipse.model.IXWikiSpace#getConnection()
      */
     public IXWikiConnection getConnection()
-    {
-        return parent;
+    {    	    	
+    	return this.parent;
     }
 
     /**
@@ -313,7 +306,7 @@ public class XWikiSpace implements IXWikiSpace, TreeAdapter
      */
     public String getDescriptionAsHtml()
     {
-        return (String) this.data.get(XWikiConstants.SPACE_DESCRIPTION);
+        return (String) this.space.getDescription();
     }
 
     /**
@@ -323,7 +316,7 @@ public class XWikiSpace implements IXWikiSpace, TreeAdapter
      */
     public String getHomePageId()
     {
-        return (String) this.data.get(XWikiConstants.SPACE_HOMEPAGE);
+        return (String) this.space.getHomepage();
     }
 
     /**
@@ -333,7 +326,7 @@ public class XWikiSpace implements IXWikiSpace, TreeAdapter
      */
     public String getKey()
     {
-        return (String) this.summary.get(XWikiConstants.SPACE_SUMMARY_KEY);
+        return (String) this.summary.getKey();
     }
 
     /**
@@ -343,8 +336,8 @@ public class XWikiSpace implements IXWikiSpace, TreeAdapter
      */
     public String getName()
     {
-        // Only space keys are reffered inside XEclipse
-        return (String) this.summary.get(XWikiConstants.SPACE_SUMMARY_KEY);
+        // Only space keys are referred inside XEclipse
+        return (String) this.summary.getKey();
     }
 
     /**
@@ -389,7 +382,7 @@ public class XWikiSpace implements IXWikiSpace, TreeAdapter
      */
     public String getType()
     {
-        return (String) this.summary.get(XWikiConstants.SPACE_SUMMARY_TYPE);
+        return (String) this.summary.getType();
     }
 
     /**
@@ -399,7 +392,7 @@ public class XWikiSpace implements IXWikiSpace, TreeAdapter
      */
     public String getUrl()
     {
-        return (String) this.summary.get(XWikiConstants.SPACE_SUMMARY_URL);
+        return (String) this.summary.getUrl();
     }
 
     /**
@@ -457,14 +450,13 @@ public class XWikiSpace implements IXWikiSpace, TreeAdapter
      * 
      * @see org.xwiki.plugins.eclipse.model.IXWikiSpace#removePage(java.lang.String)
      */
-    public void removeChildPage(String pageId) throws CommunicationException
+    public void removeChildPage(String pageId) throws SwizzleConfluenceException
     {
         try {
-            XWikiRPCHandler.getInstance().removePage(getConnection().getLoginToken(), pageId);
+            getConnection().getRpcProxy().removePage(pageId);
             IXWikiPage pageToRemove = getPageByID(pageId);
             pagesByID.remove(pageToRemove.getId());
-          //  pagesByTitle.remove(pageToRemove.getTitle());
-        } catch (CommunicationException e) {
+        } catch (SwizzleConfluenceException e) {
             throw e;
         }
     }
@@ -484,7 +476,7 @@ public class XWikiSpace implements IXWikiSpace, TreeAdapter
      * 
      * @see org.xwiki.plugins.eclipse.model.IXWikiSpace#update()
      */
-    public IXWikiSpace save() throws CommunicationException
+    public IXWikiSpace save() throws SwizzleConfluenceException
     {
         // TODO implement this.
         return null;
@@ -497,7 +489,7 @@ public class XWikiSpace implements IXWikiSpace, TreeAdapter
      *      java.lang.String, java.lang.String, int)
      */
     public void updateChildPage(String pageId, String title, String content, int version)
-        throws CommunicationException
+        throws SwizzleConfluenceException
     {
         // TODO implement this.
     }

@@ -25,11 +25,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.codehaus.swizzle.confluence.SwizzleConfluenceException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.xwiki.plugins.eclipse.model.IXWikiConnection;
 import org.xwiki.plugins.eclipse.model.IXWikiPage;
 import org.xwiki.plugins.eclipse.model.IXWikiSpace;
-import org.xwiki.plugins.eclipse.rpc.exceptions.CommunicationException;
 import org.xwiki.plugins.eclipse.util.GuiUtils;
 import org.xwiki.plugins.eclipse.util.XWikiProgressRunner;
 
@@ -59,7 +59,7 @@ public class XWikiSpaceWrapper implements IXWikiSpace
      * 
      * @see org.xwiki.plugins.eclipse.model.IXWikiSpace#addPage(java.lang.String, java.lang.String)
      */
-    public void addPage(final String title, final String content) throws CommunicationException
+    public void addPage(final String title, final String content) throws SwizzleConfluenceException
     {
         // It is assumed that at this point it has been verified that the
         // given title is unique. (i.e. no page with same title exists)
@@ -72,7 +72,7 @@ public class XWikiSpaceWrapper implements IXWikiSpace
                 try {
                     space.addPage(title, content);
                     monitor.done();
-                } catch (CommunicationException e) {
+                } catch (SwizzleConfluenceException e) {
                     monitor.done();
                     setComEx(e);
                     throw new InvocationTargetException(e);
@@ -105,7 +105,7 @@ public class XWikiSpaceWrapper implements IXWikiSpace
         try {
             init();
             return space.getDescriptionAsHtml();
-        } catch (CommunicationException e) {
+        } catch (SwizzleConfluenceException e) {
             // TODO log this exception
             return "";
         }
@@ -121,7 +121,7 @@ public class XWikiSpaceWrapper implements IXWikiSpace
         try {
             init();
             return space.getHomePageId();
-        } catch (CommunicationException e) {
+        } catch (SwizzleConfluenceException e) {
             // TODO log this exception
             return "";
         }
@@ -177,7 +177,7 @@ public class XWikiSpaceWrapper implements IXWikiSpace
         try {
             init();
             return space.getPages();
-        } catch (CommunicationException e) {
+        } catch (SwizzleConfluenceException e) {
             // TODO log this exception
             return new ArrayList<IXWikiPage>();
         }
@@ -208,7 +208,7 @@ public class XWikiSpaceWrapper implements IXWikiSpace
      * 
      * @see org.xwiki.plugins.eclipse.model.IXWikiSpace#init()
      */
-    public void init() throws CommunicationException
+    public void init() throws SwizzleConfluenceException
     {
         if (!isPagesReady()) {
             XWikiProgressRunner operation = new XWikiProgressRunner()
@@ -220,7 +220,7 @@ public class XWikiSpaceWrapper implements IXWikiSpace
                     try {
                         space.init();
                         monitor.done();
-                    } catch (CommunicationException e) {
+                    } catch (SwizzleConfluenceException e) {
                         monitor.done();
                         setComEx(e);
                         throw new InvocationTargetException(e);
@@ -289,7 +289,7 @@ public class XWikiSpaceWrapper implements IXWikiSpace
      * 
      * @see org.xwiki.plugins.eclipse.model.IXWikiSpace#removeChildPage(java.lang.String)
      */
-    public void removeChildPage(final String pageId) throws CommunicationException
+    public void removeChildPage(final String pageId) throws SwizzleConfluenceException
     {
         if (space.getPageByID(pageId) != null) {
             XWikiProgressRunner operation = new XWikiProgressRunner()
@@ -301,7 +301,7 @@ public class XWikiSpaceWrapper implements IXWikiSpace
                     try {
                         space.removeChildPage(pageId);
                         monitor.done();
-                    } catch (CommunicationException e) {
+                    } catch (SwizzleConfluenceException e) {
                         monitor.done();
                         setComEx(e);
                         throw new InvocationTargetException(e);
@@ -323,7 +323,7 @@ public class XWikiSpaceWrapper implements IXWikiSpace
      * 
      * @see org.xwiki.plugins.eclipse.model.IXWikiSpace#save()
      */
-    public IXWikiSpace save() throws CommunicationException
+    public IXWikiSpace save() throws SwizzleConfluenceException
     {
         XWikiProgressRunner operation = new XWikiProgressRunner()
         {
@@ -334,7 +334,7 @@ public class XWikiSpaceWrapper implements IXWikiSpace
                 try {
                     space.save();
                     monitor.done();
-                } catch (CommunicationException e) {
+                } catch (SwizzleConfluenceException e) {
                     monitor.done();
                     setComEx(e);
                     throw new InvocationTargetException(e);
@@ -366,7 +366,7 @@ public class XWikiSpaceWrapper implements IXWikiSpace
      *      java.lang.String, java.lang.String, int)
      */
     public void updateChildPage(String pageId, String title, String content, int version)
-        throws CommunicationException
+        throws SwizzleConfluenceException
     {
         // TODO Implement this.
 

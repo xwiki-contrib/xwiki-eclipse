@@ -21,8 +21,8 @@
 
 package org.xwiki.plugins.eclipse.util;
 
+import org.codehaus.swizzle.confluence.SwizzleConfluenceException;
 import org.eclipse.jface.operation.IRunnableWithProgress;
-import org.xwiki.plugins.eclipse.rpc.exceptions.CommunicationException;
 
 /**
  * Customized {@link IRunnableWithProgress} to accomodate
@@ -33,7 +33,7 @@ abstract public class XWikiProgressRunner implements IRunnableWithProgress
     /**
      * Place holder for any exceptions thrown while executing the task (RPC).
      */
-    private CommunicationException comEx;
+    private SwizzleConfluenceException comEx;
 
     /**
      * Place holder for any objects returned while executing the task (RPC).
@@ -43,7 +43,7 @@ abstract public class XWikiProgressRunner implements IRunnableWithProgress
     /**
      * @return Any {@link CommunicationException} s thrown or null.
      */
-    public CommunicationException getComEx()
+    public SwizzleConfluenceException getComEx()
     {
         return comEx;
     }
@@ -52,7 +52,7 @@ abstract public class XWikiProgressRunner implements IRunnableWithProgress
      * @param communicationException Used by the executing task to set any
      *            {@link CommunicationException} s encountered.
      */
-    public void setComEx(CommunicationException communicationException)
+    public void setComEx(SwizzleConfluenceException communicationException)
     {
         this.comEx = communicationException;
     }

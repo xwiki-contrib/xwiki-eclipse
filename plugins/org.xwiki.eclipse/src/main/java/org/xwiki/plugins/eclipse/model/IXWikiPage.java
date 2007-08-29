@@ -23,7 +23,7 @@ package org.xwiki.plugins.eclipse.model;
 
 import java.util.Date;
 
-import org.xwiki.plugins.eclipse.rpc.exceptions.CommunicationException;
+import org.codehaus.swizzle.confluence.SwizzleConfluenceException;
 
 /**
  * Represents an XWiki document.
@@ -36,7 +36,7 @@ public interface IXWikiPage
      * 
      * @throws CommunicationException - If XMLRPC call fails.
      */
-    public void init() throws CommunicationException;
+    public void init() throws SwizzleConfluenceException;
 
     /**
      * @return pageid As String.
@@ -159,5 +159,5 @@ public interface IXWikiPage
      * @return Updated page as returned from the server.
      * @throws CommunicationException - If XMLRPC call fails.
      */
-    public IXWikiPage save() throws CommunicationException;
+    public IXWikiPage save() throws SwizzleConfluenceException;
 }

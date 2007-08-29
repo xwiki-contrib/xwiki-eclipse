@@ -21,6 +21,7 @@
 
 package org.xwiki.plugins.eclipse.editors;
 
+import org.codehaus.swizzle.confluence.SwizzleConfluenceException;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.text.Document;
@@ -28,7 +29,6 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.ui.editors.text.StorageDocumentProvider;
 import org.xwiki.plugins.eclipse.model.IXWikiPage;
 import org.xwiki.plugins.eclipse.model.wrappers.XWikiPageWrapper;
-import org.xwiki.plugins.eclipse.rpc.exceptions.CommunicationException;
 
 /**
  * This class handles the mapping between model's document
@@ -73,7 +73,7 @@ public class XWikiDocumentProvider extends StorageDocumentProvider
         wikiPage.setContent(document.get());
         try {
             wikiPage.save();
-        } catch (CommunicationException e) {
+        } catch (SwizzleConfluenceException e) {
             wikiPage.setContent(oldContent);
             // TODO might want to throw a Core Exception here.
         }

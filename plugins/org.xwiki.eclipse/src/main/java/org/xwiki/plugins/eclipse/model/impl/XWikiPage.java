@@ -24,8 +24,11 @@ package org.xwiki.plugins.eclipse.model.impl;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Date;
-import java.util.HashMap;
 
+import org.codehaus.swizzle.confluence.Confluence;
+import org.codehaus.swizzle.confluence.Page;
+import org.codehaus.swizzle.confluence.PageSummary;
+import org.codehaus.swizzle.confluence.SwizzleConfluenceException;
 import org.eclipse.core.resources.IStorage;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -38,8 +41,6 @@ import org.xwiki.plugins.eclipse.model.IXWikiPage;
 import org.xwiki.plugins.eclipse.model.IXWikiSpace;
 import org.xwiki.plugins.eclipse.model.adapters.TreeAdapter;
 import org.xwiki.plugins.eclipse.model.wrappers.XWikiPageWrapper;
-import org.xwiki.plugins.eclipse.rpc.exceptions.CommunicationException;
-import org.xwiki.plugins.eclipse.rpc.impl.XWikiRPCHandler;
 import org.xwiki.plugins.eclipse.util.GuiUtils;
 import org.xwiki.plugins.eclipse.util.XWikiConstants;
 
@@ -57,12 +58,13 @@ public class XWikiPage implements IXWikiPage, TreeAdapter, IStorage, IStorageEdi
     /**
      * Summary of this page.
      */
-    private HashMap<String, Object> summary;
-
+    private PageSummary summary;
+    // TODO Again, like for spaces, why keep a summary when it's all included in the page ? 
+    
     /**
      * Data (opposite of summary ?) of this page.
      */
-    private HashMap<String, Object> data;
+    private Page page;
 
     /**
      * Whether data has been retrieved or not.
@@ -76,11 +78,11 @@ public class XWikiPage implements IXWikiPage, TreeAdapter, IStorage, IStorageEdi
      * @param parent Parent space.
      * @param summary Page summary.
      */
-    protected XWikiPage(IXWikiSpace parent, HashMap<String, Object> summary)
+    protected XWikiPage(IXWikiSpace parent, PageSummary pageSummary)
     {
-        data = new HashMap<String, Object>();
+        page = new Page();
         setSpace(parent);
-        setSummary(summary);
+        setSummary(pageSummary);
     }
 
     /**
@@ -91,23 +93,22 @@ public class XWikiPage implements IXWikiPage, TreeAdapter, IStorage, IStorageEdi
      * @param summary Page summary
      * @param data Page data.
      */
-    protected XWikiPage(IXWikiSpace parent, HashMap<String, Object> summary,
-        HashMap<String, Object> data)
+    protected XWikiPage(IXWikiSpace parent, Page page)
     {
         setSpace(parent);
-        setSummary(summary);
-        this.data = data;
+        setSummary(page);
+        this.page = page;
         setDataReady(true);
     }
 
     /**
      * Used by internal code to set data for this page.
      * 
-     * @param data Page data.
+     * @param page Page data.
      */
-    protected void setData(HashMap<String, Object> data)
+    protected void setPage(Page page)
     {
-        this.data = data;
+        this.page = page;
     }
 
     /**
@@ -135,7 +136,7 @@ public class XWikiPage implements IXWikiPage, TreeAdapter, IStorage, IStorageEdi
      * 
      * @param summary Summary of this page.
      */
-    protected void setSummary(HashMap<String, Object> summary)
+    protected void setSummary(PageSummary summary)
     {
         this.summary = summary;
     }
@@ -323,13 +324,12 @@ public class XWikiPage implements IXWikiPage, TreeAdapter, IStorage, IStorageEdi
      * 
      * @see org.xwiki.plugins.eclipse.model.IXWikiPage#initialize()
      */
-    public void init() throws CommunicationException
+    public void init() throws SwizzleConfluenceException
     {
         if (!isDataReady()) {
-            String loginToken = getParentSpace().getConnection().getLoginToken();
+            Confluence rpc = getParentSpace().getConnection().getRpcProxy();
             String pageId = getId();
-            Object pageData = XWikiRPCHandler.getInstance().getPage(loginToken, pageId);
-            this.data = (HashMap<String, Object>) pageData;
+            this.page = rpc.getPage(pageId);
             setDataReady(true);
         }
     }
@@ -341,7 +341,7 @@ public class XWikiPage implements IXWikiPage, TreeAdapter, IStorage, IStorageEdi
      */
     public String getContent()
     {
-        return (String) this.data.get(XWikiConstants.PAGE_CONTENT);
+        return (String) this.page.getContent();
     }
 
     /**
@@ -351,7 +351,7 @@ public class XWikiPage implements IXWikiPage, TreeAdapter, IStorage, IStorageEdi
      */
     public String getContentStatus()
     {
-        return (String) this.data.get(XWikiConstants.PAGE_CONTENT_STATUS);
+        return (String) this.page.getContentStatus();
     }
 
     /**
@@ -361,7 +361,7 @@ public class XWikiPage implements IXWikiPage, TreeAdapter, IStorage, IStorageEdi
      */
     public Date getCreated()
     {
-        return (Date) this.data.get(XWikiConstants.PAGE_CREATED);
+        return (Date) this.page.getCreated();
     }
 
     /**
@@ -371,7 +371,7 @@ public class XWikiPage implements IXWikiPage, TreeAdapter, IStorage, IStorageEdi
      */
     public String getCreator()
     {
-        return (String) this.data.get(XWikiConstants.PAGE_CREATOR);
+        return (String) this.page.getCreator();
     }
 
     /**
@@ -381,7 +381,7 @@ public class XWikiPage implements IXWikiPage, TreeAdapter, IStorage, IStorageEdi
      */
     public String getId()
     {
-        return (String) this.summary.get(XWikiConstants.PAGE_SUMMARY_ID);
+        return (String) this.summary.getId();
     }
 
     /**
@@ -391,7 +391,7 @@ public class XWikiPage implements IXWikiPage, TreeAdapter, IStorage, IStorageEdi
      */
     public String getLastModifier()
     {
-        return (String) this.data.get(XWikiConstants.PAGE_MODIFIER);
+        return (String) this.page.getModifier();
     }
 
     /**
@@ -401,7 +401,7 @@ public class XWikiPage implements IXWikiPage, TreeAdapter, IStorage, IStorageEdi
      */
     public int getLocks()
     {
-        return (Integer) this.summary.get(XWikiConstants.PAGE_SUMMARY_LOCKS);
+        return (Integer) this.summary.getLocks();
     }
 
     /**
@@ -411,7 +411,7 @@ public class XWikiPage implements IXWikiPage, TreeAdapter, IStorage, IStorageEdi
      */
     public Date getModified()
     {
-        return (Date) this.data.get(XWikiConstants.PAGE_MODIFIED);
+        return (Date) this.page.getModified();
     }
 
     /**
@@ -421,7 +421,7 @@ public class XWikiPage implements IXWikiPage, TreeAdapter, IStorage, IStorageEdi
      */
     public String getParentId()
     {
-        return (String) this.summary.get(XWikiConstants.PAGE_SUMMARY_PARENT_ID);
+        return (String) this.summary.getParentId();
     }
 
     /**
@@ -441,7 +441,7 @@ public class XWikiPage implements IXWikiPage, TreeAdapter, IStorage, IStorageEdi
      */
     public String getParentSpaceKey()
     {
-        return (String) this.summary.get(XWikiConstants.PAGE_SUMMARY_SPACE);
+        return (String) this.summary.getSpace();
     }
 
     /**
@@ -451,7 +451,7 @@ public class XWikiPage implements IXWikiPage, TreeAdapter, IStorage, IStorageEdi
      */
     public String getTitle()
     {
-        return (String) this.summary.get(XWikiConstants.PAGE_SUMMARY_TITLE);
+        return (String) this.summary.getTitle();
     }
 
     /**
@@ -461,7 +461,7 @@ public class XWikiPage implements IXWikiPage, TreeAdapter, IStorage, IStorageEdi
      */
     public String getUrl()
     {
-        return (String) this.summary.get(XWikiConstants.PAGE_SUMMARY_URL);
+        return (String) this.summary.getUrl();
     }
 
     /**
@@ -471,7 +471,7 @@ public class XWikiPage implements IXWikiPage, TreeAdapter, IStorage, IStorageEdi
      */
     public int getVersion()
     {
-        return (Integer) this.data.get(XWikiConstants.PAGE_VERSION);
+        return (Integer) this.page.getVersion();
     }
 
     /**
@@ -481,7 +481,7 @@ public class XWikiPage implements IXWikiPage, TreeAdapter, IStorage, IStorageEdi
      */
     public boolean isCurrent()
     {
-        return (Boolean) this.data.get(XWikiConstants.PAGE_CURRENT);
+        return (Boolean) this.page.isCurrent();
     }
 
     /**
@@ -501,7 +501,7 @@ public class XWikiPage implements IXWikiPage, TreeAdapter, IStorage, IStorageEdi
      */
     public boolean isHomePage()
     {
-        return (Boolean) this.data.get(XWikiConstants.PAGE_HOMEPAGE);
+        return (Boolean) this.page.isHomePage();
     }
 
     /**
@@ -521,7 +521,7 @@ public class XWikiPage implements IXWikiPage, TreeAdapter, IStorage, IStorageEdi
      */
     public void setContent(String newContent)
     {
-        this.data.put(XWikiConstants.PAGE_CONTENT, newContent);
+        this.page.setContent(newContent);
     }
 
     /**
@@ -531,8 +531,8 @@ public class XWikiPage implements IXWikiPage, TreeAdapter, IStorage, IStorageEdi
      */
     public void setParentId(String newParentId)
     {
-        this.summary.put(XWikiConstants.PAGE_SUMMARY_ID, newParentId);
-        this.data.put(XWikiConstants.PAGE_PARENT_ID, newParentId);
+        this.summary.setParentId(newParentId);
+        this.page.setParentId(newParentId);
     }
 
     /**
@@ -542,8 +542,8 @@ public class XWikiPage implements IXWikiPage, TreeAdapter, IStorage, IStorageEdi
      */
     public void setTitle(String newTitle)
     {
-        this.summary.put(XWikiConstants.PAGE_SUMMARY_TITLE, newTitle);
-        this.data.put(XWikiConstants.PAGE_TITLE, newTitle);
+        this.summary.setTitle(newTitle);
+        this.page.setTitle(newTitle);
     }
 
     /**
@@ -551,13 +551,10 @@ public class XWikiPage implements IXWikiPage, TreeAdapter, IStorage, IStorageEdi
      * 
      * @see org.xwiki.plugins.eclipse.model.IXWikiPage#update()
      */
-    public IXWikiPage save() throws CommunicationException
+    public IXWikiPage save() throws SwizzleConfluenceException
     {
-        String loginToken = getParentSpace().getConnection().getLoginToken();
-        HashMap<String, Object> newData =
-            (HashMap<String, Object>) XWikiRPCHandler.getInstance().storePage(loginToken,
-                this.data);
-        this.data = newData;
+        Confluence rpc = getParentSpace().getConnection().getRpcProxy();
+        this.page = rpc.storePage(page);
         setDataReady(true);
         return this;
     }

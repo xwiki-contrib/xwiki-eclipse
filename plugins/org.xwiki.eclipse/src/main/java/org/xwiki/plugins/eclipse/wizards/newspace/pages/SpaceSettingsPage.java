@@ -106,22 +106,17 @@ public class SpaceSettingsPage extends XWikiWizardPage implements ModifyListener
      */
     private boolean validatePage()
     {
-        spaceName = ui.getSpaceNameText().getText().trim();
         // spaceKey masked.
         // spaceKey = ui.getSpaceKeyText().getText().trim();
-        spaceKey = spaceName;
+        spaceKey = ui.getSpaceNameText().getText().trim();
+        // spaceName is set to be same as spaceKey (for now)
+        spaceName = spaceKey;
         spaceDescription = ui.getSpaceDescriptionText().getText().trim();
-        if (spaceName.equals("")) {
+        if (spaceKey.equals("")) {
             setErrorMessage(" Space Name Cannot be Empty.");
             return false;
-        } else if (connection.getSpaceByName(spaceName) != null) {
+        } else if (connection.getSpace(spaceKey) != null) {
             setErrorMessage(" Space Name Must be Unique.");
-            return false;
-        } else if (spaceKey.equals("")) {
-            setErrorMessage(" Space Key Cannot be Empty.");
-            return false;
-        } else if (connection.getSpaceByKey(spaceKey) != null) {
-            setErrorMessage(" Space Key Must be Unique.");
             return false;
         } else if (spaceDescription.equals("")) {
             setErrorMessage(" Space Description Cannot be Empty.");

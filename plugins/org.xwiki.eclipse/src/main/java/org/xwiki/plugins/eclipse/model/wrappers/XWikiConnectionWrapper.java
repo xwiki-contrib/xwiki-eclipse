@@ -25,10 +25,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.codehaus.swizzle.confluence.Confluence;
+import org.codehaus.swizzle.confluence.SwizzleConfluenceException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.xwiki.plugins.eclipse.model.IXWikiConnection;
 import org.xwiki.plugins.eclipse.model.IXWikiSpace;
-import org.xwiki.plugins.eclipse.rpc.exceptions.CommunicationException;
 import org.xwiki.plugins.eclipse.util.GuiUtils;
 import org.xwiki.plugins.eclipse.util.XWikiProgressRunner;
 
@@ -60,7 +61,7 @@ public class XWikiConnectionWrapper implements IXWikiConnection
      *      java.lang.String, java.lang.String)
      */
     public void addSpace(final String name, final String key, final String description)
-        throws CommunicationException
+        throws SwizzleConfluenceException
     {
         // It is assumed that at this point it has been verfied that spaceName
         // and spaceKey are unique.
@@ -73,7 +74,7 @@ public class XWikiConnectionWrapper implements IXWikiConnection
                 try {
                     connection.addSpace(name, key, description);
                     monitor.done();
-                } catch (CommunicationException e) {
+                } catch (SwizzleConfluenceException e) {
                     monitor.done();
                     setComEx(e);
                     throw new InvocationTargetException(e);
@@ -91,7 +92,7 @@ public class XWikiConnectionWrapper implements IXWikiConnection
      * 
      * @see org.xwiki.plugins.eclipse.model.IXWikiConnection#disconnect()
      */
-    public void disconnect() throws CommunicationException
+    public void disconnect() throws SwizzleConfluenceException
     {
         XWikiProgressRunner operation = new XWikiProgressRunner()
         {
@@ -107,7 +108,7 @@ public class XWikiConnectionWrapper implements IXWikiConnection
                 try {
                     connection.disconnect();
                     monitor.done();
-                } catch (CommunicationException e) {
+                } catch (SwizzleConfluenceException e) {
                     monitor.done();
                     setComEx(e);
                     throw new InvocationTargetException(e);
@@ -120,17 +121,7 @@ public class XWikiConnectionWrapper implements IXWikiConnection
         }
 
     }
-
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.xwiki.plugins.eclipse.model.IXWikiConnection#getLoginToken()
-     */
-    public String getLoginToken()
-    {
-        return connection.getLoginToken();
-    }
-
+    
     /**
      * {@inheritDoc}
      * 
@@ -144,21 +135,11 @@ public class XWikiConnectionWrapper implements IXWikiConnection
     /**
      * {@inheritDoc}
      * 
-     * @see org.xwiki.plugins.eclipse.model.IXWikiConnection#getSpaceByName(java.lang.String)
+     * @see org.xwiki.plugins.eclipse.model.IXWikiConnection#getSpace(java.lang.String)
      */
-    public IXWikiSpace getSpaceByName(String spaceName)
+    public IXWikiSpace getSpace(String spaceKey)
     {
-        return connection.getSpaceByName(spaceName);
-    }
-
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.xwiki.plugins.eclipse.model.IXWikiConnection#getSpaceByKey(java.lang.String)
-     */
-    public IXWikiSpace getSpaceByKey(String spaceKey)
-    {
-        return connection.getSpaceByKey(spaceKey);
+        return connection.getSpace(spaceKey);
     }
 
     /**
@@ -171,7 +152,7 @@ public class XWikiConnectionWrapper implements IXWikiConnection
         try {
             init();
             return connection.getSpaces();
-        } catch (CommunicationException e) {
+        } catch (SwizzleConfluenceException e) {
             // TODO log this exception
             return new ArrayList<IXWikiSpace>();
         }
@@ -192,7 +173,7 @@ public class XWikiConnectionWrapper implements IXWikiConnection
      * 
      * @see org.xwiki.plugins.eclipse.model.IXWikiConnection#init()
      */
-    public void init() throws CommunicationException
+    public void init() throws SwizzleConfluenceException
     {
         if (!isSpacesReady()) {
             XWikiProgressRunner operation = new XWikiProgressRunner()
@@ -209,7 +190,7 @@ public class XWikiConnectionWrapper implements IXWikiConnection
                     try {
                         connection.init();
                         monitor.done();
-                    } catch (CommunicationException e) {
+                    } catch (SwizzleConfluenceException e) {
                         monitor.done();
                         setComEx(e);
                         throw new InvocationTargetException(e);
@@ -238,7 +219,7 @@ public class XWikiConnectionWrapper implements IXWikiConnection
      * 
      * @see org.xwiki.plugins.eclipse.model.IXWikiConnection#removeSpace(java.lang.String)
      */
-    public void removeSpace(final String key) throws CommunicationException
+    public void removeSpace(final String key) throws SwizzleConfluenceException
     {
         XWikiProgressRunner operation = new XWikiProgressRunner()
         {
@@ -254,7 +235,7 @@ public class XWikiConnectionWrapper implements IXWikiConnection
                 try {
                     connection.removeSpace(key);
                     monitor.done();
-                } catch (CommunicationException e) {
+                } catch (SwizzleConfluenceException e) {
                     monitor.done();
                     setComEx(e);
                     throw new InvocationTargetException(e);
@@ -265,5 +246,10 @@ public class XWikiConnectionWrapper implements IXWikiConnection
         if (operation.getComEx() != null) {
             throw operation.getComEx();
         }
+    }
+
+    public Confluence getRpcProxy()
+    {
+        return connection.getRpcProxy();
     }
 }

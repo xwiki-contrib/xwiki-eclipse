@@ -24,14 +24,17 @@ package org.xwiki.plugins.eclipse.model.impl;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 
+import org.codehaus.swizzle.confluence.Confluence;
+import org.codehaus.swizzle.confluence.Space;
+import org.codehaus.swizzle.confluence.SpaceSummary;
+import org.codehaus.swizzle.confluence.SwizzleConfluenceException;
 import org.eclipse.swt.graphics.Image;
 import org.xwiki.plugins.eclipse.model.IXWikiConnection;
 import org.xwiki.plugins.eclipse.model.IXWikiSpace;
 import org.xwiki.plugins.eclipse.model.adapters.TreeAdapter;
 import org.xwiki.plugins.eclipse.model.wrappers.XWikiConnectionWrapper;
-import org.xwiki.plugins.eclipse.rpc.exceptions.CommunicationException;
-import org.xwiki.plugins.eclipse.rpc.impl.XWikiRPCHandler;
 import org.xwiki.plugins.eclipse.util.GuiUtils;
 import org.xwiki.plugins.eclipse.util.XWikiConstants;
 
@@ -40,11 +43,10 @@ import org.xwiki.plugins.eclipse.util.XWikiConstants;
  */
 public class XWikiConnection implements IXWikiConnection, TreeAdapter
 {
-
     /**
-     * Login token as returned by the login rpc call.
+     * An XML-RPC proxy
      */
-    private String loginToken;
+    private Confluence rpc;
 
     /**
      * Username supplied by the user for this connection.
@@ -57,11 +59,6 @@ public class XWikiConnection implements IXWikiConnection, TreeAdapter
     private String serverUrl;
 
     /**
-     * Top-level spaces. Mapped by spaceName
-     */
-    private HashMap<String, IXWikiSpace> spacesByName;
-
-    /**
      * Top-level spaces. Mapped by spaceKey
      */
     private HashMap<String, IXWikiSpace> spacesByKey;
@@ -72,11 +69,10 @@ public class XWikiConnection implements IXWikiConnection, TreeAdapter
     private boolean spacesReady = false;
 
     /**
-     * Default constructor. A connection should only be aquired by going through ConnectionManager
+     * Default constructor. A connection should only be acquired by going through ConnectionManager
      */
     protected XWikiConnection()
     {
-        spacesByName = new HashMap<String, IXWikiSpace>();
         spacesByKey = new HashMap<String, IXWikiSpace>();
     }
 
@@ -85,9 +81,9 @@ public class XWikiConnection implements IXWikiConnection, TreeAdapter
      * 
      * @param loginToken Login token as returned by login() rpc call.
      */
-    protected void setLoginToken(String loginToken)
+    protected void setRpcProxy(Confluence rpc)
     {
-        this.loginToken = loginToken;
+        this.rpc = rpc;
     }
 
     /**
@@ -127,9 +123,6 @@ public class XWikiConnection implements IXWikiConnection, TreeAdapter
      */
     protected void addSpace(IXWikiSpace space)
     {
-        // TODO : This is a hack to avoid empty name issues. Sweep out the code ASAP.
-        // i.e. Remove spacesByName and all references to it.
-        spacesByName.put(space.getKey(), space);
         spacesByKey.put(space.getKey(), space);
     }
 
@@ -143,14 +136,14 @@ public class XWikiConnection implements IXWikiConnection, TreeAdapter
         IXWikiConnection xwikiConnection = new XWikiConnectionWrapper(this);
         try {
             xwikiConnection.init();
-        } catch (CommunicationException e) {
+        } catch (SwizzleConfluenceException e) {
             // Will be logged elsewhere.
         }
         if (!spacesReady) {
             return null;
         }
         ArrayList<IXWikiSpace> displaySpaces = new ArrayList<IXWikiSpace>();
-        for (IXWikiSpace s : spacesByName.values()) {
+        for (IXWikiSpace s : spacesByKey.values()) {
             if (!s.isMasked()) {
                 displaySpaces.add(s);
             }
@@ -213,15 +206,15 @@ public class XWikiConnection implements IXWikiConnection, TreeAdapter
      * 
      * @see org.xwiki.plugins.eclipse.model.IXWikiConnection#initialize()
      */
-    public void init() throws CommunicationException
+    public void init() throws SwizzleConfluenceException
     {
         if (!isSpacesReady()) {
-            Object[] spaces = XWikiRPCHandler.getInstance().getSpaceSummaries(loginToken);
-            for (Object space : spaces) {
-                HashMap<String, Object> summary = (HashMap<String, Object>) space;
-                IXWikiSpace xwikiSpace = new XWikiSpace(this, summary);
+            List spaceSummaries = rpc.getSpaces();
+            for (int i = 0; i < spaceSummaries.size(); i++){
+                SpaceSummary summary = (SpaceSummary)spaceSummaries.get(i);
+                IXWikiSpace xwikiSpace = new XWikiSpace(this, summary);                
                 addSpace(xwikiSpace);
-            }
+            }            
             setSpacesReady(true);
         }
     }
@@ -233,23 +226,21 @@ public class XWikiConnection implements IXWikiConnection, TreeAdapter
      *      java.lang.String, java.lang.String)
      */
     public void addSpace(String name, String key, String description)
-        throws CommunicationException
+        throws SwizzleConfluenceException
     {
-        HashMap<String, Object> tempSapce = new HashMap<String, Object>();
-        HashMap<String, Object> summary = new HashMap<String, Object>();
-        HashMap<String, Object> result;
-        tempSapce.put(XWikiConstants.SPACE_KEY, key);
-        tempSapce.put(XWikiConstants.SPACE_NAME, name);
-        tempSapce.put(XWikiConstants.SPACE_DESCRIPTION, description);
-        result =
-            (HashMap<String, Object>) XWikiRPCHandler.getInstance().addSpace(loginToken,
-                tempSapce);
-        summary.put(XWikiConstants.SPACE_SUMMARY_KEY, result.get(XWikiConstants.SPACE_KEY));
-        summary.put(XWikiConstants.SPACE_SUMMARY_NAME, result.get(XWikiConstants.SPACE_NAME));
-        // This is a hack to avoid complexity.
-        summary.put(XWikiConstants.SPACE_SUMMARY_TYPE, "Not Available");
-        summary.put(XWikiConstants.SPACE_SUMMARY_URL, result.get(XWikiConstants.SPACE_URL));
+        Space space = new Space();
+        space.setKey(key);
+        space.setName(name);
+        space.setDescription(description);
+        Space result = rpc.addSpace(space);
+        SpaceSummary summary = new SpaceSummary();
+        summary.setKey(result.getKey());
+        summary.setName(result.getName());
+        summary.setType(result.getType());
+        summary.setUrl(result.getUrl());
+        
         IXWikiSpace wikiSpace = new XWikiSpace(this, summary, result);
+        
         // We need this space to be displayed.
         wikiSpace.setMasked(false);
         // Finally, add the space to local model.
@@ -261,20 +252,20 @@ public class XWikiConnection implements IXWikiConnection, TreeAdapter
      * 
      * @see org.xwiki.plugins.eclipse.model.IXWikiConnection#disconnect()
      */
-    public void disconnect() throws CommunicationException
+    public void disconnect() throws SwizzleConfluenceException
     {
-        XWikiRPCHandler.getInstance().logout(loginToken);
-        XWikiConnectionManager.getInstance().removeConnection(loginToken);
+        rpc.logout();
+        XWikiConnectionManager.getInstance().removeConnection(this);
     }
 
     /**
      * {@inheritDoc}
      * 
-     * @see org.xwiki.plugins.eclipse.model.IXWikiConnection#getLoginToken()
+     * @see org.xwiki.plugins.eclipse.model.IXWikiConnection#getRpcProxy()
      */
-    public String getLoginToken()
+    public Confluence getRpcProxy()
     {
-        return loginToken;
+        return rpc;
     }
 
     /**
@@ -290,19 +281,9 @@ public class XWikiConnection implements IXWikiConnection, TreeAdapter
     /**
      * {@inheritDoc}
      * 
-     * @see org.xwiki.plugins.eclipse.model.IXWikiConnection#getSpaceByName(java.lang.String)
+     * @see org.xwiki.plugins.eclipse.model.IXWikiConnection#getSpace(java.lang.String)
      */
-    public IXWikiSpace getSpaceByName(String spaceName)
-    {
-        return spacesByName.get(spaceName);
-    }
-
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.xwiki.plugins.eclipse.model.IXWikiConnection#getSpaceByKey(java.lang.String)
-     */
-    public IXWikiSpace getSpaceByKey(String spaceKey)
+    public IXWikiSpace getSpace(String spaceKey)
     {
         return spacesByKey.get(spaceKey);
     }
@@ -314,7 +295,7 @@ public class XWikiConnection implements IXWikiConnection, TreeAdapter
      */
     public Collection<IXWikiSpace> getSpaces()
     {
-        return this.spacesByName.values();
+        return this.spacesByKey.values();
     }
 
     /**
@@ -342,11 +323,9 @@ public class XWikiConnection implements IXWikiConnection, TreeAdapter
      * 
      * @see org.xwiki.plugins.eclipse.model.IXWikiConnection#removeSpace(java.lang.String)
      */
-    public void removeSpace(String key) throws CommunicationException
+    public void removeSpace(String key) throws SwizzleConfluenceException
     {
-        IXWikiSpace spaceToBeRemoved = getSpaceByKey(key);
-        XWikiRPCHandler.getInstance().removeSpace(getLoginToken(), key);
-        spacesByName.remove(spaceToBeRemoved.getName());
+        rpc.removeSpace(key);
         spacesByKey.remove(key);
     }
 }

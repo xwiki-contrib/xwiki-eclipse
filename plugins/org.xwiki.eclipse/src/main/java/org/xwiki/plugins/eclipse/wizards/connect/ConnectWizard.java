@@ -23,11 +23,11 @@ package org.xwiki.plugins.eclipse.wizards.connect;
 
 import java.util.Collection;
 
+import org.codehaus.swizzle.confluence.SwizzleConfluenceException;
 import org.eclipse.jface.wizard.Wizard;
 import org.xwiki.plugins.eclipse.model.IXWikiConnection;
 import org.xwiki.plugins.eclipse.model.IXWikiSpace;
 import org.xwiki.plugins.eclipse.model.wrappers.XWikiConnectionWrapper;
-import org.xwiki.plugins.eclipse.rpc.exceptions.CommunicationException;
 import org.xwiki.plugins.eclipse.wizards.connect.pages.SettingsPage;
 import org.xwiki.plugins.eclipse.wizards.connect.pages.SpacesPage;
 
@@ -117,7 +117,7 @@ public class ConnectWizard extends Wizard
             IXWikiConnection connection = new XWikiConnectionWrapper(wizardState.getConnection());
             try {
                 connection.disconnect();
-            } catch (CommunicationException e) {
+            } catch (SwizzleConfluenceException e) {
                 // Will be logged else where.
             }
             wizardState.setConnection(null);

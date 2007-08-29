@@ -24,10 +24,10 @@ package org.xwiki.plugins.eclipse.model.wrappers;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
 
+import org.codehaus.swizzle.confluence.SwizzleConfluenceException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.xwiki.plugins.eclipse.model.IXWikiPage;
 import org.xwiki.plugins.eclipse.model.IXWikiSpace;
-import org.xwiki.plugins.eclipse.rpc.exceptions.CommunicationException;
 import org.xwiki.plugins.eclipse.util.GuiUtils;
 import org.xwiki.plugins.eclipse.util.XWikiProgressRunner;
 
@@ -62,7 +62,7 @@ public class XWikiPageWrapper implements IXWikiPage
         try {
             init();
             return page.getContent();
-        } catch (CommunicationException e) {
+        } catch (SwizzleConfluenceException e) {
             // TODO log this exception.
             return "";
         }
@@ -78,7 +78,7 @@ public class XWikiPageWrapper implements IXWikiPage
         try {
             init();
             return page.getContentStatus();
-        } catch (CommunicationException e) {
+        } catch (SwizzleConfluenceException e) {
             // TODO log this exception.
             return "";
         }
@@ -94,7 +94,7 @@ public class XWikiPageWrapper implements IXWikiPage
         try {
             init();
             return page.getCreated();
-        } catch (CommunicationException e) {
+        } catch (SwizzleConfluenceException e) {
             // TODO log this exception.
             return new Date();
         }
@@ -110,7 +110,7 @@ public class XWikiPageWrapper implements IXWikiPage
         try {
             init();
             return page.getCreator();
-        } catch (CommunicationException e) {
+        } catch (SwizzleConfluenceException e) {
             // TODO log this exception.
             return "";
         }
@@ -136,7 +136,7 @@ public class XWikiPageWrapper implements IXWikiPage
         try {
             init();
             return page.getLastModifier();
-        } catch (CommunicationException e) {
+        } catch (SwizzleConfluenceException e) {
             // TODO log this exception.
             return "";
         }
@@ -152,7 +152,7 @@ public class XWikiPageWrapper implements IXWikiPage
         try {
             init();
             return page.getLocks();
-        } catch (CommunicationException e) {
+        } catch (SwizzleConfluenceException e) {
             // TODO log this exception.
             return 0;
         }
@@ -168,7 +168,7 @@ public class XWikiPageWrapper implements IXWikiPage
         try {
             init();
             return page.getModified();
-        } catch (CommunicationException e) {
+        } catch (SwizzleConfluenceException e) {
             // TODO log this exception.
             return new Date();
         }
@@ -184,7 +184,7 @@ public class XWikiPageWrapper implements IXWikiPage
         try {
             init();
             return page.getParentId();
-        } catch (CommunicationException e) {
+        } catch (SwizzleConfluenceException e) {
             // TODO log this exception.
             return "";
         }
@@ -240,7 +240,7 @@ public class XWikiPageWrapper implements IXWikiPage
         try {
             init();
             return page.getVersion();
-        } catch (CommunicationException e) {
+        } catch (SwizzleConfluenceException e) {
             // TODO log this exception.
             return 0;
         }
@@ -251,7 +251,7 @@ public class XWikiPageWrapper implements IXWikiPage
      * 
      * @see org.xwiki.plugins.eclipse.model.IXWikiPage#init()
      */
-    public void init() throws CommunicationException
+    public void init() throws SwizzleConfluenceException
     {
         if (!isDataReady()) {
             XWikiProgressRunner operation = new XWikiProgressRunner()
@@ -268,7 +268,7 @@ public class XWikiPageWrapper implements IXWikiPage
                     try {
                         page.init();
                         monitor.done();
-                    } catch (CommunicationException e) {
+                    } catch (SwizzleConfluenceException e) {
                         monitor.done();
                         setComEx(e);
                         throw new InvocationTargetException(e);
@@ -292,7 +292,7 @@ public class XWikiPageWrapper implements IXWikiPage
         try {
             init();
             return page.isCurrent();
-        } catch (CommunicationException e) {
+        } catch (SwizzleConfluenceException e) {
             // TODO log this exception.
             return true;
         }
@@ -318,7 +318,7 @@ public class XWikiPageWrapper implements IXWikiPage
         try {
             init();
             return page.isHomePage();
-        } catch (CommunicationException e) {
+        } catch (SwizzleConfluenceException e) {
             // TODO log this exception.
             return false;
         }
@@ -339,7 +339,7 @@ public class XWikiPageWrapper implements IXWikiPage
      * 
      * @see org.xwiki.plugins.eclipse.model.IXWikiPage#save()
      */
-    public IXWikiPage save() throws CommunicationException
+    public IXWikiPage save() throws SwizzleConfluenceException
     {
         XWikiProgressRunner operation = new XWikiProgressRunner()
         {
@@ -355,7 +355,7 @@ public class XWikiPageWrapper implements IXWikiPage
                 try {
                     page.save();
                     monitor.done();
-                } catch (CommunicationException e) {
+                } catch (SwizzleConfluenceException e) {
                     monitor.done();
                     setComEx(e);
                     throw new InvocationTargetException(e);

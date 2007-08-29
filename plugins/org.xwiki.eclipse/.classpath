@@ -4,6 +4,7 @@
 	<classpathentry exported="true" kind="lib" path="lib/ws-commons-util-1.0.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/xmlrpc-client-3.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/xmlrpc-common-3.0.jar"/>
+	<classpathentry kind="lib" path="lib/swizzle-confluence-1.1-20070829-xwiki.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="output" path="target/pdeTemp/plugins/org.xwiki.eclipse_1.0.0/org.xwiki.plugins.eclipse"/>

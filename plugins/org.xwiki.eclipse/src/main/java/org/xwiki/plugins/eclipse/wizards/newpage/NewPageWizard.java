@@ -21,9 +21,9 @@
 
 package org.xwiki.plugins.eclipse.wizards.newpage;
 
+import org.codehaus.swizzle.confluence.SwizzleConfluenceException;
 import org.eclipse.jface.wizard.Wizard;
 import org.xwiki.plugins.eclipse.model.IXWikiSpace;
-import org.xwiki.plugins.eclipse.rpc.exceptions.CommunicationException;
 import org.xwiki.plugins.eclipse.wizards.newpage.pages.PageSettingsPage;
 
 /**
@@ -75,7 +75,7 @@ public class NewPageWizard extends Wizard
     {
         try {
             space.addPage(settingsPage.getPageTitle(), settingsPage.getPageContent());
-        } catch (CommunicationException e) {
+        } catch (SwizzleConfluenceException e) {
             // Will be logged elsewhere
         }
         return true;

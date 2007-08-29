@@ -21,6 +21,7 @@
 
 package org.xwiki.plugins.eclipse.wizards.connect.pages;
 
+import org.codehaus.swizzle.confluence.SwizzleConfluenceException;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -33,7 +34,6 @@ import org.xwiki.plugins.eclipse.model.IXWikiConnectionManager;
 import org.xwiki.plugins.eclipse.model.impl.XWikiConnectionManager;
 import org.xwiki.plugins.eclipse.model.wrappers.XWikiConnectionManagerWrapper;
 import org.xwiki.plugins.eclipse.model.wrappers.XWikiConnectionWrapper;
-import org.xwiki.plugins.eclipse.rpc.exceptions.CommunicationException;
 import org.xwiki.plugins.eclipse.wizards.XWikiWizardPage;
 import org.xwiki.plugins.eclipse.wizards.connect.WizardState;
 import org.xwiki.plugins.eclipse.wizards.connect.ui.SettingsUI;
@@ -226,7 +226,7 @@ public class SettingsPage extends XWikiWizardPage implements ModifyListener, Lis
                 connection = manager.connect(serverUrl, userName, password, proxy);
                 wizardState.setConnection(connection);
                 wizardState.setLoggedIn(true);
-            } catch (CommunicationException e) {
+            } catch (SwizzleConfluenceException e) {
                 wizardState.setLoggedIn(false);
                 return;
             }

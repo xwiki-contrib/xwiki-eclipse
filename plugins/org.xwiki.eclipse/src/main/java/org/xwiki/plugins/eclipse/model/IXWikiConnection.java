@@ -23,7 +23,8 @@ package org.xwiki.plugins.eclipse.model;
 
 import java.util.Collection;
 
-import org.xwiki.plugins.eclipse.rpc.exceptions.CommunicationException;
+import org.codehaus.swizzle.confluence.Confluence;
+import org.codehaus.swizzle.confluence.SwizzleConfluenceException;
 
 /**
  * A connection (session...) to a XWiki server.
@@ -36,7 +37,7 @@ public interface IXWikiConnection
      * 
      * @throws CommunicationException - If XMLRPC call fails.
      */
-    public void init() throws CommunicationException;
+    public void init() throws SwizzleConfluenceException;
 
     /**
      * @return Username.
@@ -49,9 +50,9 @@ public interface IXWikiConnection
     public String getServerUrl();
 
     /**
-     * @return Login token as a String.
+     * @return The XML-RPC proxy used by this connection
      */
-    public String getLoginToken();
+    public Confluence getRpcProxy();
 
     /**
      * Retrieves and returns all available spaces.
@@ -66,19 +67,13 @@ public interface IXWikiConnection
      * 
      * @throws CommunicationException - If XMLRPC call fails.
      */
-    public void disconnect() throws CommunicationException;
-
-    /**
-     * @param spaceName Name of the space.
-     * @return The space with corresponding name or null if no such space exists.
-     */
-    public IXWikiSpace getSpaceByName(String spaceName);
+    public void disconnect() throws SwizzleConfluenceException;
 
     /**
      * @param spaceKey Key of the space.
      * @return The space with corresponding key or null if no such space exists.
      */
-    public IXWikiSpace getSpaceByKey(String spaceKey);
+    public IXWikiSpace getSpace(String spaceKey);
 
     /**
      * @return True if spaces have been retrieved, otherwise returns false.
@@ -94,7 +89,7 @@ public interface IXWikiConnection
      * @throws CommunicationException - If XMLRPC call fails.
      */
     public void addSpace(String name, String key, String description)
-        throws CommunicationException;
+        throws SwizzleConfluenceException;
 
     /**
      * Removes the specified space from this connection.
@@ -102,5 +97,5 @@ public interface IXWikiConnection
      * @param key Key of the space which is to be removed.
      * @throws CommunicationException - If XMLRPC call fails.
      */
-    public void removeSpace(String key) throws CommunicationException;
+    public void removeSpace(String key) throws SwizzleConfluenceException;
 }
