@@ -25,6 +25,7 @@ import java.util.Collection;
 
 import org.codehaus.swizzle.confluence.Confluence;
 import org.codehaus.swizzle.confluence.SwizzleConfluenceException;
+import org.eclipse.core.runtime.IPath;
 
 /**
  * A connection (session...) to a XWiki server.
@@ -75,6 +76,11 @@ public interface IXWikiConnection
      */
     public IXWikiSpace getSpace(String spaceKey);
 
+    /**
+     * @return The local cache directory of this connection.
+     */
+    public IPath getCacheDirectory();
+    
     /**
      * @return True if spaces have been retrieved, otherwise returns false.
      */

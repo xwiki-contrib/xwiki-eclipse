@@ -30,6 +30,7 @@ import org.codehaus.swizzle.confluence.Confluence;
 import org.codehaus.swizzle.confluence.Space;
 import org.codehaus.swizzle.confluence.SpaceSummary;
 import org.codehaus.swizzle.confluence.SwizzleConfluenceException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.swt.graphics.Image;
 import org.xwiki.plugins.eclipse.model.IXWikiConnection;
 import org.xwiki.plugins.eclipse.model.IXWikiSpace;
@@ -68,6 +69,11 @@ public class XWikiConnection implements IXWikiConnection, TreeAdapter
      */
     private boolean spacesReady = false;
 
+    /**
+     * Local cache directory for this connection.
+     */
+    private IPath localCacheDir;
+    
     /**
      * Default constructor. A connection should only be acquired by going through ConnectionManager
      */
@@ -306,9 +312,26 @@ public class XWikiConnection implements IXWikiConnection, TreeAdapter
     public String getUserName()
     {
         return userName;
-    }
-
+    }    
+    
     /**
+     * Sets the local cache directory of this connection.
+     */
+    protected void setCacheDirectory(IPath localCacheDir)
+    {
+    	this.localCacheDir = localCacheDir;
+    }
+    
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.xwiki.plugins.eclipse.model.IXWikiConnection#getCacheDirectory()
+     */    
+    public IPath getCacheDirectory() {
+		return localCacheDir;
+	}
+
+	/**
      * {@inheritDoc}
      * 
      * @see org.xwiki.plugins.eclipse.model.IXWikiConnection#isSpacesReady()

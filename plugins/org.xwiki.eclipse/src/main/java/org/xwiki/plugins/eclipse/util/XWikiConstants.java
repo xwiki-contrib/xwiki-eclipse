@@ -51,4 +51,14 @@ public class XWikiConstants
 
     public static String TOGGLE_BUTTON_ICON = "icons/view-fullscreen.png";
 
+    /* Cache Constants */
+    public static String CONNECTION_USERNAME = "USERNAME";
+    
+    public static String CONNECTION_PASSWORD = "PASSWORD";
+    
+    public static String CONNECTION_URL = "URL";
+    
+    public static String CONNECTION_PROXY = "PROXY";
+    
+    public static String CONNECTION_CACHE_DIR = "CACHE";
 }

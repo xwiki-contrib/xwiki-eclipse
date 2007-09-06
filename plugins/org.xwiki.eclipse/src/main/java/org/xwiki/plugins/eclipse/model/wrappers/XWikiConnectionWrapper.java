@@ -27,6 +27,7 @@ import java.util.Collection;
 
 import org.codehaus.swizzle.confluence.Confluence;
 import org.codehaus.swizzle.confluence.SwizzleConfluenceException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.xwiki.plugins.eclipse.model.IXWikiConnection;
 import org.xwiki.plugins.eclipse.model.IXWikiSpace;
@@ -168,7 +169,17 @@ public class XWikiConnectionWrapper implements IXWikiConnection
         return connection.getUserName();
     }
 
-    /**
+    
+    
+    /** 
+     * {@inheritDoc}
+	 * @see org.xwiki.plugins.eclipse.model.IXWikiConnection#getCacheDirectory()
+	 */
+	public IPath getCacheDirectory() {
+		return connection.getCacheDirectory();
+	}
+
+	/**
      * {@inheritDoc}
      * 
      * @see org.xwiki.plugins.eclipse.model.IXWikiConnection#init()
