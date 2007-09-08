@@ -312,15 +312,7 @@ public class XWikiConnection implements IXWikiConnection, TreeAdapter
     public String getUserName()
     {
         return userName;
-    }    
-    
-    /**
-     * Sets the local cache directory of this connection.
-     */
-    protected void setCacheDirectory(IPath localCacheDir)
-    {
-    	this.localCacheDir = localCacheDir;
-    }
+    }        
     
     /**
      * {@inheritDoc}
@@ -330,6 +322,14 @@ public class XWikiConnection implements IXWikiConnection, TreeAdapter
     public IPath getCacheDirectory() {
 		return localCacheDir;
 	}
+    
+    /**
+     * Sets the local cache directory of this connection.
+     */
+    public void setCacheDirectory(IPath localCacheDir)
+    {
+        this.localCacheDir = localCacheDir;
+    }
 
 	/**
      * {@inheritDoc}

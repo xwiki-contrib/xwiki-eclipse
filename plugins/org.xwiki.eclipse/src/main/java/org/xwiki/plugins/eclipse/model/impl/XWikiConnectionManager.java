@@ -21,26 +21,17 @@
 
 package org.xwiki.plugins.eclipse.model.impl;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import org.codehaus.swizzle.confluence.Confluence;
 import org.codehaus.swizzle.confluence.IdentityObjectConvertor;
 import org.codehaus.swizzle.confluence.SwizzleConfluenceException;
 import org.codehaus.swizzle.confluence.SwizzleXWiki;
-import org.eclipse.core.runtime.IPath;
 import org.xwiki.plugins.eclipse.model.IXWikiConnection;
 import org.xwiki.plugins.eclipse.model.IXWikiConnectionManager;
 import org.xwiki.plugins.eclipse.util.CacheUtils;
-import org.xwiki.plugins.eclipse.util.XWikiConstants;
 
 /**
  * Default implementation of {@link IXWikiConnectionManager}.
@@ -103,33 +94,7 @@ public class XWikiConnectionManager implements IXWikiConnectionManager
         conection.setUserName(userName);
         conection.setRpcProxy(rpc);
         connections.add(conection);
-        // Get cache locations
-        IPath masterCacheDir = CacheUtils.getCacheDirectory();
-        Date timeStamp = new Date();
-        IPath connectionCacheDir =
-            masterCacheDir.addTrailingSeparator().append(String.valueOf(timeStamp.getTime()));
-        IPath connectionCacheFile =
-            masterCacheDir.addTrailingSeparator().append(String.valueOf(timeStamp.getTime()))
-                .addFileExtension("cache");        
-        // Prepare the data to be cached
-        Map<String, String> cacheData = new HashMap<String, String>();
-        cacheData.put(XWikiConstants.CONNECTION_USERNAME, userName);
-        cacheData.put(XWikiConstants.CONNECTION_PASSWORD, password);
-        cacheData.put(XWikiConstants.CONNECTION_URL, serverUrl);
-        cacheData.put(XWikiConstants.CONNECTION_PROXY, proxy);
-        // Write to the cache
-        try {
-            ObjectOutputStream oos =
-                new ObjectOutputStream(new FileOutputStream(connectionCacheFile.toFile()));
-            oos.writeObject(cacheData);
-            oos.close();
-        } catch (IOException e) {
-            // TODO What should happen here ?            
-        }
-        // Create and set the cache directory for this connection
-        connectionCacheDir.toFile().mkdir();
-        conection.setCacheDirectory(connectionCacheDir);
-        // Done updating cache.
+        CacheUtils.saveConnection(conection);
         return conection;
     }
 
