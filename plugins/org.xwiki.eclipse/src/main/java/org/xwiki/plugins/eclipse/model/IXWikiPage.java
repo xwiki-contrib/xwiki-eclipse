@@ -24,11 +24,13 @@ package org.xwiki.plugins.eclipse.model;
 import java.util.Date;
 
 import org.codehaus.swizzle.confluence.SwizzleConfluenceException;
+import org.eclipse.core.runtime.IPath;
+import org.xwiki.plugins.eclipse.util.ICacheable;
 
 /**
  * Represents an XWiki document.
  */
-public interface IXWikiPage
+public interface IXWikiPage extends ICacheable
 {
     /**
      * Initializes this page if it has not been initialized. This method simply retrieves all the
@@ -132,6 +134,11 @@ public interface IXWikiPage
      */
     public String getContentStatus();
 
+    /**
+     * @return The cache path for this page.
+     */
+    public IPath getCachePath();
+    
     /**
      * @return Whether this page is current and not deleted.
      */

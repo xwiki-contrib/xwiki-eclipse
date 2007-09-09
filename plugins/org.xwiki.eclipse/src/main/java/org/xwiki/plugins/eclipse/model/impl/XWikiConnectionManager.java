@@ -90,18 +90,15 @@ public class XWikiConnectionManager implements IXWikiConnectionManager
             // Assume older version of xwiki and turn-off conversion on client.
             rpc.setConvertor(new IdentityObjectConvertor());
         }
-        // Continue as usual.
         XWikiConnection conection = new XWikiConnection();
         conection.setServerUrl(serverUrl);
         conection.setUserName(userName);
         conection.setRpcProxy(rpc);
-        // Initialize and update cache.
-        Date timeStamp = new Date();
         IPath masterCacheDir = CacheUtils.getMasterCacheDirectory();
         IPath cachePath =
-            masterCacheDir.addTrailingSeparator().append(String.valueOf(timeStamp.getTime()));
+            masterCacheDir.addTrailingSeparator().append(String.valueOf(new Date().getTime()));
         conection.setCachePath(cachePath);
-        CacheUtils.saveConnection(conection);
+        CacheUtils.updateCache(conection);
         conection.getCachePath().toFile().mkdir();
         connections.add(conection);
         return conection;
@@ -125,6 +122,7 @@ public class XWikiConnectionManager implements IXWikiConnectionManager
     public void removeConnection(IXWikiConnection connection)
     {
         connections.remove(connection);
+        CacheUtils.clearCache(connection);
     }
 
 }

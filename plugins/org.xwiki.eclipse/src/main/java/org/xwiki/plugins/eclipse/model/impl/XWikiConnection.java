@@ -24,7 +24,6 @@ package org.xwiki.plugins.eclipse.model.impl;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -47,7 +46,7 @@ import org.xwiki.plugins.eclipse.util.XWikiConstants;
 /**
  * Default implementation of {@link IXWikiConnection}
  */
-public class XWikiConnection implements IXWikiConnection, TreeAdapter, Serializable
+public class XWikiConnection implements IXWikiConnection, TreeAdapter
 {
     /**
      * An XML-RPC proxy
@@ -224,14 +223,14 @@ public class XWikiConnection implements IXWikiConnection, TreeAdapter, Serializa
             for (int i = 0; i < spaceSummaries.size(); i++) {
                 SpaceSummary summary = (SpaceSummary) spaceSummaries.get(i);
                 XWikiSpace xwikiSpace = new XWikiSpace(this, summary);
-                // Initialize and update cache.
                 xwikiSpace.setCachePath(getCachePath().addTrailingSeparator().append(
                     xwikiSpace.getKey()));
-                CacheUtils.saveSpace(xwikiSpace);
+                CacheUtils.updateCache(xwikiSpace);
                 xwikiSpace.getCachePath().toFile().mkdir();
                 addSpace(xwikiSpace);
             }
             setSpacesReady(true);
+            CacheUtils.updateCache(this);
         }
     }
 
@@ -254,12 +253,12 @@ public class XWikiConnection implements IXWikiConnection, TreeAdapter, Serializa
         summary.setName(result.getName());
         summary.setType(result.getType());
         summary.setUrl(result.getUrl());
-
-        IXWikiSpace wikiSpace = new XWikiSpace(this, summary, result);
-
-        // We need this space to be displayed.
-        wikiSpace.setMasked(false);
-        // Finally, add the space to local model.
+        XWikiSpace wikiSpace = new XWikiSpace(this, summary, result);        
+        wikiSpace.setMasked(false);        
+        wikiSpace.setCachePath(getCachePath().addTrailingSeparator().append(
+            wikiSpace.getKey()));
+        CacheUtils.updateCache(wikiSpace);
+        wikiSpace.getCachePath().toFile().mkdir();
         addSpace(wikiSpace);
     }
 
@@ -360,7 +359,9 @@ public class XWikiConnection implements IXWikiConnection, TreeAdapter, Serializa
     public void removeSpace(String key) throws SwizzleConfluenceException
     {
         rpc.removeSpace(key);
+        IXWikiSpace space = spacesByKey.get(key);        
         spacesByKey.remove(key);
+        CacheUtils.clearCache(space);
     }
 
     /**

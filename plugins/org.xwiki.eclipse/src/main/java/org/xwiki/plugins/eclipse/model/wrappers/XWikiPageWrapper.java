@@ -25,6 +25,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
 
 import org.codehaus.swizzle.confluence.SwizzleConfluenceException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.xwiki.plugins.eclipse.model.IXWikiPage;
 import org.xwiki.plugins.eclipse.model.IXWikiSpace;
@@ -243,6 +244,16 @@ public class XWikiPageWrapper implements IXWikiPage
             // TODO log this exception.
             return 0;
         }
+    }
+    
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.xwiki.plugins.eclipse.model.IXWikiPage#getCachePath()
+     */
+    public IPath getCachePath()
+    {
+        return page.getCachePath();
     }
 
     /**

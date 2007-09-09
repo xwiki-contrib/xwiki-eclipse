@@ -21,14 +21,13 @@
 
 package org.xwiki.plugins.eclipse.util;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 
 import org.eclipse.core.runtime.IPath;
 import org.xwiki.plugins.eclipse.Activator;
-import org.xwiki.plugins.eclipse.model.impl.XWikiConnection;
-import org.xwiki.plugins.eclipse.model.impl.XWikiSpace;
 
 /**
  * All utility functions related to local cache management should go here.
@@ -46,38 +45,56 @@ public class CacheUtils
     }
 
     /**
-     * Saves the given xwiki connection into local cache.
+     * Caches the given object into local repository.
      * 
-     * @param connection Connection to be cached.
+     * @param cacheable Object to be cached.
      */
-    public static void saveConnection(XWikiConnection connection)
+    public static void updateCache(ICacheable cacheable)
     {
         try {
             ObjectOutputStream oos =
-                new ObjectOutputStream(new FileOutputStream(connection.getCachePath()
+                new ObjectOutputStream(new FileOutputStream(cacheable.getCachePath()
                     .addFileExtension("cache").toFile()));
-            oos.writeObject(connection);
+            oos.writeObject(cacheable);
             oos.close();
         } catch (IOException e) {
+            e.printStackTrace();
             // TODO What should happen here ?
         }
     }
 
     /**
-     * Saves the given xwiki space into local cache.
+     * Removes all cached objects relevant to this Cacheable.
      * 
-     * @param space Space to be cached.
+     * @param cacheable Cacheable to be wiped.
      */
-    public static void saveSpace(XWikiSpace space)
+    public static void clearCache(ICacheable cacheable)
     {
-        try {
-            ObjectOutputStream oos =
-                new ObjectOutputStream(new FileOutputStream(space.getCachePath()
-                    .addFileExtension("cache").toFile()));
-            oos.writeObject(space);
-            oos.close();
-        } catch (IOException e) {
-            // TODO What should happen here ?
+        File cacheFile = cacheable.getCachePath().addFileExtension("cache").toFile();
+        File dataCacheDirectory = cacheable.getCachePath().toFile();
+        if (cacheFile.exists()) {
+            cacheFile.delete();
         }
+        if (dataCacheDirectory.exists() && dataCacheDirectory.isDirectory()) {
+            removeDirectory(dataCacheDirectory);
+        }
+    }
+    
+    /**
+     * Utility method for removing a non-empty directory.
+     * @param dir Directory to be removed
+     * @return Success or otherwise
+     */
+    private static boolean removeDirectory(File dir) {
+        if (dir.isDirectory()) {
+            String[] children = dir.list();
+            for (int i=0; i<children.length; i++) {
+                boolean success = removeDirectory(new File(dir, children[i]));
+                if (!success) {
+                    return false;
+                }
+            }
+        }            
+        return dir.delete();
     }
 }

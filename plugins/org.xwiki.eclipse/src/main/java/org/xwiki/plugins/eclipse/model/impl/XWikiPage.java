@@ -22,7 +22,10 @@
 package org.xwiki.plugins.eclipse.model.impl;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.Date;
 
 import org.codehaus.swizzle.confluence.Confluence;
@@ -41,6 +44,7 @@ import org.xwiki.plugins.eclipse.model.IXWikiPage;
 import org.xwiki.plugins.eclipse.model.IXWikiSpace;
 import org.xwiki.plugins.eclipse.model.adapters.TreeAdapter;
 import org.xwiki.plugins.eclipse.model.wrappers.XWikiPageWrapper;
+import org.xwiki.plugins.eclipse.util.CacheUtils;
 import org.xwiki.plugins.eclipse.util.GuiUtils;
 import org.xwiki.plugins.eclipse.util.XWikiConstants;
 
@@ -53,25 +57,28 @@ public class XWikiPage implements IXWikiPage, TreeAdapter, IStorage, IStorageEdi
     /**
      * Parent XWikiSpace.
      */
-    private IXWikiSpace parent;
+    private transient IXWikiSpace parent;
 
     /**
      * Summary of this page.
      */
-    private PageSummary summary;
-
-    // TODO Again, like for spaces, why keep a summary when it's all included in the page ?
+    private transient PageSummary summary;    
 
     /**
      * Data (opposite of summary ?) of this page.
      */
-    private Page page;
+    private transient Page page;
 
     /**
      * Whether data has been retrieved or not.
      */
     private boolean dataReady = false;
 
+    /**
+     * Cache path for this page.
+     */
+    private transient IPath cachePath;
+    
     /**
      * Creates a new intance of an XWikiPage. Clients should use {@link IXWikiSpace#getPages()} and
      * similar methods to retrieve / create pages.
@@ -330,8 +337,9 @@ public class XWikiPage implements IXWikiPage, TreeAdapter, IStorage, IStorageEdi
         if (!isDataReady()) {
             Confluence rpc = getParentSpace().getConnection().getRpcProxy();
             String pageId = getId();
-            this.page = rpc.getPage(pageId);
+            this.page = rpc.getPage(pageId);            
             setDataReady(true);
+            CacheUtils.updateCache(this);
         }
     }
 
@@ -474,6 +482,24 @@ public class XWikiPage implements IXWikiPage, TreeAdapter, IStorage, IStorageEdi
     {
         return (Integer) this.page.getVersion();
     }
+    
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.xwiki.plugins.eclipse.model.IXWikiPage#getCachePath()
+     */
+    public IPath getCachePath()
+    {
+        return this.cachePath;
+    }
+    
+    /**
+     * Sets the cache path for this page.
+     * @param cachePath Cache path.
+     */
+    protected void setCachePath(IPath cachePath) {
+        this.cachePath = cachePath;
+    }
 
     /**
      * {@inheritDoc}
@@ -522,7 +548,7 @@ public class XWikiPage implements IXWikiPage, TreeAdapter, IStorage, IStorageEdi
      */
     public void setContent(String newContent)
     {
-        this.page.setContent(newContent);
+        this.page.setContent(newContent);        
     }
 
     /**
@@ -557,7 +583,26 @@ public class XWikiPage implements IXWikiPage, TreeAdapter, IStorage, IStorageEdi
         Confluence rpc = getParentSpace().getConnection().getRpcProxy();
         this.page = rpc.storePage(page);
         setDataReady(true);
+        CacheUtils.updateCache(this);
         return this;
     }
 
+    /**
+     * Custom serializer method.
+     */
+    private void writeObject(ObjectOutputStream out) throws IOException
+    {
+        out.writeObject(summary.toMap());
+        out.writeObject(page.toMap());
+        out.defaultWriteObject();
+    }
+
+    /**
+     * Custom deserializer method.
+     */
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException
+    {
+        // We'll worry about this later.
+    }
+    
 }

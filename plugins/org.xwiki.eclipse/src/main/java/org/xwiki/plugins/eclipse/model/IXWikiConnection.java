@@ -26,12 +26,13 @@ import java.util.Collection;
 import org.codehaus.swizzle.confluence.Confluence;
 import org.codehaus.swizzle.confluence.SwizzleConfluenceException;
 import org.eclipse.core.runtime.IPath;
+import org.xwiki.plugins.eclipse.util.ICacheable;
 
 /**
  * A connection (session...) to a XWiki server. Each connection is uniquely identified by a
  * loginToken.
  */
-public interface IXWikiConnection
+public interface IXWikiConnection extends ICacheable
 {
     /**
      * Initializes this connection by retrieving all spaces.

@@ -25,11 +25,12 @@ import java.util.Collection;
 
 import org.codehaus.swizzle.confluence.SwizzleConfluenceException;
 import org.eclipse.core.runtime.IPath;
+import org.xwiki.plugins.eclipse.util.ICacheable;
 
 /**
  * Represents an XWiki Space.
  */
-public interface IXWikiSpace
+public interface IXWikiSpace extends ICacheable
 {
     /**
      * Initializes this space if it has not been initialized. This method simply retrieves all the
