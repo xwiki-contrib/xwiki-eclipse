@@ -37,7 +37,7 @@ import org.xwiki.plugins.eclipse.wizards.newspace.pages.SpaceSettingsPage;
  */
 public class SpaceSettingsPageUI extends Composite
 {
-   
+
     private Text spaceNameText;
 
     private Label spaceDescriptionLabel;

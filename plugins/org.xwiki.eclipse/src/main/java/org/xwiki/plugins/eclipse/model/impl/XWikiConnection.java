@@ -21,6 +21,10 @@
 
 package org.xwiki.plugins.eclipse.model.impl;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -36,18 +40,19 @@ import org.xwiki.plugins.eclipse.model.IXWikiConnection;
 import org.xwiki.plugins.eclipse.model.IXWikiSpace;
 import org.xwiki.plugins.eclipse.model.adapters.TreeAdapter;
 import org.xwiki.plugins.eclipse.model.wrappers.XWikiConnectionWrapper;
+import org.xwiki.plugins.eclipse.util.CacheUtils;
 import org.xwiki.plugins.eclipse.util.GuiUtils;
 import org.xwiki.plugins.eclipse.util.XWikiConstants;
 
 /**
  * Default implementation of {@link IXWikiConnection}
  */
-public class XWikiConnection implements IXWikiConnection, TreeAdapter
+public class XWikiConnection implements IXWikiConnection, TreeAdapter, Serializable
 {
     /**
      * An XML-RPC proxy
      */
-    private Confluence rpc;
+    private transient Confluence rpc;
 
     /**
      * Username supplied by the user for this connection.
@@ -62,7 +67,7 @@ public class XWikiConnection implements IXWikiConnection, TreeAdapter
     /**
      * Top-level spaces. Mapped by spaceKey
      */
-    private HashMap<String, IXWikiSpace> spacesByKey;
+    private transient HashMap<String, IXWikiSpace> spacesByKey;
 
     /**
      * Whether spaces have been retrieved or not.
@@ -70,10 +75,10 @@ public class XWikiConnection implements IXWikiConnection, TreeAdapter
     private boolean spacesReady = false;
 
     /**
-     * Local cache directory for this connection.
+     * Cache path of this connection.
      */
-    private IPath localCacheDir;
-    
+    private transient IPath cachePath;
+
     /**
      * Default constructor. A connection should only be acquired by going through ConnectionManager
      */
@@ -216,11 +221,16 @@ public class XWikiConnection implements IXWikiConnection, TreeAdapter
     {
         if (!isSpacesReady()) {
             List spaceSummaries = rpc.getSpaces();
-            for (int i = 0; i < spaceSummaries.size(); i++){
-                SpaceSummary summary = (SpaceSummary)spaceSummaries.get(i);
-                IXWikiSpace xwikiSpace = new XWikiSpace(this, summary);                
+            for (int i = 0; i < spaceSummaries.size(); i++) {
+                SpaceSummary summary = (SpaceSummary) spaceSummaries.get(i);
+                XWikiSpace xwikiSpace = new XWikiSpace(this, summary);
+                // Initialize and update cache.
+                xwikiSpace.setCachePath(getCachePath().addTrailingSeparator().append(
+                    xwikiSpace.getKey()));
+                CacheUtils.saveSpace(xwikiSpace);
+                xwikiSpace.getCachePath().toFile().mkdir();
                 addSpace(xwikiSpace);
-            }            
+            }
             setSpacesReady(true);
         }
     }
@@ -244,9 +254,9 @@ public class XWikiConnection implements IXWikiConnection, TreeAdapter
         summary.setName(result.getName());
         summary.setType(result.getType());
         summary.setUrl(result.getUrl());
-        
+
         IXWikiSpace wikiSpace = new XWikiSpace(this, summary, result);
-        
+
         // We need this space to be displayed.
         wikiSpace.setMasked(false);
         // Finally, add the space to local model.
@@ -312,26 +322,27 @@ public class XWikiConnection implements IXWikiConnection, TreeAdapter
     public String getUserName()
     {
         return userName;
-    }        
-    
+    }
+
     /**
      * {@inheritDoc}
      * 
-     * @see org.xwiki.plugins.eclipse.model.IXWikiConnection#getCacheDirectory()
-     */    
-    public IPath getCacheDirectory() {
-		return localCacheDir;
-	}
-    
+     * @see org.xwiki.plugins.eclipse.model.IXWikiConnection#getCachePath()
+     */
+    public IPath getCachePath()
+    {
+        return cachePath;
+    }
+
     /**
      * Sets the local cache directory of this connection.
      */
-    public void setCacheDirectory(IPath localCacheDir)
+    protected void setCachePath(IPath cachePath)
     {
-        this.localCacheDir = localCacheDir;
+        this.cachePath = cachePath;
     }
 
-	/**
+    /**
      * {@inheritDoc}
      * 
      * @see org.xwiki.plugins.eclipse.model.IXWikiConnection#isSpacesReady()
@@ -350,5 +361,21 @@ public class XWikiConnection implements IXWikiConnection, TreeAdapter
     {
         rpc.removeSpace(key);
         spacesByKey.remove(key);
+    }
+
+    /**
+     * Custom serializer method.
+     */
+    private void writeObject(ObjectOutputStream out) throws IOException
+    {
+        out.defaultWriteObject();
+    }
+
+    /**
+     * Custom deserializer method.
+     */
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException
+    {
+        // We'll worry about this later.
     }
 }

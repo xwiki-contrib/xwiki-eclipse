@@ -22,6 +22,7 @@
 package org.xwiki.plugins.eclipse.model.impl;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -29,6 +30,7 @@ import org.codehaus.swizzle.confluence.Confluence;
 import org.codehaus.swizzle.confluence.IdentityObjectConvertor;
 import org.codehaus.swizzle.confluence.SwizzleConfluenceException;
 import org.codehaus.swizzle.confluence.SwizzleXWiki;
+import org.eclipse.core.runtime.IPath;
 import org.xwiki.plugins.eclipse.model.IXWikiConnection;
 import org.xwiki.plugins.eclipse.model.IXWikiConnectionManager;
 import org.xwiki.plugins.eclipse.util.CacheUtils;
@@ -93,8 +95,15 @@ public class XWikiConnectionManager implements IXWikiConnectionManager
         conection.setServerUrl(serverUrl);
         conection.setUserName(userName);
         conection.setRpcProxy(rpc);
-        connections.add(conection);
+        // Initialize and update cache.
+        Date timeStamp = new Date();
+        IPath masterCacheDir = CacheUtils.getMasterCacheDirectory();
+        IPath cachePath =
+            masterCacheDir.addTrailingSeparator().append(String.valueOf(timeStamp.getTime()));
+        conection.setCachePath(cachePath);
         CacheUtils.saveConnection(conection);
+        conection.getCachePath().toFile().mkdir();
+        connections.add(conection);
         return conection;
     }
 

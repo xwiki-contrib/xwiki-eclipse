@@ -21,6 +21,10 @@
 
 package org.xwiki.plugins.eclipse.model.impl;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -31,43 +35,52 @@ import org.codehaus.swizzle.confluence.PageSummary;
 import org.codehaus.swizzle.confluence.Space;
 import org.codehaus.swizzle.confluence.SpaceSummary;
 import org.codehaus.swizzle.confluence.SwizzleConfluenceException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.swt.graphics.Image;
 import org.xwiki.plugins.eclipse.model.IXWikiConnection;
 import org.xwiki.plugins.eclipse.model.IXWikiPage;
 import org.xwiki.plugins.eclipse.model.IXWikiSpace;
 import org.xwiki.plugins.eclipse.model.adapters.TreeAdapter;
 import org.xwiki.plugins.eclipse.model.wrappers.XWikiSpaceWrapper;
+import org.xwiki.plugins.eclipse.util.CacheUtils;
 import org.xwiki.plugins.eclipse.util.GuiUtils;
 import org.xwiki.plugins.eclipse.util.XWikiConstants;
 
 /**
  * Default implementation of {@link IXWikiSpace}.
  */
-public class XWikiSpace implements IXWikiSpace, TreeAdapter
+public class XWikiSpace implements IXWikiSpace, TreeAdapter, Serializable
 {
 
     /**
      * Parent connection to which this space belongs to.
      */
-    private IXWikiConnection parent;
+    private transient IXWikiConnection parent;
 
     /**
      * Set of pages under this space, mapped by ID.
      */
-    private HashMap<String, IXWikiPage> pagesByID;
+    private transient HashMap<String, IXWikiPage> pagesByID;
 
     /**
-     * Summary of this space. 
+     * Summary of this space.
      */
-    private SpaceSummary summary;
+    private transient SpaceSummary summary;
+
     // TODO This is (almost) a subset of the space. Why do we need both ?
-    // -- in general summaries are exact subsets ... here it's an anomaly and should be treated as such
+    // -- in general summaries are exact subsets ... here it's an anomaly and should be treated as
+    // such
     // -- especially since xwiki does not have a notion of space type
 
     /**
      * Complete data for this space.
      */
-    private Space space;
+    private transient Space space;
+
+    /**
+     * Cache path of this space.
+     */
+    private transient IPath cachePath;
 
     /**
      * Whether this space should be displayed or not.
@@ -113,8 +126,6 @@ public class XWikiSpace implements IXWikiSpace, TreeAdapter
         this.space = space;
     }
 
-
-
     /**
      * Used by internal code to initialize this space.
      * 
@@ -133,7 +144,7 @@ public class XWikiSpace implements IXWikiSpace, TreeAdapter
     protected void addPage(IXWikiPage page)
     {
         pagesByID.put(page.getId(), page);
-      //  pagesByTitle.put(page.getTitle(), page);
+        // pagesByTitle.put(page.getTitle(), page);
     }
 
     /**
@@ -142,7 +153,7 @@ public class XWikiSpace implements IXWikiSpace, TreeAdapter
      * @param parent Parent connection of this space.
      */
     protected void setConnection(IXWikiConnection parent)
-    {    	
+    {
         this.parent = parent;
     }
 
@@ -254,18 +265,19 @@ public class XWikiSpace implements IXWikiSpace, TreeAdapter
      */
     public void init() throws SwizzleConfluenceException
     {
-        if (!isDataReady()) {        	
+        if (!isDataReady()) {
             Confluence rpc = getConnection().getRpcProxy();
             String spaceKey = getKey();
-            this.space = rpc.getSpace(spaceKey);            
+            this.space = rpc.getSpace(spaceKey);
+            CacheUtils.saveSpace(this);
             setDataReady(true);
         }
         if (!isPagesReady()) {
             Confluence rpc = getConnection().getRpcProxy();
             String spaceKey = getKey();
             List<Object> pages = rpc.getPages(spaceKey);
-            for (int i = 0; i<pages.size(); i++) {
-                PageSummary pageSummary = (PageSummary)pages.get(i);
+            for (int i = 0; i < pages.size(); i++) {
+                PageSummary pageSummary = (PageSummary) pages.get(i);
                 IXWikiPage xwikiPage = new XWikiPage(this, pageSummary);
                 addPage(xwikiPage);
             }
@@ -295,8 +307,8 @@ public class XWikiSpace implements IXWikiSpace, TreeAdapter
      * @see org.xwiki.plugins.eclipse.model.IXWikiSpace#getConnection()
      */
     public IXWikiConnection getConnection()
-    {    	    	
-    	return this.parent;
+    {
+        return this.parent;
     }
 
     /**
@@ -358,9 +370,9 @@ public class XWikiSpace implements IXWikiSpace, TreeAdapter
     public IXWikiPage searchPage(String pageTitle)
     {
         for (IXWikiPage page : pagesByID.values()) {
-        	if (page.getTitle().equals(pageTitle)) {
-        		return page;
-        	}
+            if (page.getTitle().equals(pageTitle)) {
+                return page;
+            }
         }
         return null;
     }
@@ -423,6 +435,26 @@ public class XWikiSpace implements IXWikiSpace, TreeAdapter
     public void setMasked(boolean masked)
     {
         this.masked = masked;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.xwiki.plugins.eclipse.model.IXWikiSpace#getCachePath()
+     */
+    public IPath getCachePath()
+    {
+        return this.cachePath;
+    }
+
+    /**
+     * Sets the cache path for this space.
+     * 
+     * @param cachePath Cache path to be set.
+     */
+    protected void setCachePath(IPath cachePath)
+    {
+        this.cachePath = cachePath;
     }
 
     /**
@@ -494,4 +526,21 @@ public class XWikiSpace implements IXWikiSpace, TreeAdapter
         // TODO implement this.
     }
 
+    /**
+     * Custom serializer method.
+     */
+    private void writeObject(ObjectOutputStream out) throws IOException
+    {
+        out.writeObject(summary.toMap());
+        out.writeObject(space.toMap());
+        out.defaultWriteObject();
+    }
+
+    /**
+     * Custom deserializer method.
+     */
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException
+    {
+        // We'll worry about this later.
+    }
 }

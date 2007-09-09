@@ -27,8 +27,8 @@ import org.xwiki.plugins.eclipse.model.adapters.TreeAdapter;
 import org.xwiki.plugins.eclipse.model.impl.XWikiConnectionManager;
 
 /**
- * Acts as the converter between model objects and the TreeViewer.
- * (Builds the tree out of model objects).
+ * Acts as the converter between model objects and the TreeViewer. (Builds the tree out of model
+ * objects).
  */
 public class XWikiNavigatorContentProvider implements ITreeContentProvider
 {

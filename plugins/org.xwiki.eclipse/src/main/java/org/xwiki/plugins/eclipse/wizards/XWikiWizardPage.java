@@ -24,8 +24,7 @@ package org.xwiki.plugins.eclipse.wizards;
 import org.eclipse.jface.wizard.WizardPage;
 
 /**
- * Extended WizardPage to receive button clicks.
- * (from {@link XWikiWizardDialog})
+ * Extended WizardPage to receive button clicks. (from {@link XWikiWizardDialog})
  */
 public abstract class XWikiWizardPage extends WizardPage
 {

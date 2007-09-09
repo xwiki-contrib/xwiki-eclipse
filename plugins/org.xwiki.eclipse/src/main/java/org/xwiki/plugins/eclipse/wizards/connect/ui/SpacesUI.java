@@ -38,7 +38,7 @@ import org.xwiki.plugins.eclipse.wizards.connect.ConnectWizard;
  */
 public class SpacesUI extends Composite
 {
-        
+
     private Group selectedListGroup;
 
     private List availableSpacesList;

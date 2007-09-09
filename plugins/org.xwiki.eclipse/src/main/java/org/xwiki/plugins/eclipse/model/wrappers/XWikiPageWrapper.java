@@ -32,8 +32,7 @@ import org.xwiki.plugins.eclipse.util.GuiUtils;
 import org.xwiki.plugins.eclipse.util.XWikiProgressRunner;
 
 /**
- * Implentation of Decorator Pattern for adding GUI icing for
- * underlying {@link IXWikiPage}.
+ * Implentation of Decorator Pattern for adding GUI icing for underlying {@link IXWikiPage}.
  */
 public class XWikiPageWrapper implements IXWikiPage
 {

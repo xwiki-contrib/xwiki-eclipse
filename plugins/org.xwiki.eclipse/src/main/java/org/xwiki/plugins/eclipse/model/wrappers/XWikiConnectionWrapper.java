@@ -35,8 +35,7 @@ import org.xwiki.plugins.eclipse.util.GuiUtils;
 import org.xwiki.plugins.eclipse.util.XWikiProgressRunner;
 
 /**
- * Implentation of Decorator Pattern for adding GUI icing for
- * underlying {@link IXWikiConnection}.
+ * Implentation of Decorator Pattern for adding GUI icing for underlying {@link IXWikiConnection}.
  */
 public class XWikiConnectionWrapper implements IXWikiConnection
 {
@@ -122,7 +121,7 @@ public class XWikiConnectionWrapper implements IXWikiConnection
         }
 
     }
-    
+
     /**
      * {@inheritDoc}
      * 
@@ -169,17 +168,17 @@ public class XWikiConnectionWrapper implements IXWikiConnection
         return connection.getUserName();
     }
 
-    
-    
-    /** 
+    /**
      * {@inheritDoc}
-	 * @see org.xwiki.plugins.eclipse.model.IXWikiConnection#getCacheDirectory()
-	 */
-	public IPath getCacheDirectory() {
-		return connection.getCacheDirectory();
-	}
+     * 
+     * @see org.xwiki.plugins.eclipse.model.IXWikiConnection#getCachePath()
+     */
+    public IPath getCachePath()
+    {
+        return connection.getCachePath();
+    }
 
-	/**
+    /**
      * {@inheritDoc}
      * 
      * @see org.xwiki.plugins.eclipse.model.IXWikiConnection#init()

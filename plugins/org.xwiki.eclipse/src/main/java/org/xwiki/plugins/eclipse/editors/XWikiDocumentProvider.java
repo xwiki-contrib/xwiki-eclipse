@@ -31,9 +31,8 @@ import org.xwiki.plugins.eclipse.model.IXWikiPage;
 import org.xwiki.plugins.eclipse.model.wrappers.XWikiPageWrapper;
 
 /**
- * This class handles the mapping between model's document
- * {@link IXWikiPage} and the visual representation of that
- * document within the eclipse editor.  
+ * This class handles the mapping between model's document {@link IXWikiPage} and the visual
+ * representation of that document within the eclipse editor.
  */
 public class XWikiDocumentProvider extends StorageDocumentProvider
 {

@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import org.codehaus.swizzle.confluence.SwizzleConfluenceException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.xwiki.plugins.eclipse.model.IXWikiConnection;
 import org.xwiki.plugins.eclipse.model.IXWikiPage;
@@ -34,8 +35,7 @@ import org.xwiki.plugins.eclipse.util.GuiUtils;
 import org.xwiki.plugins.eclipse.util.XWikiProgressRunner;
 
 /**
- * Implentation of Decorator Pattern for adding GUI icing for
- * underlying {@link IXWikiSpace}.
+ * Implentation of Decorator Pattern for adding GUI icing for underlying {@link IXWikiSpace}.
  */
 public class XWikiSpaceWrapper implements IXWikiSpace
 {
@@ -59,7 +59,8 @@ public class XWikiSpaceWrapper implements IXWikiSpace
      * 
      * @see org.xwiki.plugins.eclipse.model.IXWikiSpace#addPage(java.lang.String, java.lang.String)
      */
-    public void addPage(final String title, final String content) throws SwizzleConfluenceException
+    public void addPage(final String title, final String content)
+        throws SwizzleConfluenceException
     {
         // It is assumed that at this point it has been verified that the
         // given title is unique. (i.e. no page with same title exists)
@@ -191,6 +192,16 @@ public class XWikiSpaceWrapper implements IXWikiSpace
     public String getType()
     {
         return space.getType();
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.xwiki.plugins.eclipse.model.IXWikiSpace#getCachePath()
+     */
+    public IPath getCachePath()
+    {
+        return space.getCachePath();
     }
 
     /**

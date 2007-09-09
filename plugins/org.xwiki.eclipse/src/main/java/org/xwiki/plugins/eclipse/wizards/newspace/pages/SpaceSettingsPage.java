@@ -30,8 +30,7 @@ import org.xwiki.plugins.eclipse.wizards.XWikiWizardPage;
 import org.xwiki.plugins.eclipse.wizards.newspace.ui.SpaceSettingsPageUI;
 
 /**
- * WizardPage responsible for getting user input required
- * to create a new Space.
+ * WizardPage responsible for getting user input required to create a new Space.
  */
 public class SpaceSettingsPage extends XWikiWizardPage implements ModifyListener
 {

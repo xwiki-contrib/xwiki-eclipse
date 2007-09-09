@@ -59,8 +59,9 @@ public class XWikiPage implements IXWikiPage, TreeAdapter, IStorage, IStorageEdi
      * Summary of this page.
      */
     private PageSummary summary;
-    // TODO Again, like for spaces, why keep a summary when it's all included in the page ? 
-    
+
+    // TODO Again, like for spaces, why keep a summary when it's all included in the page ?
+
     /**
      * Data (opposite of summary ?) of this page.
      */

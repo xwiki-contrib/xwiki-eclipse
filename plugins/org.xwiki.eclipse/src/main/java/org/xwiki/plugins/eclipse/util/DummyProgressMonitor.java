@@ -24,8 +24,7 @@ package org.xwiki.plugins.eclipse.util;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
- * This class is used to hide progress information
- * in case the user wants them to be suppressed. 
+ * This class is used to hide progress information in case the user wants them to be suppressed.
  */
 class DummyProgressMonitor implements IProgressMonitor
 {

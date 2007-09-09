@@ -31,10 +31,10 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.MultiPageEditorPart;
 
 /**
- * This class represents the Page editor. It has two tabs (pages in eclipse terminology),
- * one for editing the markup (Simple Text Editor) and another for displaying the
- * browser output (which is an actual browser widget). For each page opened for editing,
- * one instance of this class will be created with corresponding IXWikiPage as the input.
+ * This class represents the Page editor. It has two tabs (pages in eclipse terminology), one for
+ * editing the markup (Simple Text Editor) and another for displaying the browser output (which is
+ * an actual browser widget). For each page opened for editing, one instance of this class will be
+ * created with corresponding IXWikiPage as the input.
  */
 public class XWikiEditor extends MultiPageEditorPart implements IResourceChangeListener
 {

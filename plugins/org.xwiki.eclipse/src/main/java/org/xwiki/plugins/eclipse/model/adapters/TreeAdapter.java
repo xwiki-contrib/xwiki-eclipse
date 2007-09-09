@@ -24,8 +24,7 @@ package org.xwiki.plugins.eclipse.model.adapters;
 import org.eclipse.swt.graphics.Image;
 
 /**
- * Interface implemented by all nodes participating
- * in the tree viewer of XWikiNavigator.
+ * Interface implemented by all nodes participating in the tree viewer of XWikiNavigator.
  */
 public interface TreeAdapter
 {

@@ -37,7 +37,7 @@ import org.xwiki.plugins.eclipse.wizards.newpage.pages.PageSettingsPage;
  */
 public class PageSettingsPageUI extends Composite
 {
-        
+
     private Label titleLabel;
 
     private Text contentText;

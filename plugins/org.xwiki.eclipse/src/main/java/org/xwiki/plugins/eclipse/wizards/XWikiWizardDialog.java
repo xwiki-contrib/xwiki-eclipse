@@ -26,8 +26,7 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Shell;
 
 /**
- * Extended WizardDialog to receive button clicks
- * from within internal Wizard Pages.
+ * Extended WizardDialog to receive button clicks from within internal Wizard Pages.
  */
 public class XWikiWizardDialog extends WizardDialog
 {

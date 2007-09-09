@@ -24,56 +24,60 @@ package org.xwiki.plugins.eclipse.util;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.eclipse.core.runtime.IPath;
 import org.xwiki.plugins.eclipse.Activator;
 import org.xwiki.plugins.eclipse.model.impl.XWikiConnection;
+import org.xwiki.plugins.eclipse.model.impl.XWikiSpace;
 
 /**
  * All utility functions related to local cache management should go here.
  */
-public class CacheUtils {
-	
-	/**
-	 * @return The direcotory into which local cache should be stuffed in.
-	 */
-	public static IPath getCacheDirectory() {
-		// Return the plugin state location for now.
-		return Activator.getDefault().getStateLocation();
-	}
-    
+public class CacheUtils
+{
+
+    /**
+     * @return The direcotory into which local cache should be stuffed in.
+     */
+    public static IPath getMasterCacheDirectory()
+    {
+        // Return the plugin state location for now.
+        return Activator.getDefault().getStateLocation();
+    }
+
     /**
      * Saves the given xwiki connection into local cache.
+     * 
      * @param connection Connection to be cached.
      */
-    public static void saveConnection(XWikiConnection connection) {
-        // Get cache locations
-        IPath masterCacheDir = CacheUtils.getCacheDirectory();
-        Date timeStamp = new Date();
-        IPath connectionCacheDir =
-            masterCacheDir.addTrailingSeparator().append(String.valueOf(timeStamp.getTime()));
-        IPath connectionCacheFile =
-            masterCacheDir.addTrailingSeparator().append(String.valueOf(timeStamp.getTime()))
-                .addFileExtension("cache");        
-        // Prepare the data to be cached
-        Map<String, String> cacheData = new HashMap<String, String>();
-        cacheData.put(XWikiConstants.CONNECTION_USERNAME, connection.getUserName());        
-        cacheData.put(XWikiConstants.CONNECTION_URL, connection.getServerUrl());
-        // Write to the cache
+    public static void saveConnection(XWikiConnection connection)
+    {
         try {
             ObjectOutputStream oos =
-                new ObjectOutputStream(new FileOutputStream(connectionCacheFile.toFile()));
-            oos.writeObject(cacheData);
+                new ObjectOutputStream(new FileOutputStream(connection.getCachePath()
+                    .addFileExtension("cache").toFile()));
+            oos.writeObject(connection);
             oos.close();
         } catch (IOException e) {
-            // TODO What should happen here ?            
+            // TODO What should happen here ?
         }
-        // Create and set the cache directory for this connection
-        connectionCacheDir.toFile().mkdir();
-        connection.setCacheDirectory(connectionCacheDir);
-        // Done updating cache.
+    }
+
+    /**
+     * Saves the given xwiki space into local cache.
+     * 
+     * @param space Space to be cached.
+     */
+    public static void saveSpace(XWikiSpace space)
+    {
+        try {
+            ObjectOutputStream oos =
+                new ObjectOutputStream(new FileOutputStream(space.getCachePath()
+                    .addFileExtension("cache").toFile()));
+            oos.writeObject(space);
+            oos.close();
+        } catch (IOException e) {
+            // TODO What should happen here ?
+        }
     }
 }

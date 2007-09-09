@@ -39,8 +39,7 @@ import org.xwiki.plugins.eclipse.wizards.connect.WizardState;
 import org.xwiki.plugins.eclipse.wizards.connect.ui.SettingsUI;
 
 /**
- * The WizardPage responsible for getting user input,
- * validating and making the initial connection.
+ * The WizardPage responsible for getting user input, validating and making the initial connection.
  */
 public class SettingsPage extends XWikiWizardPage implements ModifyListener, Listener
 {

@@ -30,8 +30,7 @@ import org.xwiki.plugins.eclipse.wizards.XWikiWizardPage;
 import org.xwiki.plugins.eclipse.wizards.newpage.ui.PageSettingsPageUI;
 
 /**
- * WizardPage responsible for getting user 
- * input required to add a new page.
+ * WizardPage responsible for getting user input required to add a new page.
  */
 public class PageSettingsPage extends XWikiWizardPage implements ModifyListener
 {
@@ -125,13 +124,12 @@ public class PageSettingsPage extends XWikiWizardPage implements ModifyListener
         if (pageTitle.equals("")) {
             setErrorMessage(" Page Title Cannot be Empty.");
             return false;
-        }        
+        }
         // check whether page already exists.
         if (space.searchPage(pageTitle) != null) {
             setErrorMessage(" Page Title Must be Unique : " + pageTitle);
             return false;
-        }
-        else if (pageContent.trim().equals("")) {
+        } else if (pageContent.trim().equals("")) {
             setErrorMessage(" Initial Page Content Cannot be Empty.");
             return false;
         } else {

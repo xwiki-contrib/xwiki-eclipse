@@ -28,8 +28,8 @@ import org.codehaus.swizzle.confluence.SwizzleConfluenceException;
 import org.eclipse.core.runtime.IPath;
 
 /**
- * A connection (session...) to a XWiki server.
- * Each connection is uniquely identified by a loginToken. 
+ * A connection (session...) to a XWiki server. Each connection is uniquely identified by a
+ * loginToken.
  */
 public interface IXWikiConnection
 {
@@ -77,10 +77,10 @@ public interface IXWikiConnection
     public IXWikiSpace getSpace(String spaceKey);
 
     /**
-     * @return The local cache directory of this connection.
+     * @return Cache path of this connection.
      */
-    public IPath getCacheDirectory();
-    
+    public IPath getCachePath();
+
     /**
      * @return True if spaces have been retrieved, otherwise returns false.
      */

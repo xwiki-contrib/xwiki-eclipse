@@ -25,8 +25,7 @@ import org.codehaus.swizzle.confluence.SwizzleConfluenceException;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 
 /**
- * Customized {@link IRunnableWithProgress} to accomodate
- * XWiki specific tasks.
+ * Customized {@link IRunnableWithProgress} to accomodate XWiki specific tasks.
  */
 abstract public class XWikiProgressRunner implements IRunnableWithProgress
 {

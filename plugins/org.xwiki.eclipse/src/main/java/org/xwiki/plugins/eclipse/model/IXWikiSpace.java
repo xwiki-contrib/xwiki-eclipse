@@ -24,6 +24,7 @@ package org.xwiki.plugins.eclipse.model;
 import java.util.Collection;
 
 import org.codehaus.swizzle.confluence.SwizzleConfluenceException;
+import org.eclipse.core.runtime.IPath;
 
 /**
  * Represents an XWiki Space.
@@ -74,6 +75,11 @@ public interface IXWikiSpace
      * @return Description of this space as a html String.
      */
     public String getDescriptionAsHtml();
+
+    /**
+     * @return The cache path for this space.
+     */
+    public IPath getCachePath();
 
     /**
      * @return Whether this space should be displyed or not.

@@ -25,9 +25,8 @@ import org.eclipse.jface.text.source.SourceViewerConfiguration;
 import org.eclipse.ui.texteditor.AbstractTextEditor;
 
 /**
- * This is the text editor widget used inside {@link XWikiEditor}.
- * This class extends {@link AbstractTextEditor} for the purpose
- * of customizing it into XWiki's needs.
+ * This is the text editor widget used inside {@link XWikiEditor}. This class extends
+ * {@link AbstractTextEditor} for the purpose of customizing it into XWiki's needs.
  */
 public class XWikiMarkupEditorPart extends AbstractTextEditor
 {

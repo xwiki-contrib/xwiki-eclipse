@@ -33,8 +33,8 @@ import org.xwiki.plugins.eclipse.util.GuiUtils;
 import org.xwiki.plugins.eclipse.util.XWikiProgressRunner;
 
 /**
- * Implentation of Decorator Pattern for adding GUI icing for
- * underlying {@link IXWikiConnectionManager}.
+ * Implentation of Decorator Pattern for adding GUI icing for underlying
+ * {@link IXWikiConnectionManager}.
  */
 public class XWikiConnectionManagerWrapper implements IXWikiConnectionManager
 {
