@@ -13,9 +13,9 @@
   <version>1.0-SNAPSHOT</version>
   <description>Eclipse Integration Plugin</description>
   <scm>
-    <connection>scm:svn:http://svnmirror.xwiki.org/svn/mirror/xwiki/xwiki-extensions/xwiki-eclipse/trunk</connection>
-    <developerConnection>scm:svn:svn+ssh://svn.forge.objectweb.org/svnroot/xwiki/xwiki-extensions/xwiki-eclipse/trunk</developerConnection>
-    <url>http://svn.forge.objectweb.org/cgi-bin/viewcvs.cgi/xwiki/xwiki-extensions/xwiki-eclipse/trunk</url>
+    <connection>scm:svn:http://svn.xwiki.org/svnroot/xwiki/xwiki-extensions/xwiki-eclipse/trunk</connection>
+    <developerConnection>scm:svn:https://svn.xwiki.org/svnroot/xwiki/xwiki-extensions/xwiki-eclipse/trunk</developerConnection>
+    <url>http://svn.xwiki.org/svnroot/xwiki/xwiki-extensions/xwiki-eclipse/trunk</url>
   </scm>
   <build>
     <plugins>
