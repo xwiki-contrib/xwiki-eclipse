@@ -122,6 +122,7 @@ public class XWikiNavigator extends ViewPart
         viewer.setContentProvider(new XWikiNavigatorContentProvider());
         viewer.setLabelProvider(new XWikiNavigatorLabelProvider());
         viewer.setInput(getViewSite());
+        getSite().setSelectionProvider(viewer);
         makeActions();
         hookContextMenu();
         hookDoubleClickAction();
