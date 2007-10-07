@@ -28,7 +28,9 @@ import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.ui.editors.text.StorageDocumentProvider;
 import org.xwiki.plugins.eclipse.model.IXWikiPage;
+import org.xwiki.plugins.eclipse.model.impl.XWikiPage;
 import org.xwiki.plugins.eclipse.model.wrappers.XWikiPageWrapper;
+import org.xwiki.plugins.eclipse.views.navigator.XWikiNavigator;
 
 /**
  * This class handles the mapping between model's document {@link IXWikiPage} and the visual
@@ -52,6 +54,7 @@ public class XWikiDocumentProvider extends StorageDocumentProvider
             IXWikiPage wikiPage = new XWikiPageWrapper((IXWikiPage) element);
             doc.set(wikiPage.getContent());
         }
+        XWikiNavigator.getNavigator().refresh(element, true);
         return doc;
     }
 
@@ -76,6 +79,7 @@ public class XWikiDocumentProvider extends StorageDocumentProvider
             wikiPage.setContent(oldContent);
             // TODO might want to throw a Core Exception here.
         }
+        XWikiNavigator.getNavigator().refresh(element, true);
     }
 
     /**
@@ -88,7 +92,8 @@ public class XWikiDocumentProvider extends StorageDocumentProvider
      */
     public boolean isModifiable(Object element)
     {
-        return true;
+        XWikiPage wikiPage = (XWikiPage) element;        
+        return !(wikiPage.isReadOnly());
     }
 
     /**

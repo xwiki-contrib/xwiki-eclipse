@@ -24,6 +24,7 @@ package org.xwiki.plugins.eclipse.model.wrappers;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
 
+import org.codehaus.swizzle.confluence.PageSummary;
 import org.codehaus.swizzle.confluence.SwizzleConfluenceException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -295,6 +296,38 @@ public class XWikiPageWrapper implements IXWikiPage
     /**
      * {@inheritDoc}
      * 
+     * @see org.xwiki.plugins.eclipse.model.IXWikiPage#synchronize()
+     */    
+    public void synchronize(PageSummary newSummary) throws SwizzleConfluenceException
+    {
+        final PageSummary summary = newSummary;
+        if (isOffline()) {
+            XWikiProgressRunner operation = new XWikiProgressRunner()
+            {
+                public void run(IProgressMonitor monitor) throws InvocationTargetException,
+                    InterruptedException
+                {
+                    monitor.beginTask("Synchronizing...", IProgressMonitor.UNKNOWN);
+                    try {
+                        page.synchronize(summary);
+                        monitor.done();
+                    } catch (SwizzleConfluenceException e) {
+                        monitor.done();
+                        setComEx(e);
+                        throw new InvocationTargetException(e);
+                    }
+                }
+            };
+            GuiUtils.runOperationWithProgress(operation, null);
+            if (operation.getComEx() != null) {
+                throw operation.getComEx();
+            }
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
      * @see org.xwiki.plugins.eclipse.model.IXWikiPage#isCurrent()
      */
     public boolean isCurrent()
@@ -344,6 +377,16 @@ public class XWikiPageWrapper implements IXWikiPage
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.xwiki.plugins.eclipse.model.IXWikiPage#isOffline()
+     */
+    public boolean isOffline()
+    {
+        return page.isOffline();
+    }
+    
     /**
      * {@inheritDoc}
      * 

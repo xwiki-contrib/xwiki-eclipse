@@ -26,7 +26,10 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.codehaus.swizzle.confluence.Confluence;
 import org.codehaus.swizzle.confluence.Page;
@@ -43,13 +46,20 @@ import org.xwiki.plugins.eclipse.model.adapters.TreeAdapter;
 import org.xwiki.plugins.eclipse.model.wrappers.XWikiSpaceWrapper;
 import org.xwiki.plugins.eclipse.util.CacheUtils;
 import org.xwiki.plugins.eclipse.util.GuiUtils;
+import org.xwiki.plugins.eclipse.util.LoggingUtils;
 import org.xwiki.plugins.eclipse.util.XWikiConstants;
 
 /**
- * Default implementation of {@link IXWikiSpace}.
+ * Default implementation of {@link IXWikiSpace}. TODO Offline functionality was added later and
+ * this has made the code dirty. Need to fix (refactor) the code base whenever possible.
  */
 public class XWikiSpace implements IXWikiSpace, TreeAdapter
 {
+
+    /**
+     * Serial version ID
+     */
+    private static final long serialVersionUID = 2422606240077511052L;
 
     /**
      * Parent connection to which this space belongs to.
@@ -65,11 +75,6 @@ public class XWikiSpace implements IXWikiSpace, TreeAdapter
      * Summary of this space.
      */
     private transient SpaceSummary summary;
-
-    // TODO This is (almost) a subset of the space. Why do we need both ?
-    // -- in general summaries are exact subsets ... here it's an anomaly and should be treated as
-    // such
-    // -- especially since xwiki does not have a notion of space type
 
     /**
      * Complete data for this space.
@@ -142,7 +147,7 @@ public class XWikiSpace implements IXWikiSpace, TreeAdapter
      */
     protected void addPage(IXWikiPage page)
     {
-        pagesByID.put(page.getId(), page);        
+        pagesByID.put(page.getId(), page);
     }
 
     /**
@@ -186,6 +191,26 @@ public class XWikiSpace implements IXWikiSpace, TreeAdapter
     }
 
     /**
+     * Sets the cache path for this space.
+     * 
+     * @param cachePath Cache path to be set.
+     */
+    protected void setCachePath(IPath cachePath)
+    {
+        this.cachePath = cachePath;
+    }
+
+    /**
+     * Used in space restoration (from cache) process.
+     * 
+     * @param spacesByKey Pages indexed by id.
+     */
+    protected void setPages(HashMap<String, IXWikiPage> pagesByID)
+    {
+        this.pagesByID = pagesByID;
+    }
+
+    /**
      * {@inheritDoc}
      * 
      * @see org.xwiki.plugins.eclipse.model.adapters.TreeAdapter#getTreeChildren()
@@ -193,6 +218,10 @@ public class XWikiSpace implements IXWikiSpace, TreeAdapter
     public Object[] getTreeChildren()
     {
         if (!isPagesReady()) {
+            if (isOffline()) {
+                LoggingUtils.error("Empty cache.");
+                return null;
+            }
             IXWikiSpace space = new XWikiSpaceWrapper(this);
             try {
                 space.init();
@@ -213,6 +242,9 @@ public class XWikiSpace implements IXWikiSpace, TreeAdapter
      */
     public Image getImage()
     {
+        if (isOffline()) {
+            return GuiUtils.loadIconImage(XWikiConstants.NAV_SPACE_OFFLINE_ICON).createImage();
+        }
         return GuiUtils.loadIconImage(XWikiConstants.NAV_SPACE_ICON).createImage();
     }
 
@@ -243,6 +275,9 @@ public class XWikiSpace implements IXWikiSpace, TreeAdapter
      */
     public boolean hasChildren()
     {
+        if (isOffline() & !isPagesReady()) {
+            return false;
+        }
         return true;
     }
 
@@ -259,31 +294,97 @@ public class XWikiSpace implements IXWikiSpace, TreeAdapter
     /**
      * {@inheritDoc}
      * 
-     * @see org.xwiki.plugins.eclipse.model.IXWikiSpace#initialize()
+     * @see org.xwiki.plugins.eclipse.model.IXWikiSpace#init()
      */
     public void init() throws SwizzleConfluenceException
     {
         if (!isDataReady()) {
-            Confluence rpc = getConnection().getRpcProxy();
-            String spaceKey = getKey();
-            this.space = rpc.getSpace(spaceKey);            
-            setDataReady(true);
-            CacheUtils.updateCache(this);
+            if (!isOffline()) {
+                Confluence rpc = getConnection().getRpcProxy();
+                String spaceKey = getKey();
+                this.space = rpc.getSpace(spaceKey);
+                setDataReady(true);
+                CacheUtils.updateCache(this);
+            }
         }
         if (!isPagesReady()) {
-            Confluence rpc = getConnection().getRpcProxy();
-            String spaceKey = getKey();
-            List<Object> pages = rpc.getPages(spaceKey);
-            for (int i = 0; i < pages.size(); i++) {
-                PageSummary pageSummary = (PageSummary) pages.get(i);
-                XWikiPage xwikiPage = new XWikiPage(this, pageSummary);                
-                xwikiPage.setCachePath(getCachePath().addTrailingSeparator().append(
-                    xwikiPage.getId()));
-                CacheUtils.updateCache(xwikiPage);
-                addPage(xwikiPage);
+            if (!isOffline()) {
+                Confluence rpc = getConnection().getRpcProxy();
+                String spaceKey = getKey();
+                List<Object> pages = rpc.getPages(spaceKey);
+                for (int i = 0; i < pages.size(); i++) {
+                    PageSummary pageSummary = (PageSummary) pages.get(i);
+                    XWikiPage xwikiPage = new XWikiPage(this, pageSummary);
+                    xwikiPage.setCachePath(getCachePath().addTrailingSeparator().append(
+                        xwikiPage.getId()));
+                    CacheUtils.updateCache(xwikiPage);
+                    addPage(xwikiPage);
+                }
+                setPagesReady(true);
+                CacheUtils.updateCache(this);
             }
-            setPagesReady(true);
-            CacheUtils.updateCache(this);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.xwiki.plugins.eclipse.model.IXWikiSpace#grab()
+     */    
+    public void grab() throws SwizzleConfluenceException
+    {
+        init();
+        for (IXWikiPage page : getPages()) {
+            page.init();
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.xwiki.plugins.eclipse.model.IXWikiSpace#synchronize(SpaceSummary)
+     */
+    public void synchronize(SpaceSummary newSummary) throws SwizzleConfluenceException
+    {
+        if (!isOffline()) {
+            this.summary = newSummary;
+            if (isDataReady()) {
+                this.space = getConnection().getRpcProxy().getSpace(getKey());
+                // Get a fresh copy of page summaries from the server.
+                List pages = getConnection().getRpcProxy().getPages(getKey());
+                // Index new pages summaries
+                HashMap<String, PageSummary> newPageSummaries =
+                    new HashMap<String, PageSummary>();
+                for (Object o : pages) {
+                    PageSummary summary = (PageSummary) o;
+                    newPageSummaries.put(summary.getId(), summary);
+                }
+                // Key sets of cached and new page summaries.
+                Set<String> cacheKeySet = new HashSet<String>(pagesByID.keySet());
+                Set<String> newKeySet = newPageSummaries.keySet();
+                // Synchronize each cached page.
+                for (String cacheKey : cacheKeySet) {
+                    if (newKeySet.contains(cacheKey)) {
+                        pagesByID.get(cacheKey).synchronize(newPageSummaries.get(cacheKey));
+                    } else {
+                        // For now, we'll simply get rid of the missing page.
+                        CacheUtils.clearCache(pagesByID.get(cacheKey));
+                        pagesByID.remove(cacheKey);
+                    }
+                }
+                // Check if any new page have been added.
+                for (String newKey : newKeySet) {
+                    if (!cacheKeySet.contains(newKey)) {
+                        XWikiPage xwikiPage = new XWikiPage(this, newPageSummaries.get(newKey));
+                        xwikiPage.setCachePath(getCachePath().addTrailingSeparator().append(
+                            xwikiPage.getId()));
+                        CacheUtils.updateCache(xwikiPage);
+                        addPage(xwikiPage);
+                    }
+                }
+                // Finally, update the cache
+                CacheUtils.updateCache(this);
+            }
         }
     }
 
@@ -294,16 +395,18 @@ public class XWikiSpace implements IXWikiSpace, TreeAdapter
      */
     public void addPage(String title, String content) throws SwizzleConfluenceException
     {
-        Page page = new Page();
-        page.setSpace(getKey());
-        page.setTitle(title);
-        page.setContent(content);
-        Page result = getConnection().getRpcProxy().storePage(page);
-        XWikiPage xwikiPage = new XWikiPage(this, result);
-        xwikiPage.setCachePath(getCachePath().addTrailingSeparator().append(
-            xwikiPage.getId()));
-        CacheUtils.updateCache(xwikiPage);
-        addPage(xwikiPage);
+        if (!isOffline()) {
+            Page page = new Page();
+            page.setSpace(getKey());
+            page.setTitle(title);
+            page.setContent(content);
+            Page result = getConnection().getRpcProxy().storePage(page);
+            XWikiPage xwikiPage = new XWikiPage(this, result);
+            xwikiPage.setCachePath(getCachePath().addTrailingSeparator()
+                .append(xwikiPage.getId()));
+            CacheUtils.updateCache(xwikiPage);
+            addPage(xwikiPage);
+        }
     }
 
     /**
@@ -323,6 +426,9 @@ public class XWikiSpace implements IXWikiSpace, TreeAdapter
      */
     public String getDescriptionAsHtml()
     {
+        if (!isDataReady()) {
+            return "Not Available.";
+        }
         return (String) this.space.getDescription();
     }
 
@@ -333,6 +439,9 @@ public class XWikiSpace implements IXWikiSpace, TreeAdapter
      */
     public String getHomePageId()
     {
+        if (!isDataReady()) {
+            return "Not Available.";
+        }
         return (String) this.space.getHomepage();
     }
 
@@ -364,6 +473,9 @@ public class XWikiSpace implements IXWikiSpace, TreeAdapter
      */
     public IXWikiPage getPageByID(String pageID)
     {
+        if (!isPagesReady()) {
+            LoggingUtils.error("Pages not available in cache.");
+        }
         return pagesByID.get(pageID);
     }
 
@@ -374,6 +486,9 @@ public class XWikiSpace implements IXWikiSpace, TreeAdapter
      */
     public IXWikiPage searchPage(String pageTitle)
     {
+        if (!isPagesReady()) {
+            LoggingUtils.error("Pages not available in cache.");
+        }
         for (IXWikiPage page : pagesByID.values()) {
             if (page.getTitle().equals(pageTitle)) {
                 return page;
@@ -389,6 +504,9 @@ public class XWikiSpace implements IXWikiSpace, TreeAdapter
      */
     public Collection<IXWikiPage> getPages()
     {
+        if (!isPagesReady()) {
+            LoggingUtils.error("Pages not available in cache.");
+        }
         return pagesByID.values();
     }
 
@@ -435,6 +553,16 @@ public class XWikiSpace implements IXWikiSpace, TreeAdapter
     /**
      * {@inheritDoc}
      * 
+     * @see org.xwiki.plugins.eclipse.model.IXWikiSpace#isOffline()
+     */
+    public boolean isOffline()
+    {
+        return getConnection().isOffline();
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
      * @see org.xwiki.plugins.eclipse.model.IXWikiSpace#setMasked(boolean)
      */
     public void setMasked(boolean masked)
@@ -450,16 +578,6 @@ public class XWikiSpace implements IXWikiSpace, TreeAdapter
     public IPath getCachePath()
     {
         return this.cachePath;
-    }
-
-    /**
-     * Sets the cache path for this space.
-     * 
-     * @param cachePath Cache path to be set.
-     */
-    protected void setCachePath(IPath cachePath)
-    {
-        this.cachePath = cachePath;
     }
 
     /**
@@ -489,13 +607,15 @@ public class XWikiSpace implements IXWikiSpace, TreeAdapter
      */
     public void removeChildPage(String pageId) throws SwizzleConfluenceException
     {
-        try {
-            getConnection().getRpcProxy().removePage(pageId);
-            IXWikiPage pageToRemove = getPageByID(pageId);
-            pagesByID.remove(pageToRemove.getId());
-            CacheUtils.clearCache(pageToRemove);
-        } catch (SwizzleConfluenceException e) {
-            throw e;
+        if (!isOffline()) {
+            try {
+                getConnection().getRpcProxy().removePage(pageId);
+                IXWikiPage pageToRemove = getPageByID(pageId);
+                pagesByID.remove(pageToRemove.getId());
+                CacheUtils.clearCache(pageToRemove);
+            } catch (SwizzleConfluenceException e) {
+                throw e;
+            }
         }
     }
 
@@ -547,6 +667,10 @@ public class XWikiSpace implements IXWikiSpace, TreeAdapter
      */
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException
     {
-        // We'll worry about this later.
+        Map summaryMap = (Map) in.readObject();
+        Map spaceMap = (Map) in.readObject();
+        in.defaultReadObject();
+        this.summary = new SpaceSummary(summaryMap);
+        this.space = new Space(spaceMap);
     }
 }

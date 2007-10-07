@@ -57,6 +57,11 @@ public interface IXWikiConnection extends ICacheable
     public Confluence getRpcProxy();
 
     /**
+     * @return A Unique id for this connection
+     */
+    public String getId();
+    
+    /**
      * Retrieves and returns all available spaces.
      * 
      * @return All spaces for this connection as a collection of IXwikiSpaces.
@@ -71,6 +76,11 @@ public interface IXWikiConnection extends ICacheable
      */
     public void disconnect() throws SwizzleConfluenceException;
 
+    /**
+     * Removes all cached information stored in the local cache.
+     */
+    public void clearCache();
+    
     /**
      * @param spaceKey Key of the space.
      * @return The space with corresponding key or null if no such space exists.
@@ -87,6 +97,16 @@ public interface IXWikiConnection extends ICacheable
      */
     public boolean isSpacesReady();
 
+    /**
+     * @return True if operating off-line.
+     */
+    public boolean isOffline();
+    
+    /**
+     * Re-connects (+ synchronizes) this connection with the back-end.
+     */
+    public void synchronize() throws SwizzleConfluenceException;
+    
     /**
      * Adds a new space to this connection with given parameters (minimal).
      * 

@@ -21,6 +21,7 @@
 
 package org.xwiki.plugins.eclipse.model;
 
+import java.io.IOException;
 import java.util.Collection;
 
 import org.codehaus.swizzle.confluence.SwizzleConfluenceException;
@@ -57,4 +58,9 @@ public interface IXWikiConnectionManager
      * @param connection The connection to be closed.
      */
     public void removeConnection(IXWikiConnection connection);
+    
+    /**
+     *  Restores all the connections from cache.
+     */
+    public void restoreAllConnections() throws IOException, ClassNotFoundException;
 }

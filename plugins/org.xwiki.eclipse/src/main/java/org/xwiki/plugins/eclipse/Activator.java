@@ -24,6 +24,8 @@ package org.xwiki.plugins.eclipse;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
+import org.xwiki.plugins.eclipse.model.IXWikiConnection;
+import org.xwiki.plugins.eclipse.model.impl.XWikiConnectionManager;
 
 /**
  * The activator class controls the plug-in life cycle, this is a mandatory class and is used by the
@@ -57,7 +59,7 @@ public class Activator extends AbstractUIPlugin
      */
     public void start(BundleContext context) throws Exception
     {
-        super.start(context);
+        super.start(context);         
     }
 
     /**
@@ -67,6 +69,13 @@ public class Activator extends AbstractUIPlugin
      */
     public void stop(BundleContext context) throws Exception
     {
+        for (IXWikiConnection con : XWikiConnectionManager.getInstance().getAllConnections()) {
+            try {
+                con.disconnect();
+            } catch (Exception e) {
+                // Nothing to do.                
+            }
+        }
         plugin = null;
         super.stop(context);
     }

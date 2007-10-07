@@ -21,6 +21,8 @@
 
 package org.xwiki.plugins.eclipse.views.navigator;
 
+import java.io.IOException;
+
 import org.codehaus.swizzle.confluence.SwizzleConfluenceException;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
@@ -49,11 +51,14 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.DrillDownAdapter;
 import org.eclipse.ui.part.ViewPart;
 import org.xwiki.plugins.eclipse.model.IXWikiConnection;
+import org.xwiki.plugins.eclipse.model.IXWikiConnectionManager;
 import org.xwiki.plugins.eclipse.model.IXWikiPage;
 import org.xwiki.plugins.eclipse.model.IXWikiSpace;
+import org.xwiki.plugins.eclipse.model.impl.XWikiConnectionManager;
 import org.xwiki.plugins.eclipse.model.wrappers.XWikiConnectionWrapper;
 import org.xwiki.plugins.eclipse.model.wrappers.XWikiSpaceWrapper;
 import org.xwiki.plugins.eclipse.util.GuiUtils;
+import org.xwiki.plugins.eclipse.util.ICacheable;
 import org.xwiki.plugins.eclipse.util.XWikiConstants;
 import org.xwiki.plugins.eclipse.wizards.XWikiWizardDialog;
 import org.xwiki.plugins.eclipse.wizards.connect.ConnectWizard;
@@ -81,9 +86,19 @@ public class XWikiNavigator extends ViewPart
     private Action addConnectionAction;
 
     /**
-     * Action for removing an existing XWikiConnection.
+     * Action for disconnecting (logging out) an existing XWikiConnection.
      */
-    private Action removeConnectionAction;
+    private Action logoutAction;
+
+    /**
+     * Action for synchronizing an off-line connection with back-end.
+     */
+    private Action synchronizeAction;
+
+    /**
+     * Action for removing a locally cached connection. (all offline info)
+     */
+    private Action clearCacheAction;
 
     /**
      * Action for adding a new page.
@@ -101,6 +116,11 @@ public class XWikiNavigator extends ViewPart
     private Action addSpaceAction;
 
     /**
+     * Action for grabbing an entire space into local store.
+     */
+    private Action grabSpaceAction;
+    
+    /**
      * Action for removing a Space.
      */
     private Action removeSpaceAction;
@@ -109,6 +129,19 @@ public class XWikiNavigator extends ViewPart
      * Action executed when the user double clicks on a tree item (edit document).
      */
     private Action editAction;
+    
+    /**
+     * An static reference to Navigator instance.
+     */
+    private static XWikiNavigator privateReference;
+
+    /**
+     * @return The running instance of Navigator.
+     */
+    public static XWikiNavigator getNavigator()
+    {
+        return privateReference;
+    }
 
     /**
      * {@inheritDoc}
@@ -127,6 +160,20 @@ public class XWikiNavigator extends ViewPart
         hookContextMenu();
         hookDoubleClickAction();
         contributeToActionBars();
+        /*
+         * This is where we set the static reference (since we don't get to initiate the Navigator)
+         */
+        privateReference = this;
+        // Restore all persisted connections
+        IXWikiConnectionManager manager = XWikiConnectionManager.getInstance();
+        try {
+            manager.restoreAllConnections();
+        } catch (IOException e) {
+            // Will be logged elsewhere
+        } catch (ClassNotFoundException e) {
+            // Will be logged elsewhere 
+        }
+        viewer.refresh();
     }
 
     /**
@@ -167,7 +214,9 @@ public class XWikiNavigator extends ViewPart
     private void fillLocalPullDown(IMenuManager manager)
     {
         manager.add(addConnectionAction);
-        manager.add(removeConnectionAction);
+        manager.add(logoutAction);
+        manager.add(synchronizeAction);
+        manager.add(clearCacheAction);
     }
 
     /**
@@ -179,10 +228,13 @@ public class XWikiNavigator extends ViewPart
         manager.add(addPageAction);
         manager.add(removePageAction);
         manager.add(new Separator());
+        manager.add(grabSpaceAction);
         manager.add(addSpaceAction);
         manager.add(removeSpaceAction);
         manager.add(new Separator());
-        manager.add(removeConnectionAction);
+        manager.add(logoutAction);
+        manager.add(synchronizeAction);
+        manager.add(clearCacheAction);
         manager.add(new Separator());
         drillDownAdapter.addNavigationActions(manager);
         // Other plug-ins can contribute there actions here
@@ -196,7 +248,9 @@ public class XWikiNavigator extends ViewPart
     private void fillLocalToolBar(IToolBarManager manager)
     {
         manager.add(addConnectionAction);
-        manager.add(removeConnectionAction);
+        manager.add(logoutAction);
+        manager.add(synchronizeAction);
+        manager.add(clearCacheAction);       
         manager.add(new Separator());
         drillDownAdapter.addNavigationActions(manager);
     }
@@ -222,9 +276,9 @@ public class XWikiNavigator extends ViewPart
             .loadIconImage(XWikiConstants.ADD_CONNECTION_ICON));
 
         /**
-         * Remove connection action.
+         * Disconnect action.
          */
-        removeConnectionAction = new Action()
+        logoutAction = new Action()
         {
             public void run()
             {
@@ -239,14 +293,72 @@ public class XWikiNavigator extends ViewPart
                         // Will be logged else where.
                     }
                     viewer.refresh();
+                    viewer.setSelection(viewer.getSelection(), false);
                 }
             }
         };
-        removeConnectionAction.setText("Logout");
-        removeConnectionAction.setToolTipText("Logout");
-        removeConnectionAction.setImageDescriptor(GuiUtils
-            .loadIconImage(XWikiConstants.REMOVE_CONNECTION_ICON));
-        removeConnectionAction.setEnabled(false);
+        logoutAction.setText("Logout");
+        logoutAction.setToolTipText("Logout");
+        logoutAction.setImageDescriptor(GuiUtils
+            .loadIconImage(XWikiConstants.LOGOUT_CONNECTION_ICON));
+        logoutAction.setEnabled(false);
+
+        /**
+         * Synchronize action.
+         */
+        synchronizeAction = new Action()
+        {
+            public void run()
+            {
+                ISelection selection = viewer.getSelection();
+                Object obj = ((IStructuredSelection) selection).getFirstElement();
+                if (obj instanceof IXWikiConnection) {
+                    IXWikiConnection connection =
+                        new XWikiConnectionWrapper((IXWikiConnection) obj);
+                    if (connection.isOffline()) {
+                        try {
+                            connection.synchronize();
+                        } catch (SwizzleConfluenceException e) {
+                            // Will be logged elsewhere.
+                        }
+                        viewer.refresh();
+                        viewer.setSelection(viewer.getSelection(), false);
+                    }
+                }
+            }
+        };
+        synchronizeAction.setText("Synchronize");
+        synchronizeAction.setToolTipText("Synchronize");
+        synchronizeAction.setImageDescriptor(GuiUtils
+            .loadIconImage(XWikiConstants.SYNCHRONIZE_ICON));
+        synchronizeAction.setEnabled(false);
+
+        /**
+         * Remove connection action.
+         */
+        clearCacheAction = new Action()
+        {
+            public void run()
+            {
+                ISelection selection = viewer.getSelection();
+                Object obj = ((IStructuredSelection) selection).getFirstElement();
+                if (obj instanceof IXWikiConnection) {
+                    IXWikiConnection connection =
+                        new XWikiConnectionWrapper((IXWikiConnection) obj);
+                    if (connection.isOffline()) {
+                        // TODO may have to perform dirty checks here.
+                        connection.clearCache();
+                    }
+                    viewer.refresh();
+                    viewer.setSelection(viewer.getSelection(), false);
+                }
+            }
+        };
+        clearCacheAction.setText("Clear Cache");
+        clearCacheAction.setToolTipText("Clear Cache");
+        clearCacheAction.setImageDescriptor(GuiUtils
+            .loadIconImage(XWikiConstants.CLEAR_CACHE_ICON));
+        clearCacheAction.setEnabled(false);
 
         /**
          * Add page action.
@@ -326,6 +438,31 @@ public class XWikiNavigator extends ViewPart
         addSpaceAction.setEnabled(false);
 
         /**
+         * Grab space action.
+         */        
+        grabSpaceAction = new Action()
+        {
+            public void run()
+            {
+                ISelection selection = viewer.getSelection();
+                Object obj = ((IStructuredSelection) selection).getFirstElement();
+                if (obj instanceof IXWikiSpace) {
+                    IXWikiSpace space = new XWikiSpaceWrapper((IXWikiSpace) obj);
+                    try {
+                        space.grab();
+                    } catch (SwizzleConfluenceException e) {
+                        // Will be logged elsewhere
+                    }
+                    viewer.refresh();
+                }
+            }            
+        };
+        grabSpaceAction.setText("Grab Space");
+        grabSpaceAction.setToolTipText("Grab Space");
+        grabSpaceAction.setImageDescriptor(GuiUtils.loadIconImage(XWikiConstants.GRAB_SPACE_ICON));
+        grabSpaceAction.setEnabled(false);
+        
+        /**
          * Remove space action.
          */
         removeSpaceAction = new Action()
@@ -367,10 +504,10 @@ public class XWikiNavigator extends ViewPart
                     openEditor((IEditorInput) page);
                 }
             }
-        };
+        };                
 
         /**
-         * Viewer selection listener
+         * Viewer selection listener TODO This code is messy, but works. (need to refactor)
          */
         viewer.addSelectionChangedListener(new ISelectionChangedListener()
         {
@@ -378,30 +515,61 @@ public class XWikiNavigator extends ViewPart
             {
                 Object selection =
                     ((IStructuredSelection) event.getSelection()).getFirstElement();
-                if (selection instanceof IXWikiConnection) {
-                    removeConnectionAction.setEnabled(true);
+                if (selection instanceof ICacheable) {
+                    ICacheable cacheable = (ICacheable) selection;
+                    if (cacheable.isOffline()) {
+                        logoutAction.setEnabled(false);
+                        addSpaceAction.setEnabled(false);
+                        removeSpaceAction.setEnabled(false);
+                        addPageAction.setEnabled(false);
+                        removePageAction.setEnabled(false);
+                        if (selection instanceof IXWikiConnection) {
+                            clearCacheAction.setEnabled(true);
+                            synchronizeAction.setEnabled(true);
+                        } else {
+                            clearCacheAction.setEnabled(false);
+                            synchronizeAction.setEnabled(false);
+                        }
+                    } else {
+                        if (selection instanceof IXWikiConnection) {
+                            logoutAction.setEnabled(true);
+                        } else {
+                            logoutAction.setEnabled(false);
+                        }
+                        if (selection instanceof IXWikiConnection
+                            || selection instanceof IXWikiSpace) {
+                            addSpaceAction.setEnabled(true);
+                        } else {
+                            addSpaceAction.setEnabled(false);
+                        }
+                        if (selection instanceof IXWikiSpace) {
+                            removeSpaceAction.setEnabled(true);
+                            grabSpaceAction.setEnabled(true);
+                        } else {
+                            removeSpaceAction.setEnabled(false);
+                            grabSpaceAction.setEnabled(false);
+                        }
+                        if (selection instanceof IXWikiSpace || selection instanceof IXWikiPage) {
+                            addPageAction.setEnabled(true);
+                        } else {
+                            addPageAction.setEnabled(false);
+                        }
+                        if (selection instanceof IXWikiPage) {
+                            removePageAction.setEnabled(true);
+                        } else {
+                            removePageAction.setEnabled(false);
+                        }
+                        clearCacheAction.setEnabled(false);
+                        synchronizeAction.setEnabled(false);
+                    }
                 } else {
-                    removeConnectionAction.setEnabled(false);
-                }
-                if (selection instanceof IXWikiConnection || selection instanceof IXWikiSpace) {
-                    addSpaceAction.setEnabled(true);
-                } else {
+                    logoutAction.setEnabled(false);
                     addSpaceAction.setEnabled(false);
-                }
-                if (selection instanceof IXWikiSpace) {
-                    removeSpaceAction.setEnabled(true);
-                } else {
                     removeSpaceAction.setEnabled(false);
-                }
-                if (selection instanceof IXWikiSpace || selection instanceof IXWikiPage) {
-                    addPageAction.setEnabled(true);
-                } else {
                     addPageAction.setEnabled(false);
-                }
-                if (selection instanceof IXWikiPage) {
-                    removePageAction.setEnabled(true);
-                } else {
                     removePageAction.setEnabled(false);
+                    clearCacheAction.setEnabled(false);
+                    synchronizeAction.setEnabled(false);
                 }
             }
         });
@@ -430,6 +598,17 @@ public class XWikiNavigator extends ViewPart
     public void setFocus()
     {
         viewer.getControl().setFocus();
+    }
+
+    /**
+     * Refreshes the viewer.
+     * 
+     * @param element Element (node) to be refreshed
+     * @param updateLabels Whether labels should be updates or not.
+     */
+    public void refresh(Object element, boolean updateLabels)
+    {
+        viewer.refresh(element, updateLabels);
     }
 
     /**

@@ -23,6 +23,7 @@ package org.xwiki.plugins.eclipse.model;
 
 import java.util.Collection;
 
+import org.codehaus.swizzle.confluence.SpaceSummary;
 import org.codehaus.swizzle.confluence.SwizzleConfluenceException;
 import org.eclipse.core.runtime.IPath;
 import org.xwiki.plugins.eclipse.util.ICacheable;
@@ -36,10 +37,17 @@ public interface IXWikiSpace extends ICacheable
      * Initializes this space if it has not been initialized. This method simply retrieves all the
      * data required from the server.
      * 
-     * @throws CommunicationException - If XMLRPC call fails.
+     * @throws SwizzleConfluenceException Communication errors.
      */
     public void init() throws SwizzleConfluenceException;
 
+    /**
+     * Grabs all the pages under this space into a local store.
+     * 
+     * @throws SwizzleConfluenceException Communication errors 
+     */
+    public void grab() throws SwizzleConfluenceException;
+    
     /**
      * @return Key of this space.
      */
@@ -109,6 +117,16 @@ public interface IXWikiSpace extends ICacheable
      */
     public boolean isPagesReady();
 
+    /**
+     * @return True if operating off-line.
+     */
+    public boolean isOffline();     
+    
+    /**
+     * Synchronizes this space with the back-end.
+     */
+    public void synchronize(SpaceSummary newSummary) throws SwizzleConfluenceException;
+    
     /**
      * @return Parent IXWikiConnection which retrieved this space.
      */

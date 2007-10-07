@@ -23,6 +23,7 @@ package org.xwiki.plugins.eclipse.model;
 
 import java.util.Date;
 
+import org.codehaus.swizzle.confluence.PageSummary;
 import org.codehaus.swizzle.confluence.SwizzleConfluenceException;
 import org.eclipse.core.runtime.IPath;
 import org.xwiki.plugins.eclipse.util.ICacheable;
@@ -128,6 +129,16 @@ public interface IXWikiPage extends ICacheable
      * @return Whether this is the home page of parent space.
      */
     public boolean isHomePage();
+    
+    /**
+     * @return True if operating off-line.
+     */
+    public boolean isOffline();
+    
+    /**
+     * Synchronizes this page with the back-end.
+     */
+    public void synchronize(PageSummary newSummary) throws SwizzleConfluenceException;    
 
     /**
      * @return Status of content (Markup) of this page.

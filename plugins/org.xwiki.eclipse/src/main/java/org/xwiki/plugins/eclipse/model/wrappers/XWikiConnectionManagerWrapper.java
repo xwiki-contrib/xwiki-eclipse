@@ -21,14 +21,15 @@
 
 package org.xwiki.plugins.eclipse.model.wrappers;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 
+import org.codehaus.swizzle.confluence.Confluence;
+import org.codehaus.swizzle.confluence.SwizzleConfluenceException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.xwiki.plugins.eclipse.model.IXWikiConnection;
 import org.xwiki.plugins.eclipse.model.IXWikiConnectionManager;
-import org.codehaus.swizzle.confluence.Confluence;
-import org.codehaus.swizzle.confluence.SwizzleConfluenceException;
 import org.xwiki.plugins.eclipse.util.GuiUtils;
 import org.xwiki.plugins.eclipse.util.XWikiProgressRunner;
 
@@ -112,4 +113,31 @@ public class XWikiConnectionManagerWrapper implements IXWikiConnectionManager
         manager.removeConnection(connection);
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.xwiki.plugins.eclipse.model.IXWikiConnectionManager#restoreAllConnections()
+     */
+    public void restoreAllConnections() throws IOException, ClassNotFoundException
+    {
+        XWikiProgressRunner operation = new XWikiProgressRunner()
+        {            
+            public void run(IProgressMonitor monitor) throws InvocationTargetException,
+                InterruptedException
+            {
+                monitor.beginTask("Reading cache...", IProgressMonitor.UNKNOWN);
+                try {
+                    manager.restoreAllConnections();
+                    monitor.done();
+                } catch (IOException e) {
+                    monitor.done();
+                    throw new InvocationTargetException(e);
+                } catch (ClassNotFoundException e) {
+                    monitor.done();
+                    throw new InvocationTargetException(e);
+                }
+            }
+        };
+        GuiUtils.runOperationWithProgress(operation, null);        
+    }    
 }

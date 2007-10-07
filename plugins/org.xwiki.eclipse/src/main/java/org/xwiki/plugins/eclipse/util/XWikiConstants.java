@@ -37,19 +37,37 @@ public class XWikiConstants
 
     public static String ADD_PAGE_ICON = "icons/new-page.png";
 
-    public static String REMOVE_CONNECTION_ICON = "icons/logout.png";
+    public static String LOGOUT_CONNECTION_ICON = "icons/logout.png";
+    
+    public static String SYNCHRONIZE_ICON = "icons/sync.png";
+    
+    public static String CLEAR_CACHE_ICON = "icons/clear-cache.png";
 
     public static String REMOVE_SPACE_ICON = "icons/delete-space.png";
 
     public static String REMOVE_PAGE_ICON = "icons/delete-page.png";
 
-    public static String NAV_SPACE_ICON = "icons/xwiki-space.png";
-
     public static String NAV_CON_ICON = "icons/xwiki-connection.png";
-
-    public static String NAV_PAGE_ICON = "icons/xwiki-page.png";
+    
+    public static String NAV_CON_OFFLINE_ICON = "icons/xwiki-connection-offline.png";
+    
+    public static String NAV_SPACE_ICON = "icons/xwiki-space.png";
+    
+    public static String NAV_SPACE_OFFLINE_ICON = "icons/xwiki-space-offline.png";
+    
+    public static String NAV_PAGE_ONLINE_NOT_CACHED_ICON = "icons/xwiki-page-online-not-cached.png";
+    
+    public static String NAV_PAGE_CACHED_ICON = "icons/xwiki-page-cached.png";
+    
+    public static String NAV_PAGE_OFFLINE_NOT_CACHED_ICON = "icons/xwiki-page-offline-not-cached.png";        
+    
+    public static String NAV_PAGE_OFFLINE_MODIFIED_ICON = "icons/xwiki-page-offline-modified.png";
 
     public static String TOGGLE_BUTTON_ICON = "icons/view-fullscreen.png";
+    
+    public static String DUMMY_ICON = "icons/dummy.png";
+    
+    public static String GRAB_SPACE_ICON = "icons/grab.png";
 
     /* Cache Constants */
     public static String CONNECTION_USERNAME = "USERNAME";

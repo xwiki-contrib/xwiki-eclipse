@@ -21,10 +21,14 @@
 
 package org.xwiki.plugins.eclipse.model.impl;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.codehaus.swizzle.confluence.Confluence;
 import org.codehaus.swizzle.confluence.IdentityObjectConvertor;
@@ -33,7 +37,10 @@ import org.codehaus.swizzle.confluence.SwizzleXWiki;
 import org.eclipse.core.runtime.IPath;
 import org.xwiki.plugins.eclipse.model.IXWikiConnection;
 import org.xwiki.plugins.eclipse.model.IXWikiConnectionManager;
+import org.xwiki.plugins.eclipse.model.IXWikiPage;
+import org.xwiki.plugins.eclipse.model.IXWikiSpace;
 import org.xwiki.plugins.eclipse.util.CacheUtils;
+import org.xwiki.plugins.eclipse.util.ICacheable;
 
 /**
  * Default implementation of {@link IXWikiConnectionManager}.
@@ -93,6 +100,7 @@ public class XWikiConnectionManager implements IXWikiConnectionManager
         XWikiConnection conection = new XWikiConnection();
         conection.setServerUrl(serverUrl);
         conection.setUserName(userName);
+        conection.setPassword(password);
         conection.setRpcProxy(rpc);
         IPath masterCacheDir = CacheUtils.getMasterCacheDirectory();
         IPath cachePath =
@@ -125,4 +133,49 @@ public class XWikiConnectionManager implements IXWikiConnectionManager
         CacheUtils.clearCache(connection);
     }
 
+    /**
+     * Used by internal code to restore connections.
+     * 
+     * @param connection Connection to be added into store.
+     */
+    protected void addConnection(IXWikiConnection connection)
+    {
+        connections.add(connection);
+    }
+    
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.xwiki.plugins.eclipse.model.IXWikiConnectionManager#restoreAllConnections()
+     */
+    public void restoreAllConnections() throws IOException, ClassNotFoundException
+    {
+        Map<IPath, ICacheable> connections = CacheUtils.readCache(CacheUtils.getMasterCacheDirectory().toFile());
+        Set<IPath> connectionsKeySet = connections.keySet();
+        for (IPath connectionCachePath : connectionsKeySet) {
+            XWikiConnection connection = (XWikiConnection) (connections.get(connectionCachePath));
+            connection.setCachePath(connectionCachePath);
+            Map<IPath, ICacheable> spaces = CacheUtils.readCache(connection.getCachePath().toFile());
+            HashMap<String, IXWikiSpace> spacesByKey = new HashMap<String, IXWikiSpace>();
+            Set<IPath> spacesKeySet = spaces.keySet();
+            for (IPath spaceCachepath : spacesKeySet) {
+                XWikiSpace space = (XWikiSpace) (spaces.get(spaceCachepath));
+                space.setCachePath(spaceCachepath);
+                spacesByKey.put(space.getKey(), space);
+                Map<IPath, ICacheable> pages = CacheUtils.readCache(space.getCachePath().toFile());
+                HashMap<String, IXWikiPage> pagesByID = new HashMap<String, IXWikiPage>();
+                Set<IPath> pagesKeySet = pages.keySet();
+                for (IPath pageCachePath : pagesKeySet) {
+                    XWikiPage page = (XWikiPage) (pages.get(pageCachePath));
+                    page.setCachePath(pageCachePath);
+                    page.setSpace(space);
+                    pagesByID.put(page.getId(), page);
+                }
+                space.setConnection(connection);      
+                space.setPages(pagesByID);
+            }
+            connection.setSpaces(spacesByKey);   
+            addConnection(connection);
+        }        
+    }    
 }

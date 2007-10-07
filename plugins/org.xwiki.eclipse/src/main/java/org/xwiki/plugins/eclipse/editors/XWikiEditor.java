@@ -29,6 +29,7 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.MultiPageEditorPart;
+import org.xwiki.plugins.eclipse.model.IXWikiPage;
 
 /**
  * This class represents the Page editor. It has two tabs (pages in eclipse terminology), one for
@@ -89,7 +90,10 @@ public class XWikiEditor extends MultiPageEditorPart implements IResourceChangeL
     protected void createPages()
     {
         createXwikiMarkupEditor();
-        createXwikiBrowser();
+        IXWikiPage page = (IXWikiPage) getEditorInput();
+        if (!page.isOffline()) {
+            createXwikiBrowser();
+        }
     }
 
     /**

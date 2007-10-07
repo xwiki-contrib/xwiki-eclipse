@@ -26,13 +26,18 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.codehaus.swizzle.confluence.Confluence;
+import org.codehaus.swizzle.confluence.IdentityObjectConvertor;
 import org.codehaus.swizzle.confluence.Space;
 import org.codehaus.swizzle.confluence.SpaceSummary;
 import org.codehaus.swizzle.confluence.SwizzleConfluenceException;
+import org.codehaus.swizzle.confluence.SwizzleXWiki;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.swt.graphics.Image;
 import org.xwiki.plugins.eclipse.model.IXWikiConnection;
@@ -44,10 +49,17 @@ import org.xwiki.plugins.eclipse.util.GuiUtils;
 import org.xwiki.plugins.eclipse.util.XWikiConstants;
 
 /**
- * Default implementation of {@link IXWikiConnection}
+ * Default implementation of {@link IXWikiConnection} TODO Offline functionality was added later and
+ * this has made the code dirty. Need to fix (refactor) the code base whenever possible.
  */
 public class XWikiConnection implements IXWikiConnection, TreeAdapter
 {
+
+    /**
+     * serial version ID
+     */
+    private static final long serialVersionUID = 8193505646889459439L;
+
     /**
      * An XML-RPC proxy
      */
@@ -57,6 +69,11 @@ public class XWikiConnection implements IXWikiConnection, TreeAdapter
      * Username supplied by the user for this connection.
      */
     private String userName;
+
+    /**
+     * This field need to be removed.
+     */
+    private String password;
 
     /**
      * Server url to which this connection refers to.
@@ -79,11 +96,31 @@ public class XWikiConnection implements IXWikiConnection, TreeAdapter
     private transient IPath cachePath;
 
     /**
+     * True when operating in off-line mode.
+     */
+    private boolean offline = false;
+    
+    /**
+     * A String identifying this connection.
+     */
+    private String id = Long.toString(new Date().getTime());
+
+    /**
      * Default constructor. A connection should only be acquired by going through ConnectionManager
      */
     protected XWikiConnection()
     {
         spacesByKey = new HashMap<String, IXWikiSpace>();
+    }
+
+    /**
+     * Used in connection restoration (from cache) process.
+     * 
+     * @param spacesByKey Spaces indexed by key.
+     */
+    protected void setSpaces(HashMap<String, IXWikiSpace> spacesByKey)
+    {
+        this.spacesByKey = spacesByKey;
     }
 
     /**
@@ -137,20 +174,50 @@ public class XWikiConnection implements IXWikiConnection, TreeAdapter
     }
 
     /**
+     * @param password The password for this connection.
+     */
+    protected void setPassword(String password)
+    {
+        this.password = password;
+    }
+
+    /**
+     * @return The password for this connection.
+     */
+    protected String getPassword()
+    {
+        return password;
+    }
+
+    /**
+     * Sets the local cache directory of this connection.
+     */
+    protected void setCachePath(IPath cachePath)
+    {
+        this.cachePath = cachePath;
+    }
+
+    /**
      * {@inheritDoc}
      * 
      * @see org.xwiki.plugins.eclipse.model.adapters.TreeAdapter#getTreeChildren()
      */
     public Object[] getTreeChildren()
     {
-        IXWikiConnection xwikiConnection = new XWikiConnectionWrapper(this);
-        try {
-            xwikiConnection.init();
-        } catch (SwizzleConfluenceException e) {
-            // Will be logged elsewhere.
-        }
-        if (!spacesReady) {
-            return null;
+        if (!isSpacesReady()) {
+            if (!isOffline()) {
+                IXWikiConnection xwikiConnection = new XWikiConnectionWrapper(this);
+                try {
+                    xwikiConnection.init();
+                } catch (SwizzleConfluenceException e) {
+                    // Will be logged elsewhere.
+                }
+                if (!isSpacesReady()) {
+                    return null;
+                }
+            } else {
+                return null;
+            }
         }
         ArrayList<IXWikiSpace> displaySpaces = new ArrayList<IXWikiSpace>();
         for (IXWikiSpace s : spacesByKey.values()) {
@@ -168,6 +235,9 @@ public class XWikiConnection implements IXWikiConnection, TreeAdapter
      */
     public Image getImage()
     {
+        if (isOffline()) {
+            return GuiUtils.loadIconImage(XWikiConstants.NAV_CON_OFFLINE_ICON).createImage();
+        }
         return GuiUtils.loadIconImage(XWikiConstants.NAV_CON_ICON).createImage();
     }
 
@@ -188,6 +258,9 @@ public class XWikiConnection implements IXWikiConnection, TreeAdapter
      */
     public String getText()
     {
+        if (isOffline()) {
+            return "[OFFLINE] " + userName + "@" + serverUrl;
+        }
         return userName + "@" + serverUrl;
     }
 
@@ -208,6 +281,9 @@ public class XWikiConnection implements IXWikiConnection, TreeAdapter
      */
     public String toString()
     {
+        if (isOffline()) {
+            return "[OFFLINE] " + userName + "@" + serverUrl;
+        }
         return userName + "@" + serverUrl;
     }
 
@@ -219,17 +295,80 @@ public class XWikiConnection implements IXWikiConnection, TreeAdapter
     public void init() throws SwizzleConfluenceException
     {
         if (!isSpacesReady()) {
-            List spaceSummaries = rpc.getSpaces();
-            for (int i = 0; i < spaceSummaries.size(); i++) {
-                SpaceSummary summary = (SpaceSummary) spaceSummaries.get(i);
-                XWikiSpace xwikiSpace = new XWikiSpace(this, summary);
-                xwikiSpace.setCachePath(getCachePath().addTrailingSeparator().append(
-                    xwikiSpace.getKey()));
-                CacheUtils.updateCache(xwikiSpace);
-                xwikiSpace.getCachePath().toFile().mkdir();
-                addSpace(xwikiSpace);
+            if (!isOffline()) {
+                List spaceSummaries = rpc.getSpaces();
+                for (int i = 0; i < spaceSummaries.size(); i++) {
+                    SpaceSummary summary = (SpaceSummary) spaceSummaries.get(i);
+                    XWikiSpace xwikiSpace = new XWikiSpace(this, summary);
+                    xwikiSpace.setCachePath(getCachePath().addTrailingSeparator().append(
+                        xwikiSpace.getKey()));
+                    CacheUtils.updateCache(xwikiSpace);
+                    xwikiSpace.getCachePath().toFile().mkdir();
+                    addSpace(xwikiSpace);
+                }
+                setSpacesReady(true);
+                CacheUtils.updateCache(this);
             }
-            setSpacesReady(true);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.xwiki.plugins.eclipse.model.IXWikiConnection#synchronize()
+     */
+    public void synchronize() throws SwizzleConfluenceException
+    {
+        if (isOffline()) {
+            // First login.
+            SwizzleXWiki newRpc = new SwizzleXWiki(serverUrl);
+            newRpc.login(userName, password);
+            // Workaround for finding out xwiki version (server)
+            // (compatibility with <= XWiki 1.1.m4)
+            try {
+                newRpc.setNoConversion();
+            } catch (SwizzleConfluenceException e) {
+                // Assume older version of xwiki and turn-off conversion on client.
+                newRpc.setConvertor(new IdentityObjectConvertor());
+            }
+            this.rpc = newRpc;
+            // Logged in,
+            offline = false;
+            // Get a fresh copy of space summaries from the server.
+            List spaces = rpc.getSpaces();
+            // Index new space summaries.
+            HashMap<String, SpaceSummary> newSpaceSummaries = new HashMap<String, SpaceSummary>();
+            for (Object o : spaces) {
+                SpaceSummary summary = (SpaceSummary) o;
+                newSpaceSummaries.put(summary.getKey(), summary);
+            }
+            // Key sets of cached and new space summaries.
+            Set<String> cacheKeySet = new HashSet<String>(spacesByKey.keySet());
+            Set<String> newKeySet = newSpaceSummaries.keySet();
+            // Synchronize each space in cache.
+            for (String cacheKey : cacheKeySet) {
+                if (newKeySet.contains(cacheKey)) {
+                    spacesByKey.get(cacheKey).synchronize(newSpaceSummaries.get(cacheKey));
+                } else {
+                    // For now, we'll just get rid of the cached space.
+                    CacheUtils.clearCache(spacesByKey.get(cacheKey));
+                    spacesByKey.remove(cacheKey);
+                }
+            }
+            // Check whether there are any new spaces
+            for (String newKey : newKeySet) {
+                if (!cacheKeySet.contains(newKey)) {
+                    XWikiSpace xwikiSpace = new XWikiSpace(this, newSpaceSummaries.get(newKey));
+                    // This space should be displayed
+                    xwikiSpace.setMasked(false);
+                    xwikiSpace.setCachePath(getCachePath().addTrailingSeparator().append(
+                        xwikiSpace.getKey()));
+                    CacheUtils.updateCache(xwikiSpace);
+                    xwikiSpace.getCachePath().toFile().mkdir();
+                    addSpace(xwikiSpace);
+                }
+            }
+            // Finally, update the cache
             CacheUtils.updateCache(this);
         }
     }
@@ -243,23 +382,25 @@ public class XWikiConnection implements IXWikiConnection, TreeAdapter
     public void addSpace(String name, String key, String description)
         throws SwizzleConfluenceException
     {
-        Space space = new Space();
-        space.setKey(key);
-        space.setName(name);
-        space.setDescription(description);
-        Space result = rpc.addSpace(space);
-        SpaceSummary summary = new SpaceSummary();
-        summary.setKey(result.getKey());
-        summary.setName(result.getName());
-        summary.setType(result.getType());
-        summary.setUrl(result.getUrl());
-        XWikiSpace wikiSpace = new XWikiSpace(this, summary, result);        
-        wikiSpace.setMasked(false);        
-        wikiSpace.setCachePath(getCachePath().addTrailingSeparator().append(
-            wikiSpace.getKey()));
-        CacheUtils.updateCache(wikiSpace);
-        wikiSpace.getCachePath().toFile().mkdir();
-        addSpace(wikiSpace);
+        if (!isOffline()) {
+            Space space = new Space();
+            space.setKey(key);
+            space.setName(name);
+            space.setDescription(description);
+            Space result = rpc.addSpace(space);
+            SpaceSummary summary = new SpaceSummary();
+            summary.setKey(result.getKey());
+            summary.setName(result.getName());
+            summary.setType(result.getType());
+            summary.setUrl(result.getUrl());
+            XWikiSpace wikiSpace = new XWikiSpace(this, summary, result);
+            wikiSpace.setMasked(false);
+            wikiSpace.setCachePath(getCachePath().addTrailingSeparator().append(
+                wikiSpace.getKey()));
+            CacheUtils.updateCache(wikiSpace);
+            wikiSpace.getCachePath().toFile().mkdir();
+            addSpace(wikiSpace);
+        }
     }
 
     /**
@@ -269,8 +410,27 @@ public class XWikiConnection implements IXWikiConnection, TreeAdapter
      */
     public void disconnect() throws SwizzleConfluenceException
     {
-        rpc.logout();
+        if (!isOffline()) {
+            this.offline = true;
+            Confluence temp = rpc;
+            this.rpc = null;
+            CacheUtils.updateCache(this);
+            for (IXWikiSpace space : spacesByKey.values()) {
+                CacheUtils.updateCache(space);
+            }
+            temp.logout();
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.xwiki.plugins.eclipse.model.IXWikiConnection#clearCache()
+     */
+    public void clearCache()
+    {
         XWikiConnectionManager.getInstance().removeConnection(this);
+        CacheUtils.clearCache(this);
     }
 
     /**
@@ -291,6 +451,16 @@ public class XWikiConnection implements IXWikiConnection, TreeAdapter
     public String getServerUrl()
     {
         return serverUrl;
+    }
+    
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.xwiki.plugins.eclipse.model.IXWikiConnection#getId()
+     */
+    public String getId()
+    {
+        return id;
     }
 
     /**
@@ -334,14 +504,6 @@ public class XWikiConnection implements IXWikiConnection, TreeAdapter
     }
 
     /**
-     * Sets the local cache directory of this connection.
-     */
-    protected void setCachePath(IPath cachePath)
-    {
-        this.cachePath = cachePath;
-    }
-
-    /**
      * {@inheritDoc}
      * 
      * @see org.xwiki.plugins.eclipse.model.IXWikiConnection#isSpacesReady()
@@ -354,14 +516,26 @@ public class XWikiConnection implements IXWikiConnection, TreeAdapter
     /**
      * {@inheritDoc}
      * 
+     * @see org.xwiki.plugins.eclipse.model.IXWikiConnection#isOffline()
+     */
+    public boolean isOffline()
+    {
+        return offline;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
      * @see org.xwiki.plugins.eclipse.model.IXWikiConnection#removeSpace(java.lang.String)
      */
     public void removeSpace(String key) throws SwizzleConfluenceException
     {
-        rpc.removeSpace(key);
-        IXWikiSpace space = spacesByKey.get(key);        
-        spacesByKey.remove(key);
-        CacheUtils.clearCache(space);
+        if (!isOffline()) {
+            rpc.removeSpace(key);
+            IXWikiSpace space = spacesByKey.get(key);
+            spacesByKey.remove(key);
+            CacheUtils.clearCache(space);
+        }
     }
 
     /**
@@ -369,7 +543,7 @@ public class XWikiConnection implements IXWikiConnection, TreeAdapter
      */
     private void writeObject(ObjectOutputStream out) throws IOException
     {
-        out.defaultWriteObject();
+        out.defaultWriteObject();        
     }
 
     /**
@@ -377,6 +551,6 @@ public class XWikiConnection implements IXWikiConnection, TreeAdapter
      */
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException
     {
-        // We'll worry about this later.
+        in.defaultReadObject();
     }
 }

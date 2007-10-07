@@ -25,6 +25,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.codehaus.swizzle.confluence.SpaceSummary;
 import org.codehaus.swizzle.confluence.SwizzleConfluenceException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -244,6 +245,67 @@ public class XWikiSpaceWrapper implements IXWikiSpace
             }
         }
     }
+    
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.xwiki.plugins.eclipse.model.IXWikiSpace#grab()
+     */
+    public void grab() throws SwizzleConfluenceException
+    {
+        XWikiProgressRunner operation = new XWikiProgressRunner()
+        {
+            public void run(IProgressMonitor monitor) throws InvocationTargetException,
+                InterruptedException
+            {
+                monitor.beginTask("Grabbing...", IProgressMonitor.UNKNOWN);
+                try {
+                    space.grab();
+                    monitor.done();
+                } catch (SwizzleConfluenceException e) {
+                    monitor.done();
+                    setComEx(e);
+                    throw new InvocationTargetException(e);
+                }
+            }
+        };
+        GuiUtils.runOperationWithProgress(operation, null);
+        if (operation.getComEx() != null) {
+            throw operation.getComEx();
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.xwiki.plugins.eclipse.model.IXWikiSpace#synchronize()
+     */    
+    public void synchronize(SpaceSummary newSummary) throws SwizzleConfluenceException
+    {
+        final SpaceSummary summary = newSummary;        
+        if (isOffline()) {
+            XWikiProgressRunner operation = new XWikiProgressRunner()
+            {
+                public void run(IProgressMonitor monitor) throws InvocationTargetException,
+                    InterruptedException
+                {
+                    monitor.beginTask("Synchronizing...", IProgressMonitor.UNKNOWN);
+                    try {
+                        space.synchronize(summary);
+                        monitor.done();
+                    } catch (SwizzleConfluenceException e) {
+                        monitor.done();
+                        setComEx(e);
+                        throw new InvocationTargetException(e);
+                    }
+                }
+            };
+            GuiUtils.runOperationWithProgress(operation, null);
+            if (operation.getComEx() != null) {
+                throw operation.getComEx();
+            }
+        }
+    }
 
     /**
      * {@inheritDoc}
@@ -295,6 +357,16 @@ public class XWikiSpaceWrapper implements IXWikiSpace
         return space.isSummaryReady();
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.xwiki.plugins.eclipse.model.IXWikiSpace#isOffline()
+     */
+    public boolean isOffline()
+    {
+        return space.isOffline();
+    }
+    
     /**
      * {@inheritDoc}
      * 

@@ -247,7 +247,7 @@ public class XWikiBrowserPart implements IEditorPart, Listener
      */
     public Image getTitleImage()
     {
-        ImageDescriptor desc = GuiUtils.loadIconImage(XWikiConstants.NAV_PAGE_ICON);
+        ImageDescriptor desc = GuiUtils.loadIconImage(XWikiConstants.NAV_PAGE_ONLINE_NOT_CACHED_ICON);
         return desc.createImage();
     }
 

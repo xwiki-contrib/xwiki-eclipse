@@ -96,11 +96,6 @@ public class XWikiConnectionWrapper implements IXWikiConnection
     {
         XWikiProgressRunner operation = new XWikiProgressRunner()
         {
-            /**
-             * {@inheritDoc}
-             * 
-             * @see org.eclipse.jface.operation.IRunnableWithProgress#run(org.eclipse.core.runtime.IProgressMonitor)
-             */
             public void run(IProgressMonitor monitor) throws InvocationTargetException,
                 InterruptedException
             {
@@ -120,6 +115,47 @@ public class XWikiConnectionWrapper implements IXWikiConnection
             throw operation.getComEx();
         }
 
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.xwiki.plugins.eclipse.model.IXWikiConnection#clearCache()
+     */
+    public void clearCache()
+    {
+        connection.clearCache();
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.xwiki.plugins.eclipse.model.IXWikiConnection#synchronize()
+     */
+    public void synchronize() throws SwizzleConfluenceException
+    {
+        if (isOffline()) {
+            XWikiProgressRunner operation = new XWikiProgressRunner()
+            {
+                public void run(IProgressMonitor monitor) throws InvocationTargetException,
+                    InterruptedException
+                {
+                    monitor.beginTask("Synchronizing...", IProgressMonitor.UNKNOWN);
+                    try {
+                        connection.synchronize();
+                        monitor.done();
+                    } catch (SwizzleConfluenceException e) {
+                        monitor.done();
+                        setComEx(e);
+                        throw new InvocationTargetException(e);
+                    }
+                }
+            };
+            GuiUtils.runOperationWithProgress(operation, null);
+            if (operation.getComEx() != null) {
+                throw operation.getComEx();
+            }
+        }
     }
 
     /**
@@ -168,6 +204,16 @@ public class XWikiConnectionWrapper implements IXWikiConnection
         return connection.getUserName();
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.xwiki.plugins.eclipse.model.IXWikiConnection#getId()
+     */
+    public String getId()
+    {
+        return connection.getId();
+    }
+    
     /**
      * {@inheritDoc}
      * 
@@ -222,6 +268,16 @@ public class XWikiConnectionWrapper implements IXWikiConnection
     public boolean isSpacesReady()
     {
         return connection.isSpacesReady();
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.xwiki.plugins.eclipse.model.IXWikiConnection#isOffline()
+     */
+    public boolean isOffline()
+    {
+        return connection.isOffline();
     }
 
     /**

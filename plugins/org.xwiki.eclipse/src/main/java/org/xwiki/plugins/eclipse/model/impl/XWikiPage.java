@@ -27,6 +27,7 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Date;
+import java.util.Map;
 
 import org.codehaus.swizzle.confluence.Confluence;
 import org.codehaus.swizzle.confluence.Page;
@@ -46,14 +47,23 @@ import org.xwiki.plugins.eclipse.model.adapters.TreeAdapter;
 import org.xwiki.plugins.eclipse.model.wrappers.XWikiPageWrapper;
 import org.xwiki.plugins.eclipse.util.CacheUtils;
 import org.xwiki.plugins.eclipse.util.GuiUtils;
+import org.xwiki.plugins.eclipse.util.LoggingUtils;
 import org.xwiki.plugins.eclipse.util.XWikiConstants;
 
 /**
- * Default implementation of {@link IXWikiPage}.
+ * Default implementation of {@link IXWikiPage}. TODO Offline functionality was added later and
+ * this has made the code dirty. Need to fix (refactor) the code base whenener possible.
  */
 public class XWikiPage implements IXWikiPage, TreeAdapter, IStorage, IStorageEditorInput
 {
 
+    /**
+     * Serial Version ID
+     */
+    private static final long serialVersionUID = -4667061709282873693L;
+
+    private Date creationTimestamp;
+    
     /**
      * Parent XWikiSpace.
      */
@@ -62,7 +72,7 @@ public class XWikiPage implements IXWikiPage, TreeAdapter, IStorage, IStorageEdi
     /**
      * Summary of this page.
      */
-    private transient PageSummary summary;    
+    private transient PageSummary summary;
 
     /**
      * Data (opposite of summary ?) of this page.
@@ -78,7 +88,22 @@ public class XWikiPage implements IXWikiPage, TreeAdapter, IStorage, IStorageEdi
      * Cache path for this page.
      */
     private transient IPath cachePath;
-    
+
+    /**
+     * Whether this page's content was altered while in offline-mode.
+     */
+    private boolean uncommitedChanges = false;
+
+    /**
+     * Sets the cache path for this page.
+     * 
+     * @param cachePath Cache path.
+     */
+    protected void setCachePath(IPath cachePath)
+    {
+        this.cachePath = cachePath;
+    }
+
     /**
      * Creates a new intance of an XWikiPage. Clients should use {@link IXWikiSpace#getPages()} and
      * similar methods to retrieve / create pages.
@@ -91,6 +116,7 @@ public class XWikiPage implements IXWikiPage, TreeAdapter, IStorage, IStorageEdi
         page = new Page();
         setSpace(parent);
         setSummary(pageSummary);
+        creationTimestamp = new Date();
     }
 
     /**
@@ -107,6 +133,7 @@ public class XWikiPage implements IXWikiPage, TreeAdapter, IStorage, IStorageEdi
         setSummary(page);
         this.page = page;
         setDataReady(true);
+        creationTimestamp = new Date();
     }
 
     /**
@@ -150,6 +177,16 @@ public class XWikiPage implements IXWikiPage, TreeAdapter, IStorage, IStorageEdi
     }
 
     /**
+     * Used by internal code.
+     * 
+     * @param changes Whether changes have been made while in offline mode.
+     */
+    protected void setUncommitedChanges(boolean changes)
+    {
+        this.uncommitedChanges = changes;
+    }
+
+    /**
      * {@inheritDoc}
      * 
      * @see org.xwiki.plugins.eclipse.model.adapters.TreeAdapter#getTreeChildren()
@@ -166,7 +203,22 @@ public class XWikiPage implements IXWikiPage, TreeAdapter, IStorage, IStorageEdi
      */
     public Image getImage()
     {
-        return GuiUtils.loadIconImage(XWikiConstants.NAV_PAGE_ICON).createImage();
+        if (isOffline()) {
+            if (isDataReady()) {
+                if (hasUncommitedChanges()) {
+                    return GuiUtils.loadIconImage(XWikiConstants.NAV_PAGE_OFFLINE_MODIFIED_ICON)
+                        .createImage();
+                }
+                return GuiUtils.loadIconImage(XWikiConstants.NAV_PAGE_CACHED_ICON).createImage();
+            }
+            return GuiUtils.loadIconImage(XWikiConstants.NAV_PAGE_OFFLINE_NOT_CACHED_ICON)
+                .createImage();
+        }
+        if (isDataReady()) {
+            return GuiUtils.loadIconImage(XWikiConstants.NAV_PAGE_CACHED_ICON).createImage();
+        }
+        return GuiUtils.loadIconImage(XWikiConstants.NAV_PAGE_ONLINE_NOT_CACHED_ICON)
+            .createImage();
     }
 
     /**
@@ -237,7 +289,9 @@ public class XWikiPage implements IXWikiPage, TreeAdapter, IStorage, IStorageEdi
      */
     public boolean isReadOnly()
     {
-        // TODO for now...
+        if (isOffline() && !isDataReady()) {
+            return true;
+        }
         return false;
     }
 
@@ -248,7 +302,8 @@ public class XWikiPage implements IXWikiPage, TreeAdapter, IStorage, IStorageEdi
      */
     public boolean exists()
     {
-        return true;
+        // Don't want to list with recent open documents.
+        return false;
     }
 
     /**
@@ -258,7 +313,7 @@ public class XWikiPage implements IXWikiPage, TreeAdapter, IStorage, IStorageEdi
      */
     public ImageDescriptor getImageDescriptor()
     {
-        return GuiUtils.loadIconImage(XWikiConstants.NAV_PAGE_ICON);
+        return GuiUtils.loadIconImage(XWikiConstants.NAV_PAGE_ONLINE_NOT_CACHED_ICON);
     }
 
     /**
@@ -312,15 +367,27 @@ public class XWikiPage implements IXWikiPage, TreeAdapter, IStorage, IStorageEdi
     }
 
     /**
+     * Returns if the page is clean or not.
+     * 
+     * @return Whether this page has been modified while in off-line mode.
+     */
+    public boolean hasUncommitedChanges()
+    {
+        return uncommitedChanges;
+    }
+
+    /**
      * {@inheritDoc}
      * 
      * @see java.lang.Object#equals(java.lang.Object)
      */
     public boolean equals(Object o)
-    {
+    {        
         if (o instanceof IXWikiPage) {
-            IXWikiPage other = (IXWikiPage) o;
-            if (other.getId().equals(this.getId())) {
+            IXWikiPage other = (IXWikiPage) o;            
+            String hisOwner = other.getParentSpace().getConnection().getId();          
+            String myOwner = getParentSpace().getConnection().getId();
+            if (other.getId().equals(this.getId()) && myOwner.equals(hisOwner)) {
                 return true;
             }
         }
@@ -335,10 +402,36 @@ public class XWikiPage implements IXWikiPage, TreeAdapter, IStorage, IStorageEdi
     public void init() throws SwizzleConfluenceException
     {
         if (!isDataReady()) {
-            Confluence rpc = getParentSpace().getConnection().getRpcProxy();
-            String pageId = getId();
-            this.page = rpc.getPage(pageId);            
-            setDataReady(true);
+            if (!isOffline()) {
+                Confluence rpc = getParentSpace().getConnection().getRpcProxy();
+                String pageId = getId();
+                this.page = rpc.getPage(pageId);
+                setDataReady(true);
+                CacheUtils.updateCache(this);
+            }
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.xwiki.plugins.eclipse.model.IXWikiPage#synchronize(PageSummary)
+     */
+    public void synchronize(PageSummary newSummary) throws SwizzleConfluenceException
+    {
+        if (!isOffline()) {
+            this.summary = newSummary;
+            if (isDataReady()) {
+                if (hasUncommitedChanges()) {
+                    // For now, we'll simply override what's on the server
+                    save();
+                    setUncommitedChanges(false);
+                } else {
+                    // Get a fresh copy of data from the server
+                    this.page = getParentSpace().getConnection().getRpcProxy().getPage(getId());
+                }
+            }
+            // Update the cache.
             CacheUtils.updateCache(this);
         }
     }
@@ -350,6 +443,9 @@ public class XWikiPage implements IXWikiPage, TreeAdapter, IStorage, IStorageEdi
      */
     public String getContent()
     {
+        if (!isDataReady()) {
+            return "Not Available (Empty Cache)";
+        }
         return (String) this.page.getContent();
     }
 
@@ -360,6 +456,9 @@ public class XWikiPage implements IXWikiPage, TreeAdapter, IStorage, IStorageEdi
      */
     public String getContentStatus()
     {
+        if (!isDataReady()) {
+            return "Not Available (Empty Cache)";
+        }
         return (String) this.page.getContentStatus();
     }
 
@@ -370,6 +469,10 @@ public class XWikiPage implements IXWikiPage, TreeAdapter, IStorage, IStorageEdi
      */
     public Date getCreated()
     {
+        if (!isDataReady()) {
+            LoggingUtils.error("Required data is not available in cache.");
+            return new Date();
+        }
         return (Date) this.page.getCreated();
     }
 
@@ -380,6 +483,9 @@ public class XWikiPage implements IXWikiPage, TreeAdapter, IStorage, IStorageEdi
      */
     public String getCreator()
     {
+        if (!isDataReady()) {
+            return "Not Available (Empty Cache)";
+        }
         return (String) this.page.getCreator();
     }
 
@@ -400,6 +506,9 @@ public class XWikiPage implements IXWikiPage, TreeAdapter, IStorage, IStorageEdi
      */
     public String getLastModifier()
     {
+        if (!isDataReady()) {
+            return "Not Available (Empty Cache)";
+        }
         return (String) this.page.getModifier();
     }
 
@@ -420,6 +529,10 @@ public class XWikiPage implements IXWikiPage, TreeAdapter, IStorage, IStorageEdi
      */
     public Date getModified()
     {
+        if (!isDataReady()) {
+            LoggingUtils.error("Required data is not available in cache.");
+            return new Date();
+        }
         return (Date) this.page.getModified();
     }
 
@@ -480,9 +593,13 @@ public class XWikiPage implements IXWikiPage, TreeAdapter, IStorage, IStorageEdi
      */
     public int getVersion()
     {
+        if (!isDataReady()) {
+            LoggingUtils.error("Required data is not available in cache.");
+            return 0;
+        }
         return (Integer) this.page.getVersion();
     }
-    
+
     /**
      * {@inheritDoc}
      * 
@@ -492,14 +609,6 @@ public class XWikiPage implements IXWikiPage, TreeAdapter, IStorage, IStorageEdi
     {
         return this.cachePath;
     }
-    
-    /**
-     * Sets the cache path for this page.
-     * @param cachePath Cache path.
-     */
-    protected void setCachePath(IPath cachePath) {
-        this.cachePath = cachePath;
-    }
 
     /**
      * {@inheritDoc}
@@ -508,6 +617,10 @@ public class XWikiPage implements IXWikiPage, TreeAdapter, IStorage, IStorageEdi
      */
     public boolean isCurrent()
     {
+        if (!isDataReady()) {
+            LoggingUtils.error("Required data is not available in cache.");
+            return false;
+        }
         return (Boolean) this.page.isCurrent();
     }
 
@@ -528,6 +641,10 @@ public class XWikiPage implements IXWikiPage, TreeAdapter, IStorage, IStorageEdi
      */
     public boolean isHomePage()
     {
+        if (!isDataReady()) {
+            LoggingUtils.error("Required data is not available in cache.");
+            return false;
+        }
         return (Boolean) this.page.isHomePage();
     }
 
@@ -544,11 +661,25 @@ public class XWikiPage implements IXWikiPage, TreeAdapter, IStorage, IStorageEdi
     /**
      * {@inheritDoc}
      * 
+     * @see org.xwiki.plugins.eclipse.model.IXWikiPage#isOffline()
+     */
+    public boolean isOffline()
+    {
+        return getParentSpace().isOffline();
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
      * @see org.xwiki.plugins.eclipse.model.IXWikiPage#setContent(java.lang.String)
      */
     public void setContent(String newContent)
     {
-        this.page.setContent(newContent);        
+        if (!isDataReady()) {
+            LoggingUtils.error("Required data is not available in cache.");
+            return;
+        }
+        this.page.setContent(newContent);
     }
 
     /**
@@ -558,6 +689,10 @@ public class XWikiPage implements IXWikiPage, TreeAdapter, IStorage, IStorageEdi
      */
     public void setParentId(String newParentId)
     {
+        if (!isDataReady()) {
+            LoggingUtils.error("Required data is not available in cache.");
+            return;
+        }
         this.summary.setParentId(newParentId);
         this.page.setParentId(newParentId);
     }
@@ -569,6 +704,10 @@ public class XWikiPage implements IXWikiPage, TreeAdapter, IStorage, IStorageEdi
      */
     public void setTitle(String newTitle)
     {
+        if (!isDataReady()) {
+            LoggingUtils.error("Required data is not available in cache.");
+            return;
+        }
         this.summary.setTitle(newTitle);
         this.page.setTitle(newTitle);
     }
@@ -580,9 +719,13 @@ public class XWikiPage implements IXWikiPage, TreeAdapter, IStorage, IStorageEdi
      */
     public IXWikiPage save() throws SwizzleConfluenceException
     {
-        Confluence rpc = getParentSpace().getConnection().getRpcProxy();
-        this.page = rpc.storePage(page);
-        setDataReady(true);
+        if (!isOffline()) {
+            Confluence rpc = getParentSpace().getConnection().getRpcProxy();
+            this.page = rpc.storePage(page);
+            setDataReady(true);
+        } else {
+            setUncommitedChanges(true);
+        }
         CacheUtils.updateCache(this);
         return this;
     }
@@ -602,7 +745,11 @@ public class XWikiPage implements IXWikiPage, TreeAdapter, IStorage, IStorageEdi
      */
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException
     {
-        // We'll worry about this later.
+        Map summaryMap = (Map) in.readObject();
+        Map pageMap = (Map) in.readObject();
+        in.defaultReadObject();
+        this.summary = new PageSummary(summaryMap);
+        this.page = new Page(pageMap);
     }
-    
+
 }
