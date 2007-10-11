@@ -280,8 +280,9 @@ public class XWikiSpaceWrapper implements IXWikiSpace
      * 
      * @see org.xwiki.plugins.eclipse.model.IXWikiSpace#synchronize()
      */    
-    public void synchronize(SpaceSummary newSummary) throws SwizzleConfluenceException
+    public boolean synchronize(SpaceSummary newSummary) throws SwizzleConfluenceException
     {
+    	boolean success = false;
         final SpaceSummary summary = newSummary;        
         if (isOffline()) {
             XWikiProgressRunner operation = new XWikiProgressRunner()
@@ -291,7 +292,7 @@ public class XWikiSpaceWrapper implements IXWikiSpace
                 {
                     monitor.beginTask("Synchronizing...", IProgressMonitor.UNKNOWN);
                     try {
-                        space.synchronize(summary);
+                        setArtifact(new Boolean(space.synchronize(summary)));
                         monitor.done();
                     } catch (SwizzleConfluenceException e) {
                         monitor.done();
@@ -304,7 +305,12 @@ public class XWikiSpaceWrapper implements IXWikiSpace
             if (operation.getComEx() != null) {
                 throw operation.getComEx();
             }
+            success = ((Boolean)operation.getArtifact()).booleanValue();
+            if (!success) {
+            	GuiUtils.reportWarning(true, "Sync Failiure", "Some pages could not be commited, Expired Local Copy.");
+            }
         }
+        return success;        
     }
 
     /**

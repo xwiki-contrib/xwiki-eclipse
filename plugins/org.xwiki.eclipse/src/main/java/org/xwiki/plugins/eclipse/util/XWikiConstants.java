@@ -68,6 +68,8 @@ public class XWikiConstants
     public static String DUMMY_ICON = "icons/dummy.png";
     
     public static String GRAB_SPACE_ICON = "icons/grab.png";
+    
+    public static String REVERT_PAGE_ICON = "icons/revert.png";
 
     /* Cache Constants */
     public static String CONNECTION_USERNAME = "USERNAME";

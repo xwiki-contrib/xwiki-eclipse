@@ -55,7 +55,9 @@ import org.xwiki.plugins.eclipse.model.IXWikiConnectionManager;
 import org.xwiki.plugins.eclipse.model.IXWikiPage;
 import org.xwiki.plugins.eclipse.model.IXWikiSpace;
 import org.xwiki.plugins.eclipse.model.impl.XWikiConnectionManager;
+import org.xwiki.plugins.eclipse.model.impl.XWikiPage;
 import org.xwiki.plugins.eclipse.model.wrappers.XWikiConnectionWrapper;
+import org.xwiki.plugins.eclipse.model.wrappers.XWikiPageWrapper;
 import org.xwiki.plugins.eclipse.model.wrappers.XWikiSpaceWrapper;
 import org.xwiki.plugins.eclipse.util.GuiUtils;
 import org.xwiki.plugins.eclipse.util.ICacheable;
@@ -100,6 +102,11 @@ public class XWikiNavigator extends ViewPart
      */
     private Action clearCacheAction;
 
+    /**
+     * Action for reverting a page.
+     */
+    private Action revertAction;
+    
     /**
      * Action for adding a new page.
      */
@@ -226,6 +233,7 @@ public class XWikiNavigator extends ViewPart
     private void fillContextMenu(IMenuManager manager)
     {
         manager.add(addPageAction);
+        manager.add(revertAction);
         manager.add(removePageAction);
         manager.add(new Separator());
         manager.add(grabSpaceAction);
@@ -360,6 +368,36 @@ public class XWikiNavigator extends ViewPart
             .loadIconImage(XWikiConstants.CLEAR_CACHE_ICON));
         clearCacheAction.setEnabled(false);
 
+        /**
+         * Revert Action
+         */
+        revertAction = new Action()
+        {
+            public void run()
+            {
+                ISelection selection = viewer.getSelection();
+                Object obj = ((IStructuredSelection) selection).getFirstElement();
+                if (obj instanceof IXWikiPage) {
+                    IXWikiPage page =
+                        new XWikiPageWrapper((IXWikiPage) obj);
+                    if (!page.isOffline() && page.hasUncommitedChanges()) {
+                        try {
+                            page.revert();
+                        } catch (SwizzleConfluenceException e) {
+                            // Will be logged elsewhere
+                        }
+                    }
+                    viewer.refresh();                  
+                    viewer.setSelection(viewer.getSelection(), false);
+                }
+            }
+        };
+        revertAction.setText("Revert Page");
+        revertAction.setToolTipText("Revert Page");
+        revertAction.setImageDescriptor(GuiUtils
+            .loadIconImage(XWikiConstants.REVERT_PAGE_ICON));
+        revertAction.setEnabled(false);
+        
         /**
          * Add page action.
          */
@@ -523,6 +561,7 @@ public class XWikiNavigator extends ViewPart
                         removeSpaceAction.setEnabled(false);
                         addPageAction.setEnabled(false);
                         removePageAction.setEnabled(false);
+                        revertAction.setEnabled(false);
                         if (selection instanceof IXWikiConnection) {
                             clearCacheAction.setEnabled(true);
                             synchronizeAction.setEnabled(true);
@@ -555,8 +594,16 @@ public class XWikiNavigator extends ViewPart
                             addPageAction.setEnabled(false);
                         }
                         if (selection instanceof IXWikiPage) {
+                            IXWikiPage page =
+                                new XWikiPageWrapper((IXWikiPage) selection);
+                            if (!page.isOffline() && page.hasUncommitedChanges()) {
+                                revertAction.setEnabled(true);
+                            } else {
+                                revertAction.setEnabled(false);
+                            }
                             removePageAction.setEnabled(true);
                         } else {
+                            revertAction.setEnabled(false);
                             removePageAction.setEnabled(false);
                         }
                         clearCacheAction.setEnabled(false);

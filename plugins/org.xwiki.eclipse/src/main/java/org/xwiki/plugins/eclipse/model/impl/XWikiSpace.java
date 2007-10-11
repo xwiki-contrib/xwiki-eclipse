@@ -344,9 +344,11 @@ public class XWikiSpace implements IXWikiSpace, TreeAdapter
      * 
      * @see org.xwiki.plugins.eclipse.model.IXWikiSpace#synchronize(SpaceSummary)
      */
-    public void synchronize(SpaceSummary newSummary) throws SwizzleConfluenceException
+    public boolean synchronize(SpaceSummary newSummary) throws SwizzleConfluenceException
     {
+    	boolean success = false;
         if (!isOffline()) {
+        	success = true;
             this.summary = newSummary;
             if (isDataReady()) {
                 this.space = getConnection().getRpcProxy().getSpace(getKey());
@@ -365,7 +367,7 @@ public class XWikiSpace implements IXWikiSpace, TreeAdapter
                 // Synchronize each cached page.
                 for (String cacheKey : cacheKeySet) {
                     if (newKeySet.contains(cacheKey)) {
-                        pagesByID.get(cacheKey).synchronize(newPageSummaries.get(cacheKey));
+                        success = pagesByID.get(cacheKey).synchronize(newPageSummaries.get(cacheKey)) ? success : false;
                     } else {
                         // For now, we'll simply get rid of the missing page.
                         CacheUtils.clearCache(pagesByID.get(cacheKey));
@@ -386,6 +388,7 @@ public class XWikiSpace implements IXWikiSpace, TreeAdapter
                 CacheUtils.updateCache(this);
             }
         }
+        return success;
     }
 
     /**

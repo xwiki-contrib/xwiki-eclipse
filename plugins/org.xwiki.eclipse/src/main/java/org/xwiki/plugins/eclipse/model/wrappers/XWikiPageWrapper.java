@@ -246,7 +246,7 @@ public class XWikiPageWrapper implements IXWikiPage
             return 0;
         }
     }
-    
+
     /**
      * {@inheritDoc}
      * 
@@ -297,9 +297,10 @@ public class XWikiPageWrapper implements IXWikiPage
      * {@inheritDoc}
      * 
      * @see org.xwiki.plugins.eclipse.model.IXWikiPage#synchronize()
-     */    
-    public void synchronize(PageSummary newSummary) throws SwizzleConfluenceException
+     */
+    public boolean synchronize(PageSummary newSummary) throws SwizzleConfluenceException
     {
+        boolean success = false;
         final PageSummary summary = newSummary;
         if (isOffline()) {
             XWikiProgressRunner operation = new XWikiProgressRunner()
@@ -309,7 +310,7 @@ public class XWikiPageWrapper implements IXWikiPage
                 {
                     monitor.beginTask("Synchronizing...", IProgressMonitor.UNKNOWN);
                     try {
-                        page.synchronize(summary);
+                        setArtifact(new Boolean(page.synchronize(summary)));
                         monitor.done();
                     } catch (SwizzleConfluenceException e) {
                         monitor.done();
@@ -322,6 +323,41 @@ public class XWikiPageWrapper implements IXWikiPage
             if (operation.getComEx() != null) {
                 throw operation.getComEx();
             }
+            success = ((Boolean) operation.getArtifact()).booleanValue();
+            if (!success) {
+                GuiUtils.reportWarning(true, "Sync Failiure",
+                    "Could not commit page, Expired Local Copy.");
+            }
+        }
+        return success;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.xwiki.plugins.eclipse.model.IXWikiPage#revert()
+     */
+    public void revert() throws SwizzleConfluenceException
+    {
+        XWikiProgressRunner operation = new XWikiProgressRunner()
+        {        
+            public void run(IProgressMonitor monitor) throws InvocationTargetException,
+                InterruptedException
+            {
+                monitor.beginTask("Reverting...", IProgressMonitor.UNKNOWN);
+                try {
+                    page.revert();
+                    monitor.done();
+                } catch (SwizzleConfluenceException e) {
+                    monitor.done();
+                    setComEx(e);
+                    throw new InvocationTargetException(e);
+                }
+            }
+        };
+        GuiUtils.runOperationWithProgress(operation, null);
+        if (operation.getComEx() != null) {
+            throw operation.getComEx();
         }
     }
 
@@ -376,6 +412,16 @@ public class XWikiPageWrapper implements IXWikiPage
     {
         return true;
     }
+    
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.xwiki.plugins.eclipse.model.IXWikiPage#hasUncommitedChanges()
+     */
+    public boolean hasUncommitedChanges()
+    {
+        return page.hasUncommitedChanges();
+    }
 
     /**
      * {@inheritDoc}
@@ -386,7 +432,7 @@ public class XWikiPageWrapper implements IXWikiPage
     {
         return page.isOffline();
     }
-    
+
     /**
      * {@inheritDoc}
      * 

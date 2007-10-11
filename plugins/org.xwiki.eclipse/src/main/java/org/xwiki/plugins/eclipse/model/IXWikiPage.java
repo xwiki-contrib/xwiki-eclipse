@@ -137,9 +137,17 @@ public interface IXWikiPage extends ICacheable
     
     /**
      * Synchronizes this page with the back-end.
+     * @return TODO
      */
-    public void synchronize(PageSummary newSummary) throws SwizzleConfluenceException;    
+    public boolean synchronize(PageSummary newSummary) throws SwizzleConfluenceException;    
 
+    /**
+     * Forgets all changes made to this page and obtains a fresh copy from the server
+     * 
+     * @throws SwizzleConfluenceException
+     */
+    public void revert() throws SwizzleConfluenceException;
+    
     /**
      * @return Status of content (Markup) of this page.
      */
@@ -164,6 +172,13 @@ public interface IXWikiPage extends ICacheable
      * @return Whether the data (core) of this page has been retrieved or not.
      */
     public boolean isDataReady();
+    
+    /**
+     * Whether this page has local changes that have not yet been commited.
+     * 
+     * @return True if the page is out of sync with the server
+     */
+    public boolean hasUncommitedChanges();
 
     /**
      * @return Parent space of this page.

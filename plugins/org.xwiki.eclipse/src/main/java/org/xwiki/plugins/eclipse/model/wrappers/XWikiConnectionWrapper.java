@@ -25,6 +25,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import javax.security.auth.login.FailedLoginException;
+
 import org.codehaus.swizzle.confluence.Confluence;
 import org.codehaus.swizzle.confluence.SwizzleConfluenceException;
 import org.eclipse.core.runtime.IPath;
@@ -132,8 +134,9 @@ public class XWikiConnectionWrapper implements IXWikiConnection
      * 
      * @see org.xwiki.plugins.eclipse.model.IXWikiConnection#synchronize()
      */
-    public void synchronize() throws SwizzleConfluenceException
+    public boolean synchronize() throws SwizzleConfluenceException
     {
+    	boolean success = false;
         if (isOffline()) {
             XWikiProgressRunner operation = new XWikiProgressRunner()
             {
@@ -142,7 +145,7 @@ public class XWikiConnectionWrapper implements IXWikiConnection
                 {
                     monitor.beginTask("Synchronizing...", IProgressMonitor.UNKNOWN);
                     try {
-                        connection.synchronize();
+                        setArtifact(new Boolean(connection.synchronize()));
                         monitor.done();
                     } catch (SwizzleConfluenceException e) {
                         monitor.done();
@@ -155,7 +158,12 @@ public class XWikiConnectionWrapper implements IXWikiConnection
             if (operation.getComEx() != null) {
                 throw operation.getComEx();
             }
+            success = ((Boolean)operation.getArtifact()).booleanValue();
+            if (!success) {
+            	GuiUtils.reportWarning(true, "Sync Failiure", "Some pages could not be commited, Expired Local Copy.");
+            }
         }
+        return success;
     }
 
     /**

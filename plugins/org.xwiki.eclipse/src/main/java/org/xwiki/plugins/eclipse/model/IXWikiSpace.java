@@ -124,8 +124,9 @@ public interface IXWikiSpace extends ICacheable
     
     /**
      * Synchronizes this space with the back-end.
+     * @return TODO
      */
-    public void synchronize(SpaceSummary newSummary) throws SwizzleConfluenceException;
+    public boolean synchronize(SpaceSummary newSummary) throws SwizzleConfluenceException;
     
     /**
      * @return Parent IXWikiConnection which retrieved this space.

@@ -317,9 +317,11 @@ public class XWikiConnection implements IXWikiConnection, TreeAdapter
      * 
      * @see org.xwiki.plugins.eclipse.model.IXWikiConnection#synchronize()
      */
-    public void synchronize() throws SwizzleConfluenceException
+    public boolean synchronize() throws SwizzleConfluenceException
     {
+    	boolean success = false;
         if (isOffline()) {
+        	success = true;
             // First login.
             SwizzleXWiki newRpc = new SwizzleXWiki(serverUrl);
             newRpc.login(userName, password);
@@ -348,7 +350,7 @@ public class XWikiConnection implements IXWikiConnection, TreeAdapter
             // Synchronize each space in cache.
             for (String cacheKey : cacheKeySet) {
                 if (newKeySet.contains(cacheKey)) {
-                    spacesByKey.get(cacheKey).synchronize(newSpaceSummaries.get(cacheKey));
+                    success = spacesByKey.get(cacheKey).synchronize(newSpaceSummaries.get(cacheKey)) ? success : false;
                 } else {
                     // For now, we'll just get rid of the cached space.
                     CacheUtils.clearCache(spacesByKey.get(cacheKey));
@@ -371,6 +373,7 @@ public class XWikiConnection implements IXWikiConnection, TreeAdapter
             // Finally, update the cache
             CacheUtils.updateCache(this);
         }
+        return success;
     }
 
     /**

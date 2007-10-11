@@ -104,8 +104,9 @@ public interface IXWikiConnection extends ICacheable
     
     /**
      * Re-connects (+ synchronizes) this connection with the back-end.
+     * @return TODO
      */
-    public void synchronize() throws SwizzleConfluenceException;
+    public boolean synchronize() throws SwizzleConfluenceException;
     
     /**
      * Adds a new space to this connection with given parameters (minimal).

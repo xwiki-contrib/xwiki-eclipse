@@ -98,6 +98,30 @@ public class GuiUtils
             Display.getDefault().asyncExec(runner);
         }
     }
+    
+    /**
+     * A utility method for reporting Warnings.
+     * 
+     * @param sync The mode of report (syncronous or asynchronous)
+     * @param title Title of the warning message.
+     * @param message Warning message to be displayed.
+     */
+    public static void reportWarning(boolean sync, final String title, final String message)
+    {
+        Runnable runner = new Runnable()
+        {
+            public void run()
+            {
+                MessageDialog.openWarning(null, title, message);
+            }
+        };
+
+        if (sync) {
+            Display.getDefault().syncExec(runner);
+        } else {
+            Display.getDefault().asyncExec(runner);
+        }
+    }
 
     /**
      * Used to load icons for all purposes of the plug-in.

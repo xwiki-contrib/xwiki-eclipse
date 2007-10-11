@@ -203,22 +203,22 @@ public class XWikiPage implements IXWikiPage, TreeAdapter, IStorage, IStorageEdi
      */
     public Image getImage()
     {
-        if (isOffline()) {
-            if (isDataReady()) {
-                if (hasUncommitedChanges()) {
-                    return GuiUtils.loadIconImage(XWikiConstants.NAV_PAGE_OFFLINE_MODIFIED_ICON)
-                        .createImage();
-                }
-                return GuiUtils.loadIconImage(XWikiConstants.NAV_PAGE_CACHED_ICON).createImage();
-            }
-            return GuiUtils.loadIconImage(XWikiConstants.NAV_PAGE_OFFLINE_NOT_CACHED_ICON)
+    	if (hasUncommitedChanges()) {
+            return GuiUtils.loadIconImage(XWikiConstants.NAV_PAGE_OFFLINE_MODIFIED_ICON)
                 .createImage();
-        }
-        if (isDataReady()) {
+        } else if (isOffline()) {
+            if (isDataReady()) {               
+                return GuiUtils.loadIconImage(XWikiConstants.NAV_PAGE_CACHED_ICON).createImage();
+            } else {
+            	return GuiUtils.loadIconImage(XWikiConstants.NAV_PAGE_OFFLINE_NOT_CACHED_ICON)            
+                	.createImage();
+            }
+        } else if (isDataReady()) {
             return GuiUtils.loadIconImage(XWikiConstants.NAV_PAGE_CACHED_ICON).createImage();
+        } else {
+        	return GuiUtils.loadIconImage(XWikiConstants.NAV_PAGE_ONLINE_NOT_CACHED_ICON)
+            	.createImage();
         }
-        return GuiUtils.loadIconImage(XWikiConstants.NAV_PAGE_ONLINE_NOT_CACHED_ICON)
-            .createImage();
     }
 
     /**
@@ -417,26 +417,48 @@ public class XWikiPage implements IXWikiPage, TreeAdapter, IStorage, IStorageEdi
      * 
      * @see org.xwiki.plugins.eclipse.model.IXWikiPage#synchronize(PageSummary)
      */
-    public void synchronize(PageSummary newSummary) throws SwizzleConfluenceException
+    public boolean synchronize(PageSummary newSummary) throws SwizzleConfluenceException
     {
+    	boolean success = false;
         if (!isOffline()) {
             this.summary = newSummary;
             if (isDataReady()) {
                 if (hasUncommitedChanges()) {
-                    // For now, we'll simply override what's on the server
-                    save();
-                    setUncommitedChanges(false);
+                	int localVersion = getVersion();
+                	Page remotePage = getParentSpace().getConnection().getRpcProxy().getPage(getId());
+                	int remoteVersion = new Integer(remotePage.toMap().get("version").toString());
+                	if (localVersion == remoteVersion) {
+                		save();                    
+                    	setUncommitedChanges(false);
+                    	success = true;
+                	}
                 } else {
                     // Get a fresh copy of data from the server
                     this.page = getParentSpace().getConnection().getRpcProxy().getPage(getId());
+                    success = true;
                 }
             }
             // Update the cache.
             CacheUtils.updateCache(this);
         }
+        return success;
     }
 
+    
     /**
+     * {@inheritDoc}
+     * 
+     * @see org.xwiki.plugins.eclipse.model.IXWikiPage#revert()
+     */
+    public void revert() throws SwizzleConfluenceException 
+    {
+		this.page = getParentSpace().getConnection().getRpcProxy().getPage(getId());
+		setUncommitedChanges(false);
+		setDataReady(true);
+		CacheUtils.updateCache(this);
+	}
+
+	/**
      * {@inheritDoc}
      * 
      * @see org.xwiki.plugins.eclipse.model.IXWikiPage#getContent()
@@ -597,7 +619,7 @@ public class XWikiPage implements IXWikiPage, TreeAdapter, IStorage, IStorageEdi
             LoggingUtils.error("Required data is not available in cache.");
             return 0;
         }
-        return (Integer) this.page.getVersion();
+        return new Integer(page.toMap().get("version").toString()).intValue();
     }
 
     /**
@@ -719,7 +741,7 @@ public class XWikiPage implements IXWikiPage, TreeAdapter, IStorage, IStorageEdi
      */
     public IXWikiPage save() throws SwizzleConfluenceException
     {
-        if (!isOffline()) {
+        if (!isOffline() && !hasUncommitedChanges()) {
             Confluence rpc = getParentSpace().getConnection().getRpcProxy();
             this.page = rpc.storePage(page);
             setDataReady(true);
