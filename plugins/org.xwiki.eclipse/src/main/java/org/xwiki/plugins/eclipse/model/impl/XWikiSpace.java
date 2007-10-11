@@ -39,6 +39,7 @@ import org.codehaus.swizzle.confluence.SpaceSummary;
 import org.codehaus.swizzle.confluence.SwizzleConfluenceException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.swt.graphics.Image;
+import org.xwiki.plugins.eclipse.XWikiEclipsePlugin;
 import org.xwiki.plugins.eclipse.model.IXWikiConnection;
 import org.xwiki.plugins.eclipse.model.IXWikiPage;
 import org.xwiki.plugins.eclipse.model.IXWikiSpace;
@@ -243,9 +244,9 @@ public class XWikiSpace implements IXWikiSpace, TreeAdapter
     public Image getImage()
     {
         if (isOffline()) {
-            return GuiUtils.loadIconImage(XWikiConstants.NAV_SPACE_OFFLINE_ICON).createImage();
+            return XWikiEclipsePlugin.getImageDescriptor(XWikiConstants.NAV_SPACE_OFFLINE_ICON).createImage();
         }
-        return GuiUtils.loadIconImage(XWikiConstants.NAV_SPACE_ICON).createImage();
+        return XWikiEclipsePlugin.getImageDescriptor(XWikiConstants.NAV_SPACE_ICON).createImage();
     }
 
     /**

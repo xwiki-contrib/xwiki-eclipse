@@ -26,6 +26,12 @@
             class="org.xwiki.plugins.eclipse.views.navigator.XWikiNavigator"
             id="org.xwiki.plugins.eclipse.views.XWikiNavigator">
       </view>
+      <view
+            category="XWiki"
+            class="org.xwiki.plugins.eclipse.views.navigator.XWikiBrowserView"
+            id="org.xwiki.plugins.eclipse.views.XWikiBrowser"
+            name="XWiki browser">
+      </view>
    </extension>
    <extension
          point="org.eclipse.ui.perspectiveExtensions">

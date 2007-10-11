@@ -41,6 +41,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IPersistableElement;
 import org.eclipse.ui.IStorageEditorInput;
+import org.xwiki.plugins.eclipse.XWikiEclipsePlugin;
 import org.xwiki.plugins.eclipse.model.IXWikiPage;
 import org.xwiki.plugins.eclipse.model.IXWikiSpace;
 import org.xwiki.plugins.eclipse.model.adapters.TreeAdapter;
@@ -204,19 +205,19 @@ public class XWikiPage implements IXWikiPage, TreeAdapter, IStorage, IStorageEdi
     public Image getImage()
     {
     	if (hasUncommitedChanges()) {
-            return GuiUtils.loadIconImage(XWikiConstants.NAV_PAGE_OFFLINE_MODIFIED_ICON)
+            return XWikiEclipsePlugin.getImageDescriptor(XWikiConstants.NAV_PAGE_OFFLINE_MODIFIED_ICON)
                 .createImage();
         } else if (isOffline()) {
             if (isDataReady()) {               
-                return GuiUtils.loadIconImage(XWikiConstants.NAV_PAGE_CACHED_ICON).createImage();
+                return XWikiEclipsePlugin.getImageDescriptor(XWikiConstants.NAV_PAGE_CACHED_ICON).createImage();
             } else {
-            	return GuiUtils.loadIconImage(XWikiConstants.NAV_PAGE_OFFLINE_NOT_CACHED_ICON)            
+            	return XWikiEclipsePlugin.getImageDescriptor(XWikiConstants.NAV_PAGE_OFFLINE_NOT_CACHED_ICON)            
                 	.createImage();
             }
         } else if (isDataReady()) {
-            return GuiUtils.loadIconImage(XWikiConstants.NAV_PAGE_CACHED_ICON).createImage();
+            return XWikiEclipsePlugin.getImageDescriptor(XWikiConstants.NAV_PAGE_CACHED_ICON).createImage();
         } else {
-        	return GuiUtils.loadIconImage(XWikiConstants.NAV_PAGE_ONLINE_NOT_CACHED_ICON)
+        	return XWikiEclipsePlugin.getImageDescriptor(XWikiConstants.NAV_PAGE_ONLINE_NOT_CACHED_ICON)
             	.createImage();
         }
     }
@@ -313,7 +314,7 @@ public class XWikiPage implements IXWikiPage, TreeAdapter, IStorage, IStorageEdi
      */
     public ImageDescriptor getImageDescriptor()
     {
-        return GuiUtils.loadIconImage(XWikiConstants.NAV_PAGE_ONLINE_NOT_CACHED_ICON);
+        return XWikiEclipsePlugin.getImageDescriptor(XWikiConstants.NAV_PAGE_ONLINE_NOT_CACHED_ICON);
     }
 
     /**

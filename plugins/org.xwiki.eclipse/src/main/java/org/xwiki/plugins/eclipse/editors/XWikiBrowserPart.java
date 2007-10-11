@@ -35,6 +35,7 @@ import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IPropertyListener;
 import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.PartInitException;
+import org.xwiki.plugins.eclipse.XWikiEclipsePlugin;
 import org.xwiki.plugins.eclipse.editors.ui.XWikiBrowserPartUI;
 import org.xwiki.plugins.eclipse.model.IXWikiPage;
 import org.xwiki.plugins.eclipse.util.GuiUtils;
@@ -247,7 +248,7 @@ public class XWikiBrowserPart implements IEditorPart, Listener
      */
     public Image getTitleImage()
     {
-        ImageDescriptor desc = GuiUtils.loadIconImage(XWikiConstants.NAV_PAGE_ONLINE_NOT_CACHED_ICON);
+        ImageDescriptor desc = XWikiEclipsePlugin.getImageDescriptor(XWikiConstants.NAV_PAGE_ONLINE_NOT_CACHED_ICON);
         return desc.createImage();
     }
 
@@ -294,11 +295,11 @@ public class XWikiBrowserPart implements IEditorPart, Listener
         if (event.widget.equals(xwikiBrowserUi.getToggleViewButton())) {
             if (xwikiBrowserUi.getToggleViewButton().getSelection()) {
                 xwikiBrowserUi.getToggleViewButton().setImage(
-                    GuiUtils.loadIconImage(XWikiConstants.TOGGLE_BUTTON_ICON).createImage());
+                    XWikiEclipsePlugin.getImageDescriptor(XWikiConstants.TOGGLE_BUTTON_ICON).createImage());
                 toggleUrl();
             } else {
                 xwikiBrowserUi.getToggleViewButton().setImage(
-                    GuiUtils.loadIconImage(XWikiConstants.TOGGLE_BUTTON_ICON).createImage());
+                    XWikiEclipsePlugin.getImageDescriptor(XWikiConstants.TOGGLE_BUTTON_ICON).createImage());
                 printView = true;
                 toggleUrl();
             }

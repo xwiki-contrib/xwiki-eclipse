@@ -50,6 +50,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.DrillDownAdapter;
 import org.eclipse.ui.part.ViewPart;
+import org.xwiki.plugins.eclipse.XWikiEclipsePlugin;
 import org.xwiki.plugins.eclipse.model.IXWikiConnection;
 import org.xwiki.plugins.eclipse.model.IXWikiConnectionManager;
 import org.xwiki.plugins.eclipse.model.IXWikiPage;
@@ -280,8 +281,7 @@ public class XWikiNavigator extends ViewPart
         };
         addConnectionAction.setText("New Login");
         addConnectionAction.setToolTipText("New Login");
-        addConnectionAction.setImageDescriptor(GuiUtils
-            .loadIconImage(XWikiConstants.ADD_CONNECTION_ICON));
+        addConnectionAction.setImageDescriptor(XWikiEclipsePlugin.getImageDescriptor(XWikiConstants.ADD_CONNECTION_ICON));
 
         /**
          * Disconnect action.
@@ -307,8 +307,7 @@ public class XWikiNavigator extends ViewPart
         };
         logoutAction.setText("Logout");
         logoutAction.setToolTipText("Logout");
-        logoutAction.setImageDescriptor(GuiUtils
-            .loadIconImage(XWikiConstants.LOGOUT_CONNECTION_ICON));
+        logoutAction.setImageDescriptor(XWikiEclipsePlugin.getImageDescriptor(XWikiConstants.LOGOUT_CONNECTION_ICON));
         logoutAction.setEnabled(false);
 
         /**
@@ -337,8 +336,7 @@ public class XWikiNavigator extends ViewPart
         };
         synchronizeAction.setText("Synchronize");
         synchronizeAction.setToolTipText("Synchronize");
-        synchronizeAction.setImageDescriptor(GuiUtils
-            .loadIconImage(XWikiConstants.SYNCHRONIZE_ICON));
+        synchronizeAction.setImageDescriptor(XWikiEclipsePlugin.getImageDescriptor(XWikiConstants.SYNCHRONIZE_ICON));
         synchronizeAction.setEnabled(false);
 
         /**
@@ -364,8 +362,7 @@ public class XWikiNavigator extends ViewPart
         };
         clearCacheAction.setText("Clear Cache");
         clearCacheAction.setToolTipText("Clear Cache");
-        clearCacheAction.setImageDescriptor(GuiUtils
-            .loadIconImage(XWikiConstants.CLEAR_CACHE_ICON));
+        clearCacheAction.setImageDescriptor(XWikiEclipsePlugin.getImageDescriptor(XWikiConstants.CLEAR_CACHE_ICON));
         clearCacheAction.setEnabled(false);
 
         /**
@@ -394,8 +391,7 @@ public class XWikiNavigator extends ViewPart
         };
         revertAction.setText("Revert Page");
         revertAction.setToolTipText("Revert Page");
-        revertAction.setImageDescriptor(GuiUtils
-            .loadIconImage(XWikiConstants.REVERT_PAGE_ICON));
+        revertAction.setImageDescriptor(XWikiEclipsePlugin.getImageDescriptor(XWikiConstants.REVERT_PAGE_ICON));
         revertAction.setEnabled(false);
         
         /**
@@ -420,7 +416,7 @@ public class XWikiNavigator extends ViewPart
         };
         addPageAction.setText("New Page");
         addPageAction.setToolTipText("New Page");
-        addPageAction.setImageDescriptor(GuiUtils.loadIconImage(XWikiConstants.ADD_PAGE_ICON));
+        addPageAction.setImageDescriptor(XWikiEclipsePlugin.getImageDescriptor(XWikiConstants.ADD_PAGE_ICON));
         addPageAction.setEnabled(false);
 
         /**
@@ -446,8 +442,7 @@ public class XWikiNavigator extends ViewPart
         };
         removePageAction.setText("Remove Page");
         removePageAction.setToolTipText("Remove Page");
-        removePageAction.setImageDescriptor(GuiUtils
-            .loadIconImage(XWikiConstants.REMOVE_PAGE_ICON));
+        removePageAction.setImageDescriptor(XWikiEclipsePlugin.getImageDescriptor(XWikiConstants.REMOVE_PAGE_ICON));
         removePageAction.setEnabled(false);
 
         /**
@@ -472,7 +467,7 @@ public class XWikiNavigator extends ViewPart
         };
         addSpaceAction.setText("New Space");
         addSpaceAction.setToolTipText("New Space");
-        addSpaceAction.setImageDescriptor(GuiUtils.loadIconImage(XWikiConstants.ADD_SPACE_ICON));
+        addSpaceAction.setImageDescriptor(XWikiEclipsePlugin.getImageDescriptor(XWikiConstants.ADD_SPACE_ICON));
         addSpaceAction.setEnabled(false);
 
         /**
@@ -497,7 +492,7 @@ public class XWikiNavigator extends ViewPart
         };
         grabSpaceAction.setText("Grab Space");
         grabSpaceAction.setToolTipText("Grab Space");
-        grabSpaceAction.setImageDescriptor(GuiUtils.loadIconImage(XWikiConstants.GRAB_SPACE_ICON));
+        grabSpaceAction.setImageDescriptor(XWikiEclipsePlugin.getImageDescriptor(XWikiConstants.GRAB_SPACE_ICON));
         grabSpaceAction.setEnabled(false);
         
         /**
@@ -524,8 +519,7 @@ public class XWikiNavigator extends ViewPart
         };
         removeSpaceAction.setText("Remove Space");
         removeSpaceAction.setToolTipText("Remove Space");
-        removeSpaceAction.setImageDescriptor(GuiUtils
-            .loadIconImage(XWikiConstants.REMOVE_SPACE_ICON));
+        removeSpaceAction.setImageDescriptor(XWikiEclipsePlugin.getImageDescriptor(XWikiConstants.REMOVE_SPACE_ICON));
         removeSpaceAction.setEnabled(false);
 
         /**

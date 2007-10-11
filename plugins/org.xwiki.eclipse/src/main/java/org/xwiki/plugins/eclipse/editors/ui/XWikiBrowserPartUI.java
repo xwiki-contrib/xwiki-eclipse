@@ -32,6 +32,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.xwiki.plugins.eclipse.XWikiEclipsePlugin;
 import org.xwiki.plugins.eclipse.editors.XWikiEditor;
 import org.xwiki.plugins.eclipse.util.GuiUtils;
 import org.xwiki.plugins.eclipse.util.XWikiConstants;
@@ -98,7 +99,7 @@ public class XWikiBrowserPartUI extends Composite
     public void createToggleButton()
     {
         toggleViewButton = new Button(this, SWT.TOGGLE | SWT.CENTER);
-        toggleViewButton.setImage(GuiUtils.loadIconImage(XWikiConstants.TOGGLE_BUTTON_ICON)
+        toggleViewButton.setImage(XWikiEclipsePlugin.getImageDescriptor(XWikiConstants.TOGGLE_BUTTON_ICON)
             .createImage());
         GridData toggleViewButtonLData = new GridData();
         toggleViewButtonLData.widthHint = 30;

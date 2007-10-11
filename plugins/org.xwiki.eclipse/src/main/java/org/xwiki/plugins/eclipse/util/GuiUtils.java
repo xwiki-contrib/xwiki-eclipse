@@ -123,21 +123,4 @@ public class GuiUtils
         }
     }
 
-    /**
-     * Used to load icons for all purposes of the plug-in.
-     * 
-     * @param id Image id as described in {@link XWikiConstants}.
-     * @return An instance of {@link ImageDescriptor} representing the image.
-     */
-    public static ImageDescriptor loadIconImage(String id)
-    {
-        try {
-            return ImageDescriptor.createFromFile(GuiUtils.class, id);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(
-                ISharedImages.IMG_OBJ_ELEMENT);
-        }
-    }
-
 }

@@ -8,7 +8,7 @@ Bundle-ClassPath: org.xwiki.plugins.eclipse/,
  lib/xmlrpc-client-3.0.jar,
  lib/xmlrpc-common-3.0.jar,
  lib/swizzle-confluence-1.1-20070829-xwiki.jar
-Bundle-Activator: org.xwiki.plugins.eclipse.Activator
+Bundle-Activator: org.xwiki.plugins.eclipse.XWikiEclipsePlugin
 Bundle-Vendor: XWiki
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,

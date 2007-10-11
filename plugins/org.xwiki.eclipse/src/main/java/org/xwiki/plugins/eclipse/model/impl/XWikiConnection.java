@@ -40,6 +40,7 @@ import org.codehaus.swizzle.confluence.SwizzleConfluenceException;
 import org.codehaus.swizzle.confluence.SwizzleXWiki;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.swt.graphics.Image;
+import org.xwiki.plugins.eclipse.XWikiEclipsePlugin;
 import org.xwiki.plugins.eclipse.model.IXWikiConnection;
 import org.xwiki.plugins.eclipse.model.IXWikiSpace;
 import org.xwiki.plugins.eclipse.model.adapters.TreeAdapter;
@@ -236,9 +237,9 @@ public class XWikiConnection implements IXWikiConnection, TreeAdapter
     public Image getImage()
     {
         if (isOffline()) {
-            return GuiUtils.loadIconImage(XWikiConstants.NAV_CON_OFFLINE_ICON).createImage();
+            return XWikiEclipsePlugin.getImageDescriptor(XWikiConstants.NAV_CON_OFFLINE_ICON).createImage();
         }
-        return GuiUtils.loadIconImage(XWikiConstants.NAV_CON_ICON).createImage();
+        return XWikiEclipsePlugin.getImageDescriptor(XWikiConstants.NAV_CON_ICON).createImage();
     }
 
     /**

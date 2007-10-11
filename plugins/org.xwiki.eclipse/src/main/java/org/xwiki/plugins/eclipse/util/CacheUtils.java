@@ -32,7 +32,7 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.xwiki.plugins.eclipse.Activator;
+import org.xwiki.plugins.eclipse.XWikiEclipsePlugin;
 
 /**
  * All utility functions related to local cache management should go here.
@@ -46,7 +46,7 @@ public class CacheUtils
     public static IPath getMasterCacheDirectory()
     {
         // Return the plugin state location for now.
-        return Activator.getDefault().getStateLocation();
+        return XWikiEclipsePlugin.getDefault().getStateLocation();
     }
 
     /**

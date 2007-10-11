@@ -21,33 +21,36 @@
 
 package org.xwiki.plugins.eclipse;
 
+import java.net.URL;
+
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 import org.xwiki.plugins.eclipse.model.IXWikiConnection;
 import org.xwiki.plugins.eclipse.model.impl.XWikiConnectionManager;
+import org.xwiki.plugins.eclipse.util.XWikiConstants;
 
 /**
  * The activator class controls the plug-in life cycle, this is a mandatory class and is used by the
  * eclipse plugin framework.
  */
-public class Activator extends AbstractUIPlugin
+public class XWikiEclipsePlugin extends AbstractUIPlugin
 {
-
     /**
      * The plugin ID.
      */
-    public static final String PLUGIN_ID = "XWiki_Eclipse_Plugin";
+    public static final String PLUGIN_ID = "org.xwiki.eclipse";
 
     /**
      * The shared instance.
      */
-    private static Activator plugin;
+    private static XWikiEclipsePlugin plugin;
 
     /**
      * The constructor.
      */
-    public Activator()
+    public XWikiEclipsePlugin()
     {
         plugin = this;
     }
@@ -59,7 +62,7 @@ public class Activator extends AbstractUIPlugin
      */
     public void start(BundleContext context) throws Exception
     {
-        super.start(context);         
+        super.start(context);
     }
 
     /**
@@ -73,7 +76,7 @@ public class Activator extends AbstractUIPlugin
             try {
                 con.disconnect();
             } catch (Exception e) {
-                // Nothing to do.                
+                // Nothing to do.
             }
         }
         plugin = null;
@@ -83,7 +86,7 @@ public class Activator extends AbstractUIPlugin
     /**
      * @return The shared instance of this plugin.
      */
-    public static Activator getDefault()
+    public static XWikiEclipsePlugin getDefault()
     {
         return plugin;
     }
@@ -93,7 +96,7 @@ public class Activator extends AbstractUIPlugin
      * @return An image descriptor for the image file at the given plug-in relative path.
      */
     public static ImageDescriptor getImageDescriptor(String path)
-    {
+    {        
         return imageDescriptorFromPlugin(PLUGIN_ID, path);
     }
 }
