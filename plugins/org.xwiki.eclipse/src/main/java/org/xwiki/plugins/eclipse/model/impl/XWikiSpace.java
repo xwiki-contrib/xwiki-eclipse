@@ -239,34 +239,11 @@ public class XWikiSpace implements IXWikiSpace, TreeAdapter
     /**
      * {@inheritDoc}
      * 
-     * @see org.xwiki.plugins.eclipse.model.adapters.TreeAdapter#getImage()
-     */
-    public Image getImage()
-    {
-        if (isOffline()) {
-            return XWikiEclipsePlugin.getImageDescriptor(XWikiConstants.NAV_SPACE_OFFLINE_ICON).createImage();
-        }
-        return XWikiEclipsePlugin.getImageDescriptor(XWikiConstants.NAV_SPACE_ICON).createImage();
-    }
-
-    /**
-     * {@inheritDoc}
-     * 
      * @see org.xwiki.plugins.eclipse.model.adapters.TreeAdapter#getTreeParent()
      */
     public Object getTreeParent()
     {
         return getConnection();
-    }
-
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.xwiki.plugins.eclipse.model.adapters.TreeAdapter#getText()
-     */
-    public String getText()
-    {
-        return getName();
     }
 
     /**

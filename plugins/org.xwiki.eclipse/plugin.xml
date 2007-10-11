@@ -45,5 +45,29 @@
          </view>
       </perspectiveExtension>
    </extension>
+   <extension
+         point="org.eclipse.core.runtime.adapters">
+      <factory
+            adaptableType="org.xwiki.plugins.eclipse.model.IXWikiConnection"
+            class="org.xwiki.plugins.eclipse.model.adapters.AdapterFactory">
+         <adapter
+               type="org.eclipse.ui.model.IWorkbenchAdapter">
+         </adapter>
+      </factory>
+      <factory
+            adaptableType="org.xwiki.plugins.eclipse.model.IXWikiSpace"
+            class="org.xwiki.plugins.eclipse.model.adapters.AdapterFactory">
+         <adapter
+               type="org.eclipse.ui.model.IWorkbenchAdapter">
+         </adapter>
+      </factory>
+      <factory
+            adaptableType="org.xwiki.plugins.eclipse.model.IXWikiPage"
+            class="org.xwiki.plugins.eclipse.model.adapters.AdapterFactory">
+         <adapter
+               type="org.eclipse.ui.model.IWorkbenchAdapter">
+         </adapter>
+      </factory>
+   </extension>
 
 </plugin>

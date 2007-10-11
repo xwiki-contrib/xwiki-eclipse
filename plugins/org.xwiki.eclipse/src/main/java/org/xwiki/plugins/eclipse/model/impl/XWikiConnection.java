@@ -232,37 +232,11 @@ public class XWikiConnection implements IXWikiConnection, TreeAdapter
     /**
      * {@inheritDoc}
      * 
-     * @see org.xwiki.plugins.eclipse.model.adapters.TreeAdapter#getImage()
-     */
-    public Image getImage()
-    {
-        if (isOffline()) {
-            return XWikiEclipsePlugin.getImageDescriptor(XWikiConstants.NAV_CON_OFFLINE_ICON).createImage();
-        }
-        return XWikiEclipsePlugin.getImageDescriptor(XWikiConstants.NAV_CON_ICON).createImage();
-    }
-
-    /**
-     * {@inheritDoc}
-     * 
      * @see org.xwiki.plugins.eclipse.model.adapters.TreeAdapter#getTreeParent()
      */
     public Object getTreeParent()
     {
         return null;
-    }
-
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.xwiki.plugins.eclipse.model.adapters.TreeAdapter#getText()
-     */
-    public String getText()
-    {
-        if (isOffline()) {
-            return "[OFFLINE] " + userName + "@" + serverUrl;
-        }
-        return userName + "@" + serverUrl;
     }
 
     /**

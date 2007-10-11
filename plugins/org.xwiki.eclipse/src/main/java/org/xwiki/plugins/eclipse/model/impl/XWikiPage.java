@@ -200,46 +200,11 @@ public class XWikiPage implements IXWikiPage, TreeAdapter, IStorage, IStorageEdi
     /**
      * {@inheritDoc}
      * 
-     * @see org.xwiki.plugins.eclipse.model.adapters.TreeAdapter#getImage()
-     */
-    public Image getImage()
-    {
-    	if (hasUncommitedChanges()) {
-            return XWikiEclipsePlugin.getImageDescriptor(XWikiConstants.NAV_PAGE_OFFLINE_MODIFIED_ICON)
-                .createImage();
-        } else if (isOffline()) {
-            if (isDataReady()) {               
-                return XWikiEclipsePlugin.getImageDescriptor(XWikiConstants.NAV_PAGE_CACHED_ICON).createImage();
-            } else {
-            	return XWikiEclipsePlugin.getImageDescriptor(XWikiConstants.NAV_PAGE_OFFLINE_NOT_CACHED_ICON)            
-                	.createImage();
-            }
-        } else if (isDataReady()) {
-            return XWikiEclipsePlugin.getImageDescriptor(XWikiConstants.NAV_PAGE_CACHED_ICON).createImage();
-        } else {
-        	return XWikiEclipsePlugin.getImageDescriptor(XWikiConstants.NAV_PAGE_ONLINE_NOT_CACHED_ICON)
-            	.createImage();
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     * 
      * @see org.xwiki.plugins.eclipse.model.adapters.TreeAdapter#getTreeParent()
      */
     public Object getTreeParent()
     {
         return getParentSpace();
-    }
-
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.xwiki.plugins.eclipse.model.adapters.TreeAdapter#getText()
-     */
-    public String getText()
-    {
-        return getTitle();
     }
 
     /**

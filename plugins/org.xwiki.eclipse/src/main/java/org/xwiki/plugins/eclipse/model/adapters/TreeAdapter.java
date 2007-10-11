@@ -21,23 +21,12 @@
 
 package org.xwiki.plugins.eclipse.model.adapters;
 
-import org.eclipse.swt.graphics.Image;
 
 /**
  * Interface implemented by all nodes participating in the tree viewer of XWikiNavigator.
  */
 public interface TreeAdapter
 {
-    /**
-     * @return An image representing this node in the tree UI.
-     */
-    public Image getImage();
-
-    /**
-     * @return A textual description of this node in the tree UI.
-     */
-    public String getText();
-
     /**
      * @return Parent of this node.
      */
