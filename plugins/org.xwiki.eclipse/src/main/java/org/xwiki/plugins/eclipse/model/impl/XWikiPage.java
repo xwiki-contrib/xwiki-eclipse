@@ -706,16 +706,17 @@ public class XWikiPage implements IXWikiPage, TreeAdapter, IStorage, IStorageEdi
      * @see org.xwiki.plugins.eclipse.model.IXWikiPage#update()
      */
     public IXWikiPage save() throws SwizzleConfluenceException
-    {
-        if (!isOffline() && !hasUncommitedChanges()) {
+    {        
+        if (!isOffline()) {
             Confluence rpc = getParentSpace().getConnection().getRpcProxy();
             this.page = rpc.storePage(page);
             setDataReady(true);
+            setUncommitedChanges(false);
         } else {
             setUncommitedChanges(true);
         }
         CacheUtils.updateCache(this);
-        return this;
+        return this;           
     }
 
     /**
