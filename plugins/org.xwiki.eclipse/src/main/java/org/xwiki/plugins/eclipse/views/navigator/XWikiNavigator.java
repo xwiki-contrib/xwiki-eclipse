@@ -35,7 +35,6 @@ import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.wizard.WizardDialog;
@@ -43,6 +42,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IWorkbenchActionConstants;
@@ -58,7 +58,6 @@ import org.xwiki.plugins.eclipse.model.IXWikiConnectionManager;
 import org.xwiki.plugins.eclipse.model.IXWikiPage;
 import org.xwiki.plugins.eclipse.model.IXWikiSpace;
 import org.xwiki.plugins.eclipse.model.impl.XWikiConnectionManager;
-import org.xwiki.plugins.eclipse.model.impl.XWikiPage;
 import org.xwiki.plugins.eclipse.model.wrappers.XWikiConnectionWrapper;
 import org.xwiki.plugins.eclipse.model.wrappers.XWikiPageWrapper;
 import org.xwiki.plugins.eclipse.model.wrappers.XWikiSpaceWrapper;
@@ -427,11 +426,20 @@ public class XWikiNavigator extends ViewPart
         removePageAction = new Action()
         {
             public void run()
-            {
+            {                                               
                 ISelection selection = viewer.getSelection();
                 Object obj = ((IStructuredSelection) selection).getFirstElement();
                 if (obj instanceof IXWikiPage) {
                     IXWikiPage wikipage = (IXWikiPage) obj;
+                    
+                    MessageBox dialog = new MessageBox(getSite().getShell(), SWT.ICON_QUESTION | SWT.YES | SWT.NO);
+                    dialog.setText("Remove page");
+                    dialog.setMessage(String.format("Are you sure that you want to delete '%s'?", wikipage.getTitle()));
+                    int result = dialog.open();
+                    if(result == SWT.NO) {                       
+                        return;
+                    }
+                    
                     IXWikiSpace space = new XWikiSpaceWrapper(wikipage.getParentSpace());
                     try {
                         space.removeChildPage(wikipage.getId());
@@ -508,6 +516,16 @@ public class XWikiNavigator extends ViewPart
                 Object obj = ((IStructuredSelection) selection).getFirstElement();
                 if (obj instanceof IXWikiSpace) {
                     IXWikiSpace space = (IXWikiSpace) obj;
+                    
+                    MessageBox dialog = new MessageBox(getSite().getShell(), SWT.ICON_QUESTION | SWT.YES | SWT.NO);
+                    dialog.setText("Remove space");
+                    dialog.setMessage(String.format("Are you sure that you want to delete '%s'?", space.getName()));
+                    int result = dialog.open();
+                    if(result == SWT.NO) {                       
+                        return;
+                    }
+                    
+                    
                     IXWikiConnection connection =
                         new XWikiConnectionWrapper(space.getConnection());
                     try {
@@ -719,4 +737,5 @@ public class XWikiNavigator extends ViewPart
             GuiUtils.reportError(true, "Error", "Internal Error : Could not create page.");
         }
     }
+        
 }
