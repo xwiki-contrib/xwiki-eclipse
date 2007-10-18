@@ -37,6 +37,7 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
@@ -163,7 +164,8 @@ public class XWikiNavigator extends ViewPart
         drillDownAdapter = new DrillDownAdapter(viewer);
         viewer.setContentProvider(new XWikiNavigatorContentProvider());
         viewer.setLabelProvider(new WorkbenchLabelProvider());
-        viewer.setInput(getViewSite());
+        viewer.setSorter(new ViewerSorter());
+        viewer.setInput(getViewSite());        
         getSite().setSelectionProvider(viewer);
         makeActions();
         hookContextMenu();
