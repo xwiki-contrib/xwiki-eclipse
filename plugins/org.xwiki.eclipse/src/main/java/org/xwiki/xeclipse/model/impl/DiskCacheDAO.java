@@ -25,16 +25,17 @@ public class DiskCacheDAO implements IXWikiCacheDAO
 {
 
     /**
-     * A class that contains all the indexes for handling the cache.
-     * Objects of this class will be serialized in order to provide persistence to the indexes.
-     * This is a convenience class for storing all the indexes in a single step.
+     * A class that contains all the indexes for handling the cache. Objects of this class will be
+     * serialized in order to provide persistence to the indexes. This is a convenience class for
+     * storing all the indexes in a single step.
      */
     private static class IndexAggregate implements Serializable
     {
         private static final long serialVersionUID = 7034420710276064016L;
 
         /**
-         * A mapping that associates a page id to the file name under which page information have been stored in the cache.
+         * A mapping that associates a page id to the file name under which page information have
+         * been stored in the cache.
          */
         private Map<String, String> pageToDataFileNameIndex;
 
@@ -44,7 +45,8 @@ public class DiskCacheDAO implements IXWikiCacheDAO
         private Map<String, Set<String>> spaceToPagesIndex;
 
         /**
-         * A mapping that associates a space id to the file name under which space information have been stored in the cache.
+         * A mapping that associates a space id to the file name under which space information have
+         * been stored in the cache.
          */
         private Map<String, String> spaceToDataFileNameIndex;
 
@@ -160,7 +162,7 @@ public class DiskCacheDAO implements IXWikiCacheDAO
             e.printStackTrace();
         }
     }
-    
+
     /**
      * @return A list of the available spaces in the cache.
      * @throws XWikiDAOException
@@ -207,7 +209,7 @@ public class DiskCacheDAO implements IXWikiCacheDAO
 
     /**
      * @param spaceKey The space key.
-     * @return The page summaries for all the pages available in the given space. 
+     * @return The page summaries for all the pages available in the given space.
      * @throws XWikiDAOException
      */
     public List<PageSummary> getPages(String spaceKey) throws XWikiDAOException
@@ -215,14 +217,17 @@ public class DiskCacheDAO implements IXWikiCacheDAO
         List<PageSummary> result = new ArrayList<PageSummary>();
 
         try {
-            for (String pageId : indexAggregate.getSpaceToPagesIndex().get(spaceKey)) {
-                String dataFileName = indexAggregate.pageToDataFileNameIndex.get(pageId);
-                ObjectInputStream ois =
-                    new ObjectInputStream(new FileInputStream(new File(cacheDir, dataFileName)));
-                Map map = (Map) ois.readObject();
-                ois.close();
+            Set<String> pageIds = indexAggregate.getSpaceToPagesIndex().get(spaceKey);
+            if (pageIds != null) {
+                for (String pageId : pageIds) {
+                    String dataFileName = indexAggregate.pageToDataFileNameIndex.get(pageId);
+                    ObjectInputStream ois =
+                        new ObjectInputStream(new FileInputStream(new File(cacheDir, dataFileName)));
+                    Map map = (Map) ois.readObject();
+                    ois.close();
 
-                result.add(new PageSummary(map));
+                    result.add(new PageSummary(map));
+                }
             }
         } catch (Exception e) {
             throw new XWikiDAOException(e);
@@ -241,11 +246,10 @@ public class DiskCacheDAO implements IXWikiCacheDAO
         Page result = null;
         try {
             String dataFileName = indexAggregate.pageToDataFileNameIndex.get(pageId);
-            if(dataFileName == null) 
-            {
+            if (dataFileName == null) {
                 return null;
             }
-            
+
             ObjectInputStream ois =
                 new ObjectInputStream(new FileInputStream(new File(cacheDir, dataFileName)));
             Map map = (Map) ois.readObject();
@@ -306,7 +310,7 @@ public class DiskCacheDAO implements IXWikiCacheDAO
 
         return result;
     }
-    
+
     /**
      * @param pageId The page id.
      * @return true if the page identified by the id is marked as dirty.
@@ -318,6 +322,7 @@ public class DiskCacheDAO implements IXWikiCacheDAO
 
     /**
      * Sets the dirty state of a page.
+     * 
      * @param pageId The page id.
      * @param dirty The new dirty state.
      */
@@ -329,25 +334,27 @@ public class DiskCacheDAO implements IXWikiCacheDAO
             indexAggregate.dirtyPagesIndex.remove(pageId);
         }
     }
-    
+
     /**
      * @param pageId The page id.
      * @return true if the page identified by the id is marked as in conflict.
-     */    
-    public boolean isInConflict(String pageId) {
+     */
+    public boolean isInConflict(String pageId)
+    {
         return indexAggregate.conflictPagesIndex.contains(pageId);
     }
-    
+
     /**
      * Sets the "in conflict" state of a page.
+     * 
      * @param pageId The page id.
      * @param conflict The new "in conflict" state.
      */
-    public void setConflict(String pageId, boolean conflict) {
-        if(conflict) {
+    public void setConflict(String pageId, boolean conflict)
+    {
+        if (conflict) {
             indexAggregate.conflictPagesIndex.add(pageId);
-        }
-        else {
+        } else {
             indexAggregate.conflictPagesIndex.remove(pageId);
         }
     }
@@ -358,5 +365,5 @@ public class DiskCacheDAO implements IXWikiCacheDAO
     public Set<String> getDirtyPages()
     {
         return indexAggregate.getDirtyPagesIndex();
-    }  
+    }
 }

@@ -83,7 +83,8 @@ public class XWikiEclipsePlugin extends AbstractUIPlugin
         }
         
         File connections = new File(getStateLocation().toFile(), "connections.data");
-        org.xwiki.xeclipse.XWikiConnectionManager.getDefault().saveConnections(connections);        
+        org.xwiki.xeclipse.XWikiConnectionManager.getDefault().saveConnections(connections);
+        org.xwiki.xeclipse.XWikiConnectionManager.getDefault().dispose();
         
         plugin = null;
         super.stop(context);

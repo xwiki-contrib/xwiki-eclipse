@@ -49,7 +49,7 @@ public interface IXWikiConnection
 
     /**
      * Dispose the connection manager by releasing all the resources associated with it. This method
-     * should be called whenever the connection manager is not used anymore.
+     * should be called whenever the connection is not used anymore.
      * @throws XWikiConnectionException 
      */
     public void dispose() throws XWikiConnectionException;

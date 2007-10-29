@@ -32,6 +32,7 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.ListenerList;
 import org.xwiki.xeclipse.model.IXWikiConnection;
+import org.xwiki.xeclipse.model.XWikiConnectionException;
 
 public class XWikiConnectionManager
 {    
@@ -98,6 +99,16 @@ public class XWikiConnectionManager
         xwikiConnections = (List<IXWikiConnection>) ois.readObject();
         idToPasswordMapping = (Map<String, String>) ois.readObject();
         ois.close();        
+    }
+    
+    public void dispose() {
+        for(IXWikiConnection xwikiConnecton : xwikiConnections) {
+            try {
+                xwikiConnecton.dispose();
+            } catch (XWikiConnectionException e) {             
+                e.printStackTrace();
+            }
+        }
     }
         
     // /////////////////////////// Event listeners management /////////////////////////////
