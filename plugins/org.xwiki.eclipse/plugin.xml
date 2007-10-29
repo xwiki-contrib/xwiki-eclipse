@@ -28,9 +28,9 @@
       </view>
       <view
             category="XWiki"
-            class="org.xwiki.plugins.eclipse.views.navigator.XWikiBrowserView"
-            id="org.xwiki.plugins.eclipse.views.XWikiBrowser"
-            name="XWiki browser">
+            class="org.xwiki.xeclipse.views.XWikiExplorerView"
+            id="org.xwiki.xeclipse.views.XWikiExplorer"
+            name="XWiki explorer">
       </view>
    </extension>
    <extension
@@ -64,6 +64,47 @@
       <factory
             adaptableType="org.xwiki.plugins.eclipse.model.IXWikiPage"
             class="org.xwiki.plugins.eclipse.model.adapters.AdapterFactory">
+         <adapter
+               type="org.eclipse.ui.model.IWorkbenchAdapter">
+         </adapter>
+      </factory>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            id="org.xwiki.xeclipse.command.Connect"
+            name="Connect">
+      </command>
+      <command
+            id="org.xwiki.xeclipse.command.Disconnect"
+            name="Disconnect">
+      </command>
+      <command
+            defaultHandler="org.xwiki.xeclipse.handlers.NewConnectionHandler"
+            id="org.xwiki.xeclipse.command.NewConnection"
+            name="New connection">
+      </command>
+   </extension>
+   <extension
+         name="NEW ADAPTERS"
+         point="org.eclipse.core.runtime.adapters">
+      <factory
+            adaptableType="org.xwiki.xeclipse.model.IXWikiConnection"
+            class="org.xwiki.xeclipse.adapters.AdapterFactory">
+         <adapter
+               type="org.eclipse.ui.model.IWorkbenchAdapter">
+         </adapter>
+      </factory>
+      <factory
+            adaptableType="org.xwiki.xeclipse.model.IXWikiSpace"
+            class="org.xwiki.xeclipse.adapters.AdapterFactory">
+         <adapter
+               type="org.eclipse.ui.model.IWorkbenchAdapter">
+         </adapter>
+      </factory>
+      <factory
+            adaptableType="org.xwiki.xeclipse.model.IXWikiPage"
+            class="org.xwiki.xeclipse.adapters.AdapterFactory">
          <adapter
                type="org.eclipse.ui.model.IWorkbenchAdapter">
          </adapter>
