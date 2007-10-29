@@ -1,20 +1,17 @@
 package org.xwiki.xeclipse.model.impl;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
 import org.codehaus.swizzle.confluence.Page;
 import org.codehaus.swizzle.confluence.PageSummary;
 import org.codehaus.swizzle.confluence.Space;
 import org.codehaus.swizzle.confluence.SpaceSummary;
-import org.eclipse.core.runtime.ListenerList;
-import org.xwiki.xeclipse.model.IXWikiConnection;
-import org.xwiki.xeclipse.model.IXWikiConnectionListener;
 import org.xwiki.xeclipse.model.IXWikiPage;
 import org.xwiki.xeclipse.model.IXWikiSpace;
 import org.xwiki.xeclipse.model.XWikiConnectionException;
@@ -50,8 +47,10 @@ public class XWikiCachedConnection extends AbstractXWikiConnection implements Se
      * 
      * @throws XWikiConnectionException
      */
-    private void init() throws XWikiConnectionException
+    protected void init() throws XWikiConnectionException
     {
+        super.init();
+        
         try {
             cacheDAO = new DiskCacheDAO(new File(cacheDir, getId()));            
         } catch (Exception e) {
@@ -421,6 +420,22 @@ public class XWikiCachedConnection extends AbstractXWikiConnection implements Se
         assertNotDisposed();
 
         return cacheDAO.isInConflict(pageId);
+    }
+    
+    private synchronized void writeObject(java.io.ObjectOutputStream s) throws IOException
+    {
+        s.defaultWriteObject();
+    }
+
+    private synchronized void readObject(java.io.ObjectInputStream s) throws IOException,
+        ClassNotFoundException
+    {
+        s.defaultReadObject();
+        try {
+            init();
+        } catch (XWikiConnectionException e) {        
+            e.printStackTrace();            
+        }
     }
 
     /**

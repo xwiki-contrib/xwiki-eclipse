@@ -20,8 +20,15 @@
  */
 package org.xwiki.xeclipse;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.runtime.ListenerList;
 import org.xwiki.xeclipse.model.IXWikiConnection;
@@ -31,6 +38,7 @@ public class XWikiConnectionManager
     private static XWikiConnectionManager sharedInstance;
 
     private List<IXWikiConnection> xwikiConnections;
+    private Map<String, String> idToPasswordMapping;
 
     private ListenerList connectionManagerListenerList;
 
@@ -46,6 +54,7 @@ public class XWikiConnectionManager
     private XWikiConnectionManager()
     {
         xwikiConnections = new ArrayList<IXWikiConnection>();
+        idToPasswordMapping = new HashMap<String, String>();
         connectionManagerListenerList = new ListenerList();
     }
 
@@ -54,20 +63,43 @@ public class XWikiConnectionManager
         return xwikiConnections;
     }
 
-    public void addConnection(IXWikiConnection xwikiConnection)
+    public void addConnection(IXWikiConnection xwikiConnection, String password)
     {
         if (!xwikiConnections.contains(xwikiConnection)) {
             xwikiConnections.add(xwikiConnection);
+            idToPasswordMapping.put(xwikiConnection.getId(), password);
             fireConnectionAdded(xwikiConnection);
         }
-    }
+    }    
 
     public void removeConnection(IXWikiConnection xwikiConnection)
     {
         xwikiConnections.remove(xwikiConnection);
         fireConnectionRemoved(xwikiConnection);
     }
-
+    
+    public String getPasswordForConnection(String id) {
+        return idToPasswordMapping.get(id);
+    }
+    
+    public void saveConnections(File output) throws Exception {
+        ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(output));
+        oos.writeObject(xwikiConnections);
+        
+        /* This should be written with some encryption mechanism */
+        oos.writeObject(idToPasswordMapping);
+        
+        oos.close();
+    }
+    
+    @SuppressWarnings("unchecked")
+    public void restoreConnections(File input) throws Exception {
+        ObjectInputStream ois = new ObjectInputStream(new FileInputStream(input));
+        xwikiConnections = (List<IXWikiConnection>) ois.readObject();
+        idToPasswordMapping = (Map<String, String>) ois.readObject();
+        ois.close();        
+    }
+        
     // /////////////////////////// Event listeners management /////////////////////////////
 
     public void addConnectionManagerListener(IXWikiConnectionManagerListener listener)

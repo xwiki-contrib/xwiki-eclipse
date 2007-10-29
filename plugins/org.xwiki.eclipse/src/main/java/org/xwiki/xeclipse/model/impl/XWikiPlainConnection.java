@@ -1,5 +1,6 @@
 package org.xwiki.xeclipse.model.impl;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -19,9 +20,7 @@ public class XWikiPlainConnection extends AbstractXWikiConnection
     private static final long serialVersionUID = -8019449922717442495L;
 
     private transient IXWikiDAO remoteDAO;
-
-    private transient ListenerList connectionListenerList;
-
+   
     /**
      * Constructor.
      * 
@@ -33,20 +32,7 @@ public class XWikiPlainConnection extends AbstractXWikiConnection
         throws XWikiConnectionException
     {
         super(serverUrl, username);
-
-        init();
     }
-
-    /**
-     * Initialization of transient fields.
-     * 
-     * @throws XWikiConnectionException
-     */
-    private void init() throws XWikiConnectionException
-    {
-        connectionListenerList = new ListenerList();
-    }
-
  
     /**
      * {@inheritDoc}
@@ -252,6 +238,17 @@ public class XWikiPlainConnection extends AbstractXWikiConnection
         assertNotDisposed();
 
         return false;
+    }
+    
+    private synchronized void writeObject(java.io.ObjectOutputStream s) throws IOException
+    {
+        s.defaultWriteObject();
+    }
+
+    private synchronized void readObject(java.io.ObjectInputStream s) throws IOException,
+        ClassNotFoundException
+    {
+        s.defaultReadObject();        
     }
    
     /**

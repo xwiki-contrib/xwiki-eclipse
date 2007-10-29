@@ -21,15 +21,13 @@
 
 package org.xwiki.plugins.eclipse;
 
-import java.net.URL;
+import java.io.File;
 
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 import org.xwiki.plugins.eclipse.model.IXWikiConnection;
 import org.xwiki.plugins.eclipse.model.impl.XWikiConnectionManager;
-import org.xwiki.plugins.eclipse.util.XWikiConstants;
 
 /**
  * The activator class controls the plug-in life cycle, this is a mandatory class and is used by the
@@ -61,8 +59,12 @@ public class XWikiEclipsePlugin extends AbstractUIPlugin
      * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
      */
     public void start(BundleContext context) throws Exception
-    {
+    {        
         super.start(context);
+        File connections = new File(getStateLocation().toFile(), "connections.data");
+        if(connections.exists()) {
+            org.xwiki.xeclipse.XWikiConnectionManager.getDefault().restoreConnections(connections);
+        }
     }
 
     /**
@@ -79,6 +81,10 @@ public class XWikiEclipsePlugin extends AbstractUIPlugin
                 // Nothing to do.
             }
         }
+        
+        File connections = new File(getStateLocation().toFile(), "connections.data");
+        org.xwiki.xeclipse.XWikiConnectionManager.getDefault().saveConnections(connections);        
+        
         plugin = null;
         super.stop(context);
     }

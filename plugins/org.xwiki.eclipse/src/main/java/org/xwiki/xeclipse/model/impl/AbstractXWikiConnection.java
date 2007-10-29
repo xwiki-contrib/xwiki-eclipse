@@ -1,5 +1,7 @@
 package org.xwiki.xeclipse.model.impl;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.UUID;
 
@@ -11,7 +13,7 @@ import org.xwiki.xeclipse.model.IXWikiConnectionListener;
 import org.xwiki.xeclipse.model.XWikiConnectionException;
 
 /**
- * This is the base class for different type of XWiki connections 
+ * This is the base class for different type of XWiki connections
  */
 public abstract class AbstractXWikiConnection implements IXWikiConnection, Serializable
 {
@@ -22,7 +24,7 @@ public abstract class AbstractXWikiConnection implements IXWikiConnection, Seria
     private String userName;
 
     protected transient boolean isDisposed;
-    
+
     private transient ListenerList connectionListenerList;
 
     /**
@@ -30,8 +32,9 @@ public abstract class AbstractXWikiConnection implements IXWikiConnection, Seria
      * 
      * @param serverUrl The url where the XML RPC endpoint is located.
      * @param userName The user name to be used when connecting to the remote server.
+     * @throws XWikiConnectionException 
      */
-    public AbstractXWikiConnection(String serverUrl, String userName)
+    public AbstractXWikiConnection(String serverUrl, String userName) throws XWikiConnectionException
     {
         this.serverUrl = serverUrl;
         this.userName = userName;
@@ -43,7 +46,7 @@ public abstract class AbstractXWikiConnection implements IXWikiConnection, Seria
     /**
      * Initialize transient fields.
      */
-    private void init()
+    protected void init() throws XWikiConnectionException
     {
         isDisposed = false;
         connectionListenerList = new ListenerList();
@@ -66,7 +69,7 @@ public abstract class AbstractXWikiConnection implements IXWikiConnection, Seria
     {
         return userName;
     }
-    
+
     protected void assertNotDisposed()
     {
         if (isDisposed) {
@@ -75,7 +78,7 @@ public abstract class AbstractXWikiConnection implements IXWikiConnection, Seria
     }
 
     abstract void savePage(Page page) throws XWikiConnectionException;
-    
+
     abstract boolean isPageDirty(String pageId);
 
     abstract boolean isPageConflict(String pageId);
@@ -83,8 +86,8 @@ public abstract class AbstractXWikiConnection implements IXWikiConnection, Seria
     abstract Page getRawPage(String pageId) throws XWikiConnectionException;
 
     abstract Space getRawSpace(String key);
-    
- // /////////////////////////// Event listeners management /////////////////////////////
+
+    // /////////////////////////// Event listeners management /////////////////////////////
 
     public void addConnectionEstablishedListener(IXWikiConnectionListener listener)
     {
@@ -112,6 +115,5 @@ public abstract class AbstractXWikiConnection implements IXWikiConnection, Seria
             final IXWikiConnectionListener listener = (IXWikiConnectionListener) listeners[i];
             listener.connectionClosed(this);
         }
-    }
-
+    }    
 }
