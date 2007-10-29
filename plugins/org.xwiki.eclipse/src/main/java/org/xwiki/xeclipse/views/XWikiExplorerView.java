@@ -217,11 +217,13 @@ public class XWikiExplorerView extends ViewPart implements IXWikiConnectionManag
     public void connectionAdded(IXWikiConnection xwikiConnection)
     {
         xwikiConnection.addConnectionEstablishedListener(this);
+        treeViewer.refresh();
     }
 
     public void connectionRemoved(IXWikiConnection xwikiConnection)
     {
         xwikiConnection.removeConnectionEstablishedListener(this);
+        treeViewer.refresh();
     }
 
     public void connectionEstablished(IXWikiConnection connection)

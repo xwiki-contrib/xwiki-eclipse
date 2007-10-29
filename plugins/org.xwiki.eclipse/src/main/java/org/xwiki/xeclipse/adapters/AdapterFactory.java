@@ -24,6 +24,8 @@ import org.eclipse.core.runtime.IAdapterFactory;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.eclipse.ui.progress.IDeferredWorkbenchAdapter;
 import org.xwiki.xeclipse.model.IXWikiConnection;
+import org.xwiki.xeclipse.model.IXWikiPage;
+import org.xwiki.xeclipse.model.IXWikiSpace;
 
 /**
  * Adapter factory for adapting XWiki Eclipse model object to different workbench interfaces.
@@ -38,13 +40,13 @@ public class AdapterFactory implements IAdapterFactory
     /**
      * The adapter for XWiki spaces.
      */
-    private IDeferredWorkbenchAdapter xwikiSpaceDescriptorAdapter =
+    private IDeferredWorkbenchAdapter xwikiSpaceAdapter =
         new XWikiSpaceDescriptorAdapter();
 
     /**
      * The adapter for XWiki pages.
      */
-    private IWorkbenchAdapter xwikiPageDescriptorAdapter = new XWikiPageAdapter();
+    private IWorkbenchAdapter xwikiPageAdapter = new XWikiPageAdapter();
 
     /**
      * {@inheritDoc}
@@ -62,6 +64,19 @@ public class AdapterFactory implements IAdapterFactory
             return xwikiConnectionAdapter;
         }
         
+        if (adapterType == IDeferredWorkbenchAdapter.class
+            && adaptableObject instanceof IXWikiSpace) {
+            return xwikiSpaceAdapter;
+        }
+
+        if (adapterType == IWorkbenchAdapter.class && adaptableObject instanceof IXWikiSpace) {
+            return xwikiSpaceAdapter;
+        }
+        
+        if (adapterType == IWorkbenchAdapter.class && adaptableObject instanceof IXWikiPage) {
+            return xwikiPageAdapter;
+        }
+                
         return null;
     }
 

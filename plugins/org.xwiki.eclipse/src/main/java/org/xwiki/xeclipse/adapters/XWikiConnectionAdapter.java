@@ -22,7 +22,6 @@ package org.xwiki.xeclipse.adapters;
 
 import java.util.Collection;
 
-import org.codehaus.swizzle.confluence.SwizzleConfluenceException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.jface.resource.ImageDescriptor;

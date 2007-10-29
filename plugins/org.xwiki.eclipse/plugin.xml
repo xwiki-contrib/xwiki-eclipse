@@ -95,12 +95,18 @@
          <adapter
                type="org.eclipse.ui.model.IWorkbenchAdapter">
          </adapter>
+         <adapter
+               type="org.eclipse.ui.progress.IDeferredWorkbenchAdapter">
+         </adapter>
       </factory>
       <factory
             adaptableType="org.xwiki.xeclipse.model.IXWikiSpace"
             class="org.xwiki.xeclipse.adapters.AdapterFactory">
          <adapter
                type="org.eclipse.ui.model.IWorkbenchAdapter">
+         </adapter>
+         <adapter
+               type="org.eclipse.ui.progress.IDeferredWorkbenchAdapter">
          </adapter>
       </factory>
       <factory
