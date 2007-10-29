@@ -29,6 +29,7 @@
       <view
             category="XWiki"
             class="org.xwiki.xeclipse.views.XWikiExplorerView"
+            icon="icons/xwiki.png"
             id="org.xwiki.xeclipse.views.XWikiExplorer"
             name="XWiki explorer">
       </view>
