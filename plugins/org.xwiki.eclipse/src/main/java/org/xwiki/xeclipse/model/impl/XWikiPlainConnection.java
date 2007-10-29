@@ -16,9 +16,11 @@ import org.xwiki.xeclipse.model.XWikiConnectionException;
 
 public class XWikiPlainConnection extends AbstractXWikiConnection
 {
+    private static final long serialVersionUID = -8019449922717442495L;
+
     private transient IXWikiDAO remoteDAO;
 
-    transient private ListenerList connectionListenerList;
+    private transient ListenerList connectionListenerList;
 
     /**
      * Constructor.
@@ -251,37 +253,7 @@ public class XWikiPlainConnection extends AbstractXWikiConnection
 
         return false;
     }
-
-    // /////////////////////////// Event listeners management /////////////////////////////
-
-    public void addConnectionEstablishedListener(IXWikiConnectionListener listener)
-    {
-        connectionListenerList.add(listener);
-    }
-
-    public void removeConnectionEstablishedListener(IXWikiConnectionListener listener)
-    {
-        connectionListenerList.remove(listener);
-    }
-
-    protected void fireConnectionEstablished()
-    {
-        final Object[] listeners = connectionListenerList.getListeners();
-        for (int i = 0; i < listeners.length; i++) {
-            final IXWikiConnectionListener listener = (IXWikiConnectionListener) listeners[i];
-            listener.connectionEstablished(this);
-        }
-    }
-
-    protected void fireConnectionClosed()
-    {
-        final Object[] listeners = connectionListenerList.getListeners();
-        for (int i = 0; i < listeners.length; i++) {
-            final IXWikiConnectionListener listener = (IXWikiConnectionListener) listeners[i];
-            listener.connectionClosed(this);
-        }
-    }
-
+   
     /**
      * USED ONLY FOR UNIT TESTING
      * 

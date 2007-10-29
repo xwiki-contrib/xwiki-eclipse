@@ -1,6 +1,7 @@
 package org.xwiki.xeclipse.model.impl;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -18,15 +19,15 @@ import org.xwiki.xeclipse.model.IXWikiPage;
 import org.xwiki.xeclipse.model.IXWikiSpace;
 import org.xwiki.xeclipse.model.XWikiConnectionException;
 
-public class XWikiCachedConnection extends AbstractXWikiConnection
-{   
+public class XWikiCachedConnection extends AbstractXWikiConnection implements Serializable
+{
+    private static final long serialVersionUID = -3186885585670670854L;
+
     private File cacheDir;
 
     private transient IXWikiDAO remoteDAO;
 
     private transient IXWikiCacheDAO cacheDAO;
-
-    transient private ListenerList connectionListenerList;
 
     /**
      * Constructor.
@@ -40,7 +41,7 @@ public class XWikiCachedConnection extends AbstractXWikiConnection
     {
         super(serverUrl, username);
         this.cacheDir = cacheDir;
-        
+
         init();
     }
 
@@ -52,8 +53,7 @@ public class XWikiCachedConnection extends AbstractXWikiConnection
     private void init() throws XWikiConnectionException
     {
         try {
-            cacheDAO = new DiskCacheDAO(new File(cacheDir, getId()));
-            connectionListenerList = new ListenerList();            
+            cacheDAO = new DiskCacheDAO(new File(cacheDir, getId()));            
         } catch (Exception e) {
             throw new XWikiConnectionException(e);
         }
@@ -421,36 +421,6 @@ public class XWikiCachedConnection extends AbstractXWikiConnection
         assertNotDisposed();
 
         return cacheDAO.isInConflict(pageId);
-    }
-       
-    // /////////////////////////// Event listeners management /////////////////////////////
-
-    public void addConnectionEstablishedListener(IXWikiConnectionListener listener)
-    {
-        connectionListenerList.add(listener);
-    }
-
-    public void removeConnectionEstablishedListener(IXWikiConnectionListener listener)
-    {
-        connectionListenerList.remove(listener);
-    }
-
-    protected void fireConnectionEstablished()
-    {
-        final Object[] listeners = connectionListenerList.getListeners();
-        for (int i = 0; i < listeners.length; i++) {
-            final IXWikiConnectionListener listener = (IXWikiConnectionListener) listeners[i];
-            listener.connectionEstablished(this);
-        }
-    }
-
-    protected void fireConnectionClosed()
-    {
-        final Object[] listeners = connectionListenerList.getListeners();
-        for (int i = 0; i < listeners.length; i++) {
-            final IXWikiConnectionListener listener = (IXWikiConnectionListener) listeners[i];
-            listener.connectionClosed(this);
-        }
     }
 
     /**

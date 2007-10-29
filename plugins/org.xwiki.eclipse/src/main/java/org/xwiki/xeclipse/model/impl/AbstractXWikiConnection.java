@@ -1,16 +1,19 @@
 package org.xwiki.xeclipse.model.impl;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 import org.codehaus.swizzle.confluence.Page;
 import org.codehaus.swizzle.confluence.Space;
+import org.eclipse.core.runtime.ListenerList;
 import org.xwiki.xeclipse.model.IXWikiConnection;
+import org.xwiki.xeclipse.model.IXWikiConnectionListener;
 import org.xwiki.xeclipse.model.XWikiConnectionException;
 
 /**
  * This is the base class for different type of XWiki connections 
  */
-public abstract class AbstractXWikiConnection implements IXWikiConnection
+public abstract class AbstractXWikiConnection implements IXWikiConnection, Serializable
 {
     private String id;
 
@@ -19,6 +22,8 @@ public abstract class AbstractXWikiConnection implements IXWikiConnection
     private String userName;
 
     protected transient boolean isDisposed;
+    
+    private transient ListenerList connectionListenerList;
 
     /**
      * Constructor.
@@ -41,6 +46,7 @@ public abstract class AbstractXWikiConnection implements IXWikiConnection
     private void init()
     {
         isDisposed = false;
+        connectionListenerList = new ListenerList();
     }
 
     /**
@@ -77,4 +83,35 @@ public abstract class AbstractXWikiConnection implements IXWikiConnection
     abstract Page getRawPage(String pageId) throws XWikiConnectionException;
 
     abstract Space getRawSpace(String key);
+    
+ // /////////////////////////// Event listeners management /////////////////////////////
+
+    public void addConnectionEstablishedListener(IXWikiConnectionListener listener)
+    {
+        connectionListenerList.add(listener);
+    }
+
+    public void removeConnectionEstablishedListener(IXWikiConnectionListener listener)
+    {
+        connectionListenerList.remove(listener);
+    }
+
+    protected void fireConnectionEstablished()
+    {
+        final Object[] listeners = connectionListenerList.getListeners();
+        for (int i = 0; i < listeners.length; i++) {
+            final IXWikiConnectionListener listener = (IXWikiConnectionListener) listeners[i];
+            listener.connectionEstablished(this);
+        }
+    }
+
+    protected void fireConnectionClosed()
+    {
+        final Object[] listeners = connectionListenerList.getListeners();
+        for (int i = 0; i < listeners.length; i++) {
+            final IXWikiConnectionListener listener = (IXWikiConnectionListener) listeners[i];
+            listener.connectionClosed(this);
+        }
+    }
+
 }

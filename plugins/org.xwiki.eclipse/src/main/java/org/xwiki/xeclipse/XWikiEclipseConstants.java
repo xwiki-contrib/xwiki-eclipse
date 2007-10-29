@@ -7,5 +7,6 @@ public final class XWikiEclipseConstants
     public static final String DISCONNECT_COMMAND = "org.xwiki.xeclipse.command.Disconnect";
     public static final String NEW_CONNECTION_COMMAND = "org.xwiki.xeclipse.command.NewConnection";
     
-    public static final String CONNECTION_SETTINGS_BANNER = "icons/connection-settings-banner.gif";    
+    public static final String CONNECTION_SETTINGS_BANNER = "icons/connection-settings-banner.gif";
+    public static final String XWIKI_ICON = "icons/xwiki.png";    
 }

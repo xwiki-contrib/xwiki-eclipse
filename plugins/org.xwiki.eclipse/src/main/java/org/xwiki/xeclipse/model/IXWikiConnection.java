@@ -29,6 +29,11 @@ import java.util.Collection;
 public interface IXWikiConnection
 {
     /**
+     * @return An unique identifier for the connection.
+     */
+    public String getId();
+    
+    /**
      * Connects to the remote XWiki server.
      * 
      * @param password The password to be used in order to access the remote account.
