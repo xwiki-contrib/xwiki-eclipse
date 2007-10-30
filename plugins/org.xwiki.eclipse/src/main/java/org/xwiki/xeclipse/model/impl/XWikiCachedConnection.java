@@ -202,8 +202,7 @@ public class XWikiCachedConnection extends AbstractXWikiConnection implements Se
                 }
             }
 
-            remoteDAO = null;
-            cacheDAO = null;
+            remoteDAO = null;            
 
             throw new XWikiConnectionException(e);
         }
