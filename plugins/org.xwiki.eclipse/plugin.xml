@@ -85,6 +85,10 @@
             id="org.xwiki.xeclipse.command.NewConnection"
             name="New connection">
       </command>
+      <command
+            id="org.xwiki.xeclipse.command.RemoveConnection"
+            name="Remove connection">
+      </command>
    </extension>
    <extension
          name="NEW ADAPTERS"

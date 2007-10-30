@@ -44,6 +44,7 @@ import org.xwiki.xeclipse.XWikiConnectionManager;
 import org.xwiki.xeclipse.XWikiEclipseConstants;
 import org.xwiki.xeclipse.handlers.ConnectHandler;
 import org.xwiki.xeclipse.handlers.DisconnectHandler;
+import org.xwiki.xeclipse.handlers.RemoveConnectionHandler;
 import org.xwiki.xeclipse.model.IXWikiConnection;
 import org.xwiki.xeclipse.model.IXWikiConnectionListener;
 import org.xwiki.xeclipse.utils.XWikiEclipseUtil;
@@ -71,7 +72,7 @@ public class XWikiExplorerView extends ViewPart implements IXWikiConnectionManag
     private void hookContextMenu()
     {
         MenuManager menuManager = new MenuManager("#Popup");
-        
+
         menuManager.add(new CommandContributionItem(getSite(),
             null,
             XWikiEclipseConstants.CONNECT_COMMAND,
@@ -83,7 +84,7 @@ public class XWikiExplorerView extends ViewPart implements IXWikiConnectionManag
             null,
             null,
             SWT.NONE));
-        
+
         menuManager.add(new CommandContributionItem(getSite(),
             null,
             XWikiEclipseConstants.DISCONNECT_COMMAND,
@@ -95,9 +96,23 @@ public class XWikiExplorerView extends ViewPart implements IXWikiConnectionManag
             null,
             null,
             SWT.NONE));
-        
+
         menuManager.add(new Separator());
         
+        menuManager.add(new CommandContributionItem(getSite(),
+            null,
+            XWikiEclipseConstants.REMOVE_CONNECTION_COMMAND,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            SWT.NONE));
+        
+        menuManager.add(new Separator());
+
         menuManager.add(new CommandContributionItem(getSite(),
             null,
             XWikiEclipseConstants.NEW_CONNECTION_COMMAND,
@@ -109,7 +124,7 @@ public class XWikiExplorerView extends ViewPart implements IXWikiConnectionManag
             null,
             null,
             SWT.NONE));
-        
+
         Menu menu = menuManager.createContextMenu(treeViewer.getControl());
         treeViewer.getControl().setMenu(menu);
     }
@@ -147,7 +162,7 @@ public class XWikiExplorerView extends ViewPart implements IXWikiConnectionManag
         }
 
         XWikiConnectionManager.getDefault().removeConnectionManagerListener(this);
-        
+
         super.dispose();
     }
 
@@ -207,6 +222,31 @@ public class XWikiExplorerView extends ViewPart implements IXWikiConnectionManag
                         if (xwikiConnection.isConnected()) {
                             return EvaluationResult.TRUE;
                         }
+                    }
+
+                    return EvaluationResult.FALSE;
+                }
+            });
+
+        handlerService.activateHandler(XWikiEclipseConstants.REMOVE_CONNECTION_COMMAND,
+            new RemoveConnectionHandler(), new Expression()
+            {
+                @Override
+                public void collectExpressionInfo(ExpressionInfo info)
+                {
+                    info.addVariableNameAccess(ISources.ACTIVE_CURRENT_SELECTION_NAME);
+                }
+
+                @Override
+                public EvaluationResult evaluate(IEvaluationContext context) throws CoreException
+                {
+                    Object selection =
+                        context.getVariable(ISources.ACTIVE_CURRENT_SELECTION_NAME);
+                    Object selectedObject =
+                        XWikiEclipseUtil.getSingleSelectedObjectInStructuredSelection(selection);
+
+                    if (selectedObject instanceof IXWikiConnection) {
+                        return EvaluationResult.TRUE;
                     }
 
                     return EvaluationResult.FALSE;

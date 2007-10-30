@@ -33,7 +33,6 @@ import org.eclipse.ui.IWorkbench;
 import org.xwiki.plugins.eclipse.XWikiEclipsePlugin;
 import org.xwiki.xeclipse.XWikiConnectionManager;
 import org.xwiki.xeclipse.model.IXWikiConnection;
-import org.xwiki.xeclipse.model.XWikiConnectionException;
 import org.xwiki.xeclipse.model.XWikiConnectionFactory;
 
 public class NewConnectionWizard extends Wizard implements INewWizard
@@ -73,7 +72,7 @@ public class NewConnectionWizard extends Wizard implements INewWizard
         } catch (Exception e) {
             WizardPage currentPage = (WizardPage) getContainer().getCurrentPage();
             currentPage
-                .setErrorMessage("Error connecting to remote XWiki. Please check out your settings.");
+                .setErrorMessage("Error connecting to remote XWiki. Please check your settings.");
             
             return false;
         }
@@ -81,6 +80,7 @@ public class NewConnectionWizard extends Wizard implements INewWizard
         try {            
             IXWikiConnection connection = XWikiConnectionFactory.createCachedConnection(newConnectionWizardState.getServerUrl(), newConnectionWizardState.getUserName(), new File(XWikiEclipsePlugin.getDefault().getStateLocation().toFile(), "cache"));
             XWikiConnectionManager.getDefault().addConnection(connection, newConnectionWizardState.getPassword());
+            connection.connect(newConnectionWizardState.getPassword());
         } catch (Exception e) {
             e.printStackTrace();
             return false;

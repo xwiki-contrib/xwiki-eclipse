@@ -74,7 +74,7 @@ public class ConnectionSettingsPage extends WizardPage
         Label label = new Label(group, SWT.NONE);
         label.setText("Server URL:");
         
-        final Text serverUrlText = new Text(group, SWT.BORDER);
+        final Text serverUrlText = new Text(group, SWT.BORDER);        
         GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, false).applyTo(serverUrlText);
         serverUrlText.addModifyListener(new ModifyListener() {
             public void modifyText(ModifyEvent e)
@@ -83,6 +83,7 @@ public class ConnectionSettingsPage extends WizardPage
                 getContainer().updateButtons();
             }            
         });
+        serverUrlText.setText("http://localhost:8080/xwiki/xmlrpc/confluence");
                         
         /* Username */
         label = new Label(group, SWT.NONE);
