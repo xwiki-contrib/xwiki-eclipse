@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+
+   <extension
+         id="application"
+         point="org.eclipse.core.runtime.applications">
+      <application>
+         <run
+               class="org.xwiki.xeclipse.rcp.Application">
+         </run>
+      </application>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            name="RCP Perspective"
+            class="org.xwiki.xeclipse.rcp.Perspective"
+            id="org.xwiki.xeclipse.rcp.perspective">
+      </perspective>
+   </extension>
+   <extension
+         id="product"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.xwiki.xeclipse.rcp.application"
+            name="XEclipse">
+         <property
+               name="appName"
+               value="XEclipse">
+         </property>
+         <property
+               name="aboutImage"
+               value="icons/about.png">
+         </property>
+         <property
+               name="aboutText"
+               value="XWiki Eclipse&#x0D;&#x0D;(C) 2007 XWiki.com">
+         </property>
+         <property
+               name="windowImages"
+               value="icons/xwiki16.png,icons/xwiki32.png,icons/xwiki48.png,icons/xwiki64.png,icons/xwiki128.png">
+         </property>
+      </product>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            locationURI="menu:org.eclipse.ui.main.menu">
+         <menu
+               label="File">
+            <command
+                  commandId="org.xwiki.xeclipse.command.NewConnection"
+                  id="New connection">
+            </command>
+            <separator
+                  name="separator1"
+                  visible="true">
+            </separator>
+            <command
+                  commandId="org.eclipse.ui.file.exit"
+                  id="Exit">
+            </command>
+         </menu>
+      </menuContribution>
+      <menuContribution
+            locationURI="menu:org.eclipse.ui.main.menu">
+         <menu
+               label="Help">
+            <command
+                  commandId="org.eclipse.ui.help.aboutAction"
+                  id="About">
+            </command>
+         </menu>
+      </menuContribution>
+   </extension>
+
+</plugin>
