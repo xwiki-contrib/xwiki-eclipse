@@ -8,17 +8,31 @@ import org.eclipse.ui.application.ActionBarAdvisor;
 import org.eclipse.ui.application.IActionBarConfigurer;
 
 public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
-
+        
     public ApplicationActionBarAdvisor(IActionBarConfigurer configurer) {
         super(configurer);
     }
 
     protected void makeActions(IWorkbenchWindow window) {
+        IWorkbenchAction saveAction = ActionFactory.SAVE.create(window);
+        register(saveAction);              
+        
+        IWorkbenchAction cutAction = ActionFactory.CUT.create(window);
+        register(cutAction);         
+        
+        IWorkbenchAction copyAction = ActionFactory.COPY.create(window);
+        register(copyAction);         
+        
+        IWorkbenchAction pasteAction = ActionFactory.PASTE.create(window);
+        register(pasteAction);         
+        
+        
+        
         IWorkbenchAction exitAction = ActionFactory.QUIT.create(window);
-        register(exitAction);
+        register(exitAction);           
     }
 
-    protected void fillMenuBar(IMenuManager menuBar) {
+    protected void fillMenuBar(IMenuManager menuBar) {          
     }
     
 }

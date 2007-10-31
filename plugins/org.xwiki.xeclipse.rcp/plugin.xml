@@ -35,7 +35,7 @@
          </property>
          <property
                name="aboutText"
-               value="XWiki Eclipse&#x0D;&#x0D;(C) 2007 XWiki.com">
+               value="XWiki Eclipse&#x0A;&#x0A;(C) 2007 XWiki.com">
          </property>
          <property
                name="windowImages"
@@ -58,8 +58,34 @@
                   visible="true">
             </separator>
             <command
+                  commandId="org.eclipse.ui.file.save"
+                  id="Save">
+            </command>
+            <separator
+                  name="separator2"
+                  visible="true">
+            </separator>
+            <command
                   commandId="org.eclipse.ui.file.exit"
                   id="Exit">
+            </command>
+         </menu>
+      </menuContribution>
+      <menuContribution
+            locationURI="menu:org.eclipse.ui.main.menu">
+         <menu
+               label="Edit">
+            <command
+                  commandId="org.eclipse.ui.edit.cut"
+                  id="Cut">
+            </command>
+            <command
+                  commandId="org.eclipse.ui.edit.copy"
+                  id="Copy">
+            </command>
+            <command
+                  commandId="org.eclipse.ui.edit.paste"
+                  id="Paste">
             </command>
          </menu>
       </menuContribution>
