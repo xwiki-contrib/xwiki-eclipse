@@ -25,7 +25,7 @@ public class XWikiPageEditorInput implements IEditorInput
 
     public String getName()
     {
-        return xwikiPage.getTitle();
+        return xwikiPage.getId();
     }
 
     public IPersistableElement getPersistable()

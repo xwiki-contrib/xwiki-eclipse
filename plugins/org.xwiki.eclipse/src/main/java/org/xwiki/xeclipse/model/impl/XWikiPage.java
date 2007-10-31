@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.Map;
 
 import org.codehaus.swizzle.confluence.Page;
+import org.xwiki.xeclipse.model.IXWikiConnection;
 import org.xwiki.xeclipse.model.IXWikiPage;
 import org.xwiki.xeclipse.model.XWikiConnectionException;
 
@@ -195,7 +196,11 @@ public class XWikiPage implements IXWikiPage
         }
         catch(Exception e) {
             e.printStackTrace();
-        }
+        }        
+    }
+    
+    public IXWikiConnection getConnection() {
+        return connection;
     }
 
 }

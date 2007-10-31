@@ -18,6 +18,12 @@ import org.xwiki.xeclipse.model.XWikiConnectionException;
 
 public class XWikiPageDocumentProvider extends StorageDocumentProvider
 {
+    private XWikiPageEditor xwikiPageEditor;
+
+    public XWikiPageDocumentProvider(XWikiPageEditor xwikiPageEditor)
+    {
+        this.xwikiPageEditor = xwikiPageEditor;
+    }
 
     @Override
     protected IDocument createDocument(Object element) throws CoreException
@@ -25,7 +31,7 @@ public class XWikiPageDocumentProvider extends StorageDocumentProvider
         IDocument document = new Document();
         if (element instanceof XWikiPageEditorInput) {
             XWikiPageEditorInput input = (XWikiPageEditorInput) element;
-            document.set(input.getXWikiPage().getContent());
+            document.set(input.getXWikiPage().getContent());            
         }
 
         return document;
@@ -54,6 +60,8 @@ public class XWikiPageDocumentProvider extends StorageDocumentProvider
 
         try {            
             xwikiPage.save();
+            document.set(input.getXWikiPage().getContent());
+            xwikiPageEditor.updateEditor(input.getXWikiPage());
         } catch (XWikiConnectionException e) {
             throw new CoreException(new Status(IStatus.ERROR, XWikiEclipsePlugin.PLUGIN_ID, "Unable to save", e));            
         }

@@ -60,4 +60,9 @@ public interface IXWikiPage
      * @throws XWikiConnectionException
      */
     public void save() throws XWikiConnectionException;
+    
+    /**
+     * @return The connection where this page has been fetched from.
+     */
+    public IXWikiConnection getConnection();
 }
