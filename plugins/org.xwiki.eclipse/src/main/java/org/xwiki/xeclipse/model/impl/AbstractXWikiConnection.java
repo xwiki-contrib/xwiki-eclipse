@@ -77,7 +77,12 @@ public abstract class AbstractXWikiConnection implements IXWikiConnection, Seria
         }
     }
 
-    abstract void savePage(Page page) throws XWikiConnectionException;
+    /**
+     * @param page The page to be saved.
+     * @return The page after that has been saved with all the information updated (version, etc.).
+     * @throws XWikiConnectionException
+     */
+    abstract Page savePage(Page page) throws XWikiConnectionException;
 
     abstract boolean isPageDirty(String pageId);
 

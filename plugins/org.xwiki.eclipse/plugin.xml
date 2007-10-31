@@ -12,6 +12,13 @@
             class="org.xwiki.plugins.eclipse.editors.XWikiEditor"
             id="org.xwiki.plugins.eclipse.editors.XWikiEditor">
       </editor>
+      <editor
+            class="org.xwiki.xeclipse.editors.XWikiPageEditor"
+            contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
+            icon="icons/xwiki.png"
+            id="org.xwiki.xeclipse.editors.XWikiPage"
+            name="XWiki page editor">
+      </editor>
    </extension>
    <extension
          point="org.eclipse.ui.views">
@@ -98,6 +105,9 @@
             class="org.xwiki.xeclipse.adapters.AdapterFactory">
          <adapter
                type="org.eclipse.ui.model.IWorkbenchAdapter">
+         </adapter>
+         <adapter
+               type="org.eclipse.ui.model.IWorkbenchAdapter2">
          </adapter>
          <adapter
                type="org.eclipse.ui.progress.IDeferredWorkbenchAdapter">

@@ -95,7 +95,8 @@ public class XWikiPage implements IXWikiPage
 
     public void save() throws XWikiConnectionException
     {
-        connection.savePage(page);
+        Page updatedPage = connection.savePage(page);
+        this.page = updatedPage;
     }
 
     public void setContent(String content)

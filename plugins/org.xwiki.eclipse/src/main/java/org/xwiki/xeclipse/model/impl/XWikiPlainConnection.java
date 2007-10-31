@@ -198,18 +198,15 @@ public class XWikiPlainConnection extends AbstractXWikiConnection
     }
 
     /**
-     * Save the page locally, propagating the changes to the remote XWiki instance if working in
-     * "online" mode.
-     * 
-     * @param page The page to be saved.
-     * @throws XWikiConnectionException
+     * {@inheritDoc}
      */
-    void savePage(Page page) throws XWikiConnectionException
+    Page savePage(Page page) throws XWikiConnectionException
     {
         assertNotDisposed();
 
         try {
-            remoteDAO.storePage(page);            
+            remoteDAO.storePage(page);
+            return remoteDAO.getPage(page.getId());
         } catch (Exception e) {
             throw new XWikiConnectionException(e);
         }

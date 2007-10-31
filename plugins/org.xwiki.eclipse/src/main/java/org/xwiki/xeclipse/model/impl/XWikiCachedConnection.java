@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -50,9 +51,9 @@ public class XWikiCachedConnection extends AbstractXWikiConnection implements Se
     protected void init() throws XWikiConnectionException
     {
         super.init();
-        
+
         try {
-            cacheDAO = new DiskCacheDAO(new File(cacheDir, getId()));            
+            cacheDAO = new DiskCacheDAO(new File(cacheDir, getId()));
         } catch (Exception e) {
             throw new XWikiConnectionException(e);
         }
@@ -95,20 +96,20 @@ public class XWikiCachedConnection extends AbstractXWikiConnection implements Se
      * @throws XWikiDAOException
      * @throws XWikiConnectionException
      */
-    void synchronize(String pageId) throws XWikiDAOException, XWikiConnectionException
+    Page synchronize(String pageId) throws XWikiDAOException, XWikiConnectionException
     {
         assertNotDisposed();
-
-        // If we are not connected then do nothing.
-        if (!isConnected()) {
-            return;
-        }
 
         // Get the cached and remote version of the page. If there is no cached version then there
         // is nothing to synchronize so just return.
         Page cachedPage = cacheDAO.getPage(pageId);
         if (cachedPage == null) {
-            return;
+            return null;
+        }
+
+        // If we are not connected then do nothing.
+        if (!isConnected()) {
+            return cachedPage;
         }
 
         // Get the remote page
@@ -125,7 +126,7 @@ public class XWikiCachedConnection extends AbstractXWikiConnection implements Se
             cacheDAO.setDirty(pageId, false);
             cacheDAO.setConflict(pageId, false);
 
-            return;
+            return remotePage;
         }
 
         // This is case 2.x
@@ -160,6 +161,8 @@ public class XWikiCachedConnection extends AbstractXWikiConnection implements Se
                 cacheDAO.setConflict(pageId, false);
             }
         }
+        
+        return remotePage;
     }
 
     /**
@@ -170,7 +173,11 @@ public class XWikiCachedConnection extends AbstractXWikiConnection implements Se
      */
     void synchronizeAll() throws XWikiDAOException, XWikiConnectionException
     {
-        Set<String> dirtyPages = cacheDAO.getDirtyPages();
+        /* This is necessary in order to avoid concurrent modification to the dirtyPages set when synchronizing.
+         * In fact, in synchronize we remove elements from cacheDAO.getDirtyPages() and we cannot use it
+         * directly for iterating.
+         */
+        Set<String> dirtyPages = new HashSet<String>(cacheDAO.getDirtyPages());
         for (String pageId : dirtyPages) {
             synchronize(pageId);
         }
@@ -202,7 +209,7 @@ public class XWikiCachedConnection extends AbstractXWikiConnection implements Se
                 }
             }
 
-            remoteDAO = null;            
+            remoteDAO = null;
 
             throw new XWikiConnectionException(e);
         }
@@ -375,13 +382,13 @@ public class XWikiCachedConnection extends AbstractXWikiConnection implements Se
     }
 
     /**
+     * {@inheritDoc}
+     * 
      * Save the page locally, propagating the changes to the remote XWiki instance if working in
      * "online" mode.
      * 
-     * @param page The page to be saved.
-     * @throws XWikiConnectionException
      */
-    void savePage(Page page) throws XWikiConnectionException
+    Page savePage(Page page) throws XWikiConnectionException
     {
         assertNotDisposed();
 
@@ -390,7 +397,7 @@ public class XWikiCachedConnection extends AbstractXWikiConnection implements Se
             cacheDAO.setDirty(page.getId(), true);
 
             // Synchronize the page immediately.
-            synchronize(page.getId());
+            return synchronize(page.getId());
         } catch (Exception e) {
             throw new XWikiConnectionException(e);
         }
@@ -420,7 +427,7 @@ public class XWikiCachedConnection extends AbstractXWikiConnection implements Se
 
         return cacheDAO.isInConflict(pageId);
     }
-    
+
     private synchronized void writeObject(java.io.ObjectOutputStream s) throws IOException
     {
         s.defaultWriteObject();
@@ -432,8 +439,8 @@ public class XWikiCachedConnection extends AbstractXWikiConnection implements Se
         s.defaultReadObject();
         try {
             init();
-        } catch (XWikiConnectionException e) {        
-            e.printStackTrace();            
+        } catch (XWikiConnectionException e) {
+            e.printStackTrace();
         }
     }
 

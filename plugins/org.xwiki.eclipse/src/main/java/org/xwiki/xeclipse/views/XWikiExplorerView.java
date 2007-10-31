@@ -27,6 +27,8 @@ import org.eclipse.core.expressions.IEvaluationContext;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.SWT;
@@ -34,7 +36,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.ISources;
 import org.eclipse.ui.IViewSite;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.menus.CommandContributionItem;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
@@ -42,11 +46,14 @@ import org.eclipse.ui.part.ViewPart;
 import org.xwiki.xeclipse.IXWikiConnectionManagerListener;
 import org.xwiki.xeclipse.XWikiConnectionManager;
 import org.xwiki.xeclipse.XWikiEclipseConstants;
+import org.xwiki.xeclipse.editors.XWikiPageEditor;
+import org.xwiki.xeclipse.editors.XWikiPageEditorInput;
 import org.xwiki.xeclipse.handlers.ConnectHandler;
 import org.xwiki.xeclipse.handlers.DisconnectHandler;
 import org.xwiki.xeclipse.handlers.RemoveConnectionHandler;
 import org.xwiki.xeclipse.model.IXWikiConnection;
 import org.xwiki.xeclipse.model.IXWikiConnectionListener;
+import org.xwiki.xeclipse.model.IXWikiPage;
 import org.xwiki.xeclipse.utils.XWikiEclipseUtil;
 
 public class XWikiExplorerView extends ViewPart implements IXWikiConnectionManagerListener,
@@ -65,6 +72,25 @@ public class XWikiExplorerView extends ViewPart implements IXWikiConnectionManag
         treeViewer.setLabelProvider(new WorkbenchLabelProvider());
         getSite().setSelectionProvider(treeViewer);
         treeViewer.setInput(XWikiConnectionManager.getDefault());
+        
+        treeViewer.addDoubleClickListener(new IDoubleClickListener() {
+
+            public void doubleClick(DoubleClickEvent event)
+            {
+                IWorkbenchPage page =
+                    PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+                Object selectedObject =  XWikiEclipseUtil.getSingleSelectedObjectInStructuredSelection(treeViewer.getSelection());
+                if(selectedObject instanceof IXWikiPage) {
+                    IXWikiPage xwikiPage = (IXWikiPage) selectedObject;
+                    XWikiPageEditorInput editorInput = new XWikiPageEditorInput(xwikiPage);
+                    try {
+                        page.openEditor(editorInput, XWikiPageEditor.ID);
+                    } catch (PartInitException e) {                     
+                        e.printStackTrace();
+                    }
+                }                
+            }            
+        });
 
         hookContextMenu();
     }

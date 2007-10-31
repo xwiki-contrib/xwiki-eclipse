@@ -44,9 +44,7 @@ public class RemoveConnectionHandler extends AbstractHandler
             IXWikiConnection xwikiConnection = (IXWikiConnection) selectedObject;
 
             try {
-                if (xwikiConnection.isConnected()) {
-                    xwikiConnection.disconnect();
-                }
+                xwikiConnection.dispose();
             } catch (XWikiConnectionException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();

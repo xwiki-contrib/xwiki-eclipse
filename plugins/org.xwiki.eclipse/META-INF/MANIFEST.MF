@@ -15,8 +15,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.jface.text,
  org.eclipse.core.resources,
  org.eclipse.ui.editors,
- org.eclipse.ui.ide,
  org.eclipse.ui.workbench.texteditor,
- org.eclipse.core.expressions
+ org.eclipse.core.expressions,
+ org.eclipse.ui.ide
 Eclipse-LazyStart: true
 Export-Package: org.xwiki.plugins.eclipse.model

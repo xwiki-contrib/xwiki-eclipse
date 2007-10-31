@@ -25,6 +25,10 @@ import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.graphics.RGB;
+import org.eclipse.ui.model.IWorkbenchAdapter2;
 import org.eclipse.ui.progress.IDeferredWorkbenchAdapter;
 import org.eclipse.ui.progress.IElementCollector;
 import org.xwiki.plugins.eclipse.XWikiEclipsePlugin;
@@ -36,7 +40,7 @@ import org.xwiki.xeclipse.model.XWikiConnectionException;
 /**
  * The adapter for XWiki connections
  */
-public class XWikiConnectionAdapter implements IDeferredWorkbenchAdapter
+public class XWikiConnectionAdapter implements IDeferredWorkbenchAdapter, IWorkbenchAdapter2
 {
     /**
      * {@inheritDoc}
@@ -82,9 +86,8 @@ public class XWikiConnectionAdapter implements IDeferredWorkbenchAdapter
             IXWikiConnection xwikiConnection = (IXWikiConnection) object;
 
             return String
-                .format("%s@%s %s", xwikiConnection.getUserName(),
-                    xwikiConnection.getServerUrl(), xwikiConnection.isConnected() ? "[Connected]"
-                        : "[Disconnected]");
+                .format("%s@%s", xwikiConnection.getUserName(),
+                    xwikiConnection.getServerUrl());
         }
 
         return null;
@@ -131,5 +134,31 @@ public class XWikiConnectionAdapter implements IDeferredWorkbenchAdapter
     public boolean isContainer()
     {
         return true;
+    }
+
+    public RGB getBackground(Object element)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public FontData getFont(Object element)
+    {
+        if (element instanceof IXWikiConnection) {
+            IXWikiConnection xwikiConnection = (IXWikiConnection) element;
+
+            if (xwikiConnection.isConnected()) {
+                return JFaceResources.getFontRegistry().getBold(JFaceResources.DEFAULT_FONT)
+                    .getFontData()[0];
+            }
+        }
+
+        return null;
+    }
+
+    public RGB getForeground(Object element)
+    {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

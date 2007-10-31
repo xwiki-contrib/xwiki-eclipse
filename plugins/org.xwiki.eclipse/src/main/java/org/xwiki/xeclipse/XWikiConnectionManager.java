@@ -75,7 +75,7 @@ public class XWikiConnectionManager
 
     public void removeConnection(IXWikiConnection xwikiConnection)
     {
-        xwikiConnections.remove(xwikiConnection);
+        xwikiConnections.remove(xwikiConnection);        
         fireConnectionRemoved(xwikiConnection);
     }
     
