@@ -284,7 +284,7 @@ public class XWikiExplorerView extends ViewPart implements IXWikiEclipseEventLis
                 break;
             case CONNECTION_ESTABLISHED:
             case CONNECTION_CLOSED:                 
-                if(XWikiConnectionManager.getDefault().getConnections().contains(sender)) {
+                if(XWikiConnectionManager.getDefault().getConnections().contains(data)) {
                     treeViewer.refresh(sender);  
                 }
                 break;

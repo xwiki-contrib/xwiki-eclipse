@@ -12,10 +12,14 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.part.ViewPart;
+import org.xwiki.xeclipse.IXWikiEclipseEventListener;
+import org.xwiki.xeclipse.XWikiEclipseEvent;
+import org.xwiki.xeclipse.XWikiEclipseNotificationCenter;
+import org.xwiki.xeclipse.editors.XWikiPageEditor;
 import org.xwiki.xeclipse.model.IXWikiPage;
 import org.xwiki.xeclipse.utils.XWikiEclipseUtil;
 
-public class XWikiPagePreviewView extends ViewPart implements ISelectionListener
+public class XWikiPagePreviewView extends ViewPart implements ISelectionListener, IXWikiEclipseEventListener
 {
     public static final String ID = "org.xwiki.xeclipse.views.XWikiPagePreview";
     private Composite composite;
@@ -56,7 +60,8 @@ public class XWikiPagePreviewView extends ViewPart implements ISelectionListener
         stackLayout.topControl = noPageSelectedComposite;
         composite.layout();
         
-        getSite().getWorkbenchWindow().getSelectionService().addPostSelectionListener(this);        
+        getSite().getWorkbenchWindow().getSelectionService().addPostSelectionListener(this);
+        XWikiEclipseNotificationCenter.getDefault().addListener(XWikiEclipseEvent.PAGE_UPDATED, this);
     }
 
     @Override
@@ -70,27 +75,46 @@ public class XWikiPagePreviewView extends ViewPart implements ISelectionListener
     public void dispose()
     {
         getSite().getWorkbenchWindow().getSelectionService().removePostSelectionListener(this);
+        XWikiEclipseNotificationCenter.getDefault().removeListener(XWikiEclipseEvent.PAGE_UPDATED, this);
         super.dispose();
     }
 
     public void selectionChanged(IWorkbenchPart part, ISelection selection)
     {        
+        if(part instanceof XWikiPageEditor) {
+            return;
+        }
+        
         Object selectedObject = XWikiEclipseUtil.getSingleSelectedObjectInStructuredSelection(selection);
         if(selectedObject instanceof IXWikiPage) {
             IXWikiPage xwikiPage = (IXWikiPage) selectedObject;
-            
-            if(xwikiPage.getConnection().isConnected()) {
-                browser.setUrl(xwikiPage.getUrl());
-                stackLayout.topControl = browser;
-                composite.layout();
-            }
-            else {
-                stackLayout.topControl = notConnectedComposite;
-                composite.layout();
-            }
+            showPreview(xwikiPage);            
+        }
+        else {            
+            stackLayout.topControl = noPageSelectedComposite;
+            composite.layout();
+        }
+    }
+
+    public void handleEvent(Object sender, XWikiEclipseEvent event, Object data)
+    {
+        switch(event) {
+            case PAGE_UPDATED:
+                IXWikiPage xwikiPage = (IXWikiPage) data;
+                showPreview(xwikiPage);                
+                break;
+        }
+        
+    }
+    
+    private void showPreview(IXWikiPage xwikiPage) {
+        if(xwikiPage.getConnection().isConnected()) {
+            browser.setUrl(xwikiPage.getUrl());
+            stackLayout.topControl = browser;
+            composite.layout();
         }
         else {
-            stackLayout.topControl = noPageSelectedComposite;
+            stackLayout.topControl = notConnectedComposite;
             composite.layout();
         }
     }

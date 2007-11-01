@@ -16,6 +16,8 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.texteditor.AbstractTextEditor;
 import org.xwiki.plugins.eclipse.XWikiEclipsePlugin;
 import org.xwiki.xeclipse.XWikiEclipseConstants;
+import org.xwiki.xeclipse.XWikiEclipseEvent;
+import org.xwiki.xeclipse.XWikiEclipseNotificationCenter;
 import org.xwiki.xeclipse.model.IXWikiConnection;
 import org.xwiki.xeclipse.model.IXWikiPage;
 
@@ -110,9 +112,10 @@ public class XWikiPageEditor extends AbstractTextEditor
         }
         else {
             stackLayout.topControl = notConnectedLabelComposite;
-            previewAreaComposite.layout();
-            
+            previewAreaComposite.layout();            
         }
+        
+        XWikiEclipseNotificationCenter.getDefault().fireEvent(this, XWikiEclipseEvent.PAGE_UPDATED, page);
     }
     
     

@@ -14,7 +14,7 @@
       </editor>
       <editor
             class="org.xwiki.xeclipse.editors.XWikiPageEditor"
-            contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
+            contributorClass="org.xwiki.xeclipse.editors.XWikiPageEditorContributor"
             icon="icons/xwiki.png"
             id="org.xwiki.xeclipse.editors.XWikiPage"
             name="XWiki page editor">

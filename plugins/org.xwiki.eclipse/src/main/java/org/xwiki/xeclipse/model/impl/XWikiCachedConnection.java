@@ -216,7 +216,7 @@ public class XWikiCachedConnection extends AbstractXWikiConnection implements Se
             throw new XWikiConnectionException(e);
         }
 
-        XWikiEclipseNotificationCenter.getDefault().fireEvent(this, XWikiEclipseEvent.CONNECTION_ESTABLISHED, null);        
+        XWikiEclipseNotificationCenter.getDefault().fireEvent(this, XWikiEclipseEvent.CONNECTION_ESTABLISHED, this);        
     }
 
     /**
@@ -239,7 +239,7 @@ public class XWikiCachedConnection extends AbstractXWikiConnection implements Se
             e.printStackTrace();
         }
 
-        XWikiEclipseNotificationCenter.getDefault().fireEvent(this, XWikiEclipseEvent.CONNECTION_CLOSED, null);        
+        XWikiEclipseNotificationCenter.getDefault().fireEvent(this, XWikiEclipseEvent.CONNECTION_CLOSED, this);        
     }
 
     /**

@@ -7,6 +7,8 @@ import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.texteditor.BasicTextEditorActionContributor;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
+import org.xwiki.xeclipse.XWikiEclipseEvent;
+import org.xwiki.xeclipse.XWikiEclipseNotificationCenter;
 
 public class XWikiPageEditorContributor extends BasicTextEditorActionContributor
 {
@@ -19,7 +21,7 @@ public class XWikiPageEditorContributor extends BasicTextEditorActionContributor
     public void setActiveEditor(IEditorPart part)
     {
         super.setActiveEditor(part);
-        
+                        
         if (!(part instanceof ITextEditor)) {
             return;
         }
@@ -44,7 +46,17 @@ public class XWikiPageEditorContributor extends BasicTextEditorActionContributor
         action = getAction(editor, ITextEditorActionConstants.PASTE);
         actionBars.setGlobalActionHandler(action.getActionDefinitionId(), action);
 
-        actionBars.updateActionBars();               
+        actionBars.updateActionBars();     
+        
+        /*
+         * Send a notification that the edited page has been updated.
+         */
+        if(part instanceof XWikiPageEditor) {
+            XWikiPageEditor xwikiPageEditor = (XWikiPageEditor) part;
+            XWikiPageEditorInput xwikiPageEditorInput = (XWikiPageEditorInput) xwikiPageEditor.getEditorInput();
+            XWikiEclipseNotificationCenter.getDefault().fireEvent(xwikiPageEditor, XWikiEclipseEvent.PAGE_UPDATED, xwikiPageEditorInput.getXWikiPage());           
+        }
+        
     }
 
 }
