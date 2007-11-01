@@ -10,6 +10,8 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentPartitioner;
 import org.eclipse.jface.text.rules.FastPartitioner;
 import org.eclipse.jface.text.source.IAnnotationModel;
+import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.editors.text.StorageDocumentProvider;
 import org.eclipse.ui.texteditor.AbstractDocumentProvider;
 import org.xwiki.plugins.eclipse.XWikiEclipsePlugin;

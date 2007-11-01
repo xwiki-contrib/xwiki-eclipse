@@ -1,10 +1,6 @@
 package org.xwiki.xeclipse.editors;
 
-import org.eclipse.core.commands.AbstractHandler;
-import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.resource.JFaceResources;
@@ -15,7 +11,6 @@ import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.forms.widgets.Form;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.texteditor.AbstractTextEditor;
@@ -34,16 +29,16 @@ public class XWikiPageEditor extends AbstractTextEditor
     private Composite notConnectedLabelComposite;
     private Browser browser;
             
-    private class MaximizeEditorAction extends Action {
-        public MaximizeEditorAction() {           
-            super("Maximize editor", AS_CHECK_BOX);        
-            setImageDescriptor(XWikiEclipsePlugin.getImageDescriptor(XWikiEclipseConstants.MAXIMIZE_EDITOR_ICON));
+    private class ShowPreviewAction extends Action {
+        public ShowPreviewAction() {           
+            super("Show preview", AS_CHECK_BOX);        
+            setImageDescriptor(XWikiEclipsePlugin.getImageDescriptor(XWikiEclipseConstants.SHOW_EDITOR_PREVIEW_ICON));
             setChecked(false);
         }
 
         @Override
         public void run() {
-            if(!isChecked()) {
+            if(isChecked()) {
                 sashForm.setMaximizedControl(null);
             }
             else {
@@ -67,7 +62,7 @@ public class XWikiPageEditor extends AbstractTextEditor
         FormToolkit toolkit = new FormToolkit(parent.getDisplay());
         form = toolkit.createForm(parent);                        
         toolkit.decorateFormHeading(form);
-        form.getToolBarManager().add(new MaximizeEditorAction());  
+        form.getToolBarManager().add(new ShowPreviewAction());  
         form.updateToolBar();
         GridLayoutFactory.fillDefaults().applyTo(form.getBody());
         
@@ -92,6 +87,7 @@ public class XWikiPageEditor extends AbstractTextEditor
         browser = new Browser(previewAreaComposite, SWT.NONE);        
                
         sashForm.setWeights(new int[] {50, 50});
+        sashForm.setMaximizedControl(sashForm.getChildren()[0]);
                 
         updateEditor(xwikiPage);
     }        

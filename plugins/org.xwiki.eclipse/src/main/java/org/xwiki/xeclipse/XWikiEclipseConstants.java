@@ -14,5 +14,5 @@ public final class XWikiEclipseConstants
     public static final String XWIKI_PAGE_ICON = "icons/xwiki-page.png";
     public static final String XWIKI_PAGE_CACHED_ICON = "icons/xwiki-page-cached.png";
     public static final String XWIKI_PAGE_CONFLICT_ICON = "icons/xwiki-page-conflict.png";
-    public static final String MAXIMIZE_EDITOR_ICON = "icons/maximize-editor.gif";  
+    public static final String SHOW_EDITOR_PREVIEW_ICON = "icons/show-editor-preview.gif";  
 }

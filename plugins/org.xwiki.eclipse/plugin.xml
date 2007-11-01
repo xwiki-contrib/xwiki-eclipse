@@ -40,6 +40,12 @@
             id="org.xwiki.xeclipse.views.XWikiExplorer"
             name="XWiki explorer">
       </view>
+      <view
+            category="XWiki"
+            class="org.xwiki.xeclipse.views.XWikiPagePreviewView"
+            id="org.xwiki.xeclipse.views.XWikiPagePreview"
+            name="XWiki preview">
+      </view>
    </extension>
    <extension
          point="org.eclipse.ui.perspectiveExtensions">

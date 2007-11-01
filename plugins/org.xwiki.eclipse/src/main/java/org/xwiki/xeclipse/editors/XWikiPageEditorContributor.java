@@ -44,7 +44,7 @@ public class XWikiPageEditorContributor extends BasicTextEditorActionContributor
         action = getAction(editor, ITextEditorActionConstants.PASTE);
         actionBars.setGlobalActionHandler(action.getActionDefinitionId(), action);
 
-        actionBars.updateActionBars();
+        actionBars.updateActionBars();               
     }
 
 }
