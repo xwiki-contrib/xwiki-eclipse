@@ -22,6 +22,8 @@ package org.xwiki.xeclipse.adapters;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.model.IWorkbenchAdapter;
+import org.xwiki.plugins.eclipse.XWikiEclipsePlugin;
+import org.xwiki.xeclipse.XWikiEclipseConstants;
 import org.xwiki.xeclipse.model.IXWikiPage;
 
 /**
@@ -47,6 +49,16 @@ public class XWikiPageAdapter implements IWorkbenchAdapter
      */
     public ImageDescriptor getImageDescriptor(Object object)
     {
+        if (object instanceof IXWikiPage) {
+            IXWikiPage page = (IXWikiPage) object;
+            
+            if(page.isCached()) {
+                return XWikiEclipsePlugin.getImageDescriptor(XWikiEclipseConstants.XWIKI_PAGE_CACHED_ICON);
+            }
+            
+            return XWikiEclipsePlugin.getImageDescriptor(XWikiEclipseConstants.XWIKI_PAGE_ICON);
+        }
+        
         return null;
     }
 

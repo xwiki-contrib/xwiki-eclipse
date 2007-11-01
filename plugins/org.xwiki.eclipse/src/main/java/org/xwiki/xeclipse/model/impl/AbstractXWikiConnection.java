@@ -87,6 +87,8 @@ public abstract class AbstractXWikiConnection implements IXWikiConnection, Seria
     abstract boolean isPageDirty(String pageId);
 
     abstract boolean isPageConflict(String pageId);
+    
+    abstract boolean isPageCached(String pageId);
 
     abstract Page getRawPage(String pageId) throws XWikiConnectionException;
 
@@ -120,5 +122,5 @@ public abstract class AbstractXWikiConnection implements IXWikiConnection, Seria
             final IXWikiConnectionListener listener = (IXWikiConnectionListener) listeners[i];
             listener.connectionClosed(this);
         }
-    }    
+    }       
 }

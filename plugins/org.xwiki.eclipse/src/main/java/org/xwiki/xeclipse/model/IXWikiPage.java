@@ -55,6 +55,11 @@ public interface IXWikiPage
     public boolean isConflict();
     
     /**
+     * @return true if the page is locally cached.
+     */
+    public boolean isCached();
+    
+    /**
      * Save the page content.
      * 
      * @throws XWikiConnectionException

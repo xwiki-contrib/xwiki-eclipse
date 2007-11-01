@@ -12,4 +12,5 @@ public interface IXWikiCacheDAO extends IXWikiDAO
     public boolean isInConflict(String pageId);
     public void setConflict(String pageId, boolean conflict);
     public void storeSpaceSummary(SpaceSummary spaceSummary) throws XWikiDAOException;
+    public boolean isCached(String pageId);
 }

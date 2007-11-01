@@ -10,5 +10,8 @@ public final class XWikiEclipseConstants
     
     public static final String CONNECTION_SETTINGS_BANNER = "icons/connection-settings-banner.png";
     public static final String XWIKI_ICON = "icons/xwiki.png";
-      
+    public static final String XWIKI_SPACE_ICON = "icons/xwiki-space.png";
+    public static final String XWIKI_PAGE_ICON = "icons/xwiki-page.png";
+    public static final String XWIKI_PAGE_CACHED_ICON = "icons/xwiki-page-cached.png";
+    public static final String XWIKI_PAGE_CONFLICT_ICON = "icons/xwiki-page-conflict.png";  
 }

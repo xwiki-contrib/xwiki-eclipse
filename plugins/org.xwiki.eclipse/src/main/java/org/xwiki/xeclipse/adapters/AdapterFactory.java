@@ -42,7 +42,7 @@ public class AdapterFactory implements IAdapterFactory
      * The adapter for XWiki spaces.
      */
     private IDeferredWorkbenchAdapter xwikiSpaceAdapter =
-        new XWikiSpaceDescriptorAdapter();
+        new XWikiSpaceAdapter();
 
     /**
      * The adapter for XWiki pages.

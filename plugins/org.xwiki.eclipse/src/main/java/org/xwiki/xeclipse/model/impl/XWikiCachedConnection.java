@@ -464,4 +464,10 @@ public class XWikiCachedConnection extends AbstractXWikiConnection implements Se
         return cacheDAO;
     }
 
+    @Override
+    boolean isPageCached(String pageId)
+    {
+        return cacheDAO.isCached(pageId);        
+    }
+
 }

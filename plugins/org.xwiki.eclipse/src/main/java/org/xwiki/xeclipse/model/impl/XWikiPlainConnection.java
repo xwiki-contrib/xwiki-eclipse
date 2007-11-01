@@ -257,4 +257,10 @@ public class XWikiPlainConnection extends AbstractXWikiConnection
     {
         return remoteDAO;
     }
+
+    @Override
+    boolean isPageCached(String pageId)
+    {      
+        return false;
+    }
 }

@@ -27,6 +27,7 @@ import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.progress.IDeferredWorkbenchAdapter;
 import org.eclipse.ui.progress.IElementCollector;
+import org.xwiki.plugins.eclipse.XWikiEclipsePlugin;
 import org.xwiki.xeclipse.XWikiEclipseConstants;
 import org.xwiki.xeclipse.model.IXWikiPage;
 import org.xwiki.xeclipse.model.IXWikiSpace;
@@ -35,7 +36,7 @@ import org.xwiki.xeclipse.model.XWikiConnectionException;
 /**
  * The adapter for XWiki spaces
  */
-public class XWikiSpaceDescriptorAdapter implements IDeferredWorkbenchAdapter
+public class XWikiSpaceAdapter implements IDeferredWorkbenchAdapter
 {
     /**
      * {@inheritDoc}
@@ -67,7 +68,7 @@ public class XWikiSpaceDescriptorAdapter implements IDeferredWorkbenchAdapter
      */
     public ImageDescriptor getImageDescriptor(Object object)
     {
-        return null;
+        return XWikiEclipsePlugin.getImageDescriptor(XWikiEclipseConstants.XWIKI_SPACE_ICON);
     }
 
     /**

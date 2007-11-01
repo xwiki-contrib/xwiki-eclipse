@@ -85,6 +85,9 @@ public class XWikiExplorerView extends ViewPart implements IXWikiConnectionManag
                     XWikiPageEditorInput editorInput = new XWikiPageEditorInput(xwikiPage);
                     try {
                         page.openEditor(editorInput, XWikiPageEditor.ID);
+                        
+                        /* This updates the icon in order to reflect its new state after that it has been opened in the editor, i.e., cached, conflict, etc. */
+                        treeViewer.refresh(xwikiPage);
                     } catch (PartInitException e) {                     
                         e.printStackTrace();
                     }

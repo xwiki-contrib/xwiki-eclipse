@@ -202,5 +202,9 @@ public class XWikiPage implements IXWikiPage
     public IXWikiConnection getConnection() {
         return connection;
     }
+    
+    public boolean isCached() {
+        return connection.isPageCached(page.getId());
+    }
 
 }

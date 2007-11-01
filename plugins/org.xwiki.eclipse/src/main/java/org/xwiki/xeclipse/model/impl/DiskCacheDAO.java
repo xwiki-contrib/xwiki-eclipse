@@ -366,4 +366,9 @@ public class DiskCacheDAO implements IXWikiCacheDAO
     {
         return indexAggregate.getDirtyPagesIndex();
     }
+
+    public boolean isCached(String pageId)
+    {
+        return indexAggregate.getPageToDataFileNameIndex().get(pageId) != null ? true : false;
+    }
 }
