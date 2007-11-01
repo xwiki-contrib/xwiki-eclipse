@@ -1,5 +1,10 @@
 package org.xwiki.xeclipse.editors;
 
+import org.eclipse.core.commands.AbstractHandler;
+import org.eclipse.core.commands.ExecutionEvent;
+import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.resource.JFaceResources;
@@ -10,9 +15,12 @@ import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.forms.widgets.Form;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.texteditor.AbstractTextEditor;
+import org.xwiki.plugins.eclipse.XWikiEclipsePlugin;
+import org.xwiki.xeclipse.XWikiEclipseConstants;
 import org.xwiki.xeclipse.model.IXWikiConnection;
 import org.xwiki.xeclipse.model.IXWikiPage;
 
@@ -21,10 +29,29 @@ public class XWikiPageEditor extends AbstractTextEditor
     public static final String ID = "org.xwiki.xeclipse.editors.XWikiPage";    
     private Form form;
     private StackLayout stackLayout;
+    private SashForm sashForm;
     private Composite previewAreaComposite;
     private Composite notConnectedLabelComposite;
     private Browser browser;
+            
+    private class MaximizeEditorAction extends Action {
+        public MaximizeEditorAction() {           
+            super("Maximize editor", AS_CHECK_BOX);        
+            setImageDescriptor(XWikiEclipsePlugin.getImageDescriptor(XWikiEclipseConstants.MAXIMIZE_EDITOR_ICON));
+            setChecked(false);
+        }
 
+        @Override
+        public void run() {
+            if(!isChecked()) {
+                sashForm.setMaximizedControl(null);
+            }
+            else {
+                sashForm.setMaximizedControl(sashForm.getChildren()[0]);
+            }            
+        }
+    }
+    
     public XWikiPageEditor()
     {
         super();        
@@ -38,11 +65,13 @@ public class XWikiPageEditor extends AbstractTextEditor
         IXWikiPage xwikiPage = ((XWikiPageEditorInput)getEditorInput()).getXWikiPage();
         
         FormToolkit toolkit = new FormToolkit(parent.getDisplay());
-        form = toolkit.createForm(parent);                
+        form = toolkit.createForm(parent);                        
         toolkit.decorateFormHeading(form);
+        form.getToolBarManager().add(new MaximizeEditorAction());  
+        form.updateToolBar();
         GridLayoutFactory.fillDefaults().applyTo(form.getBody());
         
-        SashForm sashForm = new SashForm(form.getBody(), SWT.VERTICAL | SWT.BORDER);
+        sashForm = new SashForm(form.getBody(), SWT.VERTICAL | SWT.BORDER);
         toolkit.adapt(sashForm);
         GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, true).applyTo(sashForm);
         
@@ -63,10 +92,10 @@ public class XWikiPageEditor extends AbstractTextEditor
         browser = new Browser(previewAreaComposite, SWT.NONE);        
                
         sashForm.setWeights(new int[] {50, 50});
-        
+                
         updateEditor(xwikiPage);
-    }
-    
+    }        
+
     public void updateEditor(IXWikiPage page) {        
         String id = page.getId();
         IXWikiConnection connection = page.getConnection();
