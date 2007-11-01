@@ -30,7 +30,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.core.runtime.ListenerList;
 import org.xwiki.xeclipse.model.IXWikiConnection;
 import org.xwiki.xeclipse.model.XWikiConnectionException;
 
@@ -40,9 +39,7 @@ public class XWikiConnectionManager
 
     private List<IXWikiConnection> xwikiConnections;
     private Map<String, String> idToPasswordMapping;
-
-    private ListenerList connectionManagerListenerList;
-
+    
     public static XWikiConnectionManager getDefault()
     {
         if (sharedInstance == null) {
@@ -55,8 +52,7 @@ public class XWikiConnectionManager
     private XWikiConnectionManager()
     {
         xwikiConnections = new ArrayList<IXWikiConnection>();
-        idToPasswordMapping = new HashMap<String, String>();
-        connectionManagerListenerList = new ListenerList();
+        idToPasswordMapping = new HashMap<String, String>();        
     }
 
     public List<IXWikiConnection> getConnections()
@@ -69,14 +65,15 @@ public class XWikiConnectionManager
         if (!xwikiConnections.contains(xwikiConnection)) {
             xwikiConnections.add(xwikiConnection);
             idToPasswordMapping.put(xwikiConnection.getId(), password);
-            fireConnectionAdded(xwikiConnection);
+                        
+            XWikiEclipseNotificationCenter.getDefault().fireEvent(this, XWikiEclipseEvent.CONNECTION_ADDED, xwikiConnection);
         }
     }    
 
     public void removeConnection(IXWikiConnection xwikiConnection)
     {
-        xwikiConnections.remove(xwikiConnection);        
-        fireConnectionRemoved(xwikiConnection);
+        xwikiConnections.remove(xwikiConnection);                
+        XWikiEclipseNotificationCenter.getDefault().fireEvent(this, XWikiEclipseEvent.CONNECTION_REMOVED, xwikiConnection);
     }
     
     public String getPasswordForConnection(String id) {
@@ -109,46 +106,5 @@ public class XWikiConnectionManager
                 e.printStackTrace();
             }
         }
-    }
-        
-    // /////////////////////////// Event listeners management /////////////////////////////
-
-    public void addConnectionManagerListener(IXWikiConnectionManagerListener listener)
-    {
-        connectionManagerListenerList.add(listener);
-    }
-
-    public void removeConnectionManagerListener(IXWikiConnectionManagerListener listener)
-    {
-        connectionManagerListenerList.remove(listener);
-    }
-
-    protected void fireConnectionAdded(final IXWikiConnection xwikiConnection)
-    {
-        if (xwikiConnection == null) {
-            throw new NullPointerException();
-        }
-
-        final Object[] listeners = connectionManagerListenerList.getListeners();
-        for (int i = 0; i < listeners.length; i++) {
-            final IXWikiConnectionManagerListener listener =
-                (IXWikiConnectionManagerListener) listeners[i];
-            listener.connectionAdded(xwikiConnection);
-        }
-    }
-
-    protected void fireConnectionRemoved(final IXWikiConnection xwikiConnection)
-    {
-        if (xwikiConnection == null) {
-            throw new NullPointerException();
-        }
-
-        final Object[] listeners = connectionManagerListenerList.getListeners();
-        for (int i = 0; i < listeners.length; i++) {
-            final IXWikiConnectionManagerListener listener =
-                (IXWikiConnectionManagerListener) listeners[i];
-            listener.connectionRemoved(xwikiConnection);
-        }
-    }
-
+    }            
 }

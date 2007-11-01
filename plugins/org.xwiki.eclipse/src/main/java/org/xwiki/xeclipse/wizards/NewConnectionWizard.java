@@ -65,6 +65,7 @@ public class NewConnectionWizard extends Wizard implements INewWizard
                         connection.dispose();
                         monitor.done();
                     } catch (Exception e) {
+                        e.printStackTrace();
                         throw new InvocationTargetException(e);
                     }
                 }

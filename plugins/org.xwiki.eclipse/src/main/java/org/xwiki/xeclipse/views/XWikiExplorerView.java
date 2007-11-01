@@ -43,21 +43,21 @@ import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.menus.CommandContributionItem;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.eclipse.ui.part.ViewPart;
-import org.xwiki.xeclipse.IXWikiConnectionManagerListener;
+import org.xwiki.xeclipse.IXWikiEclipseEventListener;
 import org.xwiki.xeclipse.XWikiConnectionManager;
 import org.xwiki.xeclipse.XWikiEclipseConstants;
+import org.xwiki.xeclipse.XWikiEclipseEvent;
+import org.xwiki.xeclipse.XWikiEclipseNotificationCenter;
 import org.xwiki.xeclipse.editors.XWikiPageEditor;
 import org.xwiki.xeclipse.editors.XWikiPageEditorInput;
 import org.xwiki.xeclipse.handlers.ConnectHandler;
 import org.xwiki.xeclipse.handlers.DisconnectHandler;
 import org.xwiki.xeclipse.handlers.RemoveConnectionHandler;
 import org.xwiki.xeclipse.model.IXWikiConnection;
-import org.xwiki.xeclipse.model.IXWikiConnectionListener;
 import org.xwiki.xeclipse.model.IXWikiPage;
 import org.xwiki.xeclipse.utils.XWikiEclipseUtil;
 
-public class XWikiExplorerView extends ViewPart implements IXWikiConnectionManagerListener,
-    IXWikiConnectionListener
+public class XWikiExplorerView extends ViewPart implements IXWikiEclipseEventListener    
 {
     public static final String ID = "org.xwiki.xeclipse.views.XWikiExplorer";
 
@@ -169,28 +169,20 @@ public class XWikiExplorerView extends ViewPart implements IXWikiConnectionManag
     {
         super.init(site);
         activateHandlers(site);
-        XWikiConnectionManager.getDefault().addConnectionManagerListener(this);
-
-        /* Monitors the connections that are already registered in the connection manager */
-        for (IXWikiConnection xwikiConnection : XWikiConnectionManager.getDefault()
-            .getConnections()) {
-            xwikiConnection.addConnectionEstablishedListener(this);
-        }
+        
+        XWikiEclipseNotificationCenter.getDefault().addListener(XWikiEclipseEvent.CONNECTION_ADDED, this);
+        XWikiEclipseNotificationCenter.getDefault().addListener(XWikiEclipseEvent.CONNECTION_REMOVED, this);
+        XWikiEclipseNotificationCenter.getDefault().addListener(XWikiEclipseEvent.CONNECTION_ESTABLISHED, this);
+        XWikiEclipseNotificationCenter.getDefault().addListener(XWikiEclipseEvent.CONNECTION_CLOSED, this);                
     }
 
     @Override
     public void dispose()
-    {
-        /*
-         * Removes the connection listening on all connections still registered in the connection
-         * manager
-         */
-        for (IXWikiConnection xwikiConnection : XWikiConnectionManager.getDefault()
-            .getConnections()) {
-            xwikiConnection.removeConnectionEstablishedListener(this);
-        }
-
-        XWikiConnectionManager.getDefault().removeConnectionManagerListener(this);
+    {       
+        XWikiEclipseNotificationCenter.getDefault().removeListener(XWikiEclipseEvent.CONNECTION_ADDED, this);
+        XWikiEclipseNotificationCenter.getDefault().removeListener(XWikiEclipseEvent.CONNECTION_REMOVED, this);
+        XWikiEclipseNotificationCenter.getDefault().removeListener(XWikiEclipseEvent.CONNECTION_ESTABLISHED, this);
+        XWikiEclipseNotificationCenter.getDefault().removeListener(XWikiEclipseEvent.CONNECTION_CLOSED, this);        
 
         super.dispose();
     }
@@ -283,26 +275,21 @@ public class XWikiExplorerView extends ViewPart implements IXWikiConnectionManag
             });
     }
 
-    public void connectionAdded(IXWikiConnection xwikiConnection)
+    public void handleEvent(Object sender, XWikiEclipseEvent event, Object data)
     {
-        xwikiConnection.addConnectionEstablishedListener(this);
-        treeViewer.refresh();
-    }
-
-    public void connectionRemoved(IXWikiConnection xwikiConnection)
-    {
-        xwikiConnection.removeConnectionEstablishedListener(this);
-        treeViewer.refresh();
-    }
-
-    public void connectionEstablished(IXWikiConnection connection)
-    {
-        treeViewer.refresh(connection);
-    }
-
-    public void connectionClosed(IXWikiConnection connection)
-    {
-        treeViewer.refresh(connection);
+        switch(event) {
+            case CONNECTION_ADDED:
+            case CONNECTION_REMOVED:                
+                treeViewer.refresh();
+                break;
+            case CONNECTION_ESTABLISHED:
+            case CONNECTION_CLOSED:                 
+                if(XWikiConnectionManager.getDefault().getConnections().contains(sender)) {
+                    treeViewer.refresh(sender);  
+                }
+                break;
+        }
+        
     }
 
 }

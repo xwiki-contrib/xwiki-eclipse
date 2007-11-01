@@ -25,8 +25,6 @@ public abstract class AbstractXWikiConnection implements IXWikiConnection, Seria
 
     protected transient boolean isDisposed;
 
-    private transient ListenerList connectionListenerList;
-
     /**
      * Constructor.
      * 
@@ -48,8 +46,7 @@ public abstract class AbstractXWikiConnection implements IXWikiConnection, Seria
      */
     protected void init() throws XWikiConnectionException
     {
-        isDisposed = false;
-        connectionListenerList = new ListenerList();
+        isDisposed = false;     
     }
 
     /**
@@ -93,34 +90,4 @@ public abstract class AbstractXWikiConnection implements IXWikiConnection, Seria
     abstract Page getRawPage(String pageId) throws XWikiConnectionException;
 
     abstract Space getRawSpace(String key);
-
-    // /////////////////////////// Event listeners management /////////////////////////////
-
-    public void addConnectionEstablishedListener(IXWikiConnectionListener listener)
-    {
-        connectionListenerList.add(listener);
-    }
-
-    public void removeConnectionEstablishedListener(IXWikiConnectionListener listener)
-    {
-        connectionListenerList.remove(listener);
-    }
-
-    protected void fireConnectionEstablished()
-    {
-        final Object[] listeners = connectionListenerList.getListeners();
-        for (int i = 0; i < listeners.length; i++) {
-            final IXWikiConnectionListener listener = (IXWikiConnectionListener) listeners[i];
-            listener.connectionEstablished(this);
-        }
-    }
-
-    protected void fireConnectionClosed()
-    {
-        final Object[] listeners = connectionListenerList.getListeners();
-        for (int i = 0; i < listeners.length; i++) {
-            final IXWikiConnectionListener listener = (IXWikiConnectionListener) listeners[i];
-            listener.connectionClosed(this);
-        }
-    }       
 }

@@ -74,7 +74,7 @@ public class XWikiPagePreviewView extends ViewPart implements ISelectionListener
     }
 
     public void selectionChanged(IWorkbenchPart part, ISelection selection)
-    {
+    {        
         Object selectedObject = XWikiEclipseUtil.getSingleSelectedObjectInStructuredSelection(selection);
         if(selectedObject instanceof IXWikiPage) {
             IXWikiPage xwikiPage = (IXWikiPage) selectedObject;

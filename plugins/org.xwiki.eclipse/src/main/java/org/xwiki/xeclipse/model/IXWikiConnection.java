@@ -82,7 +82,4 @@ public interface IXWikiConnection
     
     public String getUserName();
     public String getServerUrl();
-    
-    public void addConnectionEstablishedListener(IXWikiConnectionListener listener);
-    public void removeConnectionEstablishedListener(IXWikiConnectionListener listener);
 }

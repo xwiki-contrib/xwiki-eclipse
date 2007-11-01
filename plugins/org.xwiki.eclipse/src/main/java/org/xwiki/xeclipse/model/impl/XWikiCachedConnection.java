@@ -13,6 +13,8 @@ import org.codehaus.swizzle.confluence.Page;
 import org.codehaus.swizzle.confluence.PageSummary;
 import org.codehaus.swizzle.confluence.Space;
 import org.codehaus.swizzle.confluence.SpaceSummary;
+import org.xwiki.xeclipse.XWikiEclipseEvent;
+import org.xwiki.xeclipse.XWikiEclipseNotificationCenter;
 import org.xwiki.xeclipse.model.IXWikiPage;
 import org.xwiki.xeclipse.model.IXWikiSpace;
 import org.xwiki.xeclipse.model.XWikiConnectionException;
@@ -214,7 +216,7 @@ public class XWikiCachedConnection extends AbstractXWikiConnection implements Se
             throw new XWikiConnectionException(e);
         }
 
-        fireConnectionEstablished();
+        XWikiEclipseNotificationCenter.getDefault().fireEvent(this, XWikiEclipseEvent.CONNECTION_ESTABLISHED, null);        
     }
 
     /**
@@ -237,7 +239,7 @@ public class XWikiCachedConnection extends AbstractXWikiConnection implements Se
             e.printStackTrace();
         }
 
-        fireConnectionClosed();
+        XWikiEclipseNotificationCenter.getDefault().fireEvent(this, XWikiEclipseEvent.CONNECTION_CLOSED, null);        
     }
 
     /**
