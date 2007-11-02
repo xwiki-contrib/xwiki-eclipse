@@ -9,10 +9,8 @@ import org.codehaus.swizzle.confluence.Page;
 import org.codehaus.swizzle.confluence.PageSummary;
 import org.codehaus.swizzle.confluence.Space;
 import org.codehaus.swizzle.confluence.SpaceSummary;
-import org.eclipse.core.runtime.ListenerList;
 import org.xwiki.xeclipse.XWikiEclipseEvent;
 import org.xwiki.xeclipse.XWikiEclipseNotificationCenter;
-import org.xwiki.xeclipse.model.IXWikiConnectionListener;
 import org.xwiki.xeclipse.model.IXWikiPage;
 import org.xwiki.xeclipse.model.IXWikiSpace;
 import org.xwiki.xeclipse.model.XWikiConnectionException;
@@ -264,5 +262,29 @@ public class XWikiPlainConnection extends AbstractXWikiConnection
     boolean isPageCached(String pageId)
     {      
         return false;
+    }
+
+    public void createSpace(String key, String name, String description) throws XWikiConnectionException
+    {
+        try {
+            Space space = remoteDAO.createSpace(key, name, description);
+            XWikiEclipseNotificationCenter.getDefault().fireEvent(this, XWikiEclipseEvent.SPACE_CREATED, this);
+        } catch (XWikiDAOException e) {                
+            e.printStackTrace();
+            throw new XWikiConnectionException(e);
+        }        
+    }
+
+    public IXWikiPage createPage(IXWikiSpace space, String name, String content)
+        throws XWikiConnectionException
+    {
+        try {
+            Page page = remoteDAO.createPage(space.getKey(), name, content);            
+            XWikiEclipseNotificationCenter.getDefault().fireEvent(this, XWikiEclipseEvent.PAGE_CREATED, space);
+            return new XWikiPage(this, page.getId(), page.toMap());
+        } catch (XWikiDAOException e) {                
+            e.printStackTrace();
+            throw new XWikiConnectionException(e);
+        }            
     }
 }

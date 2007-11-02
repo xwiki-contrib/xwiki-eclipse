@@ -82,4 +82,7 @@ public interface IXWikiConnection
     
     public String getUserName();
     public String getServerUrl();
+    
+    public void createSpace(String key, String name, String description) throws XWikiConnectionException;
+    public IXWikiPage createPage(IXWikiSpace space, String name, String content) throws XWikiConnectionException;
 }

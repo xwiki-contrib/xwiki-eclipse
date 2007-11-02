@@ -18,27 +18,20 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  *
  */
-package org.xwiki.xeclipse.model;
+package org.xwiki.xeclipse.wizards;
 
-import java.util.Collection;
+public class NewPageWizardState
+{
+    private String title;
+                
+    public String getTitle()
+    {
+        return title;
+    }
 
-/**
- * This interface provides full access to space information.
- */
-public interface IXWikiSpace
-{        
-    public String getKey();
-    public String getName();
-    public String getType();
-    public String getUrl();        
-    public String getDescription();    
-    public String getHomePage();
-    
-    /**
-     * @return The connection where this space has been fetched from.
-     */
-    public IXWikiConnection getConnection();
-    
-    public Collection<IXWikiPage> getPages() throws XWikiConnectionException; 
-    public IXWikiPage createPage(String name, String content) throws XWikiConnectionException;
+    public void setTitle(String title)
+    {
+        this.title = title;
+    }
+
 }

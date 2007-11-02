@@ -472,4 +472,39 @@ public class XWikiCachedConnection extends AbstractXWikiConnection implements Se
         return cacheDAO.isCached(pageId);        
     }
 
+    public void createSpace(String key, String name, String description) throws XWikiConnectionException
+    {
+        if(isConnected()) {            
+            try {
+                Space space = remoteDAO.createSpace(key, name, description);
+                XWikiEclipseNotificationCenter.getDefault().fireEvent(this, XWikiEclipseEvent.SPACE_CREATED, this);
+            } catch (XWikiDAOException e) {                
+                e.printStackTrace();
+                throw new XWikiConnectionException(e);
+            }
+        }
+        else {
+            throw new XWikiConnectionException("Cannot create a space if not connected");
+        }
+        
+    }
+
+    public IXWikiPage createPage(IXWikiSpace space, String name, String content)
+        throws XWikiConnectionException
+    {
+        if(isConnected()) {
+            try {
+                Page page = remoteDAO.createPage(space.getKey(), name, content);
+                XWikiEclipseNotificationCenter.getDefault().fireEvent(this, XWikiEclipseEvent.PAGE_CREATED, space);
+                return new XWikiPage(this, page.getId(), page.toMap());
+            } catch (XWikiDAOException e) {                
+                e.printStackTrace();
+                throw new XWikiConnectionException(e);
+            }            
+        }
+        else {
+            throw new XWikiConnectionException("Cannot create a page if not connected");
+        }        
+    }
+
 }

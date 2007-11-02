@@ -33,6 +33,7 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.ISources;
 import org.eclipse.ui.IViewSite;
@@ -52,12 +53,15 @@ import org.xwiki.xeclipse.editors.XWikiPageEditor;
 import org.xwiki.xeclipse.editors.XWikiPageEditorInput;
 import org.xwiki.xeclipse.handlers.ConnectHandler;
 import org.xwiki.xeclipse.handlers.DisconnectHandler;
+import org.xwiki.xeclipse.handlers.NewPageHandler;
+import org.xwiki.xeclipse.handlers.NewSpaceHandler;
 import org.xwiki.xeclipse.handlers.RemoveConnectionHandler;
 import org.xwiki.xeclipse.model.IXWikiConnection;
 import org.xwiki.xeclipse.model.IXWikiPage;
+import org.xwiki.xeclipse.model.IXWikiSpace;
 import org.xwiki.xeclipse.utils.XWikiEclipseUtil;
 
-public class XWikiExplorerView extends ViewPart implements IXWikiEclipseEventListener    
+public class XWikiExplorerView extends ViewPart implements IXWikiEclipseEventListener
 {
     public static final String ID = "org.xwiki.xeclipse.views.XWikiExplorer";
 
@@ -72,27 +76,33 @@ public class XWikiExplorerView extends ViewPart implements IXWikiEclipseEventLis
         treeViewer.setLabelProvider(new WorkbenchLabelProvider());
         getSite().setSelectionProvider(treeViewer);
         treeViewer.setInput(XWikiConnectionManager.getDefault());
-        
-        treeViewer.addDoubleClickListener(new IDoubleClickListener() {
+
+        treeViewer.addDoubleClickListener(new IDoubleClickListener()
+        {
 
             public void doubleClick(DoubleClickEvent event)
             {
                 IWorkbenchPage page =
                     PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-                Object selectedObject =  XWikiEclipseUtil.getSingleSelectedObjectInStructuredSelection(treeViewer.getSelection());
-                if(selectedObject instanceof IXWikiPage) {
+                Object selectedObject =
+                    XWikiEclipseUtil.getSingleSelectedObjectInStructuredSelection(treeViewer
+                        .getSelection());
+                if (selectedObject instanceof IXWikiPage) {
                     IXWikiPage xwikiPage = (IXWikiPage) selectedObject;
                     XWikiPageEditorInput editorInput = new XWikiPageEditorInput(xwikiPage);
                     try {
                         page.openEditor(editorInput, XWikiPageEditor.ID);
-                        
-                        /* This updates the icon in order to reflect its new state after that it has been opened in the editor, i.e., cached, conflict, etc. */
+
+                        /*
+                         * This updates the icon in order to reflect its new state after that it has
+                         * been opened in the editor, i.e., cached, conflict, etc.
+                         */
                         treeViewer.refresh(xwikiPage);
-                    } catch (PartInitException e) {                     
+                    } catch (PartInitException e) {
                         e.printStackTrace();
                     }
-                }                
-            }            
+                }
+            }
         });
 
         hookContextMenu();
@@ -127,7 +137,7 @@ public class XWikiExplorerView extends ViewPart implements IXWikiEclipseEventLis
             SWT.NONE));
 
         menuManager.add(new Separator());
-        
+
         menuManager.add(new CommandContributionItem(getSite(),
             null,
             XWikiEclipseConstants.REMOVE_CONNECTION_COMMAND,
@@ -139,7 +149,33 @@ public class XWikiExplorerView extends ViewPart implements IXWikiEclipseEventLis
             null,
             null,
             SWT.NONE));
+
+        menuManager.add(new Separator());
+
+        menuManager.add(new CommandContributionItem(getSite(),
+            null,
+            XWikiEclipseConstants.NEW_SPACE_COMMAND,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            SWT.NONE));
         
+        menuManager.add(new CommandContributionItem(getSite(),
+            null,
+            XWikiEclipseConstants.NEW_PAGE_COMMAND,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            SWT.NONE));
+
         menuManager.add(new Separator());
 
         menuManager.add(new CommandContributionItem(getSite(),
@@ -169,20 +205,40 @@ public class XWikiExplorerView extends ViewPart implements IXWikiEclipseEventLis
     {
         super.init(site);
         activateHandlers(site);
-        
-        XWikiEclipseNotificationCenter.getDefault().addListener(XWikiEclipseEvent.CONNECTION_ADDED, this);
-        XWikiEclipseNotificationCenter.getDefault().addListener(XWikiEclipseEvent.CONNECTION_REMOVED, this);
-        XWikiEclipseNotificationCenter.getDefault().addListener(XWikiEclipseEvent.CONNECTION_ESTABLISHED, this);
-        XWikiEclipseNotificationCenter.getDefault().addListener(XWikiEclipseEvent.CONNECTION_CLOSED, this);                
+
+        XWikiEclipseNotificationCenter.getDefault().addListener(
+            XWikiEclipseEvent.CONNECTION_ADDED, this);
+        XWikiEclipseNotificationCenter.getDefault().addListener(
+            XWikiEclipseEvent.CONNECTION_REMOVED, this);
+        XWikiEclipseNotificationCenter.getDefault().addListener(
+            XWikiEclipseEvent.CONNECTION_ESTABLISHED, this);
+        XWikiEclipseNotificationCenter.getDefault().addListener(
+            XWikiEclipseEvent.CONNECTION_CLOSED, this);
+        XWikiEclipseNotificationCenter.getDefault().addListener(XWikiEclipseEvent.SPACE_CREATED,
+            this);
+        XWikiEclipseNotificationCenter.getDefault().addListener(XWikiEclipseEvent.PAGE_CREATED,
+            this);
+        XWikiEclipseNotificationCenter.getDefault().addListener(XWikiEclipseEvent.PAGE_UPDATED,
+            this);
     }
 
     @Override
     public void dispose()
-    {       
-        XWikiEclipseNotificationCenter.getDefault().removeListener(XWikiEclipseEvent.CONNECTION_ADDED, this);
-        XWikiEclipseNotificationCenter.getDefault().removeListener(XWikiEclipseEvent.CONNECTION_REMOVED, this);
-        XWikiEclipseNotificationCenter.getDefault().removeListener(XWikiEclipseEvent.CONNECTION_ESTABLISHED, this);
-        XWikiEclipseNotificationCenter.getDefault().removeListener(XWikiEclipseEvent.CONNECTION_CLOSED, this);        
+    {
+        XWikiEclipseNotificationCenter.getDefault().removeListener(
+            XWikiEclipseEvent.CONNECTION_ADDED, this);
+        XWikiEclipseNotificationCenter.getDefault().removeListener(
+            XWikiEclipseEvent.CONNECTION_REMOVED, this);
+        XWikiEclipseNotificationCenter.getDefault().removeListener(
+            XWikiEclipseEvent.CONNECTION_ESTABLISHED, this);
+        XWikiEclipseNotificationCenter.getDefault().removeListener(
+            XWikiEclipseEvent.CONNECTION_CLOSED, this);
+        XWikiEclipseNotificationCenter.getDefault().removeListener(
+            XWikiEclipseEvent.SPACE_CREATED, this);
+        XWikiEclipseNotificationCenter.getDefault().removeListener(
+            XWikiEclipseEvent.PAGE_CREATED, this);
+        XWikiEclipseNotificationCenter.getDefault().removeListener(
+            XWikiEclipseEvent.PAGE_UPDATED, this);
 
         super.dispose();
     }
@@ -273,23 +329,92 @@ public class XWikiExplorerView extends ViewPart implements IXWikiEclipseEventLis
                     return EvaluationResult.FALSE;
                 }
             });
+
+        handlerService.activateHandler(XWikiEclipseConstants.NEW_SPACE_COMMAND,
+            new NewSpaceHandler(), new Expression()
+            {
+                @Override
+                public void collectExpressionInfo(ExpressionInfo info)
+                {
+                    info.addVariableNameAccess(ISources.ACTIVE_CURRENT_SELECTION_NAME);
+                }
+
+                @Override
+                public EvaluationResult evaluate(IEvaluationContext context) throws CoreException
+                {
+                    Object selection =
+                        context.getVariable(ISources.ACTIVE_CURRENT_SELECTION_NAME);
+                    Object selectedObject =
+                        XWikiEclipseUtil.getSingleSelectedObjectInStructuredSelection(selection);
+
+                    if (selectedObject instanceof IXWikiConnection) {
+                        IXWikiConnection xwikiConnection = (IXWikiConnection) selectedObject;
+                        return xwikiConnection.isConnected() ? EvaluationResult.TRUE
+                            : EvaluationResult.FALSE;
+                    }
+
+                    return EvaluationResult.FALSE;
+                }
+            });
+        
+        handlerService.activateHandler(XWikiEclipseConstants.NEW_PAGE_COMMAND,
+            new NewPageHandler(), new Expression()
+            {
+                @Override
+                public void collectExpressionInfo(ExpressionInfo info)
+                {
+                    info.addVariableNameAccess(ISources.ACTIVE_CURRENT_SELECTION_NAME);
+                }
+
+                @Override
+                public EvaluationResult evaluate(IEvaluationContext context) throws CoreException
+                {
+                    Object selection =
+                        context.getVariable(ISources.ACTIVE_CURRENT_SELECTION_NAME);
+                    Object selectedObject =
+                        XWikiEclipseUtil.getSingleSelectedObjectInStructuredSelection(selection);
+
+                    if (selectedObject instanceof IXWikiSpace) {
+                        IXWikiSpace xwikiSpace = (IXWikiSpace) selectedObject;
+                        return xwikiSpace.getConnection().isConnected() ? EvaluationResult.TRUE
+                            : EvaluationResult.FALSE;
+                    }
+
+                    return EvaluationResult.FALSE;
+                }
+            });
     }
 
-    public void handleEvent(Object sender, XWikiEclipseEvent event, Object data)
+    public void handleEvent(final Object sender, final XWikiEclipseEvent event, final Object data)
     {
-        switch(event) {
-            case CONNECTION_ADDED:
-            case CONNECTION_REMOVED:                
-                treeViewer.refresh();
-                break;
-            case CONNECTION_ESTABLISHED:
-            case CONNECTION_CLOSED:                 
-                if(XWikiConnectionManager.getDefault().getConnections().contains(data)) {
-                    treeViewer.refresh(sender);  
+        /* Things that updates the UI must be run asynchronously otherwise they can conflict with other UI updates */
+        Display.getDefault().asyncExec(new Runnable()
+        {
+            public void run()
+            {
+                switch (event) {
+                    case CONNECTION_ADDED:
+                    case CONNECTION_REMOVED:
+                        treeViewer.refresh();
+                        break;
+                    case CONNECTION_ESTABLISHED:
+                    case CONNECTION_CLOSED:
+                    case SPACE_CREATED:                        
+                        if (XWikiConnectionManager.getDefault().getConnections().contains(data)) {
+                            treeViewer.refresh(data);
+                        }
+                        break;
+                    case PAGE_CREATED:
+                        treeViewer.refresh(data);
+                        break;
+                    case PAGE_UPDATED:                        
+                        treeViewer.refresh(data);
+                        break;
                 }
-                break;
-        }
-        
+
+            }
+        });
+
     }
 
 }

@@ -2,6 +2,7 @@ package org.xwiki.xeclipse.model.impl;
 
 import java.util.List;
 
+import org.codehaus.swizzle.confluence.ConfluenceException;
 import org.codehaus.swizzle.confluence.IdentityObjectConvertor;
 import org.codehaus.swizzle.confluence.Page;
 import org.codehaus.swizzle.confluence.PageSummary;
@@ -126,10 +127,44 @@ public class XWikiRemoteDAO implements IXWikiDAO
     public void storePage(Page page) throws XWikiDAOException
     {
         try {            
-            swizzleXWiki.storePage(page);
+            swizzleXWiki.storePage(page);            
         } catch (Exception e) {
             throw new XWikiDAOException(e);
         }
+    }
+
+    public Space createSpace(String key, String name, String description) throws XWikiDAOException
+    {
+        Space space = new Space();
+        space.setKey(key);
+        space.setName(name);
+        space.setDescription(description);
+                
+        try {
+            space = swizzleXWiki.addSpace(space);            
+        } catch (SwizzleConfluenceException e) {            
+            e.printStackTrace();
+            throw new XWikiDAOException(e);
+        }
+        
+        return space;
+    }
+
+    public Page createPage(String spaceKey, String title, String content) throws XWikiDAOException
+    {
+        Page page = new Page();
+        page.setSpace(spaceKey);
+        page.setTitle(title);
+        page.setContent(content);
+        
+        try {
+            page = swizzleXWiki.storePage(page);
+        } catch (SwizzleConfluenceException e) {            
+            e.printStackTrace();
+            throw new XWikiDAOException(e);
+        }
+        
+        return page;
     }
     
 }

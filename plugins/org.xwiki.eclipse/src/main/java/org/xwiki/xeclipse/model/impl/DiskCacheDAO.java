@@ -371,4 +371,15 @@ public class DiskCacheDAO implements IXWikiCacheDAO
     {
         return indexAggregate.getPageToDataFileNameIndex().get(pageId) != null ? true : false;
     }
+
+    public Space createSpace(String key, String name, String description) throws XWikiDAOException
+    {
+        throw new XWikiDAOException("Cannot create spaces on a local cache");        
+    }
+
+    public Page createPage(String spaceKey, String title, String content)
+        throws XWikiDAOException
+    {
+        throw new XWikiDAOException("Cannot create pages on a local cache");
+    }
 }

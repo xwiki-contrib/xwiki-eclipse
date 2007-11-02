@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Map;
 
 import org.codehaus.swizzle.confluence.Space;
+import org.xwiki.xeclipse.model.IXWikiConnection;
 import org.xwiki.xeclipse.model.IXWikiPage;
 import org.xwiki.xeclipse.model.IXWikiSpace;
 import org.xwiki.xeclipse.model.XWikiConnectionException;
@@ -118,4 +119,43 @@ public class XWikiSpace implements IXWikiSpace
         }
                 
     }
+
+    public IXWikiPage createPage(String name, String content) throws XWikiConnectionException
+    {
+        return connection.createPage(this, name, content);        
+    }
+
+    public IXWikiConnection getConnection()
+    {
+        return connection;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((key == null) ? 0 : key.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        final XWikiSpace other = (XWikiSpace) obj;
+        if (key == null) {
+            if (other.key != null)
+                return false;
+        } else if (!key.equals(other.key))
+            return false;
+        return true;
+    }
+    
+    
 }

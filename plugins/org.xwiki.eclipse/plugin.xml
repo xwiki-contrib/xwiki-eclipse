@@ -96,11 +96,19 @@
       <command
             defaultHandler="org.xwiki.xeclipse.handlers.NewConnectionHandler"
             id="org.xwiki.xeclipse.command.NewConnection"
-            name="New connection">
+            name="New connection...">
       </command>
       <command
             id="org.xwiki.xeclipse.command.RemoveConnection"
             name="Remove connection">
+      </command>
+      <command
+            id="org.xwiki.xeclipse.command.NewSpace"
+            name="New space...">
+      </command>
+      <command
+            id="org.xwiki.xeclipse.command.NewPage"
+            name="New page...">
       </command>
    </extension>
    <extension
