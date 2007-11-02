@@ -51,7 +51,15 @@
                label="File">
             <command
                   commandId="org.xwiki.xeclipse.command.NewConnection"
-                  id="New connection">
+                  id="New connection...">
+            </command>
+            <command
+                  commandId="org.xwiki.xeclipse.command.NewSpace"
+                  id="New space...">
+            </command>
+            <command
+                  commandId="org.xwiki.xeclipse.command.NewPage"
+                  id="New page...">
             </command>
             <separator
                   name="separator1"
@@ -87,6 +95,19 @@
                   commandId="org.eclipse.ui.edit.paste"
                   id="Paste">
             </command>
+         </menu>
+      </menuContribution>
+      <menuContribution
+            locationURI="menu:org.eclipse.ui.main.menu">
+         <menu
+               label="Window">
+            <menu
+                  id="org.eclipse.ui.window.showViewMenu"
+                  label="Show view">
+               <command
+                     commandId="org.eclipse.ui.window.showViewMenu">
+               </command>
+            </menu>            
          </menu>
       </menuContribution>
       <menuContribution

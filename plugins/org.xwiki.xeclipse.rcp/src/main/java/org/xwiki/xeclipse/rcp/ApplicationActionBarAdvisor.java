@@ -26,10 +26,11 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
         IWorkbenchAction pasteAction = ActionFactory.PASTE.create(window);
         register(pasteAction);         
         
-        
-        
         IWorkbenchAction exitAction = ActionFactory.QUIT.create(window);
-        register(exitAction);           
+        register(exitAction);
+        
+        IWorkbenchAction showViewMenuAction = ActionFactory.SHOW_VIEW_MENU.create(window);
+        register(showViewMenuAction);        
     }
 
     protected void fillMenuBar(IMenuManager menuBar) {          

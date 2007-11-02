@@ -10,6 +10,6 @@ public class Perspective implements IPerspectiveFactory {
             layout.getEditorArea());
 	    
 	    layout.addView("org.xwiki.xeclipse.views.XWikiPagePreview", IPageLayout.RIGHT, 0.4f,
-            layout.getEditorArea());
+            layout.getEditorArea());	    	    
 	}
 }
