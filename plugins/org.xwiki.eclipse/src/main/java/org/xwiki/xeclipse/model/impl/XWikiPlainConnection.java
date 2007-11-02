@@ -137,7 +137,7 @@ public class XWikiPlainConnection extends AbstractXWikiConnection
     /**
      * {@inheritDoc}
      */
-    public Collection<IXWikiPage> getPages(String spaceKey) throws XWikiConnectionException
+    public Collection<IXWikiPage> getPages(IXWikiSpace space) throws XWikiConnectionException
     {
         assertNotDisposed();
 
@@ -145,7 +145,7 @@ public class XWikiPlainConnection extends AbstractXWikiConnection
         try {
             List<PageSummary> pageSummaries = null;
             if (isConnected()) {
-                pageSummaries = remoteDAO.getPages(spaceKey);
+                pageSummaries = remoteDAO.getPages(space.getKey());
             } 
 
             if (pageSummaries != null) {

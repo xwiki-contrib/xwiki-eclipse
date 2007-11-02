@@ -84,7 +84,7 @@ public class XWikiSpace implements IXWikiSpace
 
     public Collection<IXWikiPage> getPages() throws XWikiConnectionException
     {
-        return connection.getPages(space.getKey());
+        return connection.getPages(this);
     }
 
     public String getType()

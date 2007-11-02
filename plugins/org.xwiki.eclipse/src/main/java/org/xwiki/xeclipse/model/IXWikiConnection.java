@@ -70,7 +70,7 @@ public interface IXWikiConnection
      * @return A collection of page descriptors for the pages available in the space with the given key.
      * @throws XWikiConnectionException
      */
-    public Collection<IXWikiPage> getPages(String spaceKey)
+    public Collection<IXWikiPage> getPages(IXWikiSpace space)
         throws XWikiConnectionException;
     
     /**

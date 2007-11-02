@@ -172,13 +172,16 @@ public class DiskCacheDAO implements IXWikiCacheDAO
         List<SpaceSummary> result = new ArrayList<SpaceSummary>();
 
         try {
-            for (String dataFileName : indexAggregate.getSpaceToDataFileNameIndex().values()) {
-                ObjectInputStream ois =
-                    new ObjectInputStream(new FileInputStream(new File(cacheDir, dataFileName)));
-                Map map = (Map) ois.readObject();
-                ois.close();
-                result.add(new SpaceSummary(map));
-            }
+            for(String spaceKey : indexAggregate.getSpaceToPagesIndex().keySet()) {
+                if(!indexAggregate.getSpaceToPagesIndex().get(spaceKey).isEmpty()) {
+                    String dataFileName = indexAggregate.getSpaceToDataFileNameIndex().get(spaceKey);
+                    ObjectInputStream ois =
+                        new ObjectInputStream(new FileInputStream(new File(cacheDir, dataFileName)));
+                    Map map = (Map) ois.readObject();
+                    ois.close();
+                    result.add(new SpaceSummary(map));
+                }
+            }                        
         } catch (Exception e) {
             throw new XWikiDAOException(e);
         }
@@ -372,9 +375,10 @@ public class DiskCacheDAO implements IXWikiCacheDAO
         return indexAggregate.getPageToDataFileNameIndex().get(pageId) != null ? true : false;
     }
 
-    public Space createSpace(String key, String name, String description) throws XWikiDAOException
+    public Space createSpace(String key, String name, String description)
+        throws XWikiDAOException
     {
-        throw new XWikiDAOException("Cannot create spaces on a local cache");        
+        throw new XWikiDAOException("Cannot create spaces on a local cache");
     }
 
     public Page createPage(String spaceKey, String title, String content)

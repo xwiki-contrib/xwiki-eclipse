@@ -306,7 +306,7 @@ public class XWikiCachedConnection extends AbstractXWikiConnection implements Se
     /**
      * {@inheritDoc}
      */
-    public Collection<IXWikiPage> getPages(String spaceKey) throws XWikiConnectionException
+    public Collection<IXWikiPage> getPages(IXWikiSpace space) throws XWikiConnectionException
     {
         assertNotDisposed();
 
@@ -314,9 +314,9 @@ public class XWikiCachedConnection extends AbstractXWikiConnection implements Se
         try {
             List<PageSummary> pageSummaries;
             if (isConnected()) {
-                pageSummaries = remoteDAO.getPages(spaceKey);
+                pageSummaries = remoteDAO.getPages(space.getKey());
             } else {
-                pageSummaries = cacheDAO.getPages(spaceKey);
+                pageSummaries = cacheDAO.getPages(space.getKey());
             }
 
             if (pageSummaries != null) {
