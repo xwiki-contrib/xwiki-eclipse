@@ -20,10 +20,16 @@
  */
 package org.xwiki.xeclipse.utils;
 
+import java.lang.reflect.InvocationTargetException;
+
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.swt.widgets.Shell;
 
 /**
- * Utility methods for different tasks. 
+ * Utility methods for different tasks.
  */
 public class XWikiEclipseUtil
 {
@@ -43,4 +49,11 @@ public class XWikiEclipseUtil
 
         return null;
     }
+
+    public static void runOperationWithProgress(IRunnableWithProgress operation, Shell shell) throws InvocationTargetException, InterruptedException
+    {
+        ProgressMonitorDialog dialog = new ProgressMonitorDialog(shell);
+        dialog.run(true, false, operation);
+    }
+
 }

@@ -20,10 +20,15 @@
  */
 package org.xwiki.xeclipse.handlers;
 
+import java.lang.reflect.InvocationTargetException;
+
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.InputDialog;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.xwiki.xeclipse.XWikiConnectionManager;
@@ -42,7 +47,7 @@ public class ConnectHandler extends AbstractHandler
             XWikiEclipseUtil.getSingleSelectedObjectInStructuredSelection(selection);
 
         if (selectedObject instanceof IXWikiConnection) {
-            IXWikiConnection xwikiConnection = (IXWikiConnection) selectedObject;
+            final IXWikiConnection xwikiConnection = (IXWikiConnection) selectedObject;
 
             try {
 
@@ -59,9 +64,29 @@ public class ConnectHandler extends AbstractHandler
                     inputDialog.open();
                     password = inputDialog.getValue();
                 }
+                
+                final String actualPassword = password;
 
-                xwikiConnection.connect(password);
-            } catch (XWikiConnectionException e) {
+                XWikiEclipseUtil.runOperationWithProgress(new IRunnableWithProgress() {
+                    public void run(IProgressMonitor monitor) throws InvocationTargetException,
+                        InterruptedException
+                    {
+                        monitor.beginTask("Connecting...", IProgressMonitor.UNKNOWN);
+                        try {
+                            xwikiConnection.connect(actualPassword);
+                        } catch (XWikiConnectionException e) {                         
+                            e.printStackTrace();                            
+                            throw new InvocationTargetException(e, String.format("Cannot connect to %s\n%s", xwikiConnection.getServerUrl(), e.getMessage()));
+                        }                        
+                        monitor.done();
+                    }
+                    
+                }, HandlerUtil.getActiveShell(event));               
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
+                MessageDialog.openError(HandlerUtil.getActiveShell(event), "Error", e.getMessage());
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
 
