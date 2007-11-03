@@ -52,6 +52,10 @@ public class XWikiPageAdapter implements IWorkbenchAdapter
         if (object instanceof IXWikiPage) {
             IXWikiPage page = (IXWikiPage) object;
             
+            if(page.isConflict()) {
+                return XWikiEclipsePlugin.getImageDescriptor(XWikiEclipseConstants.XWIKI_PAGE_CONFLICT_ICON);
+            }
+            
             if(page.isCached()) {
                 return XWikiEclipsePlugin.getImageDescriptor(XWikiEclipseConstants.XWIKI_PAGE_CACHED_ICON);
             }
