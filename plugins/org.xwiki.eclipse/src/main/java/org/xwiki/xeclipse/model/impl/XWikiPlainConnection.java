@@ -20,7 +20,7 @@ public class XWikiPlainConnection extends AbstractXWikiConnection
     private static final long serialVersionUID = -8019449922717442495L;
 
     private transient IXWikiDAO remoteDAO;
-   
+
     /**
      * Constructor.
      * 
@@ -33,7 +33,7 @@ public class XWikiPlainConnection extends AbstractXWikiConnection
     {
         super(serverUrl, username);
     }
- 
+
     /**
      * {@inheritDoc}
      */
@@ -46,7 +46,7 @@ public class XWikiPlainConnection extends AbstractXWikiConnection
         }
 
         try {
-            remoteDAO = new XWikiRemoteDAO(getServerUrl(), getUserName(), password);         
+            remoteDAO = new XWikiRemoteDAO(getServerUrl(), getUserName(), password);
         } catch (XWikiDAOException e) {
             if (remoteDAO != null) {
                 try {
@@ -56,12 +56,13 @@ public class XWikiPlainConnection extends AbstractXWikiConnection
                 }
             }
 
-            remoteDAO = null;            
+            remoteDAO = null;
 
             throw new XWikiConnectionException(e);
         }
 
-        XWikiEclipseNotificationCenter.getDefault().fireEvent(this, XWikiEclipseEvent.CONNECTION_ESTABLISHED, this);        
+        XWikiEclipseNotificationCenter.getDefault().fireEvent(this,
+            XWikiEclipseEvent.CONNECTION_ESTABLISHED, this);
     }
 
     /**
@@ -84,7 +85,8 @@ public class XWikiPlainConnection extends AbstractXWikiConnection
             e.printStackTrace();
         }
 
-        XWikiEclipseNotificationCenter.getDefault().fireEvent(this, XWikiEclipseEvent.CONNECTION_CLOSED, this);
+        XWikiEclipseNotificationCenter.getDefault().fireEvent(this,
+            XWikiEclipseEvent.CONNECTION_CLOSED, this);
     }
 
     /**
@@ -95,7 +97,7 @@ public class XWikiPlainConnection extends AbstractXWikiConnection
     public void dispose() throws XWikiConnectionException
     {
         disconnect();
-      
+
         isDisposed = true;
     }
 
@@ -112,9 +114,9 @@ public class XWikiPlainConnection extends AbstractXWikiConnection
             if (isConnected()) {
                 spaceSummaries = remoteDAO.getSpaces();
                 for (SpaceSummary spaceSummary : spaceSummaries) {
-                    result.add(new XWikiSpace(this, spaceSummary.getKey(), spaceSummary.toMap()));                    
+                    result.add(new XWikiSpace(this, spaceSummary.getKey(), spaceSummary.toMap()));
                 }
-            } 
+            }
         } catch (Exception e) {
             throw new XWikiConnectionException(e);
         }
@@ -146,11 +148,11 @@ public class XWikiPlainConnection extends AbstractXWikiConnection
             List<PageSummary> pageSummaries = null;
             if (isConnected()) {
                 pageSummaries = remoteDAO.getPages(space.getKey());
-            } 
+            }
 
             if (pageSummaries != null) {
                 for (PageSummary pageSummary : pageSummaries) {
-                    result.add(new XWikiPage(this, pageSummary.getId(), pageSummary.toMap()));
+                    result.add(new XWikiPage(this, pageSummary.getId(), space, pageSummary.toMap()));
                 }
             }
         } catch (Exception e) {
@@ -165,8 +167,8 @@ public class XWikiPlainConnection extends AbstractXWikiConnection
         assertNotDisposed();
 
         Page page = getRawPage(pageId);
-        
-        return page != null ? new XWikiPage(this, pageId, page.toMap()) : null;
+        Space space = getRawSpace(page.getSpace());
+        return page != null ? new XWikiPage(this, pageId, new XWikiSpace(this, space.getKey(), space.toMap()), page.toMap()) : null;
     }
 
     /**
@@ -176,14 +178,14 @@ public class XWikiPlainConnection extends AbstractXWikiConnection
     {
         assertNotDisposed();
 
-        try {            
+        try {
             if (isConnected()) {
-                return remoteDAO.getPage(pageId);             
+                return remoteDAO.getPage(pageId);
             }
         } catch (Exception e) {
             throw new XWikiConnectionException(e);
         }
-        
+
         return null;
     }
 
@@ -236,7 +238,7 @@ public class XWikiPlainConnection extends AbstractXWikiConnection
 
         return false;
     }
-    
+
     private synchronized void writeObject(java.io.ObjectOutputStream s) throws IOException
     {
         s.defaultWriteObject();
@@ -245,9 +247,9 @@ public class XWikiPlainConnection extends AbstractXWikiConnection
     private synchronized void readObject(java.io.ObjectInputStream s) throws IOException,
         ClassNotFoundException
     {
-        s.defaultReadObject();        
+        s.defaultReadObject();
     }
-   
+
     /**
      * USED ONLY FOR UNIT TESTING
      * 
@@ -260,31 +262,73 @@ public class XWikiPlainConnection extends AbstractXWikiConnection
 
     @Override
     boolean isPageCached(String pageId)
-    {      
+    {
         return false;
     }
 
-    public void createSpace(String key, String name, String description) throws XWikiConnectionException
+    public void createSpace(String key, String name, String description)
+        throws XWikiConnectionException
     {
         try {
             Space space = remoteDAO.createSpace(key, name, description);
-            XWikiEclipseNotificationCenter.getDefault().fireEvent(this, XWikiEclipseEvent.SPACE_CREATED, this);
-        } catch (XWikiDAOException e) {                
+            XWikiEclipseNotificationCenter.getDefault().fireEvent(this,
+                XWikiEclipseEvent.SPACE_CREATED, this);
+        } catch (XWikiDAOException e) {
             e.printStackTrace();
             throw new XWikiConnectionException(e);
-        }        
+        }
     }
 
     public IXWikiPage createPage(IXWikiSpace space, String name, String content)
         throws XWikiConnectionException
     {
         try {
-            Page page = remoteDAO.createPage(space.getKey(), name, content);            
-            XWikiEclipseNotificationCenter.getDefault().fireEvent(this, XWikiEclipseEvent.PAGE_CREATED, space);
-            return new XWikiPage(this, page.getId(), page.toMap());
-        } catch (XWikiDAOException e) {                
+            Page page = remoteDAO.createPage(space.getKey(), name, content);
+            XWikiEclipseNotificationCenter.getDefault().fireEvent(this,
+                XWikiEclipseEvent.PAGE_CREATED, space);
+            return new XWikiPage(this, page.getId(), space, page.toMap());
+        } catch (XWikiDAOException e) {
             e.printStackTrace();
             throw new XWikiConnectionException(e);
-        }            
+        }
+    }
+
+    public IXWikiSpace getSpace(String spaceKey) throws XWikiConnectionException
+    {
+        Space space = null;
+
+        try {
+            space = remoteDAO.getSpace(spaceKey);
+        } catch (XWikiDAOException e) {
+            e.printStackTrace();
+            throw new XWikiConnectionException(e);
+        }
+
+        return space != null ? new XWikiSpace(this, spaceKey, space.toMap()) : null;
+    }
+
+    public void removePage(IXWikiPage page) throws XWikiConnectionException
+    {
+        try {
+            remoteDAO.removePage(page.getId());
+            XWikiEclipseNotificationCenter.getDefault().fireEvent(this,
+                XWikiEclipseEvent.PAGE_REMOVED, page.getSpace());
+        } catch (XWikiDAOException e) {
+            e.printStackTrace();
+            throw new XWikiConnectionException(e);
+        }
+
+    }
+
+    public void removeSpace(IXWikiSpace space) throws XWikiConnectionException
+    {
+        try {
+            remoteDAO.removePage(space.getKey());
+            XWikiEclipseNotificationCenter.getDefault().fireEvent(this,
+                XWikiEclipseEvent.SPACE_REMOVED, this);
+        } catch (XWikiDAOException e) {
+            e.printStackTrace();
+            throw new XWikiConnectionException(e);
+        }
     }
 }

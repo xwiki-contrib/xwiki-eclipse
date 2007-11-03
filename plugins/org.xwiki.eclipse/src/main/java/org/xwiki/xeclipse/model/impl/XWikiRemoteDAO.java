@@ -166,5 +166,26 @@ public class XWikiRemoteDAO implements IXWikiDAO
         
         return page;
     }
+
+    public void removePage(String id) throws XWikiDAOException
+    {
+        try {
+            swizzleXWiki.removePage(id);
+        } catch (SwizzleConfluenceException e) {         
+            e.printStackTrace();
+            throw new XWikiDAOException(e);
+        }
+        
+    }
+
+    public void removeSpace(String key) throws XWikiDAOException
+    {
+        try {
+            swizzleXWiki.removeSpace(key);
+        } catch (SwizzleConfluenceException e) {         
+            e.printStackTrace();
+            throw new XWikiDAOException(e);
+        }
+    }
     
 }

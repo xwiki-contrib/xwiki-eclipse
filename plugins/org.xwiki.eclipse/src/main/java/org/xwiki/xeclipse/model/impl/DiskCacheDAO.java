@@ -40,6 +40,11 @@ public class DiskCacheDAO implements IXWikiCacheDAO
         private Map<String, String> pageToDataFileNameIndex;
 
         /**
+         * A mapping that associates a page to the space where it belongs to.
+         */
+        private HashMap<String, String> pageToSpaceIndex;
+
+        /**
          * A mapping that associates a space id to the list of the pages id contained in that space.
          */
         private Map<String, Set<String>> spaceToPagesIndex;
@@ -63,6 +68,7 @@ public class DiskCacheDAO implements IXWikiCacheDAO
         public IndexAggregate()
         {
             pageToDataFileNameIndex = new HashMap<String, String>();
+            pageToSpaceIndex = new HashMap<String, String>();
             spaceToPagesIndex = new HashMap<String, Set<String>>();
             spaceToDataFileNameIndex = new HashMap<String, String>();
             dirtyPagesIndex = new HashSet<String>();
@@ -92,6 +98,16 @@ public class DiskCacheDAO implements IXWikiCacheDAO
         public Set<String> getConflictPagesIndex()
         {
             return conflictPagesIndex;
+        }
+
+        public static long getSerialVersionUID()
+        {
+            return serialVersionUID;
+        }
+
+        public HashMap<String, String> getPageToSpaceIndex()
+        {
+            return pageToSpaceIndex;
         }
 
     }
@@ -172,16 +188,17 @@ public class DiskCacheDAO implements IXWikiCacheDAO
         List<SpaceSummary> result = new ArrayList<SpaceSummary>();
 
         try {
-            for(String spaceKey : indexAggregate.getSpaceToPagesIndex().keySet()) {
-                if(!indexAggregate.getSpaceToPagesIndex().get(spaceKey).isEmpty()) {
-                    String dataFileName = indexAggregate.getSpaceToDataFileNameIndex().get(spaceKey);
+            for (String spaceKey : indexAggregate.getSpaceToPagesIndex().keySet()) {
+                if (!indexAggregate.getSpaceToPagesIndex().get(spaceKey).isEmpty()) {
+                    String dataFileName =
+                        indexAggregate.getSpaceToDataFileNameIndex().get(spaceKey);
                     ObjectInputStream ois =
                         new ObjectInputStream(new FileInputStream(new File(cacheDir, dataFileName)));
                     Map map = (Map) ois.readObject();
                     ois.close();
                     result.add(new SpaceSummary(map));
                 }
-            }                        
+            }
         } catch (Exception e) {
             throw new XWikiDAOException(e);
         }
@@ -385,5 +402,34 @@ public class DiskCacheDAO implements IXWikiCacheDAO
         throws XWikiDAOException
     {
         throw new XWikiDAOException("Cannot create pages on a local cache");
+    }
+
+    public void removePage(String id) throws XWikiDAOException
+    {
+        String space = indexAggregate.getPageToSpaceIndex().get(id);
+        indexAggregate.getPageToDataFileNameIndex().remove(id);
+        indexAggregate.getDirtyPagesIndex().remove(id);
+        indexAggregate.getConflictPagesIndex().remove(id);
+        Set<String> pages = indexAggregate.getSpaceToPagesIndex().get(space);
+        if(pages != null) {
+            pages.remove(id);
+        }
+        indexAggregate.getPageToSpaceIndex().remove(id);
+
+        /* TODO: Remove also files from the filesystem */
+    }
+
+    public void removeSpace(String key) throws XWikiDAOException
+    {
+        Set<String> pages = indexAggregate.getSpaceToPagesIndex().get(key);
+        indexAggregate.getSpaceToDataFileNameIndex().remove(key);
+        indexAggregate.getSpaceToPagesIndex().remove(key);
+        if (pages != null) {
+            for (String id : pages) {
+                removePage(id);
+            }
+        }
+
+        /* TODO: Remove space also from fileSystem */
     }
 }

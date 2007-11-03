@@ -163,7 +163,7 @@ public class XWikiCachedConnection extends AbstractXWikiConnection implements Se
                 cacheDAO.setConflict(pageId, false);
             }
         }
-        
+
         return remotePage;
     }
 
@@ -175,9 +175,10 @@ public class XWikiCachedConnection extends AbstractXWikiConnection implements Se
      */
     void synchronizeAll() throws XWikiDAOException, XWikiConnectionException
     {
-        /* This is necessary in order to avoid concurrent modification to the dirtyPages set when synchronizing.
-         * In fact, in synchronize we remove elements from cacheDAO.getDirtyPages() and we cannot use it
-         * directly for iterating.
+        /*
+         * This is necessary in order to avoid concurrent modification to the dirtyPages set when
+         * synchronizing. In fact, in synchronize we remove elements from cacheDAO.getDirtyPages()
+         * and we cannot use it directly for iterating.
          */
         Set<String> dirtyPages = new HashSet<String>(cacheDAO.getDirtyPages());
         for (String pageId : dirtyPages) {
@@ -216,7 +217,8 @@ public class XWikiCachedConnection extends AbstractXWikiConnection implements Se
             throw new XWikiConnectionException(e);
         }
 
-        XWikiEclipseNotificationCenter.getDefault().fireEvent(this, XWikiEclipseEvent.CONNECTION_ESTABLISHED, this);        
+        XWikiEclipseNotificationCenter.getDefault().fireEvent(this,
+            XWikiEclipseEvent.CONNECTION_ESTABLISHED, this);
     }
 
     /**
@@ -239,7 +241,8 @@ public class XWikiCachedConnection extends AbstractXWikiConnection implements Se
             e.printStackTrace();
         }
 
-        XWikiEclipseNotificationCenter.getDefault().fireEvent(this, XWikiEclipseEvent.CONNECTION_CLOSED, this);        
+        XWikiEclipseNotificationCenter.getDefault().fireEvent(this,
+            XWikiEclipseEvent.CONNECTION_CLOSED, this);
     }
 
     /**
@@ -321,7 +324,7 @@ public class XWikiCachedConnection extends AbstractXWikiConnection implements Se
 
             if (pageSummaries != null) {
                 for (PageSummary pageSummary : pageSummaries) {
-                    result.add(new XWikiPage(this, pageSummary.getId(), pageSummary.toMap()));
+                    result.add(new XWikiPage(this, pageSummary.getId(), space, pageSummary.toMap()));
                 }
             }
         } catch (Exception e) {
@@ -336,7 +339,8 @@ public class XWikiCachedConnection extends AbstractXWikiConnection implements Se
         assertNotDisposed();
 
         Page page = getRawPage(pageId);
-        return page != null ? new XWikiPage(this, pageId, page.toMap()) : null;
+        Space space = getRawSpace(page.getSpace());
+        return page != null ? new XWikiPage(this, pageId, new XWikiSpace(this, space.getKey(), space.toMap()), page.toMap()) : null;
     }
 
     /**
@@ -373,14 +377,24 @@ public class XWikiCachedConnection extends AbstractXWikiConnection implements Se
         }
     }
 
-    /*
-     * For the moment we don't retrieve full space information. Since we store only page summary
-     * typically all the information is already provided. However this will be implemented in the
-     * same way as it is implemented for pages.
-     */
-    Space getRawSpace(String key)
+    Space getRawSpace(String key) throws XWikiConnectionException
     {
-        return null;
+        assertNotDisposed();
+
+        try {
+            Space space = cacheDAO.getSpace(key);
+            if (space != null) {
+                return space;
+            }
+
+            if (isConnected()) {
+                space = remoteDAO.getSpace(key);
+            }
+
+            return space;
+        } catch (Exception e) {
+            throw new XWikiConnectionException(e);
+        }
     }
 
     /**
@@ -469,42 +483,79 @@ public class XWikiCachedConnection extends AbstractXWikiConnection implements Se
     @Override
     boolean isPageCached(String pageId)
     {
-        return cacheDAO.isCached(pageId);        
+        return cacheDAO.isCached(pageId);
     }
 
-    public void createSpace(String key, String name, String description) throws XWikiConnectionException
+    public void createSpace(String key, String name, String description)
+        throws XWikiConnectionException
     {
-        if(isConnected()) {            
+        if (isConnected()) {
             try {
                 Space space = remoteDAO.createSpace(key, name, description);
-                XWikiEclipseNotificationCenter.getDefault().fireEvent(this, XWikiEclipseEvent.SPACE_CREATED, this);
-            } catch (XWikiDAOException e) {                
+                XWikiEclipseNotificationCenter.getDefault().fireEvent(this,
+                    XWikiEclipseEvent.SPACE_CREATED, this);
+            } catch (XWikiDAOException e) {
                 e.printStackTrace();
                 throw new XWikiConnectionException(e);
             }
-        }
-        else {
+        } else {
             throw new XWikiConnectionException("Cannot create a space if not connected");
         }
-        
+
     }
 
     public IXWikiPage createPage(IXWikiSpace space, String name, String content)
         throws XWikiConnectionException
     {
-        if(isConnected()) {
+        if (isConnected()) {
             try {
                 Page page = remoteDAO.createPage(space.getKey(), name, content);
-                XWikiEclipseNotificationCenter.getDefault().fireEvent(this, XWikiEclipseEvent.PAGE_CREATED, space);
-                return new XWikiPage(this, page.getId(), page.toMap());
-            } catch (XWikiDAOException e) {                
+                XWikiEclipseNotificationCenter.getDefault().fireEvent(this,
+                    XWikiEclipseEvent.PAGE_CREATED, space);
+                return new XWikiPage(this, page.getId(), space, page.toMap());
+            } catch (XWikiDAOException e) {
                 e.printStackTrace();
                 throw new XWikiConnectionException(e);
-            }            
-        }
-        else {
+            }
+        } else {
             throw new XWikiConnectionException("Cannot create a page if not connected");
-        }        
+        }
     }
 
+    public void removePage(IXWikiPage page) throws XWikiConnectionException
+    {
+        try {
+            if (isConnected()) {
+                remoteDAO.removePage(page.getId());
+            }
+
+            cacheDAO.removePage(page.getId());
+            
+            XWikiEclipseNotificationCenter.getDefault().fireEvent(this,
+                XWikiEclipseEvent.PAGE_REMOVED, page.getSpace());
+        } catch (XWikiDAOException e) {
+            e.printStackTrace();
+            throw new XWikiConnectionException(e);
+        }
+
+    }
+
+    public void removeSpace(IXWikiSpace space) throws XWikiConnectionException
+    {
+        try {
+            if (isConnected()) {
+                remoteDAO.removeSpace(space.getKey());
+            }
+
+            cacheDAO.removeSpace(space.getKey());
+            
+            XWikiEclipseNotificationCenter.getDefault().fireEvent(this,
+                XWikiEclipseEvent.SPACE_REMOVED, this);
+        } catch (XWikiDAOException e) {
+            e.printStackTrace();
+            throw new XWikiConnectionException(e);
+        }
+
+        
+    }
 }

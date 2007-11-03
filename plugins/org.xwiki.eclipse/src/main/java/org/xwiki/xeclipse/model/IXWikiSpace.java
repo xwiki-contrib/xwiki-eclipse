@@ -41,4 +41,5 @@ public interface IXWikiSpace
     
     public Collection<IXWikiPage> getPages() throws XWikiConnectionException; 
     public IXWikiPage createPage(String name, String content) throws XWikiConnectionException;
+    public void remove() throws XWikiConnectionException;
 }

@@ -30,7 +30,7 @@ public interface IXWikiPage
     public String getId();
     public int getLocks();
     public String getParentId();
-    public String getSpace();
+    public String getSpaceKey();
     public String getTitle();
     public String getUrl();
     public String getCreator();       
@@ -70,4 +70,8 @@ public interface IXWikiPage
      * @return The connection where this page has been fetched from.
      */
     public IXWikiConnection getConnection();
+    
+    public IXWikiSpace getSpace() throws XWikiConnectionException;
+    
+    public void remove() throws XWikiConnectionException;        
 }

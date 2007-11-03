@@ -537,7 +537,7 @@ public class XWikiPage implements IXWikiPage, TreeAdapter, IStorage, IStorageEdi
     /**
      * {@inheritDoc}
      * 
-     * @see org.xwiki.plugins.eclipse.model.IXWikiPage#getSpace()
+     * @see org.xwiki.plugins.eclipse.model.IXWikiPage#getSpaceKey()
      */
     public IXWikiSpace getParentSpace()
     {

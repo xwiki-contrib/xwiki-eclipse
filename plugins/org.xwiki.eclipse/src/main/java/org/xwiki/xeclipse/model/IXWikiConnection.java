@@ -73,11 +73,7 @@ public interface IXWikiConnection
     public Collection<IXWikiPage> getPages(IXWikiSpace space)
         throws XWikiConnectionException;
     
-    /**
-     * @param pageId The id of the page to be retrieved.
-     * @return The complete page content for the given id.
-     * @throws XWikiConnectionException
-     */
+        
     public IXWikiPage getPage(String pageId) throws XWikiConnectionException;
     
     public String getUserName();
@@ -85,4 +81,6 @@ public interface IXWikiConnection
     
     public void createSpace(String key, String name, String description) throws XWikiConnectionException;
     public IXWikiPage createPage(IXWikiSpace space, String name, String content) throws XWikiConnectionException;
+    public void removeSpace(IXWikiSpace space) throws XWikiConnectionException;
+    public void removePage(IXWikiPage page) throws XWikiConnectionException;    
 }

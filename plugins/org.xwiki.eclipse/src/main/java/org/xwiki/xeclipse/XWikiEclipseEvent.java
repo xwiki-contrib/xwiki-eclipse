@@ -15,5 +15,9 @@ public enum XWikiEclipseEvent
     /* Data: IXWikiConnection - the connection to be refreshed */
     SPACE_CREATED, 
     /* Data: IXWikiSpace - the space to be refreshed */
-    PAGE_CREATED
+    PAGE_CREATED,
+    /* Data: IXWikiConnection */
+    SPACE_REMOVED,
+    /* Data: IXWikiSpace */
+    PAGE_REMOVED
 }

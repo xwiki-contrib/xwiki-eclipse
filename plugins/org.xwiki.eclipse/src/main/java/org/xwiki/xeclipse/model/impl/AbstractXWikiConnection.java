@@ -89,5 +89,5 @@ public abstract class AbstractXWikiConnection implements IXWikiConnection, Seria
 
     abstract Page getRawPage(String pageId) throws XWikiConnectionException;
 
-    abstract Space getRawSpace(String key);
+    abstract Space getRawSpace(String key) throws XWikiConnectionException;    
 }

@@ -37,48 +37,48 @@ public class XWikiSpace implements IXWikiSpace
     public String getDescription()
     {
         String result = space.getDescription();
-        if(result != null) {
+        if (result != null) {
             return result;
         }
-        
+
         getFullSpaceInformation();
-        
+
         return space.getDescription();
     }
 
     public String getHomePage()
     {
         String result = space.getHomepage();
-        if(result != null) {
+        if (result != null) {
             return result;
         }
-        
+
         getFullSpaceInformation();
-        
+
         return space.getHomepage();
     }
 
     public String getKey()
     {
         String result = space.getKey();
-        if(result != null) {
+        if (result != null) {
             return result;
         }
-        
+
         getFullSpaceInformation();
-        
+
         return space.getKey();
     }
 
     public String getName()
     {
         String result = space.getName();
-        if(result != null) {
+        if (result != null) {
             return result;
         }
-        
+
         getFullSpaceInformation();
-        
+
         return space.getName();
     }
 
@@ -90,39 +90,43 @@ public class XWikiSpace implements IXWikiSpace
     public String getType()
     {
         String result = space.getType();
-        if(result != null) {
+        if (result != null) {
             return result;
         }
-        
+
         getFullSpaceInformation();
-        
+
         return space.getType();
     }
 
     public String getUrl()
     {
         String result = space.getUrl();
-        if(result != null) {
+        if (result != null) {
             return result;
         }
-        
+
         getFullSpaceInformation();
-        
+
         return space.getUrl();
     }
-    
+
     private void getFullSpaceInformation()
     {
-        Space space = connection.getRawSpace(key);
-        if(space != null) {
-            this.space = space;    
+        try {
+            Space space = connection.getRawSpace(key);
+            if (space != null) {
+                this.space = space;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-                
+
     }
 
     public IXWikiPage createPage(String name, String content) throws XWikiConnectionException
     {
-        return connection.createPage(this, name, content);        
+        return connection.createPage(this, name, content);
     }
 
     public IXWikiConnection getConnection()
@@ -156,6 +160,11 @@ public class XWikiSpace implements IXWikiSpace
             return false;
         return true;
     }
-    
-    
+
+    public void remove() throws XWikiConnectionException
+    {
+        connection.removeSpace(this);
+        
+    }
+
 }

@@ -110,6 +110,14 @@
             id="org.xwiki.xeclipse.command.NewPage"
             name="New page...">
       </command>
+      <command
+            id="org.xwiki.xeclipse.command.RemoveSpace"
+            name="Remove space">
+      </command>
+      <command
+            id="org.xwiki.xeclipse.command.RemovePage"
+            name="Remove page">
+      </command>
    </extension>
    <extension
          name="NEW ADAPTERS"

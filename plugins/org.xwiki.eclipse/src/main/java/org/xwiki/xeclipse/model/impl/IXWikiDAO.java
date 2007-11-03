@@ -16,5 +16,7 @@ public interface IXWikiDAO
     public void storePage(Page page) throws XWikiDAOException;
     public void close() throws XWikiDAOException;
     public Space createSpace(String key, String name, String description) throws XWikiDAOException;
-    public Page createPage(String spaceKey, String title, String content) throws XWikiDAOException;    
+    public Page createPage(String spaceKey, String title, String content) throws XWikiDAOException;
+    public void removeSpace(String key) throws XWikiDAOException;
+    public void removePage(String id) throws XWikiDAOException;    
 }

@@ -4,8 +4,10 @@ import java.util.Date;
 import java.util.Map;
 
 import org.codehaus.swizzle.confluence.Page;
+import org.codehaus.swizzle.confluence.Space;
 import org.xwiki.xeclipse.model.IXWikiConnection;
 import org.xwiki.xeclipse.model.IXWikiPage;
+import org.xwiki.xeclipse.model.IXWikiSpace;
 import org.xwiki.xeclipse.model.XWikiConnectionException;
 
 public class XWikiPage implements IXWikiPage
@@ -15,12 +17,15 @@ public class XWikiPage implements IXWikiPage
     private String id;
 
     private Page page;
+    
+    private IXWikiSpace space;
 
-    public XWikiPage(AbstractXWikiConnection connection, String id, Map properties)
+    public XWikiPage(AbstractXWikiConnection connection, String id, IXWikiSpace space, Map properties)
     {
         this.connection = connection;
         this.id = id;
         page = new Page(properties);
+        this.space = space;
     }
 
     public String getContent()
@@ -140,7 +145,7 @@ public class XWikiPage implements IXWikiPage
         return page.getParentId();
     }
 
-    public String getSpace()
+    public String getSpaceKey()
     {
         String result = page.getSpace();
         if (result != null) {
@@ -189,21 +194,22 @@ public class XWikiPage implements IXWikiPage
     private void getFullPageInformation()
     {
         try {
-        Page page = connection.getRawPage(id);
-        if (page != null) {
-            this.page = page;
-        }
-        }
-        catch(Exception e) {
+            Page page = connection.getRawPage(id);
+            if (page != null) {
+                this.page = page;
+            }
+        } catch (Exception e) {
             e.printStackTrace();
-        }        
+        }
     }
-    
-    public IXWikiConnection getConnection() {
+
+    public IXWikiConnection getConnection()
+    {
         return connection;
     }
-    
-    public boolean isCached() {
+
+    public boolean isCached()
+    {
         return connection.isPageCached(page.getId());
     }
 
@@ -232,5 +238,14 @@ public class XWikiPage implements IXWikiPage
         } else if (!id.equals(other.id))
             return false;
         return true;
+    }
+
+    public IXWikiSpace getSpace() throws XWikiConnectionException
+    {
+        return space;
+    }
+    
+    public void remove() throws XWikiConnectionException {
+        connection.removePage(this);
     }
 }
