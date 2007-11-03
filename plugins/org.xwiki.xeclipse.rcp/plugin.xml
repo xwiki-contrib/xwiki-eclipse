@@ -95,6 +95,18 @@
                   commandId="org.eclipse.ui.edit.paste"
                   id="Paste">
             </command>
+            <separator
+                  name="separator1"
+                  visible="true">
+            </separator>
+            <command
+                  commandId="org.xwiki.xeclipse.command.RemoveSpace"
+                  id="Remove space">
+            </command>
+            <command
+                  commandId="org.xwiki.xeclipse.command.RemovePage"
+                  id="Remove page">
+            </command>
          </menu>
       </menuContribution>
       <menuContribution
@@ -104,9 +116,6 @@
             <menu
                   id="org.eclipse.ui.window.showViewMenu"
                   label="Show view">
-               <command
-                     commandId="org.eclipse.ui.window.showViewMenu">
-               </command>
             </menu>            
          </menu>
       </menuContribution>
