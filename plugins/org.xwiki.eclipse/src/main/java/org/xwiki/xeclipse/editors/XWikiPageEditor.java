@@ -91,7 +91,7 @@ public class XWikiPageEditor extends AbstractTextEditor
         String serverUrl = connection.getServerUrl();
         boolean connected = connection.isConnected();
         int version = page.getVersion();
-
+                                
         form.setText(String.format("%s version %d [%s]", id, version, connected ? "online"
             : "cached", id));
         form.setMessage(String.format("%s@%s", userName, serverUrl));
@@ -100,6 +100,13 @@ public class XWikiPageEditor extends AbstractTextEditor
   
         XWikiEclipseNotificationCenter.getDefault().fireEvent(this,
             XWikiEclipseEvent.PAGE_UPDATED, page);
+    }   
+    
+    int getCaretOffset() {
+        return getSourceViewer().getTextWidget().getCaretOffset();
     }
-
+    
+    void setCaretOffset(int offset) {
+        getSourceViewer().getTextWidget().setCaretOffset(offset);
+    }
 }
