@@ -46,9 +46,7 @@
    <extension
          point="org.eclipse.ui.menus">
       <menuContribution
-            locationURI="menu:org.eclipse.ui.main.menu">
-         <menu
-               label="File">
+            locationURI="menu:org.xwiki.xeclipse.menu.File">
             <command
                   commandId="org.xwiki.xeclipse.command.NewConnection"
                   id="New connection...">
@@ -76,13 +74,10 @@
             <command
                   commandId="org.eclipse.ui.file.exit"
                   id="Exit">
-            </command>
-         </menu>
+            </command>         
       </menuContribution>
       <menuContribution
-            locationURI="menu:org.eclipse.ui.main.menu">
-         <menu
-               label="Edit">
+            locationURI="menu:org.xwiki.xeclipse.menu.Edit">
             <command
                   commandId="org.eclipse.ui.edit.cut"
                   id="Cut">
@@ -106,29 +101,18 @@
             <command
                   commandId="org.xwiki.xeclipse.command.RemovePage"
                   id="Remove page">
-            </command>
-         </menu>
+            </command>         
       </menuContribution>
       <menuContribution
-            locationURI="menu:org.eclipse.ui.main.menu">
-         <menu
-               label="Window">
-            <menu
-                  id="org.eclipse.ui.window.showViewMenu"
-                  label="Show view">
-            </menu>            
-         </menu>
-      </menuContribution>
-      <menuContribution
-            locationURI="menu:org.eclipse.ui.main.menu">
-         <menu
-               label="Help">
+            locationURI="menu:org.xwiki.xeclipse.menu.Help">
             <command
                   commandId="org.eclipse.ui.help.aboutAction"
                   id="About">
-            </command>
-         </menu>
+            </command>         
       </menuContribution>
+      <group
+            id="CONTRIBUTION">
+      </group>
    </extension>
 
 </plugin>
