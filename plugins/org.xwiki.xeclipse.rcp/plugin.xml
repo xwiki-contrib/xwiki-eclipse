@@ -101,6 +101,14 @@
             <command
                   commandId="org.xwiki.xeclipse.command.RemovePage"
                   id="Remove page">
+            </command>
+            <separator
+                  name="separator2"
+                  visible="false">
+            </separator>
+            <command
+                  commandId="org.xwiki.xeclipse.command.OpenPage"
+                  id="Open page...">
             </command>         
       </menuContribution>
       <menuContribution
@@ -110,9 +118,6 @@
                   id="About">
             </command>         
       </menuContribution>
-      <group
-            id="CONTRIBUTION">
-      </group>
    </extension>
 
 </plugin>

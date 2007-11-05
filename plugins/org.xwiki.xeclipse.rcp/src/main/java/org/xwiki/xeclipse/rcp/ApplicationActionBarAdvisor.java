@@ -4,14 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
-import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.actions.ActionFactory;
-import org.eclipse.ui.actions.ContributionItemFactory;
 import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 import org.eclipse.ui.application.ActionBarAdvisor;
 import org.eclipse.ui.application.IActionBarConfigurer;
@@ -19,9 +16,6 @@ import org.eclipse.ui.views.IViewDescriptor;
 
 public class ApplicationActionBarAdvisor extends ActionBarAdvisor
 {
-
-    private IContributionItem views;
-
     private List<Action> showViewActions;
 
     class ShowViewAction extends Action
@@ -112,12 +106,16 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
         menuBar.add(editMenu);
 
         MenuManager windowMenu = new MenuManager("Window", "org.xwiki.xeclipse.menu.Window");
+        
         MenuManager showViewMenu =
             new MenuManager("Show view", "org.xwiki.xeclipse.menu.ShowView");
+        
         for (Action action : showViewActions) {
             showViewMenu.add(action);
         }
+        
         windowMenu.add(showViewMenu);
+        
         menuBar.add(windowMenu);
 
         MenuManager helpMenu = new MenuManager("Help", "org.xwiki.xeclipse.menu.Help");
