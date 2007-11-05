@@ -285,7 +285,7 @@ public class XWikiPlainConnection extends AbstractXWikiConnection
         try {
             Page page = remoteDAO.createPage(space.getKey(), name, content);
             XWikiEclipseNotificationCenter.getDefault().fireEvent(this,
-                XWikiEclipseEvent.PAGE_CREATED, space);
+                XWikiEclipseEvent.PAGE_CREATED, new Object[] {space, page});
             return new XWikiPage(this, page.getId(), space, page.toMap());
         } catch (XWikiDAOException e) {
             e.printStackTrace();
@@ -312,7 +312,7 @@ public class XWikiPlainConnection extends AbstractXWikiConnection
         try {
             remoteDAO.removePage(page.getId());
             XWikiEclipseNotificationCenter.getDefault().fireEvent(this,
-                XWikiEclipseEvent.PAGE_REMOVED, page.getSpace());
+                XWikiEclipseEvent.PAGE_REMOVED, new Object[] {page.getSpace(), page});
         } catch (XWikiDAOException e) {
             e.printStackTrace();
             throw new XWikiConnectionException(e);

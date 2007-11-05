@@ -486,6 +486,9 @@ public class XWikiExplorerView extends ViewPart implements IXWikiEclipseEventLis
         {
             public void run()
             {
+                IXWikiSpace space;
+                IXWikiPage page;
+
                 switch (event) {
                     case CONNECTION_ADDED:
                     case CONNECTION_REMOVED:
@@ -499,12 +502,20 @@ public class XWikiExplorerView extends ViewPart implements IXWikiEclipseEventLis
                             treeViewer.refresh(data);
                         }
                         break;
-                    case PAGE_CREATED:                    
-                    case PAGE_REMOVED:                    
+                    case PAGE_CREATED:
+                        space = (IXWikiSpace) ((Object[]) data)[0];
+                        page = (IXWikiPage) ((Object[]) data)[1];
+                        treeViewer.add(space, page);
+                        break;
+                    case PAGE_REMOVED:
+                        space = (IXWikiSpace) ((Object[]) data)[0];
+                        page = (IXWikiPage) ((Object[]) data)[1];
+                        treeViewer.remove(page);
+                        break;
                     case PAGE_UPDATED:
                         treeViewer.refresh(data);
                         break;
-                        
+
                 }
 
             }
