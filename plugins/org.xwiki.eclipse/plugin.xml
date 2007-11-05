@@ -29,7 +29,7 @@
       <view
             name="XWiki Navigator"
             icon="icons/xwiki-navigator.png"
-            category="XWiki"
+            category="XWiki-old"
             class="org.xwiki.plugins.eclipse.views.navigator.XWikiNavigator"
             id="org.xwiki.plugins.eclipse.views.XWikiNavigator">
       </view>
