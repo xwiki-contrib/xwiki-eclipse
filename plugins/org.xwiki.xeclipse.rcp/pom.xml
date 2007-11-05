@@ -1,6 +1,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.xwiki</groupId>
   <artifactId>xeclipse</artifactId>
@@ -15,12 +15,12 @@
         <artifactId>pde-maven-plugin</artifactId>
         <extensions>true</extensions>
         <configuration>
-		  <!-- Change this to reflect your actual installation! -->
+          <!-- Change this to reflect your actual installation! -->
           <eclipseInstall>/Applications/Eclipse/eclipse-rcp-europa-fall</eclipseInstall>
           <pdeProductFilename>org.xwiki.xeclipse.product</pdeProductFilename>
-          <pdeBuildVersion>3.3.1.v20070828</pdeBuildVersion>               
+          <pdeBuildVersion>3.3.1.v20070828</pdeBuildVersion>
         </configuration>
-		<executions>
+        <executions>
           <execution>
             <id>clean-pde</id>
             <phase>clean</phase>
@@ -28,7 +28,7 @@
               <goal>clean</goal>
             </goals>
           </execution>
-        </executions>  
+        </executions>
       </plugin>
     </plugins>
   </build>
