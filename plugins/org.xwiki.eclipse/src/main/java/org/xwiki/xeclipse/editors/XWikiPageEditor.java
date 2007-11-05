@@ -102,11 +102,34 @@ public class XWikiPageEditor extends AbstractTextEditor
             XWikiEclipseEvent.PAGE_UPDATED, page);
     }   
     
-    int getCaretOffset() {
-        return getSourceViewer().getTextWidget().getCaretOffset();
+    class CaretState {
+        private int topPixel;        
+        private int caretOffset;
+        
+        public CaretState(int caretOffset, int topPixel) {            
+            this.caretOffset = caretOffset;
+            this.topPixel = topPixel;
+        }
+
+        public int getTopPixel()
+        {
+            return topPixel;
+        }
+
+        public int getCaretOffset()
+        {
+            return caretOffset;
+        }        
     }
     
-    void setCaretOffset(int offset) {
-        getSourceViewer().getTextWidget().setCaretOffset(offset);
+    CaretState getCaretState() {
+        CaretState caretState = new CaretState(getSourceViewer().getTextWidget().getCaretOffset(), getSourceViewer().getTextWidget().getTopPixel());
+        
+        return caretState;
+    }
+    
+    void setCaretOffset(CaretState caretState) {
+        getSourceViewer().getTextWidget().setCaretOffset(caretState.getCaretOffset());
+        getSourceViewer().getTextWidget().setTopPixel(caretState.getTopPixel());                
     }
 }

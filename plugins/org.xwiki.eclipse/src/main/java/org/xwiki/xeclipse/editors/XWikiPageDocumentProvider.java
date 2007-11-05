@@ -63,10 +63,10 @@ public class XWikiPageDocumentProvider extends StorageDocumentProvider
         try {            
             xwikiPage.save();            
             
-            int caretOffset = xwikiPageEditor.getCaretOffset();            
+            XWikiPageEditor.CaretState caretState = xwikiPageEditor.getCaretState();                
             document.set(input.getXWikiPage().getContent());                                    
             xwikiPageEditor.updateEditor(input.getXWikiPage());
-            xwikiPageEditor.setCaretOffset(caretOffset);
+            xwikiPageEditor.setCaretOffset(caretState);
         } catch (XWikiConnectionException e) {
             throw new CoreException(new Status(IStatus.ERROR, XWikiEclipsePlugin.PLUGIN_ID, "Unable to save", e));            
         }
