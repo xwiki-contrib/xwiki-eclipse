@@ -1,6 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.xwiki</groupId>
 	<artifactId>xeclipse</artifactId>
@@ -9,17 +8,58 @@
 	<version>1.0-SNAPSHOT</version>
 	<description>XWiki Eclipse Client</description>
 	<build>
+						
 		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>unpack</id>
+						<phase>initialize</phase>
+						<goals>
+							<goal>unpack</goal>
+						</goals>
+						<configuration>
+							<artifactItems>
+								<artifactItem>
+									<groupId>org.xwiki.eclipse</groupId>
+									<artifactId>xwiki-eclipse-target-platform</artifactId>
+									<version>1.0</version>
+									<type>zip</type>
+								</artifactItem>
+							</artifactItems>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>		
+		
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<configuration>
+				          <outputDirectory>${basedir}/buildConfiguration</outputDirectory>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>resources</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+						
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>pde-maven-plugin</artifactId>
 				<extensions>true</extensions>
 				<configuration>
 					<buildProperties>
-						<javacSource>1.6</javacSource>
-						<javacTarget>1.6</javacTarget>
+						<javacSource>1.5</javacSource>
+						<javacTarget>1.5</javacTarget>
 					</buildProperties>
-					<!-- Change this to reflect your actual installation! -->
+                    <!-- Change this to reflect your actual installation! -->
 					<eclipseInstall>
 						/Applications/Eclipse/eclipse-rcp-europa-fall
 					</eclipseInstall>
@@ -39,5 +79,58 @@
 				</executions>
 			</plugin>
 		</plugins>
+
+		<resources>
+			<resource>
+				<directory>${basedir}/src/main/resources</directory>				
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+		
+		
 	</build>
+	
+	
+	<profiles>
+	    <profile>
+	      <id>unix</id>
+	      <activation>
+	        <os>
+	          <family>unix</family>
+	        </os>        
+	      </activation>
+	      <properties>
+	        <pdePlatform>linux</pdePlatform>
+			<pdeToolkit>gtk</pdeToolkit>
+			<pdeArch>x86</pdeArch>
+	      </properties>
+	    </profile>
+	    <profile>
+	      <id>mac</id>
+	      <activation>
+	        <os>
+	          <family>mac</family>
+	        </os>        
+	      </activation>
+	      <properties>
+	        <pdePlatform>macosx</pdePlatform>
+			<pdeToolkit>carbon</pdeToolkit>
+			<pdeArch>x86</pdeArch>
+	      </properties>
+	    </profile>
+	    <profile>
+	      <id>windows</id>
+	      <activation>
+	        <os>
+	          <family>windows</family>
+	        </os>        
+	      </activation>
+	      <properties>
+	        <pdePlatform>win32</pdePlatform>
+			<pdeToolkit>win32</pdeToolkit>
+			<pdeArch>x86</pdeArch>
+	      </properties>
+	    </profile>
+	  </profiles>
+	
 </project>
