@@ -165,6 +165,25 @@
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M1+SHIFT+P">
       </key>
+      <key
+            commandId="org.xwiki.xeclipse.command.NewConnection"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+SHIFT+N">
+      </key>
+   </extension>
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <wizard
+            category="org.xwiki.xeclipse.wizard.category.XWiki"
+            class="org.xwiki.xeclipse.wizards.NewConnectionWizard"
+            icon="icons/xwiki.png"
+            id="org.xwiki.xeclipse.wizard.NewConnection"
+            name="New connection">
+      </wizard>
+      <category
+            id="org.xwiki.xeclipse.wizard.category.XWiki"
+            name="XWiki">
+      </category>
    </extension>
 
 </plugin>
