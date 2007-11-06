@@ -29,6 +29,9 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.SWT;
@@ -40,6 +43,7 @@ import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.handlers.IHandlerActivation;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.menus.CommandContributionItem;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
@@ -63,11 +67,13 @@ import org.xwiki.xeclipse.model.IXWikiPage;
 import org.xwiki.xeclipse.model.IXWikiSpace;
 import org.xwiki.xeclipse.utils.XWikiEclipseUtil;
 
-public class XWikiExplorerView extends ViewPart implements IXWikiEclipseEventListener
+public class XWikiExplorerView extends ViewPart implements IXWikiEclipseEventListener, ISelectionChangedListener
 {
     public static final String ID = "org.xwiki.xeclipse.views.XWikiExplorer";
 
     private TreeViewer treeViewer;
+
+    private IHandlerActivation deleteCommandActivation;
 
     @Override
     public void createPartControl(Composite parent)
@@ -78,6 +84,7 @@ public class XWikiExplorerView extends ViewPart implements IXWikiEclipseEventLis
         treeViewer.setLabelProvider(new WorkbenchLabelProvider());
         getSite().setSelectionProvider(treeViewer);
         treeViewer.setInput(XWikiConnectionManager.getDefault());
+        treeViewer.addSelectionChangedListener(this);
 
         treeViewer.addDoubleClickListener(new IDoubleClickListener()
         {
@@ -136,24 +143,10 @@ public class XWikiExplorerView extends ViewPart implements IXWikiEclipseEventLis
             null,
             null,
             null,
-            SWT.NONE));
+            SWT.NONE));        
 
         menuManager.add(new Separator());
-
-        menuManager.add(new CommandContributionItem(getSite(),
-            null,
-            XWikiEclipseConstants.REMOVE_CONNECTION_COMMAND,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            SWT.NONE));
-
-        menuManager.add(new Separator());
-
+        
         menuManager.add(new CommandContributionItem(getSite(),
             null,
             XWikiEclipseConstants.NEW_SPACE_COMMAND,
@@ -182,7 +175,7 @@ public class XWikiExplorerView extends ViewPart implements IXWikiEclipseEventLis
 
         menuManager.add(new CommandContributionItem(getSite(),
             null,
-            XWikiEclipseConstants.REMOVE_SPACE_COMMAND,
+            "org.eclipse.ui.edit.delete",
             null,
             null,
             null,
@@ -191,19 +184,7 @@ public class XWikiExplorerView extends ViewPart implements IXWikiEclipseEventLis
             null,
             null,
             SWT.NONE));
-
-        menuManager.add(new CommandContributionItem(getSite(),
-            null,
-            XWikiEclipseConstants.REMOVE_PAGE_COMMAND,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            SWT.NONE));
-
+        
         menuManager.add(new Separator());
 
         menuManager.add(new CommandContributionItem(getSite(),
@@ -340,32 +321,7 @@ public class XWikiExplorerView extends ViewPart implements IXWikiEclipseEventLis
                     return EvaluationResult.FALSE;
                 }
             });
-
-        handlerService.activateHandler(XWikiEclipseConstants.REMOVE_CONNECTION_COMMAND,
-            new RemoveConnectionHandler(), new Expression()
-            {
-                @Override
-                public void collectExpressionInfo(ExpressionInfo info)
-                {
-                    info.addVariableNameAccess(ISources.ACTIVE_CURRENT_SELECTION_NAME);
-                }
-
-                @Override
-                public EvaluationResult evaluate(IEvaluationContext context) throws CoreException
-                {
-                    Object selection =
-                        context.getVariable(ISources.ACTIVE_CURRENT_SELECTION_NAME);
-                    Object selectedObject =
-                        XWikiEclipseUtil.getSingleSelectedObjectInStructuredSelection(selection);
-
-                    if (selectedObject instanceof IXWikiConnection) {
-                        return EvaluationResult.TRUE;
-                    }
-
-                    return EvaluationResult.FALSE;
-                }
-            });
-
+        
         handlerService.activateHandler(XWikiEclipseConstants.NEW_SPACE_COMMAND,
             new NewSpaceHandler(), new Expression()
             {
@@ -420,60 +376,7 @@ public class XWikiExplorerView extends ViewPart implements IXWikiEclipseEventLis
                 }
             });
 
-        handlerService.activateHandler(XWikiEclipseConstants.REMOVE_SPACE_COMMAND,
-            new RemoveSpaceHandler(), new Expression()
-            {
-                @Override
-                public void collectExpressionInfo(ExpressionInfo info)
-                {
-                    info.addVariableNameAccess(ISources.ACTIVE_CURRENT_SELECTION_NAME);
-                }
-
-                @Override
-                public EvaluationResult evaluate(IEvaluationContext context) throws CoreException
-                {
-                    Object selection =
-                        context.getVariable(ISources.ACTIVE_CURRENT_SELECTION_NAME);
-                    Object selectedObject =
-                        XWikiEclipseUtil.getSingleSelectedObjectInStructuredSelection(selection);
-
-                    if (selectedObject instanceof IXWikiSpace) {
-                        IXWikiSpace xwikiPage = (IXWikiSpace) selectedObject;
-                        return xwikiPage.getConnection().isConnected() ? EvaluationResult.TRUE
-                            : EvaluationResult.FALSE;
-                    }
-
-                    return EvaluationResult.FALSE;
-                }
-            });
-
-        handlerService.activateHandler(XWikiEclipseConstants.REMOVE_PAGE_COMMAND,
-            new RemovePageHandler(), new Expression()
-            {
-                @Override
-                public void collectExpressionInfo(ExpressionInfo info)
-                {
-                    info.addVariableNameAccess(ISources.ACTIVE_CURRENT_SELECTION_NAME);
-                }
-
-                @Override
-                public EvaluationResult evaluate(IEvaluationContext context) throws CoreException
-                {
-                    Object selection =
-                        context.getVariable(ISources.ACTIVE_CURRENT_SELECTION_NAME);
-                    Object selectedObject =
-                        XWikiEclipseUtil.getSingleSelectedObjectInStructuredSelection(selection);
-
-                    if (selectedObject instanceof IXWikiPage) {
-                        IXWikiPage xwikiPage = (IXWikiPage) selectedObject;
-                        return xwikiPage.getConnection().isConnected() ? EvaluationResult.TRUE
-                            : EvaluationResult.FALSE;
-                    }
-
-                    return EvaluationResult.FALSE;
-                }
-            });
-
+        
     }
 
     public void handleEvent(final Object sender, final XWikiEclipseEvent event, final Object data)
@@ -521,6 +424,33 @@ public class XWikiExplorerView extends ViewPart implements IXWikiEclipseEventLis
             }
         });
 
+    }
+
+    public void selectionChanged(SelectionChangedEvent event)
+    {
+        IHandlerService handlerService = (IHandlerService) getSite().getService(IHandlerService.class);
+        if(deleteCommandActivation != null) {
+            handlerService.deactivateHandler(deleteCommandActivation);
+        }
+        
+        IStructuredSelection selection = (IStructuredSelection) event.getSelection();
+        if(selection.size() == 1) {
+            Object selectedObject = selection.getFirstElement();
+            if(selectedObject instanceof IXWikiConnection) {
+                deleteCommandActivation = handlerService.activateHandler("org.eclipse.ui.edit.delete", new RemoveConnectionHandler());
+            }
+            else if(selectedObject instanceof IXWikiSpace) {
+                deleteCommandActivation = handlerService.activateHandler("org.eclipse.ui.edit.delete", new RemoveSpaceHandler());
+            }
+            else if(selectedObject instanceof IXWikiPage) {
+                deleteCommandActivation = handlerService.activateHandler("org.eclipse.ui.edit.delete", new RemovePageHandler());
+            }                
+        }
+        
+        
+        
+        
+        
     }
 
 }

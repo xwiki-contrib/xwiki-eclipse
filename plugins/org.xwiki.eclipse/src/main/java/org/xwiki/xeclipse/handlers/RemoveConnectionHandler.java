@@ -24,6 +24,8 @@ import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.xwiki.xeclipse.XWikiConnectionManager;
 import org.xwiki.xeclipse.model.IXWikiConnection;
@@ -44,13 +46,23 @@ public class RemoveConnectionHandler extends AbstractHandler
             IXWikiConnection xwikiConnection = (IXWikiConnection) selectedObject;
 
             try {
-                xwikiConnection.dispose();
+                MessageBox messageBox =
+                    new MessageBox(HandlerUtil.getActiveShell(event), SWT.YES | SWT.NO
+                        | SWT.ICON_QUESTION);
+                messageBox.setMessage(String.format(
+                    "Do you really want to remove connection '%s@%s'?", xwikiConnection
+                        .getUserName(), xwikiConnection.getServerUrl()));
+                int result = messageBox.open();
+                if (result == SWT.YES) {
+                    xwikiConnection.dispose();
+                    XWikiConnectionManager.getDefault().removeConnection(xwikiConnection);
+                }
+
             } catch (XWikiConnectionException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
-            
-            XWikiConnectionManager.getDefault().removeConnection(xwikiConnection);            
+
         }
 
         return null;
