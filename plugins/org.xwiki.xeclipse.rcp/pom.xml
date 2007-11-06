@@ -63,14 +63,32 @@
             <javacSource>1.5</javacSource>
             <javacTarget>1.5</javacTarget>
           </buildProperties>
-          <!-- Change this to reflect your actual installation! -->
+          <!-- You must provide a profiles.xml file containing the value of eclipseInstall and pdeBuildVersion, or set them up in your
+               settings.xml or pass them on the command line.
+               For example, create the following profiles.xml file next to this pom.xml file:
+               
+               <profilesXml>
+                 <profiles>
+                   <profile>
+                     <id>vmassol</id>
+                     <properties>
+                       <eclipseInstall>/Applications/eclipse-europa-pde/</eclipseInstall>
+                       <pdeBuildVersion>3.3.1.v20070828</pdeBuildVersion>
+                     </properties>
+                   </profile>
+                 </profiles>
+                 <activeProfiles>
+                   <activeProfile>vmassol</activeProfile>
+                 </activeProfiles>
+               </profilesXml>
+           -->
           <eclipseInstall>
-            /Applications/Eclipse/eclipse-rcp-europa-fall
+            ${eclipseInstall}
           </eclipseInstall>
           <pdeProductFilename>
             org.xwiki.xeclipse.product
           </pdeProductFilename>
-          <pdeBuildVersion>3.3.1.v20070828</pdeBuildVersion>
+          <pdeBuildVersion>${pdeBuildVersion}</pdeBuildVersion>
         </configuration>
         <executions>
           <execution>
@@ -99,6 +117,7 @@
       <activation>
         <os>
           <family>unix</family>
+          <arch>x86</arch>
         </os>
       </activation>
       <properties>
@@ -108,7 +127,7 @@
       </properties>
     </profile>
     <profile>
-      <id>mac</id>
+      <id>macx86</id>
       <activation>
         <os>
           <family>mac</family>
@@ -122,7 +141,7 @@
       </properties>
     </profile>
     <profile>
-      <id>mac</id>
+      <id>macppc</id>
       <activation>
         <os>
           <family>mac</family>
