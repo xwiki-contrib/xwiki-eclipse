@@ -104,7 +104,7 @@
             </command>
             <separator
                   name="separator2"
-                  visible="false">
+                  visible="true">
             </separator>
             <command
                   commandId="org.xwiki.xeclipse.command.OpenPage"
