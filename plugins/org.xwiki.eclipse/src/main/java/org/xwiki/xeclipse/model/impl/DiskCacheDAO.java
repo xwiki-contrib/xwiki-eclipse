@@ -244,7 +244,7 @@ public class DiskCacheDAO implements IXWikiCacheDAO
             Set<String> pageIds = indexAggregate.getSpaceToPagesIndex().get(spaceKey);
             if (pageIds != null) {
                 for (String pageId : pageIds) {
-                    String dataFileName = indexAggregate.pageToDataFileNameIndex.get(pageId);
+                    String dataFileName = indexAggregate.pageToDataFileNameIndex.get(pageId);                    
                     ObjectInputStream ois =
                         new ObjectInputStream(new FileInputStream(new File(cacheDir, dataFileName)));
                     Map map = (Map) ois.readObject();
@@ -304,11 +304,12 @@ public class DiskCacheDAO implements IXWikiCacheDAO
             oos.close();
 
             indexAggregate.getPageToDataFileNameIndex().put(page.getId(), dataFileName);
+            indexAggregate.getPageToSpaceIndex().put(page.getId(), page.getSpace());
             Set<String> pagesInSpace = indexAggregate.getSpaceToPagesIndex().get(page.getSpace());
             if (pagesInSpace == null) {
                 pagesInSpace = new HashSet<String>();
                 indexAggregate.getSpaceToPagesIndex().put(page.getSpace(), pagesInSpace);
-            }
+            }            
             pagesInSpace.add(page.getId());
         } catch (Exception e) {
             throw new XWikiDAOException(e);
