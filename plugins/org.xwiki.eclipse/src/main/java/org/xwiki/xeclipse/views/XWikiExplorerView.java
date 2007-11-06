@@ -67,7 +67,8 @@ import org.xwiki.xeclipse.model.IXWikiPage;
 import org.xwiki.xeclipse.model.IXWikiSpace;
 import org.xwiki.xeclipse.utils.XWikiEclipseUtil;
 
-public class XWikiExplorerView extends ViewPart implements IXWikiEclipseEventListener, ISelectionChangedListener
+public class XWikiExplorerView extends ViewPart implements IXWikiEclipseEventListener,
+    ISelectionChangedListener
 {
     public static final String ID = "org.xwiki.xeclipse.views.XWikiExplorer";
 
@@ -143,10 +144,10 @@ public class XWikiExplorerView extends ViewPart implements IXWikiEclipseEventLis
             null,
             null,
             null,
-            SWT.NONE));        
+            SWT.NONE));
 
         menuManager.add(new Separator());
-        
+
         menuManager.add(new CommandContributionItem(getSite(),
             null,
             XWikiEclipseConstants.NEW_SPACE_COMMAND,
@@ -184,7 +185,7 @@ public class XWikiExplorerView extends ViewPart implements IXWikiEclipseEventLis
             null,
             null,
             SWT.NONE));
-        
+
         menuManager.add(new Separator());
 
         menuManager.add(new CommandContributionItem(getSite(),
@@ -321,7 +322,7 @@ public class XWikiExplorerView extends ViewPart implements IXWikiEclipseEventLis
                     return EvaluationResult.FALSE;
                 }
             });
-        
+
         handlerService.activateHandler(XWikiEclipseConstants.NEW_SPACE_COMMAND,
             new NewSpaceHandler(), new Expression()
             {
@@ -376,7 +377,6 @@ public class XWikiExplorerView extends ViewPart implements IXWikiEclipseEventLis
                 }
             });
 
-        
     }
 
     public void handleEvent(final Object sender, final XWikiEclipseEvent event, final Object data)
@@ -428,29 +428,36 @@ public class XWikiExplorerView extends ViewPart implements IXWikiEclipseEventLis
 
     public void selectionChanged(SelectionChangedEvent event)
     {
-        IHandlerService handlerService = (IHandlerService) getSite().getService(IHandlerService.class);
-        if(deleteCommandActivation != null) {
+        IHandlerService handlerService =
+            (IHandlerService) getSite().getService(IHandlerService.class);
+        if (deleteCommandActivation != null) {
             handlerService.deactivateHandler(deleteCommandActivation);
         }
-        
+
         IStructuredSelection selection = (IStructuredSelection) event.getSelection();
-        if(selection.size() == 1) {
+        if (selection.size() == 1) {
             Object selectedObject = selection.getFirstElement();
-            if(selectedObject instanceof IXWikiConnection) {
-                deleteCommandActivation = handlerService.activateHandler("org.eclipse.ui.edit.delete", new RemoveConnectionHandler());
+            if (selectedObject instanceof IXWikiConnection) {
+                deleteCommandActivation =
+                    handlerService.activateHandler("org.eclipse.ui.edit.delete",
+                        new RemoveConnectionHandler());
+            } else if (selectedObject instanceof IXWikiSpace) {
+                IXWikiSpace xwikiSpace = (IXWikiSpace) selectedObject;
+                if (xwikiSpace.getConnection().isConnected()) {
+                    deleteCommandActivation =
+                        handlerService.activateHandler("org.eclipse.ui.edit.delete",
+                            new RemoveSpaceHandler());
+                }
+            } else if (selectedObject instanceof IXWikiPage) {
+                IXWikiPage xwikiPage = (IXWikiPage) selectedObject;
+                if (xwikiPage.getConnection().isConnected()) {
+                    deleteCommandActivation =
+                        handlerService.activateHandler("org.eclipse.ui.edit.delete",
+                            new RemovePageHandler());
+                }
             }
-            else if(selectedObject instanceof IXWikiSpace) {
-                deleteCommandActivation = handlerService.activateHandler("org.eclipse.ui.edit.delete", new RemoveSpaceHandler());
-            }
-            else if(selectedObject instanceof IXWikiPage) {
-                deleteCommandActivation = handlerService.activateHandler("org.eclipse.ui.edit.delete", new RemovePageHandler());
-            }                
         }
-        
-        
-        
-        
-        
+
     }
 
 }

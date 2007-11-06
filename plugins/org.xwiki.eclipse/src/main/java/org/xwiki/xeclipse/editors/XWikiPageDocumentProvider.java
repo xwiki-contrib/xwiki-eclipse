@@ -22,30 +22,46 @@ public class XWikiPageDocumentProvider extends StorageDocumentProvider
         this.xwikiPageEditor = xwikiPageEditor;
     }
 
+    /*
+     * (non-Javadoc)
+     * @see org.eclipse.ui.editors.text.StorageDocumentProvider#createDocument(java.lang.Object)
+     */
     @Override
     protected IDocument createDocument(Object element) throws CoreException
     {
         IDocument document = new Document();
         if (element instanceof XWikiPageEditorInput) {
             XWikiPageEditorInput input = (XWikiPageEditorInput) element;
-            document.set(input.getXWikiPage().getContent());            
+            document.set(input.getXWikiPage().getContent());
         }
 
         return document;
     }
 
+    /*
+     * (non-Javadoc)
+     * @see org.eclipse.ui.editors.text.StorageDocumentProvider#isModifiable(java.lang.Object)
+     */
     @Override
     public boolean isModifiable(Object element)
     {
         return true;
     }
- 
+
+    /*
+     * (non-Javadoc)
+     * @see org.eclipse.ui.editors.text.StorageDocumentProvider#isReadOnly(java.lang.Object)
+     */
     @Override
     public boolean isReadOnly(Object element)
     {
         return false;
     }
 
+    /*
+     * (non-Javadoc)
+     * @see org.eclipse.ui.editors.text.StorageDocumentProvider#doSaveDocument(org.eclipse.core.runtime.IProgressMonitor, java.lang.Object, org.eclipse.jface.text.IDocument, boolean)
+     */
     @Override
     protected void doSaveDocument(IProgressMonitor monitor, Object element, IDocument document,
         boolean overwrite) throws CoreException
@@ -55,19 +71,26 @@ public class XWikiPageDocumentProvider extends StorageDocumentProvider
 
         xwikiPage.setContent(document.get());
 
-        try {            
-            xwikiPage.save();     
-            
-            if(xwikiPage.isConflict()) {
-                MessageDialog.openWarning(Display.getDefault().getActiveShell(), "Page out of synch", "The page being saved has been modified remotely, and is not up to date.\nLocal and remote content will be presented in the editor.\n\nMerge the contents and resave the page in order to actualy update the remote version.");
+        try {
+            xwikiPage.save();
+
+            if (xwikiPage.isConflict()) {
+                MessageDialog
+                    .openWarning(
+                        Display.getDefault().getActiveShell(),
+                        "Page out of synch",
+                        "The page being saved has been modified remotely, and is not up to date.\nLocal and remote content will be presented in the editor.\n\nMerge the contents and resave the page in order to actualy update the remote version.");
             }
-            
-            XWikiPageEditor.CaretState caretState = xwikiPageEditor.getCaretState();                
-            document.set(input.getXWikiPage().getContent());                                    
+
+            XWikiPageEditor.CaretState caretState = xwikiPageEditor.getCaretState();
+            document.set(input.getXWikiPage().getContent());
             xwikiPageEditor.updateEditor(input.getXWikiPage());
             xwikiPageEditor.setCaretOffset(caretState);
         } catch (XWikiConnectionException e) {
-            throw new CoreException(new Status(IStatus.ERROR, XWikiEclipsePlugin.PLUGIN_ID, "Unable to save", e));            
+            throw new CoreException(new Status(IStatus.ERROR,
+                XWikiEclipsePlugin.PLUGIN_ID,
+                "Unable to save",
+                e));
         }
     }
 
