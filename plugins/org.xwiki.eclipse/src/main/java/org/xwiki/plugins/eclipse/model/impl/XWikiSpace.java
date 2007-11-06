@@ -270,6 +270,7 @@ public class XWikiSpace implements IXWikiSpace, TreeAdapter
      * 
      * @see org.xwiki.plugins.eclipse.model.IXWikiSpace#init()
      */
+    @SuppressWarnings("unchecked")
     public void init() throws SwizzleConfluenceException
     {
         if (!isDataReady()) {

@@ -23,11 +23,9 @@ package org.xwiki.xeclipse.model.impl;
 import java.io.File;
 import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 
 import org.codehaus.swizzle.confluence.Page;
 import org.codehaus.swizzle.confluence.PageSummary;
-import org.codehaus.swizzle.confluence.SpaceSummary;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;

@@ -63,7 +63,6 @@ public class NewPageWizard extends Wizard implements INewWizard
                 {
                     try {
                         monitor.beginTask("Creating page...", IProgressMonitor.UNKNOWN);
-                        String pageKey = newPageWizardState.getTitle().trim().replace(' ', '_');
                         final IXWikiPage xwikiPage = xwikiSpace.createPage(newPageWizardState.getTitle(), "Write here content"); 
                                                
                         Display.getDefault().asyncExec(new Runnable() {

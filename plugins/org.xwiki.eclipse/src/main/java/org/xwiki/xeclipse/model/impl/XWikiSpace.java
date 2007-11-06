@@ -27,6 +27,7 @@ public class XWikiSpace implements IXWikiSpace
      * @param spaceSummary The raw space object provided by the remote XWiki instance containing the
      *            information.
      */
+    @SuppressWarnings("unchecked")
     public XWikiSpace(AbstractXWikiConnection connection, String key, Map properties)
     {
         this.connection = connection;

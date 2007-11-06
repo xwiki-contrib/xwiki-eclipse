@@ -491,7 +491,7 @@ public class XWikiCachedConnection extends AbstractXWikiConnection implements Se
     {
         if (isConnected()) {
             try {
-                Space space = remoteDAO.createSpace(key, name, description);
+                remoteDAO.createSpace(key, name, description);
                 XWikiEclipseNotificationCenter.getDefault().fireEvent(this,
                     XWikiEclipseEvent.SPACE_CREATED, this);
             } catch (XWikiDAOException e) {

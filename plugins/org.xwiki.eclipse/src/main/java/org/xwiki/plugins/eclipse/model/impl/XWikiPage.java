@@ -38,7 +38,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IPersistableElement;
 import org.eclipse.ui.IStorageEditorInput;
 import org.xwiki.plugins.eclipse.XWikiEclipsePlugin;
@@ -47,7 +46,6 @@ import org.xwiki.plugins.eclipse.model.IXWikiSpace;
 import org.xwiki.plugins.eclipse.model.adapters.TreeAdapter;
 import org.xwiki.plugins.eclipse.model.wrappers.XWikiPageWrapper;
 import org.xwiki.plugins.eclipse.util.CacheUtils;
-import org.xwiki.plugins.eclipse.util.GuiUtils;
 import org.xwiki.plugins.eclipse.util.LoggingUtils;
 import org.xwiki.plugins.eclipse.util.XWikiConstants;
 

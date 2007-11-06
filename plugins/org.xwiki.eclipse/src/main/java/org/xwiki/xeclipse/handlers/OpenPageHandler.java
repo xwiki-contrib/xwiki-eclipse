@@ -23,16 +23,13 @@ package org.xwiki.xeclipse.handlers;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.swt.SWT;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.xwiki.xeclipse.dialogs.OpenPageDialog;
 import org.xwiki.xeclipse.editors.XWikiPageEditor;
 import org.xwiki.xeclipse.editors.XWikiPageEditorInput;
 import org.xwiki.xeclipse.model.IXWikiPage;
-import org.xwiki.xeclipse.utils.XWikiEclipseUtil;
 
 public class OpenPageHandler extends AbstractHandler
 {

@@ -25,8 +25,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import javax.security.auth.login.FailedLoginException;
-
 import org.codehaus.swizzle.confluence.Confluence;
 import org.codehaus.swizzle.confluence.SwizzleConfluenceException;
 import org.eclipse.core.runtime.IPath;

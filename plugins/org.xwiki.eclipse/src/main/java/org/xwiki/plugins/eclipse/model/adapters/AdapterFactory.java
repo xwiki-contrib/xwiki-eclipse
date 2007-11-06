@@ -52,6 +52,7 @@ public class AdapterFactory implements IAdapterFactory
      * 
      * @see org.eclipse.core.runtime.IAdapterFactory#getAdapter(Object, Class)
      */
+    @SuppressWarnings("unchecked")
     public Object getAdapter(Object adaptableObject, Class adapterType)
     {
         if (adapterType == IWorkbenchAdapter.class

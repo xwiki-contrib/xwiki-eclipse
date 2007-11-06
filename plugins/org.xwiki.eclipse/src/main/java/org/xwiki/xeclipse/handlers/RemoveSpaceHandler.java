@@ -27,8 +27,6 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.handlers.HandlerUtil;
-import org.xwiki.xeclipse.XWikiConnectionManager;
-import org.xwiki.xeclipse.model.IXWikiConnection;
 import org.xwiki.xeclipse.model.IXWikiSpace;
 import org.xwiki.xeclipse.model.XWikiConnectionException;
 import org.xwiki.xeclipse.utils.XWikiEclipseUtil;

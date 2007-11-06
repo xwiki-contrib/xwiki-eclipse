@@ -4,7 +4,6 @@ import java.util.Date;
 import java.util.Map;
 
 import org.codehaus.swizzle.confluence.Page;
-import org.codehaus.swizzle.confluence.Space;
 import org.xwiki.xeclipse.model.IXWikiConnection;
 import org.xwiki.xeclipse.model.IXWikiPage;
 import org.xwiki.xeclipse.model.IXWikiSpace;
@@ -20,6 +19,7 @@ public class XWikiPage implements IXWikiPage
     
     private IXWikiSpace space;
 
+    @SuppressWarnings("unchecked")
     public XWikiPage(AbstractXWikiConnection connection, String id, IXWikiSpace space, Map properties)
     {
         this.connection = connection;

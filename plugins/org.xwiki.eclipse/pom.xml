@@ -24,6 +24,7 @@
   </scm>
   <build>
     <plugins>
+ 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -31,7 +32,26 @@
           <source>1.5</source>
           <target>1.5</target>
         </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>testCompile</goal>
+            </goals>
+            <configuration>
+              <skip>true</skip>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
+      
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
+      </plugin>
+            
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>pde-maven-plugin</artifactId>
@@ -67,6 +87,7 @@
           </execution>
         </executions>
       </plugin>
+  
     </plugins>
   </build>
 </project>

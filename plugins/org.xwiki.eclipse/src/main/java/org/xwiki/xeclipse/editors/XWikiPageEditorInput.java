@@ -38,6 +38,7 @@ public class XWikiPageEditorInput implements IEditorInput
         return xwikiPage.getTitle();
     }
 
+    @SuppressWarnings("unchecked")
     public Object getAdapter(Class adapter)
     {
         return null;

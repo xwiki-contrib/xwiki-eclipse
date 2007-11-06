@@ -272,7 +272,7 @@ public class XWikiPlainConnection extends AbstractXWikiConnection
         throws XWikiConnectionException
     {
         try {
-            Space space = remoteDAO.createSpace(key, name, description);
+            remoteDAO.createSpace(key, name, description);
             XWikiEclipseNotificationCenter.getDefault().fireEvent(this,
                 XWikiEclipseEvent.SPACE_CREATED, this);
         } catch (XWikiDAOException e) {

@@ -185,6 +185,7 @@ public class DiskCacheDAO implements IXWikiCacheDAO
      * @return A list of the available spaces in the cache that have at least one page cached.
      * @throws XWikiDAOException
      */
+    @SuppressWarnings("unchecked")
     public List<SpaceSummary> getSpaces() throws XWikiDAOException
     {
         List<SpaceSummary> result = new ArrayList<SpaceSummary>();
@@ -234,6 +235,7 @@ public class DiskCacheDAO implements IXWikiCacheDAO
      * @return The page summaries for all the pages available in the given space.
      * @throws XWikiDAOException
      */
+    @SuppressWarnings("unchecked")
     public List<PageSummary> getPages(String spaceKey) throws XWikiDAOException
     {
         List<PageSummary> result = new ArrayList<PageSummary>();
@@ -263,6 +265,7 @@ public class DiskCacheDAO implements IXWikiCacheDAO
      * @return All the page information for the page identified by the given id.
      * @throws XWikiDAOException
      */
+    @SuppressWarnings("unchecked")
     public Page getPage(String pageId) throws XWikiDAOException
     {
         Page result = null;
@@ -313,6 +316,7 @@ public class DiskCacheDAO implements IXWikiCacheDAO
     }
 
     /* Since we store only space summaries, return a space with only space summary content */
+    @SuppressWarnings("unchecked")
     public Space getSpace(String key) throws XWikiDAOException
     {
         Space result = null;

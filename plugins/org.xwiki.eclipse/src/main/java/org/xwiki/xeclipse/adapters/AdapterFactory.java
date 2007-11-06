@@ -54,6 +54,7 @@ public class AdapterFactory implements IAdapterFactory
      * 
      * @see org.eclipse.core.runtime.IAdapterFactory#getAdapter(Object, Class)
      */
+    @SuppressWarnings("unchecked")
     public Object getAdapter(Object adaptableObject, Class adapterType)
     {
         if (adapterType == IDeferredWorkbenchAdapter.class
@@ -90,6 +91,7 @@ public class AdapterFactory implements IAdapterFactory
      * 
      * @see org.eclipse.core.runtime.IAdapterFactory#getAdapterList()
      */
+    @SuppressWarnings("unchecked")
     public Class[] getAdapterList()
     {
         return new Class[] {IDeferredWorkbenchAdapter.class, IWorkbenchAdapter.class, IWorkbenchAdapter2.class};

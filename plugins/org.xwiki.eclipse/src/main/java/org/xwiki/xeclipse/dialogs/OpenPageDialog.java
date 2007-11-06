@@ -156,6 +156,7 @@ public class OpenPageDialog extends FilteredItemsSelectionDialog
         return null;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     protected Comparator getItemsComparator()
     {
