@@ -4,8 +4,10 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.editors.text.StorageDocumentProvider;
 import org.xwiki.plugins.eclipse.XWikiEclipsePlugin;
 import org.xwiki.xeclipse.model.IXWikiPage;
@@ -54,7 +56,11 @@ public class XWikiPageDocumentProvider extends StorageDocumentProvider
         xwikiPage.setContent(document.get());
 
         try {            
-            xwikiPage.save();            
+            xwikiPage.save();     
+            
+            if(xwikiPage.isConflict()) {
+                MessageDialog.openWarning(Display.getDefault().getActiveShell(), "Page out of synch", "The page being saved has been modified remotely, and is not up to date.\nLocal and remote content will be presented in the editor.\n\nMerge the contents and resave the page in order to actualy update the remote version.");
+            }
             
             XWikiPageEditor.CaretState caretState = xwikiPageEditor.getCaretState();                
             document.set(input.getXWikiPage().getContent());                                    
