@@ -94,7 +94,9 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
                 register(action);
             }
         }
-
+        
+        IWorkbenchAction deleteAction = ActionFactory.DELETE.create(window);
+        register(deleteAction);        
     }
 
     protected void fillMenuBar(IMenuManager menuBar)

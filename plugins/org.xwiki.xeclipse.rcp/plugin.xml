@@ -95,12 +95,8 @@
                   visible="true">
             </separator>
             <command
-                  commandId="org.xwiki.xeclipse.command.RemoveSpace"
-                  id="Remove space">
-            </command>
-            <command
-                  commandId="org.xwiki.xeclipse.command.RemovePage"
-                  id="Remove page">
+                  commandId="org.eclipse.ui.edit.delete"
+                  id="Delete">
             </command>
             <separator
                   name="separator2"
