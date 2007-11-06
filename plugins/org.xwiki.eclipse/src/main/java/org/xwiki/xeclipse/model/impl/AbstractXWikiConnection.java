@@ -1,15 +1,11 @@
 package org.xwiki.xeclipse.model.impl;
 
-import java.io.File;
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.UUID;
 
 import org.codehaus.swizzle.confluence.Page;
 import org.codehaus.swizzle.confluence.Space;
-import org.eclipse.core.runtime.ListenerList;
 import org.xwiki.xeclipse.model.IXWikiConnection;
-import org.xwiki.xeclipse.model.IXWikiConnectionListener;
 import org.xwiki.xeclipse.model.XWikiConnectionException;
 
 /**
@@ -89,5 +85,34 @@ public abstract class AbstractXWikiConnection implements IXWikiConnection, Seria
 
     abstract Page getRawPage(String pageId) throws XWikiConnectionException;
 
-    abstract Space getRawSpace(String key) throws XWikiConnectionException;    
+    abstract Space getRawSpace(String key) throws XWikiConnectionException;
+
+    @Override
+    public int hashCode()
+    {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        final AbstractXWikiConnection other = (AbstractXWikiConnection) obj;
+        if (id == null) {
+            if (other.id != null)
+                return false;
+        } else if (!id.equals(other.id))
+            return false;
+        return true;
+    }    
+    
+    
 }

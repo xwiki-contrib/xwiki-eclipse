@@ -38,7 +38,6 @@ import org.eclipse.ui.PartInitException;
 import org.xwiki.plugins.eclipse.XWikiEclipsePlugin;
 import org.xwiki.plugins.eclipse.editors.ui.XWikiBrowserPartUI;
 import org.xwiki.plugins.eclipse.model.IXWikiPage;
-import org.xwiki.plugins.eclipse.util.GuiUtils;
 import org.xwiki.plugins.eclipse.util.XWikiConstants;
 
 /**

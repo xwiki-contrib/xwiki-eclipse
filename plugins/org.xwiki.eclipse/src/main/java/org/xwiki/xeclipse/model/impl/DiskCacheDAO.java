@@ -180,7 +180,9 @@ public class DiskCacheDAO implements IXWikiCacheDAO
     }
 
     /**
-     * @return A list of the available spaces in the cache.
+     * {@inheritDoc}
+     * 
+     * @return A list of the available spaces in the cache that have at least one page cached.
      * @throws XWikiDAOException
      */
     public List<SpaceSummary> getSpaces() throws XWikiDAOException

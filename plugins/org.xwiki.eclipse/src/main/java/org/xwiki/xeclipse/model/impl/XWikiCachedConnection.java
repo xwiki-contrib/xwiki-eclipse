@@ -511,7 +511,7 @@ public class XWikiCachedConnection extends AbstractXWikiConnection implements Se
             try {
                 Page page = remoteDAO.createPage(space.getKey(), name, content);
                 XWikiEclipseNotificationCenter.getDefault().fireEvent(this,
-                    XWikiEclipseEvent.PAGE_CREATED, new Object[] {space, page});
+                    XWikiEclipseEvent.PAGE_CREATED, new Object[] {space, new XWikiPage(this, page.getId(), space, page.toMap())});
                 return new XWikiPage(this, page.getId(), space, page.toMap());
             } catch (XWikiDAOException e) {
                 e.printStackTrace();
@@ -557,5 +557,16 @@ public class XWikiCachedConnection extends AbstractXWikiConnection implements Se
         }
 
         
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * Does nothing for now.
+     */
+    public Collection<IXWikiPage> getKnownPages()
+    {
+        Set<IXWikiPage> result = new HashSet<IXWikiPage>();
+        return result;
     }
 }

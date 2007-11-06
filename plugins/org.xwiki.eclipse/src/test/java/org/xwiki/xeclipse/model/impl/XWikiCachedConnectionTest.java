@@ -72,21 +72,22 @@ public class XWikiCachedConnectionTest
         IXWikiDAO remoteDAO = connection.getRemoteDAO();
         IXWikiCacheDAO cacheDAO = connection.getCacheDAO();
         
+        /* This doesn't work anymore because cacheDAO.getSpaces() return only spaces that have some cached pages inside */
         /* Check that all the remote space summaries are cached */
-        List<SpaceSummary> remoteSpaceSummaries = remoteDAO.getSpaces();
-        List<SpaceSummary> cachedSpaceSummaries = cacheDAO.getSpaces();
-        Assert.assertEquals(remoteSpaceSummaries.size(), cachedSpaceSummaries.size());
-        
-        for(SpaceSummary remoteSpaceSummary: remoteSpaceSummaries) {
-            boolean found = false;
-            for(SpaceSummary cachedSpaceSummary: cachedSpaceSummaries) {
-                if(remoteSpaceSummary.toMap().equals(cachedSpaceSummary.toMap())) {
-                    found = true;
-                    break;
-                }
-            }
-            Assert.assertTrue(found);
-        }
+//        List<SpaceSummary> remoteSpaceSummaries = remoteDAO.getSpaces();
+//        List<SpaceSummary> cachedSpaceSummaries = cacheDAO.getSpaces();
+//        Assert.assertEquals(remoteSpaceSummaries.size(), cachedSpaceSummaries.size());
+//        
+//        for(SpaceSummary remoteSpaceSummary: remoteSpaceSummaries) {
+//            boolean found = false;
+//            for(SpaceSummary cachedSpaceSummary: cachedSpaceSummaries) {
+//                if(remoteSpaceSummary.toMap().equals(cachedSpaceSummary.toMap())) {
+//                    found = true;
+//                    break;
+//                }
+//            }
+//            Assert.assertTrue(found);
+//        }
         
         /* Check that all the pages that have been got have been cached as well */
         for(PageSummary pageSummary : remoteDAO.getPages(space.getKey())) {

@@ -73,6 +73,11 @@ public interface IXWikiConnection
     public Collection<IXWikiPage> getPages(IXWikiSpace space)
         throws XWikiConnectionException;
     
+    /**
+     * @return The pages that have already been fetched and for which we have a local knwoledge.
+     */
+    public Collection<IXWikiPage> getKnownPages();
+    
         
     public IXWikiPage getPage(String pageId) throws XWikiConnectionException;
     

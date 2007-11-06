@@ -39,15 +39,11 @@ import org.codehaus.swizzle.confluence.SpaceSummary;
 import org.codehaus.swizzle.confluence.SwizzleConfluenceException;
 import org.codehaus.swizzle.confluence.SwizzleXWiki;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.swt.graphics.Image;
-import org.xwiki.plugins.eclipse.XWikiEclipsePlugin;
 import org.xwiki.plugins.eclipse.model.IXWikiConnection;
 import org.xwiki.plugins.eclipse.model.IXWikiSpace;
 import org.xwiki.plugins.eclipse.model.adapters.TreeAdapter;
 import org.xwiki.plugins.eclipse.model.wrappers.XWikiConnectionWrapper;
 import org.xwiki.plugins.eclipse.util.CacheUtils;
-import org.xwiki.plugins.eclipse.util.GuiUtils;
-import org.xwiki.plugins.eclipse.util.XWikiConstants;
 
 /**
  * Default implementation of {@link IXWikiConnection} TODO Offline functionality was added later and

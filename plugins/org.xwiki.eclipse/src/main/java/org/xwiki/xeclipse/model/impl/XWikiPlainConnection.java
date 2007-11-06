@@ -3,7 +3,9 @@ package org.xwiki.xeclipse.model.impl;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.codehaus.swizzle.confluence.Page;
 import org.codehaus.swizzle.confluence.PageSummary;
@@ -330,5 +332,16 @@ public class XWikiPlainConnection extends AbstractXWikiConnection
             e.printStackTrace();
             throw new XWikiConnectionException(e);
         }
+    }
+    
+    /**
+     * {@inheritDoc}
+     * 
+     * Does nothing for now.
+     */
+    public Collection<IXWikiPage> getKnownPages()
+    {
+        Set<IXWikiPage> result = new HashSet<IXWikiPage>();
+        return result;
     }
 }

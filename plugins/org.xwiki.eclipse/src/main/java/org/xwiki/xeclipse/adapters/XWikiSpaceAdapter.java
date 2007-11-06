@@ -29,6 +29,7 @@ import org.eclipse.ui.progress.IDeferredWorkbenchAdapter;
 import org.eclipse.ui.progress.IElementCollector;
 import org.xwiki.plugins.eclipse.XWikiEclipsePlugin;
 import org.xwiki.xeclipse.XWikiEclipseConstants;
+import org.xwiki.xeclipse.XWikiEclipsePageIndex;
 import org.xwiki.xeclipse.model.IXWikiPage;
 import org.xwiki.xeclipse.model.IXWikiSpace;
 import org.xwiki.xeclipse.model.XWikiConnectionException;
@@ -45,19 +46,24 @@ public class XWikiSpaceAdapter implements IDeferredWorkbenchAdapter
      */
     public Object[] getChildren(Object o)
     {
-        if(o instanceof IXWikiSpace) {
+        if (o instanceof IXWikiSpace) {
             IXWikiSpace space = (IXWikiSpace) o;
             Collection<IXWikiPage> result = null;
-            
+
             try {
                 result = space.getPages();
+
+                /* Add pages to the local index */
+                for (IXWikiPage page : result) {
+                    XWikiEclipsePageIndex.getDefault().addPage(page);
+                }
             } catch (XWikiConnectionException e) {
                 e.printStackTrace();
-            } 
-            
-            return result != null ? result.toArray() : XWikiEclipseConstants.NO_OBJECTS;           
+            }
+
+            return result != null ? result.toArray() : XWikiEclipseConstants.NO_OBJECTS;
         }
-        
+
         return XWikiEclipseConstants.NO_OBJECTS;
     }
 

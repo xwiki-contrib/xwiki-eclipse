@@ -118,6 +118,11 @@
             id="org.xwiki.xeclipse.command.RemovePage"
             name="Remove page">
       </command>
+      <command
+            defaultHandler="org.xwiki.xeclipse.handlers.OpenPageHandler"
+            id="org.xwiki.xeclipse.command.OpenPage"
+            name="Open page...">
+      </command>
    </extension>
    <extension
          name="NEW ADAPTERS"
@@ -152,6 +157,14 @@
                type="org.eclipse.ui.model.IWorkbenchAdapter">
          </adapter>
       </factory>
+   </extension>
+   <extension
+         point="org.eclipse.ui.bindings">
+      <key
+            commandId="org.xwiki.xeclipse.command.OpenPage"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+SHIFT+P">
+      </key>
    </extension>
 
 </plugin>

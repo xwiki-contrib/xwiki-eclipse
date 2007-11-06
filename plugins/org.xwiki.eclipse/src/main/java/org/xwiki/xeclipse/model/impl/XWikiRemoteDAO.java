@@ -2,7 +2,6 @@ package org.xwiki.xeclipse.model.impl;
 
 import java.util.List;
 
-import org.codehaus.swizzle.confluence.ConfluenceException;
 import org.codehaus.swizzle.confluence.IdentityObjectConvertor;
 import org.codehaus.swizzle.confluence.Page;
 import org.codehaus.swizzle.confluence.PageSummary;

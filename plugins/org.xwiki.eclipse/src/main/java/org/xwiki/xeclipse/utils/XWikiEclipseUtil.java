@@ -22,7 +22,6 @@ package org.xwiki.xeclipse.utils;
 
 import java.lang.reflect.InvocationTargetException;
 
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
