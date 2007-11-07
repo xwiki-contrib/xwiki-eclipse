@@ -34,12 +34,13 @@ import org.xwiki.xeclipse.model.IXWikiConnection;
 import org.xwiki.xeclipse.model.XWikiConnectionException;
 
 public class XWikiConnectionManager
-{    
+{
     private static XWikiConnectionManager sharedInstance;
 
     private List<IXWikiConnection> xwikiConnections;
+
     private Map<String, String> idToPasswordMapping;
-    
+
     public static XWikiConnectionManager getDefault()
     {
         if (sharedInstance == null) {
@@ -52,7 +53,7 @@ public class XWikiConnectionManager
     private XWikiConnectionManager()
     {
         xwikiConnections = new ArrayList<IXWikiConnection>();
-        idToPasswordMapping = new HashMap<String, String>();        
+        idToPasswordMapping = new HashMap<String, String>();
     }
 
     public List<IXWikiConnection> getConnections()
@@ -65,46 +66,52 @@ public class XWikiConnectionManager
         if (!xwikiConnections.contains(xwikiConnection)) {
             xwikiConnections.add(xwikiConnection);
             idToPasswordMapping.put(xwikiConnection.getId(), password);
-                        
-            XWikiEclipseNotificationCenter.getDefault().fireEvent(this, XWikiEclipseEvent.CONNECTION_ADDED, xwikiConnection);
+
+            XWikiEclipseNotificationCenter.getDefault().fireEvent(this,
+                XWikiEclipseEvent.CONNECTION_ADDED, xwikiConnection);
         }
-    }    
+    }
 
     public void removeConnection(IXWikiConnection xwikiConnection)
     {
-        xwikiConnections.remove(xwikiConnection);                
-        XWikiEclipseNotificationCenter.getDefault().fireEvent(this, XWikiEclipseEvent.CONNECTION_REMOVED, xwikiConnection);
+        xwikiConnections.remove(xwikiConnection);
+        XWikiEclipseNotificationCenter.getDefault().fireEvent(this,
+            XWikiEclipseEvent.CONNECTION_REMOVED, xwikiConnection);
     }
-    
-    public String getPasswordForConnection(String id) {
+
+    public String getPasswordForConnection(String id)
+    {
         return idToPasswordMapping.get(id);
     }
-    
-    public void saveConnections(File output) throws Exception {
+
+    public void saveConnections(File output) throws Exception
+    {
         ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(output));
         oos.writeObject(xwikiConnections);
-        
+
         /* This should be written with some encryption mechanism */
         oos.writeObject(idToPasswordMapping);
-        
+
         oos.close();
     }
-    
+
     @SuppressWarnings("unchecked")
-    public void restoreConnections(File input) throws Exception {
+    public void restoreConnections(File input) throws Exception
+    {
         ObjectInputStream ois = new ObjectInputStream(new FileInputStream(input));
         xwikiConnections = (List<IXWikiConnection>) ois.readObject();
         idToPasswordMapping = (Map<String, String>) ois.readObject();
-        ois.close();        
+        ois.close();
     }
-    
-    public void dispose() {
-        for(IXWikiConnection xwikiConnecton : xwikiConnections) {
+
+    public void dispose()
+    {
+        for (IXWikiConnection xwikiConnecton : xwikiConnections) {
             try {
                 xwikiConnecton.dispose();
-            } catch (XWikiConnectionException e) {             
+            } catch (XWikiConnectionException e) {
                 e.printStackTrace();
             }
         }
-    }            
+    }
 }
