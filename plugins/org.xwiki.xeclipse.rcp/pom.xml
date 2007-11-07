@@ -27,7 +27,7 @@
                 <artifactItem>
                   <groupId>org.xwiki.eclipse</groupId>
                   <artifactId>xwiki-eclipse-target-platform</artifactId>
-                  <version>1.0</version>
+                  <version>3.3.1</version>
                   <type>zip</type>
                 </artifactItem>
               </artifactItems>
