@@ -30,6 +30,7 @@ import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
@@ -63,8 +64,6 @@ public class WorkingSetSelection extends WizardPage
             .getImageDescriptor(XWikiEclipseConstants.WORKING_SET_BANNER));
     }
 
-    
-    
     private void checkPath(TreeItem item, boolean checked, boolean grayed)
     {
         if (item == null) {
@@ -187,6 +186,11 @@ public class WorkingSetSelection extends WizardPage
         previewTreeViewer.addFilter(workingSetFilter);
 
         sashForm.setWeights(new int[] {50, 50});
+
+        label = new Label(composite, SWT.BORDER | SWT.WRAP);
+        label
+            .setText("To select all pages in a space, first expand the space node and then click on the checkbox next to it.");
+        label.setForeground(Display.getDefault().getSystemColor(SWT.COLOR_DARK_GRAY));
 
         setControl(composite);
     }
