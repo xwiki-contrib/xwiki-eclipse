@@ -23,6 +23,7 @@ package org.xwiki.xeclipse.handlers;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
@@ -58,8 +59,8 @@ public class RemoveSpaceHandler extends AbstractHandler
                 }
 
             } catch (XWikiConnectionException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
+                MessageDialog.openError(HandlerUtil.getActiveShell(event), "Error", e.getMessage());
             }
 
         }
