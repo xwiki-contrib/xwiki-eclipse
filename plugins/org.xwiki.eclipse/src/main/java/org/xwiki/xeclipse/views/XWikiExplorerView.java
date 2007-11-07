@@ -35,6 +35,7 @@ import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.SWT;
@@ -513,6 +514,7 @@ public class XWikiExplorerView extends ViewPart implements IXWikiEclipseEventLis
                         break;
                     case PAGE_UPDATED:
                         treeViewer.refresh(data);
+                        treeViewer.setSelection(new StructuredSelection(data));
                         break;
 
                 }
