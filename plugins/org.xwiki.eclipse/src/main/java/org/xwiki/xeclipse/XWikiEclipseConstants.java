@@ -11,6 +11,7 @@ public final class XWikiEclipseConstants
     public static final String NEW_PAGE_COMMAND = "org.xwiki.xeclipse.command.NewPage";
     public static final String REMOVE_SPACE_COMMAND = "org.xwiki.xeclipse.command.RemoveSpace";
     public static final String REMOVE_PAGE_COMMAND = "org.xwiki.xeclipse.command.RemovePage";
+    public static final String GRAB_SPACE_COMMAND = "org.xwiki.xeclipse.command.GrabSpace";
     
     public static final String CONNECTION_SETTINGS_BANNER = "icons/connection-settings-banner.png";
     public static final String SPACE_SETTINGS_BANNER = "icons/space-settings-banner.png";

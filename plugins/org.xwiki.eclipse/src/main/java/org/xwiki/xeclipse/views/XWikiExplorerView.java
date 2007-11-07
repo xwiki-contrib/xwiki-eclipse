@@ -20,6 +20,8 @@
  */
 package org.xwiki.xeclipse.views;
 
+import java.util.Collection;
+
 import org.eclipse.core.expressions.EvaluationResult;
 import org.eclipse.core.expressions.Expression;
 import org.eclipse.core.expressions.ExpressionInfo;
@@ -67,6 +69,7 @@ import org.xwiki.xeclipse.editors.XWikiPageEditor;
 import org.xwiki.xeclipse.editors.XWikiPageEditorInput;
 import org.xwiki.xeclipse.handlers.ConnectHandler;
 import org.xwiki.xeclipse.handlers.DisconnectHandler;
+import org.xwiki.xeclipse.handlers.GrabSpaceHandler;
 import org.xwiki.xeclipse.handlers.NewPageHandler;
 import org.xwiki.xeclipse.handlers.NewSpaceHandler;
 import org.xwiki.xeclipse.handlers.RemoveConnectionHandler;
@@ -273,6 +276,20 @@ public class XWikiExplorerView extends ViewPart implements IXWikiEclipseEventLis
 
         menuManager.add(new CommandContributionItem(getSite(),
             null,
+            XWikiEclipseConstants.GRAB_SPACE_COMMAND,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            SWT.NONE));
+
+        menuManager.add(new Separator());
+
+        menuManager.add(new CommandContributionItem(getSite(),
+            null,
             "org.eclipse.ui.edit.delete",
             null,
             null,
@@ -331,6 +348,8 @@ public class XWikiExplorerView extends ViewPart implements IXWikiEclipseEventLis
             this);
         XWikiEclipseNotificationCenter.getDefault().addListener(XWikiEclipseEvent.PAGE_UPDATED,
             this);
+        XWikiEclipseNotificationCenter.getDefault().addListener(
+            XWikiEclipseEvent.PAGES_GRABBED, this);
     }
 
     @Override
@@ -354,6 +373,8 @@ public class XWikiExplorerView extends ViewPart implements IXWikiEclipseEventLis
             XWikiEclipseEvent.PAGE_REMOVED, this);
         XWikiEclipseNotificationCenter.getDefault().removeListener(
             XWikiEclipseEvent.PAGE_UPDATED, this);
+        XWikiEclipseNotificationCenter.getDefault().removeListener(
+            XWikiEclipseEvent.PAGES_GRABBED, this);
 
         super.dispose();
     }
@@ -414,6 +435,33 @@ public class XWikiExplorerView extends ViewPart implements IXWikiEclipseEventLis
                         if (xwikiConnection.isConnected()) {
                             return EvaluationResult.TRUE;
                         }
+                    }
+
+                    return EvaluationResult.FALSE;
+                }
+            });
+
+        handlerService.activateHandler(XWikiEclipseConstants.GRAB_SPACE_COMMAND,
+            new GrabSpaceHandler(), new Expression()
+            {
+                @Override
+                public void collectExpressionInfo(ExpressionInfo info)
+                {
+                    info.addVariableNameAccess(ISources.ACTIVE_CURRENT_SELECTION_NAME);
+                }
+
+                @Override
+                public EvaluationResult evaluate(IEvaluationContext context) throws CoreException
+                {
+                    Object selection =
+                        context.getVariable(ISources.ACTIVE_CURRENT_SELECTION_NAME);
+                    Object selectedObject =
+                        XWikiEclipseUtil.getSingleSelectedObjectInStructuredSelection(selection);
+
+                    if (selectedObject instanceof IXWikiSpace) {
+                        IXWikiSpace xwikiSpace = (IXWikiSpace) selectedObject;
+                        return xwikiSpace.getConnection().isConnected() ? EvaluationResult.TRUE
+                            : EvaluationResult.FALSE;
                     }
 
                     return EvaluationResult.FALSE;
@@ -484,6 +532,7 @@ public class XWikiExplorerView extends ViewPart implements IXWikiEclipseEventLis
          */
         Display.getDefault().asyncExec(new Runnable()
         {
+            @SuppressWarnings("unchecked")
             public void run()
             {
                 IXWikiSpace space;
@@ -515,8 +564,13 @@ public class XWikiExplorerView extends ViewPart implements IXWikiEclipseEventLis
                     case PAGE_UPDATED:
                         treeViewer.refresh(data);
                         treeViewer.setSelection(new StructuredSelection(data));
+                        break;                  
+                    case PAGES_GRABBED:
+                        Collection<IXWikiPage> xwikiPages = (Collection<IXWikiPage>) data;
+                        for(IXWikiPage xwikiPage : xwikiPages) {
+                            treeViewer.update(xwikiPage, null);
+                        }
                         break;
-
                 }
 
             }

@@ -27,5 +27,8 @@ public enum XWikiEclipseEvent
     SPACE_REMOVED,
 
     /* Data: {IXWikiSpace, IXWikiPage} */
-    PAGE_REMOVED
+    PAGE_REMOVED,
+    
+    /* Data: Collection<IXWikiPage> */
+    PAGES_GRABBED
 }

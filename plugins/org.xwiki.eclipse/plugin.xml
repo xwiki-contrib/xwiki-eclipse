@@ -123,6 +123,10 @@
             id="org.xwiki.xeclipse.command.OpenPage"
             name="Open page...">
       </command>
+      <command
+            id="org.xwiki.xeclipse.command.GrabSpace"
+            name="Grab space...">
+      </command>
    </extension>
    <extension
          name="NEW ADAPTERS"
