@@ -32,6 +32,8 @@ import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -41,6 +43,9 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
@@ -50,6 +55,8 @@ import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.forms.widgets.Form;
+import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.handlers.IHandlerActivation;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.menus.CommandContributionItem;
@@ -91,6 +98,8 @@ public class XWikiExplorerView extends ViewPart implements IXWikiEclipseEventLis
 
     private WorkingSet currentWorkingSet;
 
+    private Form form;
+
     private class SelectWorkingSetAction extends Action
     {
         private WorkingSet workingSet;
@@ -118,7 +127,12 @@ public class XWikiExplorerView extends ViewPart implements IXWikiEclipseEventLis
             currentWorkingSet = workingSet;
             treeViewer.resetFilters();
             if (workingSet != null) {
+                form.setText(workingSet.getName());
+                form.setMessage("(Working set visualization)");
                 treeViewer.addFilter(new WorkingSetFilter(workingSet));
+            } else {
+                form.setText(null);
+                form.setMessage(null);
             }
         }
 
@@ -127,7 +141,14 @@ public class XWikiExplorerView extends ViewPart implements IXWikiEclipseEventLis
     @Override
     public void createPartControl(Composite parent)
     {
-        treeViewer = new TreeViewer(parent, SWT.NONE);
+        FormToolkit toolkit = new FormToolkit(parent.getDisplay());
+        form = toolkit.createForm(parent);
+        toolkit.decorateFormHeading(form);
+        GridLayoutFactory.fillDefaults().applyTo(form.getBody());
+
+        treeViewer = new TreeViewer(form.getBody(), SWT.NONE);
+        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, true).applyTo(
+            treeViewer.getControl());
         treeViewer.setComparator(new ViewerComparator());
         treeViewer.setContentProvider(new XWikiExplorerContentProvider(treeViewer));
         treeViewer.setLabelProvider(new WorkbenchLabelProvider());
@@ -348,8 +369,8 @@ public class XWikiExplorerView extends ViewPart implements IXWikiEclipseEventLis
             this);
         XWikiEclipseNotificationCenter.getDefault().addListener(XWikiEclipseEvent.PAGE_UPDATED,
             this);
-        XWikiEclipseNotificationCenter.getDefault().addListener(
-            XWikiEclipseEvent.PAGES_GRABBED, this);
+        XWikiEclipseNotificationCenter.getDefault().addListener(XWikiEclipseEvent.PAGES_GRABBED,
+            this);
     }
 
     @Override
@@ -564,10 +585,10 @@ public class XWikiExplorerView extends ViewPart implements IXWikiEclipseEventLis
                     case PAGE_UPDATED:
                         treeViewer.refresh(data);
                         treeViewer.setSelection(new StructuredSelection(data));
-                        break;                  
+                        break;
                     case PAGES_GRABBED:
                         Collection<IXWikiPage> xwikiPages = (Collection<IXWikiPage>) data;
-                        for(IXWikiPage xwikiPage : xwikiPages) {
+                        for (IXWikiPage xwikiPage : xwikiPages) {
                             treeViewer.update(xwikiPage, null);
                         }
                         break;
