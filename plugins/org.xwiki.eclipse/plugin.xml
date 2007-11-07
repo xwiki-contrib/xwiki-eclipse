@@ -184,6 +184,11 @@
             id="org.xwiki.xeclipse.wizard.category.XWiki"
             name="XWiki">
       </category>
+      <wizard
+            class="org.xwiki.xeclipse.wizards.NewWorkingSetWizard"
+            id="WORKINGSET"
+            name="WorkingSet">
+      </wizard>
    </extension>
 
 </plugin>

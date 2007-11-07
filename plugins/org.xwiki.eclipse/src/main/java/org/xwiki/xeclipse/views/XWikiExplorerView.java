@@ -25,6 +25,9 @@ import org.eclipse.core.expressions.Expression;
 import org.eclipse.core.expressions.ExpressionInfo;
 import org.eclipse.core.expressions.IEvaluationContext;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.DoubleClickEvent;
@@ -38,6 +41,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.ISources;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchPage;
@@ -48,11 +52,16 @@ import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.menus.CommandContributionItem;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.eclipse.ui.part.ViewPart;
+import org.xwiki.plugins.eclipse.XWikiEclipsePlugin;
 import org.xwiki.xeclipse.IXWikiEclipseEventListener;
+import org.xwiki.xeclipse.WorkingSet;
+import org.xwiki.xeclipse.WorkingSetFilter;
+import org.xwiki.xeclipse.WorkingSetManager;
 import org.xwiki.xeclipse.XWikiConnectionManager;
 import org.xwiki.xeclipse.XWikiEclipseConstants;
 import org.xwiki.xeclipse.XWikiEclipseEvent;
 import org.xwiki.xeclipse.XWikiEclipseNotificationCenter;
+import org.xwiki.xeclipse.dialogs.ManageWorkingSetsDialog;
 import org.xwiki.xeclipse.editors.XWikiPageEditor;
 import org.xwiki.xeclipse.editors.XWikiPageEditorInput;
 import org.xwiki.xeclipse.handlers.ConnectHandler;
@@ -75,6 +84,41 @@ public class XWikiExplorerView extends ViewPart implements IXWikiEclipseEventLis
     private TreeViewer treeViewer;
 
     private IHandlerActivation deleteCommandActivation;
+
+    private WorkingSet currentWorkingSet;
+
+    private class SelectWorkingSetAction extends Action
+    {
+        private WorkingSet workingSet;
+
+        private TreeViewer treeViewer;
+
+        public SelectWorkingSetAction(WorkingSet workingSet, TreeViewer treeViewer)
+        {
+            super(null, Action.AS_CHECK_BOX);
+            setText(workingSet != null ? workingSet.getName() : "No working set");
+            setChecked(workingSet == currentWorkingSet);
+            this.workingSet = workingSet;
+            this.treeViewer = treeViewer;
+
+            if (workingSet != null) {
+                setImageDescriptor(XWikiEclipsePlugin
+                    .getImageDescriptor(XWikiEclipseConstants.WORKING_SET_ICON));
+            }
+
+        }
+
+        @Override
+        public void run()
+        {
+            currentWorkingSet = workingSet;
+            treeViewer.resetFilters();
+            if (workingSet != null) {
+                treeViewer.addFilter(new WorkingSetFilter(workingSet));
+            }
+        }
+
+    }
 
     @Override
     public void createPartControl(Composite parent)
@@ -115,7 +159,59 @@ public class XWikiExplorerView extends ViewPart implements IXWikiEclipseEventLis
             }
         });
 
+        contributeToActionBars();
         hookContextMenu();
+    }
+
+    private void contributeToActionBars()
+    {
+        IActionBars actionBars = getViewSite().getActionBars();
+        IMenuManager viewMenuManager = actionBars.getMenuManager();
+        MenuManager workingSetMenuManager = new MenuManager("Working sets", "workingSet");
+        workingSetMenuManager.add(new Action()
+        {
+        });
+        workingSetMenuManager.setRemoveAllWhenShown(true);
+        workingSetMenuManager.addMenuListener(new IMenuListener()
+        {
+            public void menuAboutToShow(IMenuManager manager)
+            {
+                manager.add(new SelectWorkingSetAction(null, treeViewer));
+
+                for (WorkingSet workingSet : WorkingSetManager.getDefault().getWorkingSets()) {
+
+                    manager.add(new SelectWorkingSetAction(workingSet, treeViewer));
+                }
+
+                manager.add(new Separator());
+
+                manager.add(new Action("Manage working sets...")
+                {
+                    @Override
+                    public void run()
+                    {
+                        ManageWorkingSetsDialog dialog =
+                            new ManageWorkingSetsDialog(getSite().getShell());
+                        dialog.open();
+
+                        /*
+                         * If the current working set has been deleted then set the current working
+                         * set to null
+                         */
+                        if (!WorkingSetManager.getDefault().getWorkingSets().contains(
+                            currentWorkingSet)) {
+                            currentWorkingSet = null;
+                            treeViewer.resetFilters();
+                        }
+                    }
+
+                });
+
+            }
+        });
+
+        viewMenuManager.add(workingSetMenuManager);
+
     }
 
     private void hookContextMenu()

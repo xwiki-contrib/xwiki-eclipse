@@ -79,7 +79,11 @@ public class NewConnectionWizard extends Wizard implements INewWizard
         }
         
         try {            
-            IXWikiConnection connection = XWikiConnectionFactory.createCachedConnection(newConnectionWizardState.getServerUrl(), newConnectionWizardState.getUserName(), new File(XWikiEclipsePlugin.getDefault().getStateLocation().toFile(), "cache"));
+            IXWikiConnection connection =
+                XWikiConnectionFactory
+                    .createCachedConnection(newConnectionWizardState.getServerUrl(),
+                        newConnectionWizardState.getUserName(), new File(XWikiEclipsePlugin
+                            .getDefault().getStateLocation().toFile(), "cache"));
             XWikiConnectionManager.getDefault().addConnection(connection, newConnectionWizardState.getPassword());
             connection.connect(newConnectionWizardState.getPassword());
         } catch (Exception e) {

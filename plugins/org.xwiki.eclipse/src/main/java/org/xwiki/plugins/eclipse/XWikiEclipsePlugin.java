@@ -39,6 +39,9 @@ public class XWikiEclipsePlugin extends AbstractUIPlugin
      * The plugin ID.
      */
     public static final String PLUGIN_ID = "org.xwiki.eclipse";
+    
+    public static final String CONNECTIONS_FILE_NAME = "connections.data";
+    public static final String WORKINGSETS_FILE_NAME = "workingsets.data";
 
     /**
      * The shared instance.
@@ -61,9 +64,14 @@ public class XWikiEclipsePlugin extends AbstractUIPlugin
     public void start(BundleContext context) throws Exception
     {        
         super.start(context);
-        File connections = new File(getStateLocation().toFile(), "connections.data");
-        if(connections.exists()) {
-            org.xwiki.xeclipse.XWikiConnectionManager.getDefault().restoreConnections(connections);
+        File connectionsFile = new File(getStateLocation().toFile(), CONNECTIONS_FILE_NAME);
+        if(connectionsFile.exists()) {
+            org.xwiki.xeclipse.XWikiConnectionManager.getDefault().restoreConnections(connectionsFile);
+        }
+        
+        File workingSetsFile = new File(getStateLocation().toFile(), WORKINGSETS_FILE_NAME);
+        if(workingSetsFile.exists()) {
+            org.xwiki.xeclipse.WorkingSetManager.getDefault().restoreWorkingSets(workingSetsFile);
         }
     }
 
@@ -82,9 +90,12 @@ public class XWikiEclipsePlugin extends AbstractUIPlugin
             }
         }
         
-        File connections = new File(getStateLocation().toFile(), "connections.data");
+        File connections = new File(getStateLocation().toFile(), CONNECTIONS_FILE_NAME);
         org.xwiki.xeclipse.XWikiConnectionManager.getDefault().saveConnections(connections);
         org.xwiki.xeclipse.XWikiConnectionManager.getDefault().dispose();
+        
+        File workingSetsFile = new File(getStateLocation().toFile(), WORKINGSETS_FILE_NAME);
+        org.xwiki.xeclipse.WorkingSetManager.getDefault().saveWorkingSets(workingSetsFile);
         
         plugin = null;
         super.stop(context);

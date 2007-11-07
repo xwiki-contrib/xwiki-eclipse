@@ -23,7 +23,7 @@ package org.xwiki.xeclipse.wizards;
 public class NewPageWizardState
 {
     private String title;
-                
+
     public String getTitle()
     {
         return title;
