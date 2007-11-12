@@ -40,9 +40,7 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
         <configuration>
-          <outputDirectory>
-            ${basedir}/buildConfiguration
-          </outputDirectory>
+          <outputDirectory>${basedir}/buildConfiguration</outputDirectory>
         </configuration>
         <executions>
           <execution>
@@ -82,12 +80,8 @@
                  </activeProfiles>
                </profilesXml>
            -->
-          <eclipseInstall>
-            ${eclipseInstall}
-          </eclipseInstall>
-          <pdeProductFilename>
-            org.xwiki.xeclipse.product
-          </pdeProductFilename>
+          <eclipseInstall>${eclipseInstall}</eclipseInstall>
+          <pdeProductFilename>org.xwiki.xeclipse.product</pdeProductFilename>
           <pdeBuildVersion>${pdeBuildVersion}</pdeBuildVersion>
         </configuration>
         <executions>
