@@ -61,8 +61,11 @@
             <javacSource>1.5</javacSource>
             <javacTarget>1.5</javacTarget>
           </buildProperties>
-          <!-- You must provide a profiles.xml file containing the value of eclipseInstall and pdeBuildVersion, or set them up in your
-               settings.xml or pass them on the command line.
+          <!-- You must provide a profiles.xml file containing the value of eclipseInstall and pdeBuildVersion,
+               or set them up in your settings.xml or pass them on the command line.
+               To obtain the pdeBuildVersion by finding the version in
+               $eclipseInstall/plugins/org.eclipse.pde.build_pdeBuildVersion.
+
                For example, create the following profiles.xml file next to this pom.xml file:
                
                <profilesXml>
@@ -71,7 +74,7 @@
                      <id>vmassol</id>
                      <properties>
                        <eclipseInstall>/Applications/eclipse-europa-pde/</eclipseInstall>
-                       <pdeBuildVersion>3.3.1.v20070828</pdeBuildVersion>
+                       <pdeBuildVersion>3.3.2.R331_v20071019</pdeBuildVersion>
                      </properties>
                    </profile>
                  </profiles>
