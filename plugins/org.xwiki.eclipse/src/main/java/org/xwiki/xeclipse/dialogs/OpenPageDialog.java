@@ -30,6 +30,7 @@ import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.IDecorationContext;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.LabelDecorator;
+import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -44,7 +45,6 @@ public class OpenPageDialog extends FilteredItemsSelectionDialog
 {
     private static class SelectionLabelDecorator extends LabelDecorator
     {
-
         @Override
         public Image decorateImage(Image image, Object element, IDecorationContext context)
         {
@@ -109,11 +109,38 @@ public class OpenPageDialog extends FilteredItemsSelectionDialog
 
     }
 
+    private static class OpenPageLabelProvider extends LabelProvider
+    {
+        WorkbenchLabelProvider workbenchLabelProvider;
+
+        public OpenPageLabelProvider(WorkbenchLabelProvider workbenchLabelProvider)
+        {
+            this.workbenchLabelProvider = workbenchLabelProvider;
+        }
+
+        @Override
+        public String getText(Object element)
+        {
+            if (element instanceof IXWikiPage) {
+                IXWikiPage xwikiPage = (IXWikiPage) element;
+                return String.format("%s (%s)", xwikiPage.getTitle(), xwikiPage.getSpaceKey());
+            }
+
+            return super.getText(element);
+        }
+
+        @Override
+        public Image getImage(Object element)
+        {
+            return workbenchLabelProvider.getImage(element);
+        }
+    }
+
     public OpenPageDialog(Shell shell)
     {
         super(shell);
         setTitle("Open page");
-        setListLabelProvider(new WorkbenchLabelProvider());
+        setListLabelProvider(new OpenPageLabelProvider(new WorkbenchLabelProvider()));
         setListSelectionLabelDecorator(new SelectionLabelDecorator());
         setDetailsLabelProvider(new WorkbenchLabelProvider());
     }
