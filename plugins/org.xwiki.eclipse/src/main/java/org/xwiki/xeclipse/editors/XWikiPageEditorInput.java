@@ -28,18 +28,19 @@ import org.xwiki.xeclipse.model.IXWikiPage;
 public class XWikiPageEditorInput implements IEditorInput
 {
     private IXWikiPage xwikiPage;
-    
-    public XWikiPageEditorInput(IXWikiPage page) {
+
+    public XWikiPageEditorInput(IXWikiPage page)
+    {
         this.xwikiPage = page;
     }
-    
+
     public boolean exists()
-    { 
+    {
         return false;
     }
 
     public ImageDescriptor getImageDescriptor()
-    {      
+    {
         return null;
     }
 
@@ -67,31 +68,32 @@ public class XWikiPageEditorInput implements IEditorInput
     @Override
     public boolean equals(Object obj)
     {
-        if(super.equals(obj)) {
+        if (super.equals(obj)) {
             return true;
         }
-        
-        if(!(obj instanceof XWikiPageEditorInput)) {
+
+        if (!(obj instanceof XWikiPageEditorInput)) {
             return false;
         }
-        
+
         XWikiPageEditorInput other = (XWikiPageEditorInput) obj;
-        
+
         return xwikiPage.getId().equals(other.xwikiPage.getId());
     }
 
     @Override
     public int hashCode()
     {
-        return xwikiPage.getId().hashCode();        
+        return xwikiPage.getId().hashCode();
     }
 
     public IXWikiPage getXWikiPage()
     {
         return xwikiPage;
-    }    
-    
-    public void setXWikiPage(IXWikiPage xwikiPage) {
+    }
+
+    public void setXWikiPage(IXWikiPage xwikiPage)
+    {
         this.xwikiPage = xwikiPage;
     }
 }

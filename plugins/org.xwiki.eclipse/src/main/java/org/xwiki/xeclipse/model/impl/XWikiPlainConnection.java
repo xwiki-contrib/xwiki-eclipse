@@ -174,7 +174,8 @@ public class XWikiPlainConnection extends AbstractXWikiConnection
 
             if (pageSummaries != null) {
                 for (PageSummary pageSummary : pageSummaries) {
-                    result.add(new XWikiPage(this, pageSummary.getId(), space, pageSummary.toMap()));
+                    result.add(new XWikiPage(this, pageSummary.getId(), space, pageSummary
+                        .toMap()));
                 }
             }
         } catch (Exception e) {
@@ -190,7 +191,9 @@ public class XWikiPlainConnection extends AbstractXWikiConnection
 
         Page page = getRawPage(pageId);
         Space space = getRawSpace(page.getSpace());
-        return page != null ? new XWikiPage(this, pageId, new XWikiSpace(this, space.getKey(), space.toMap()), page.toMap()) : null;
+        return page != null ? new XWikiPage(this, pageId, new XWikiSpace(this,
+            space.getKey(),
+            space.toMap()), page.toMap()) : null;
     }
 
     /**
@@ -353,7 +356,7 @@ public class XWikiPlainConnection extends AbstractXWikiConnection
             throw new XWikiConnectionException(e);
         }
     }
-    
+
     /**
      * {@inheritDoc}
      * 

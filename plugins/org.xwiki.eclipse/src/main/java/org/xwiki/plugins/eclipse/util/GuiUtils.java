@@ -95,7 +95,7 @@ public class GuiUtils
             Display.getDefault().asyncExec(runner);
         }
     }
-    
+
     /**
      * A utility method for reporting Warnings.
      * 

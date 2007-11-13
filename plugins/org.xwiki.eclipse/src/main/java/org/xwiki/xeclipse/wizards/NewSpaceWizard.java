@@ -32,8 +32,9 @@ import org.eclipse.ui.IWorkbench;
 import org.xwiki.xeclipse.model.IXWikiConnection;
 
 public class NewSpaceWizard extends Wizard implements INewWizard
-{    
+{
     private NewSpaceWizardState newSpaceWizardState;
+
     private IXWikiConnection xwikiConnection;
 
     public NewSpaceWizard(IXWikiConnection xwikiConnection)
@@ -56,7 +57,8 @@ public class NewSpaceWizard extends Wizard implements INewWizard
                     try {
                         monitor.beginTask("Creating space...", IProgressMonitor.UNKNOWN);
                         String spaceKey = newSpaceWizardState.getName().trim().replace(' ', '_');
-                        xwikiConnection.createSpace(spaceKey, newSpaceWizardState.getName(), newSpaceWizardState.getDescription());                        
+                        xwikiConnection.createSpace(spaceKey, newSpaceWizardState.getName(),
+                            newSpaceWizardState.getDescription());
                         monitor.done();
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -66,12 +68,11 @@ public class NewSpaceWizard extends Wizard implements INewWizard
             });
         } catch (Exception e) {
             WizardPage currentPage = (WizardPage) getContainer().getCurrentPage();
-            currentPage
-                .setErrorMessage("Error creating remote space.");
-            
+            currentPage.setErrorMessage("Error creating remote space.");
+
             return false;
         }
-                
+
         return true;
     }
 
@@ -88,15 +89,16 @@ public class NewSpaceWizard extends Wizard implements INewWizard
 
     @Override
     public boolean canFinish()
-    {                
-        if(newSpaceWizardState.getName() == null || newSpaceWizardState.getName().length() == 0) {
+    {
+        if (newSpaceWizardState.getName() == null || newSpaceWizardState.getName().length() == 0) {
             return false;
         }
-        
-        if(newSpaceWizardState.getDescription() == null || newSpaceWizardState.getDescription().length() == 0) {
+
+        if (newSpaceWizardState.getDescription() == null
+            || newSpaceWizardState.getDescription().length() == 0) {
             return false;
         }
-            
+
         return true;
     }
 

@@ -29,20 +29,18 @@ import org.xwiki.xeclipse.WorkingSetManager;
 public class NewWorkingSetWizard extends Wizard implements INewWizard
 {
     private NewWorkingSetWizardState newWorkingSetWizardState;
-    
+
     public NewWorkingSetWizard()
     {
         super();
         newWorkingSetWizardState = new NewWorkingSetWizardState();
     }
 
-    
-    
     @Override
     public boolean performFinish()
     {
         WorkingSetManager.getDefault().add(newWorkingSetWizardState.getWorkingSet());
-        
+
         return true;
     }
 
@@ -55,10 +53,11 @@ public class NewWorkingSetWizard extends Wizard implements INewWizard
     @Override
     public boolean canFinish()
     {
-        if(newWorkingSetWizardState.getWorkingSet().getName() == null || newWorkingSetWizardState.getWorkingSet().getName().length() == 0) {
+        if (newWorkingSetWizardState.getWorkingSet().getName() == null
+            || newWorkingSetWizardState.getWorkingSet().getName().length() == 0) {
             return false;
         }
-        
+
         return true;
     }
 

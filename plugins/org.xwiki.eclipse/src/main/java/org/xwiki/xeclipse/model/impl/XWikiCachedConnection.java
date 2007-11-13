@@ -344,7 +344,8 @@ public class XWikiCachedConnection extends AbstractXWikiConnection implements Se
 
             if (pageSummaries != null) {
                 for (PageSummary pageSummary : pageSummaries) {
-                    result.add(new XWikiPage(this, pageSummary.getId(), space, pageSummary.toMap()));
+                    result.add(new XWikiPage(this, pageSummary.getId(), space, pageSummary
+                        .toMap()));
                 }
             }
         } catch (Exception e) {
@@ -360,7 +361,9 @@ public class XWikiCachedConnection extends AbstractXWikiConnection implements Se
 
         Page page = getRawPage(pageId);
         Space space = getRawSpace(page.getSpace());
-        return page != null ? new XWikiPage(this, pageId, new XWikiSpace(this, space.getKey(), space.toMap()), page.toMap()) : null;
+        return page != null ? new XWikiPage(this, pageId, new XWikiSpace(this,
+            space.getKey(),
+            space.toMap()), page.toMap()) : null;
     }
 
     /**
@@ -531,7 +534,8 @@ public class XWikiCachedConnection extends AbstractXWikiConnection implements Se
             try {
                 Page page = remoteDAO.createPage(space.getKey(), name, content);
                 XWikiEclipseNotificationCenter.getDefault().fireEvent(this,
-                    XWikiEclipseEvent.PAGE_CREATED, new Object[] {space, new XWikiPage(this, page.getId(), space, page.toMap())});
+                    XWikiEclipseEvent.PAGE_CREATED,
+                    new Object[] {space, new XWikiPage(this, page.getId(), space, page.toMap())});
                 return new XWikiPage(this, page.getId(), space, page.toMap());
             } catch (XWikiDAOException e) {
                 e.printStackTrace();
@@ -550,7 +554,7 @@ public class XWikiCachedConnection extends AbstractXWikiConnection implements Se
             }
 
             cacheDAO.removePage(page.getId());
-            
+
             XWikiEclipseNotificationCenter.getDefault().fireEvent(this,
                 XWikiEclipseEvent.PAGE_REMOVED, new Object[] {page.getSpace(), page});
         } catch (XWikiDAOException e) {
@@ -568,7 +572,7 @@ public class XWikiCachedConnection extends AbstractXWikiConnection implements Se
             }
 
             cacheDAO.removeSpace(space.getKey());
-            
+
             XWikiEclipseNotificationCenter.getDefault().fireEvent(this,
                 XWikiEclipseEvent.SPACE_REMOVED, this);
         } catch (XWikiDAOException e) {
@@ -576,7 +580,6 @@ public class XWikiCachedConnection extends AbstractXWikiConnection implements Se
             throw new XWikiConnectionException(e);
         }
 
-        
     }
 
     /**

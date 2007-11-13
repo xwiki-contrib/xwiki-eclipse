@@ -61,7 +61,8 @@ public class RemoveConnectionHandler extends AbstractHandler
 
             } catch (XWikiConnectionException e) {
                 e.printStackTrace();
-                MessageDialog.openError(HandlerUtil.getActiveShell(event), "Error", e.getMessage());
+                MessageDialog.openError(HandlerUtil.getActiveShell(event), "Error", e
+                    .getMessage());
             }
 
         }

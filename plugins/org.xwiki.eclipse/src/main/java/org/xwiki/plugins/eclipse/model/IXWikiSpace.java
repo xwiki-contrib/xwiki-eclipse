@@ -44,10 +44,10 @@ public interface IXWikiSpace extends ICacheable
     /**
      * Grabs all the pages under this space into a local store.
      * 
-     * @throws SwizzleConfluenceException Communication errors 
+     * @throws SwizzleConfluenceException Communication errors
      */
     public void grab() throws SwizzleConfluenceException;
-    
+
     /**
      * @return Key of this space.
      */
@@ -120,14 +120,15 @@ public interface IXWikiSpace extends ICacheable
     /**
      * @return True if operating off-line.
      */
-    public boolean isOffline();     
-    
+    public boolean isOffline();
+
     /**
      * Synchronizes this space with the back-end.
+     * 
      * @return TODO
      */
     public boolean synchronize(SpaceSummary newSummary) throws SwizzleConfluenceException;
-    
+
     /**
      * @return Parent IXWikiConnection which retrieved this space.
      */

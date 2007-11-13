@@ -56,39 +56,44 @@ public class ConnectHandler extends AbstractHandler
                         xwikiConnection.getId());
                 if (password == null) {
                     InputDialog inputDialog =
-                        new InputDialog(HandlerUtil.getActiveShell(event),
-                            "Password",
-                            String.format("Password for %s@%s:", xwikiConnection.getUserName(), xwikiConnection.getServerUrl()),
-                            null,
-                            null);
+                        new InputDialog(HandlerUtil.getActiveShell(event), "Password", String
+                            .format("Password for %s@%s:", xwikiConnection.getUserName(),
+                                xwikiConnection.getServerUrl()), null, null);
                     inputDialog.open();
                     password = inputDialog.getValue();
                 }
-                
+
                 final String actualPassword = password;
 
-                XWikiEclipseUtil.runOperationWithProgress(new IRunnableWithProgress() {
+                XWikiEclipseUtil.runOperationWithProgress(new IRunnableWithProgress()
+                {
                     public void run(IProgressMonitor monitor) throws InvocationTargetException,
                         InterruptedException
                     {
                         monitor.beginTask("Connecting...", IProgressMonitor.UNKNOWN);
                         try {
                             xwikiConnection.connect(actualPassword);
-                        } catch (XWikiConnectionException e) {                         
-                            e.printStackTrace();                            
-                            throw new InvocationTargetException(e, String.format("Cannot connect to %s\n%s", xwikiConnection.getServerUrl(), e.getMessage()));
-                        }                        
+                        } catch (XWikiConnectionException e) {
+                            e.printStackTrace();
+                            throw new InvocationTargetException(e, String.format(
+                                "Cannot connect to %s\n%s", xwikiConnection.getServerUrl(), e
+                                    .getMessage()));
+                        }
                         monitor.done();
                     }
-                    
+
                 }, HandlerUtil.getActiveShell(event));
-                
-                XWikiEclipseUtil.closeReopenEditorsForConnection(HandlerUtil.getActiveWorkbenchWindow(event).getActivePage(),
-                    xwikiConnection);
-                
+
+                // XWikiEclipseUtil.closeReopenEditorsForConnection(HandlerUtil.getActiveWorkbenchWindow(event).getActivePage(),
+                // xwikiConnection);
+
+                XWikiEclipseUtil.updateEditors(HandlerUtil.getActiveWorkbenchWindow(event)
+                    .getActivePage(), xwikiConnection);
+
             } catch (InvocationTargetException e) {
                 e.printStackTrace();
-                MessageDialog.openError(HandlerUtil.getActiveShell(event), "Error", e.getMessage());
+                MessageDialog.openError(HandlerUtil.getActiveShell(event), "Error", e
+                    .getMessage());
             } catch (InterruptedException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();

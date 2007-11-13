@@ -39,8 +39,9 @@ public class XWikiEclipsePlugin extends AbstractUIPlugin
      * The plugin ID.
      */
     public static final String PLUGIN_ID = "org.xwiki.eclipse";
-    
+
     public static final String CONNECTIONS_FILE_NAME = "connections.data";
+
     public static final String WORKINGSETS_FILE_NAME = "workingsets.data";
 
     /**
@@ -62,15 +63,16 @@ public class XWikiEclipsePlugin extends AbstractUIPlugin
      * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
      */
     public void start(BundleContext context) throws Exception
-    {        
+    {
         super.start(context);
         File connectionsFile = new File(getStateLocation().toFile(), CONNECTIONS_FILE_NAME);
-        if(connectionsFile.exists()) {
-            org.xwiki.xeclipse.XWikiConnectionManager.getDefault().restoreConnections(connectionsFile);
+        if (connectionsFile.exists()) {
+            org.xwiki.xeclipse.XWikiConnectionManager.getDefault().restoreConnections(
+                connectionsFile);
         }
-        
+
         File workingSetsFile = new File(getStateLocation().toFile(), WORKINGSETS_FILE_NAME);
-        if(workingSetsFile.exists()) {
+        if (workingSetsFile.exists()) {
             org.xwiki.xeclipse.WorkingSetManager.getDefault().restoreWorkingSets(workingSetsFile);
         }
     }
@@ -89,14 +91,14 @@ public class XWikiEclipsePlugin extends AbstractUIPlugin
                 // Nothing to do.
             }
         }
-        
+
         File connections = new File(getStateLocation().toFile(), CONNECTIONS_FILE_NAME);
         org.xwiki.xeclipse.XWikiConnectionManager.getDefault().saveConnections(connections);
         org.xwiki.xeclipse.XWikiConnectionManager.getDefault().dispose();
-        
+
         File workingSetsFile = new File(getStateLocation().toFile(), WORKINGSETS_FILE_NAME);
         org.xwiki.xeclipse.WorkingSetManager.getDefault().saveWorkingSets(workingSetsFile);
-        
+
         plugin = null;
         super.stop(context);
     }
@@ -114,7 +116,7 @@ public class XWikiEclipsePlugin extends AbstractUIPlugin
      * @return An image descriptor for the image file at the given plug-in relative path.
      */
     public static ImageDescriptor getImageDescriptor(String path)
-    {        
+    {
         return imageDescriptorFromPlugin(PLUGIN_ID, path);
     }
 }

@@ -29,7 +29,7 @@ import org.xwiki.xeclipse.XWikiConnectionManager;
 public class XWikiExplorerContentProvider implements ITreeContentProvider
 {
     private DeferredTreeContentManager manager;
-    
+
     public XWikiExplorerContentProvider(TreeViewer treeViewer)
     {
         manager = new DeferredTreeContentManager(this, treeViewer);
@@ -52,21 +52,20 @@ public class XWikiExplorerContentProvider implements ITreeContentProvider
     }
 
     public Object[] getElements(Object inputElement)
-    { 
+    {
         return XWikiConnectionManager.getDefault().getConnections().toArray();
     }
 
     public void dispose()
     {
         // TODO Auto-generated method stub
-        
+
     }
 
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput)
     {
         // TODO Auto-generated method stub
-        
-    }
 
+    }
 
 }

@@ -142,7 +142,7 @@ public class XWikiConnectionManager implements IXWikiConnectionManager
     {
         connections.add(connection);
     }
-    
+
     /**
      * {@inheritDoc}
      * 
@@ -150,19 +150,22 @@ public class XWikiConnectionManager implements IXWikiConnectionManager
      */
     public void restoreAllConnections() throws IOException, ClassNotFoundException
     {
-        Map<IPath, ICacheable> connections = CacheUtils.readCache(CacheUtils.getMasterCacheDirectory().toFile());
+        Map<IPath, ICacheable> connections =
+            CacheUtils.readCache(CacheUtils.getMasterCacheDirectory().toFile());
         Set<IPath> connectionsKeySet = connections.keySet();
         for (IPath connectionCachePath : connectionsKeySet) {
             XWikiConnection connection = (XWikiConnection) (connections.get(connectionCachePath));
             connection.setCachePath(connectionCachePath);
-            Map<IPath, ICacheable> spaces = CacheUtils.readCache(connection.getCachePath().toFile());
+            Map<IPath, ICacheable> spaces =
+                CacheUtils.readCache(connection.getCachePath().toFile());
             HashMap<String, IXWikiSpace> spacesByKey = new HashMap<String, IXWikiSpace>();
             Set<IPath> spacesKeySet = spaces.keySet();
             for (IPath spaceCachepath : spacesKeySet) {
                 XWikiSpace space = (XWikiSpace) (spaces.get(spaceCachepath));
                 space.setCachePath(spaceCachepath);
                 spacesByKey.put(space.getKey(), space);
-                Map<IPath, ICacheable> pages = CacheUtils.readCache(space.getCachePath().toFile());
+                Map<IPath, ICacheable> pages =
+                    CacheUtils.readCache(space.getCachePath().toFile());
                 HashMap<String, IXWikiPage> pagesByID = new HashMap<String, IXWikiPage>();
                 Set<IPath> pagesKeySet = pages.keySet();
                 for (IPath pageCachePath : pagesKeySet) {
@@ -171,11 +174,11 @@ public class XWikiConnectionManager implements IXWikiConnectionManager
                     page.setSpace(space);
                     pagesByID.put(page.getId(), page);
                 }
-                space.setConnection(connection);      
+                space.setConnection(connection);
                 space.setPages(pagesByID);
             }
-            connection.setSpaces(spacesByKey);   
+            connection.setSpaces(spacesByKey);
             addConnection(connection);
-        }        
-    }    
+        }
+    }
 }

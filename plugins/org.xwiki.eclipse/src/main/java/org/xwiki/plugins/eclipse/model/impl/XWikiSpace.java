@@ -305,7 +305,7 @@ public class XWikiSpace implements IXWikiSpace, TreeAdapter
      * {@inheritDoc}
      * 
      * @see org.xwiki.plugins.eclipse.model.IXWikiSpace#grab()
-     */    
+     */
     public void grab() throws SwizzleConfluenceException
     {
         init();
@@ -321,9 +321,9 @@ public class XWikiSpace implements IXWikiSpace, TreeAdapter
      */
     public boolean synchronize(SpaceSummary newSummary) throws SwizzleConfluenceException
     {
-    	boolean success = false;
+        boolean success = false;
         if (!isOffline()) {
-        	success = true;
+            success = true;
             this.summary = newSummary;
             if (isDataReady()) {
                 this.space = getConnection().getRpcProxy().getSpace(getKey());
@@ -342,7 +342,9 @@ public class XWikiSpace implements IXWikiSpace, TreeAdapter
                 // Synchronize each cached page.
                 for (String cacheKey : cacheKeySet) {
                     if (newKeySet.contains(cacheKey)) {
-                        success = pagesByID.get(cacheKey).synchronize(newPageSummaries.get(cacheKey)) ? success : false;
+                        success =
+                            pagesByID.get(cacheKey).synchronize(newPageSummaries.get(cacheKey))
+                                ? success : false;
                     } else {
                         // For now, we'll simply get rid of the missing page.
                         CacheUtils.clearCache(pagesByID.get(cacheKey));

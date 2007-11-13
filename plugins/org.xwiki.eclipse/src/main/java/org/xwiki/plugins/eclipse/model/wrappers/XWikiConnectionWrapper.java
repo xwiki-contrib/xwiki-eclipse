@@ -134,7 +134,7 @@ public class XWikiConnectionWrapper implements IXWikiConnection
      */
     public boolean synchronize() throws SwizzleConfluenceException
     {
-    	boolean success = false;
+        boolean success = false;
         if (isOffline()) {
             XWikiProgressRunner operation = new XWikiProgressRunner()
             {
@@ -156,9 +156,10 @@ public class XWikiConnectionWrapper implements IXWikiConnection
             if (operation.getComEx() != null) {
                 throw operation.getComEx();
             }
-            success = ((Boolean)operation.getArtifact()).booleanValue();
+            success = ((Boolean) operation.getArtifact()).booleanValue();
             if (!success) {
-            	GuiUtils.reportWarning(true, "Sync Failiure", "Some pages could not be commited, Expired Local Copy.");
+                GuiUtils.reportWarning(true, "Sync Failiure",
+                    "Some pages could not be commited, Expired Local Copy.");
             }
         }
         return success;
@@ -219,7 +220,7 @@ public class XWikiConnectionWrapper implements IXWikiConnection
     {
         return connection.getId();
     }
-    
+
     /**
      * {@inheritDoc}
      * 

@@ -185,7 +185,7 @@ public class XWikiSpace implements IXWikiSpace
     public void remove() throws XWikiConnectionException
     {
         connection.removeSpace(this);
-        
+
     }
 
 }

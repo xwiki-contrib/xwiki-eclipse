@@ -30,13 +30,24 @@ import org.codehaus.swizzle.confluence.SpaceSummary;
 public interface IXWikiDAO
 {
     public List<SpaceSummary> getSpaces() throws XWikiDAOException;
+
     public Space getSpace(String key) throws XWikiDAOException;
+
     public List<PageSummary> getPages(String spaceKey) throws XWikiDAOException;
+
     public Page getPage(String id) throws XWikiDAOException;
+
     public void storePage(Page page) throws XWikiDAOException;
+
     public void close() throws XWikiDAOException;
-    public Space createSpace(String key, String name, String description) throws XWikiDAOException;
-    public Page createPage(String spaceKey, String title, String content) throws XWikiDAOException;
+
+    public Space createSpace(String key, String name, String description)
+        throws XWikiDAOException;
+
+    public Page createPage(String spaceKey, String title, String content)
+        throws XWikiDAOException;
+
     public void removeSpace(String key) throws XWikiDAOException;
-    public void removePage(String id) throws XWikiDAOException;    
+
+    public void removePage(String id) throws XWikiDAOException;
 }

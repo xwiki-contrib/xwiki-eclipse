@@ -36,11 +36,12 @@ public class XWikiPage implements IXWikiPage
     private String id;
 
     private Page page;
-    
+
     private IXWikiSpace space;
 
     @SuppressWarnings("unchecked")
-    public XWikiPage(AbstractXWikiConnection connection, String id, IXWikiSpace space, Map properties)
+    public XWikiPage(AbstractXWikiConnection connection, String id, IXWikiSpace space,
+        Map properties)
     {
         this.connection = connection;
         this.id = id;
@@ -264,8 +265,9 @@ public class XWikiPage implements IXWikiPage
     {
         return space;
     }
-    
-    public void remove() throws XWikiConnectionException {
+
+    public void remove() throws XWikiConnectionException
+    {
         connection.removePage(this);
     }
 }

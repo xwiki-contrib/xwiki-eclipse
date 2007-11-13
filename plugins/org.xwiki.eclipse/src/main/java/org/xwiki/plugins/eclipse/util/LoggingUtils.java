@@ -27,12 +27,14 @@ package org.xwiki.plugins.eclipse.util;
 public class LoggingUtils
 {
     // Infos
-    public static void info(String message) {
+    public static void info(String message)
+    {
         System.out.println("[INFO] : " + message);
     }
-    
+
     // Errors
-    public static void error(String message) {
+    public static void error(String message)
+    {
         System.out.println("[ERROR] : " + message);
     }
 }

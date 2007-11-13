@@ -121,7 +121,7 @@ public class XWikiConnectionManagerWrapper implements IXWikiConnectionManager
     public void restoreAllConnections() throws IOException, ClassNotFoundException
     {
         XWikiProgressRunner operation = new XWikiProgressRunner()
-        {            
+        {
             public void run(IProgressMonitor monitor) throws InvocationTargetException,
                 InterruptedException
             {
@@ -138,6 +138,6 @@ public class XWikiConnectionManagerWrapper implements IXWikiConnectionManager
                 }
             }
         };
-        GuiUtils.runOperationWithProgress(operation, null);        
-    }    
+        GuiUtils.runOperationWithProgress(operation, null);
+    }
 }

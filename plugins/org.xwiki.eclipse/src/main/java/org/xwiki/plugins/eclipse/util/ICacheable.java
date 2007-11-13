@@ -5,8 +5,8 @@ import java.io.Serializable;
 import org.eclipse.core.runtime.IPath;
 
 /**
- * All model objects extend this class (XWikiPage, XWikiSpace and XWikiConnection)
- * Handles local-cache management.
+ * All model objects extend this class (XWikiPage, XWikiSpace and XWikiConnection) Handles
+ * local-cache management.
  */
 public interface ICacheable extends Serializable
 {
@@ -15,10 +15,10 @@ public interface ICacheable extends Serializable
      * 
      */
     public IPath getCachePath();
-    
+
     /**
      * @return Whether we're online or not
      */
     public boolean isOffline();
-        
+
 }

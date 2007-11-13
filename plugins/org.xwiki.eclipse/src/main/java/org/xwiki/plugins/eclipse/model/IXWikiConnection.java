@@ -60,7 +60,7 @@ public interface IXWikiConnection extends ICacheable
      * @return A Unique id for this connection
      */
     public String getId();
-    
+
     /**
      * Retrieves and returns all available spaces.
      * 
@@ -80,7 +80,7 @@ public interface IXWikiConnection extends ICacheable
      * Removes all cached information stored in the local cache.
      */
     public void clearCache();
-    
+
     /**
      * @param spaceKey Key of the space.
      * @return The space with corresponding key or null if no such space exists.
@@ -101,13 +101,14 @@ public interface IXWikiConnection extends ICacheable
      * @return True if operating off-line.
      */
     public boolean isOffline();
-    
+
     /**
      * Re-connects (+ synchronizes) this connection with the back-end.
+     * 
      * @return TODO
      */
     public boolean synchronize() throws SwizzleConfluenceException;
-    
+
     /**
      * Adds a new space to this connection with given parameters (minimal).
      * 

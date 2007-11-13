@@ -85,9 +85,8 @@ public class XWikiConnectionAdapter implements IDeferredWorkbenchAdapter, IWorkb
         if (object instanceof IXWikiConnection) {
             IXWikiConnection xwikiConnection = (IXWikiConnection) object;
 
-            return String
-                .format("%s@%s", xwikiConnection.getUserName(),
-                    xwikiConnection.getServerUrl());
+            return String.format("%s@%s", xwikiConnection.getUserName(), xwikiConnection
+                .getServerUrl());
         }
 
         return null;

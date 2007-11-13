@@ -28,16 +28,19 @@ public class XWikiConnectionException extends Exception
     {
         super();
     }
-    
-    public XWikiConnectionException(String message) {
+
+    public XWikiConnectionException(String message)
+    {
         super(message);
     }
-    
-    public XWikiConnectionException(Throwable throwable) {
+
+    public XWikiConnectionException(Throwable throwable)
+    {
         super(throwable);
     }
-    
-    public XWikiConnectionException(String message, Throwable throwable) {
+
+    public XWikiConnectionException(String message, Throwable throwable)
+    {
         super(message, throwable);
     }
 }

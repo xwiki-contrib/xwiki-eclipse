@@ -36,17 +36,17 @@ public class AdapterFactory implements IAdapterFactory
      * The adapter for XWiki connections.
      */
     private IDeferredWorkbenchAdapter xwikiConnectionAdapter = new XWikiConnectionAdapter();
-    
+
     /**
      * The adapter for XWiki spaces.
      */
     private IDeferredWorkbenchAdapter xwikiSpaceAdapter = new XWikiSpaceAdapter();
-    
+
     /**
      * The adapter for XWiki pages.
      */
     private IWorkbenchAdapter xwikiPageAdapter = new XWikiPageAdapter();
-    
+
     /**
      * {@inheritDoc}
      * 
@@ -55,21 +55,18 @@ public class AdapterFactory implements IAdapterFactory
     @SuppressWarnings("unchecked")
     public Object getAdapter(Object adaptableObject, Class adapterType)
     {
-        if (adapterType == IWorkbenchAdapter.class
-            && adaptableObject instanceof IXWikiConnection) {
+        if (adapterType == IWorkbenchAdapter.class && adaptableObject instanceof IXWikiConnection) {
             return xwikiConnectionAdapter;
         }
-        
-        if (adapterType == IWorkbenchAdapter.class
-            && adaptableObject instanceof IXWikiSpace) {
+
+        if (adapterType == IWorkbenchAdapter.class && adaptableObject instanceof IXWikiSpace) {
             return xwikiSpaceAdapter;
         }
-        
-        if (adapterType == IWorkbenchAdapter.class
-            && adaptableObject instanceof IXWikiPage) {
+
+        if (adapterType == IWorkbenchAdapter.class && adaptableObject instanceof IXWikiPage) {
             return xwikiPageAdapter;
         }
-        
+
         return null;
     }
 

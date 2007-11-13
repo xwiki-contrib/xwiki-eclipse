@@ -41,17 +41,20 @@ public class DisconnectHandler extends AbstractHandler
 
         if (selectedObject instanceof IXWikiConnection) {
             IXWikiConnection xwikiConnection = (IXWikiConnection) selectedObject;
-            
+
             try {
                 xwikiConnection.disconnect();
             } catch (XWikiConnectionException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
-            
-            XWikiEclipseUtil.closeReopenEditorsForConnection(HandlerUtil.getActiveWorkbenchWindow(event).getActivePage(),
-                xwikiConnection);
-            
+
+            // XWikiEclipseUtil.closeReopenEditorsForConnection(HandlerUtil.getActiveWorkbenchWindow(event).getActivePage(),
+            // xwikiConnection);
+
+            XWikiEclipseUtil.updateEditors(HandlerUtil.getActiveWorkbenchWindow(event)
+                .getActivePage(), xwikiConnection);
+
             /*
              * Re-set the current selection in order to force the re-evaluation of the expressions
              * associated to the other handlers that might depend on the changed state of the

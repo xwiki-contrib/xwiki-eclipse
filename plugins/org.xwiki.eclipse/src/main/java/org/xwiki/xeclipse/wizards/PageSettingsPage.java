@@ -36,50 +36,55 @@ import org.xwiki.xeclipse.XWikiEclipseConstants;
 public class PageSettingsPage extends WizardPage
 {
     private NewPageWizardState newPageWizardState;
-    
+
     public PageSettingsPage(String pageName)
     {
-        super(pageName);            
+        super(pageName);
         setTitle("New page");
-        setImageDescriptor(XWikiEclipsePlugin.getImageDescriptor(XWikiEclipseConstants.SPACE_SETTINGS_BANNER));
+        setImageDescriptor(XWikiEclipsePlugin
+            .getImageDescriptor(XWikiEclipseConstants.SPACE_SETTINGS_BANNER));
     }
 
     public void createControl(Composite parent)
     {
         Composite composite = new Composite(parent, SWT.NONE);
         GridLayoutFactory.fillDefaults().applyTo(composite);
-        
+
         Composite spaceSettingsArea = createSpaceSettingsArea(composite);
-        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, false).applyTo(spaceSettingsArea);
-        
-        setControl(composite);        
+        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, false).applyTo(
+            spaceSettingsArea);
+
+        setControl(composite);
     }
-    
-    private Composite createSpaceSettingsArea(Composite parent) {
-        newPageWizardState = ((NewPageWizard)getWizard()).getNewPageWizardState();
-        
+
+    private Composite createSpaceSettingsArea(Composite parent)
+    {
+        newPageWizardState = ((NewPageWizard) getWizard()).getNewPageWizardState();
+
         Composite composite = new Composite(parent, SWT.NONE);
         GridLayoutFactory.fillDefaults().applyTo(composite);
-        
-        Group group = new Group(composite, SWT.NONE);        
+
+        Group group = new Group(composite, SWT.NONE);
         GridLayoutFactory.fillDefaults().numColumns(2).margins(5, 5).applyTo(group);
         GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, true).applyTo(group);
         group.setText("Page settings");
-                                               
+
         /* Page title */
         Label label = new Label(group, SWT.NONE);
         label.setText("Title:");
-        
+
         final Text titleText = new Text(group, SWT.BORDER);
-        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, false).applyTo(titleText);
-        titleText.addModifyListener(new ModifyListener() {
+        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, false).applyTo(
+            titleText);
+        titleText.addModifyListener(new ModifyListener()
+        {
             public void modifyText(ModifyEvent e)
             {
                 newPageWizardState.setTitle(titleText.getText());
                 getContainer().updateButtons();
-            }            
-        });                
-                                
+            }
+        });
+
         return composite;
-    }        
+    }
 }

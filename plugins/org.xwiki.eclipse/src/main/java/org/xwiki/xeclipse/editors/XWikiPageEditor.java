@@ -111,22 +111,29 @@ public class XWikiPageEditor extends AbstractTextEditor
         String serverUrl = connection.getServerUrl();
         boolean connected = connection.isConnected();
         int version = page.getVersion();
-                                
+
         form.setText(String.format("%s version %d [%s]", id, version, connected ? "online"
             : "cached", id));
         form.setMessage(String.format("%s@%s", userName, serverUrl));
 
         previewViewer.showPreview(page);
-  
+
+        XWikiPageEditor.CaretState caretState = getCaretState();
+        getDocumentProvider().getDocument(getEditorInput()).set(page.getContent());
+        setCaretOffset(caretState);
+
         XWikiEclipseNotificationCenter.getDefault().fireEvent(this,
             XWikiEclipseEvent.PAGE_UPDATED, page);
-    }   
-    
-    class CaretState {
-        private int topPixel;        
+    }
+
+    class CaretState
+    {
+        private int topPixel;
+
         private int caretOffset;
-        
-        public CaretState(int caretOffset, int topPixel) {            
+
+        public CaretState(int caretOffset, int topPixel)
+        {
             this.caretOffset = caretOffset;
             this.topPixel = topPixel;
         }
@@ -139,17 +146,21 @@ public class XWikiPageEditor extends AbstractTextEditor
         public int getCaretOffset()
         {
             return caretOffset;
-        }        
+        }
     }
-    
-    CaretState getCaretState() {
-        CaretState caretState = new CaretState(getSourceViewer().getTextWidget().getCaretOffset(), getSourceViewer().getTextWidget().getTopPixel());
-        
+
+    CaretState getCaretState()
+    {
+        CaretState caretState =
+            new CaretState(getSourceViewer().getTextWidget().getCaretOffset(), getSourceViewer()
+                .getTextWidget().getTopPixel());
+
         return caretState;
     }
-    
-    void setCaretOffset(CaretState caretState) {
+
+    void setCaretOffset(CaretState caretState)
+    {
         getSourceViewer().getTextWidget().setCaretOffset(caretState.getCaretOffset());
-        getSourceViewer().getTextWidget().setTopPixel(caretState.getTopPixel());                
+        getSourceViewer().getTextWidget().setTopPixel(caretState.getTopPixel());
     }
 }

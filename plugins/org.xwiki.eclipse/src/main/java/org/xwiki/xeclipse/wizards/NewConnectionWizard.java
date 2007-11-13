@@ -74,17 +74,18 @@ public class NewConnectionWizard extends Wizard implements INewWizard
             WizardPage currentPage = (WizardPage) getContainer().getCurrentPage();
             currentPage
                 .setErrorMessage("Error connecting to remote XWiki. Please check your settings.");
-            
+
             return false;
         }
-        
-        try {            
+
+        try {
             IXWikiConnection connection =
                 XWikiConnectionFactory
                     .createCachedConnection(newConnectionWizardState.getServerUrl(),
                         newConnectionWizardState.getUserName(), new File(XWikiEclipsePlugin
                             .getDefault().getStateLocation().toFile(), "cache"));
-            XWikiConnectionManager.getDefault().addConnection(connection, newConnectionWizardState.getPassword());
+            XWikiConnectionManager.getDefault().addConnection(connection,
+                newConnectionWizardState.getPassword());
             connection.connect(newConnectionWizardState.getPassword());
         } catch (Exception e) {
             e.printStackTrace();
@@ -108,18 +109,21 @@ public class NewConnectionWizard extends Wizard implements INewWizard
     @Override
     public boolean canFinish()
     {
-        if(newConnectionWizardState.getServerUrl() == null || !newConnectionWizardState.getServerUrl().startsWith("http://")) {
+        if (newConnectionWizardState.getServerUrl() == null
+            || !newConnectionWizardState.getServerUrl().startsWith("http://")) {
             return false;
         }
-        
-        if(newConnectionWizardState.getUserName() == null || newConnectionWizardState.getUserName().length() == 0) {
+
+        if (newConnectionWizardState.getUserName() == null
+            || newConnectionWizardState.getUserName().length() == 0) {
             return false;
         }
-        
-        if(newConnectionWizardState.getPassword() == null || newConnectionWizardState.getPassword().length() == 0) {
+
+        if (newConnectionWizardState.getPassword() == null
+            || newConnectionWizardState.getPassword().length() == 0) {
             return false;
         }
-            
+
         return true;
     }
 

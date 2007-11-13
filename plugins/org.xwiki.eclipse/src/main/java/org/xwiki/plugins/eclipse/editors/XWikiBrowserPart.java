@@ -247,7 +247,8 @@ public class XWikiBrowserPart implements IEditorPart, Listener
      */
     public Image getTitleImage()
     {
-        ImageDescriptor desc = XWikiEclipsePlugin.getImageDescriptor(XWikiConstants.NAV_PAGE_ONLINE_NOT_CACHED_ICON);
+        ImageDescriptor desc =
+            XWikiEclipsePlugin.getImageDescriptor(XWikiConstants.NAV_PAGE_ONLINE_NOT_CACHED_ICON);
         return desc.createImage();
     }
 
@@ -294,11 +295,13 @@ public class XWikiBrowserPart implements IEditorPart, Listener
         if (event.widget.equals(xwikiBrowserUi.getToggleViewButton())) {
             if (xwikiBrowserUi.getToggleViewButton().getSelection()) {
                 xwikiBrowserUi.getToggleViewButton().setImage(
-                    XWikiEclipsePlugin.getImageDescriptor(XWikiConstants.TOGGLE_BUTTON_ICON).createImage());
+                    XWikiEclipsePlugin.getImageDescriptor(XWikiConstants.TOGGLE_BUTTON_ICON)
+                        .createImage());
                 toggleUrl();
             } else {
                 xwikiBrowserUi.getToggleViewButton().setImage(
-                    XWikiEclipsePlugin.getImageDescriptor(XWikiConstants.TOGGLE_BUTTON_ICON).createImage());
+                    XWikiEclipsePlugin.getImageDescriptor(XWikiConstants.TOGGLE_BUTTON_ICON)
+                        .createImage());
                 printView = true;
                 toggleUrl();
             }

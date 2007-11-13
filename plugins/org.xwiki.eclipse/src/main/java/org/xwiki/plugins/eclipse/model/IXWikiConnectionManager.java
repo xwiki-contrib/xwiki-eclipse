@@ -58,9 +58,9 @@ public interface IXWikiConnectionManager
      * @param connection The connection to be closed.
      */
     public void removeConnection(IXWikiConnection connection);
-    
+
     /**
-     *  Restores all the connections from cache.
+     * Restores all the connections from cache.
      */
     public void restoreAllConnections() throws IOException, ClassNotFoundException;
 }

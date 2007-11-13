@@ -43,7 +43,9 @@ public class NewPageHandler extends AbstractHandler
         if (selectedObject instanceof IXWikiSpace) {
             IXWikiSpace xwikiSpace = (IXWikiSpace) selectedObject;
 
-            NewPageWizard wizard = new NewPageWizard(xwikiSpace, HandlerUtil.getActiveWorkbenchWindow(event).getActivePage());
+            NewPageWizard wizard =
+                new NewPageWizard(xwikiSpace, HandlerUtil.getActiveWorkbenchWindow(event)
+                    .getActivePage());
 
             WizardDialog dialog =
                 new WizardDialog(HandlerUtil.getActiveWorkbenchWindow(event).getShell(), wizard);

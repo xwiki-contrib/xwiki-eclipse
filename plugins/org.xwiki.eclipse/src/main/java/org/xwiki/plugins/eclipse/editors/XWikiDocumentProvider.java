@@ -92,7 +92,7 @@ public class XWikiDocumentProvider extends StorageDocumentProvider
      */
     public boolean isModifiable(Object element)
     {
-        XWikiPage wikiPage = (XWikiPage) element;        
+        XWikiPage wikiPage = (XWikiPage) element;
         return !(wikiPage.isReadOnly());
     }
 

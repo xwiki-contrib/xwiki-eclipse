@@ -129,17 +129,18 @@ public interface IXWikiPage extends ICacheable
      * @return Whether this is the home page of parent space.
      */
     public boolean isHomePage();
-    
+
     /**
      * @return True if operating off-line.
      */
     public boolean isOffline();
-    
+
     /**
      * Synchronizes this page with the back-end.
+     * 
      * @return TODO
      */
-    public boolean synchronize(PageSummary newSummary) throws SwizzleConfluenceException;    
+    public boolean synchronize(PageSummary newSummary) throws SwizzleConfluenceException;
 
     /**
      * Forgets all changes made to this page and obtains a fresh copy from the server
@@ -147,7 +148,7 @@ public interface IXWikiPage extends ICacheable
      * @throws SwizzleConfluenceException
      */
     public void revert() throws SwizzleConfluenceException;
-    
+
     /**
      * @return Status of content (Markup) of this page.
      */
@@ -157,7 +158,7 @@ public interface IXWikiPage extends ICacheable
      * @return The cache path for this page.
      */
     public IPath getCachePath();
-    
+
     /**
      * @return Whether this page is current and not deleted.
      */
@@ -172,7 +173,7 @@ public interface IXWikiPage extends ICacheable
      * @return Whether the data (core) of this page has been retrieved or not.
      */
     public boolean isDataReady();
-    
+
     /**
      * Whether this page has local changes that have not yet been commited.
      * 

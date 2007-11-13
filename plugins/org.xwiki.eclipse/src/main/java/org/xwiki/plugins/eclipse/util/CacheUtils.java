@@ -87,7 +87,7 @@ public class CacheUtils
                     ObjectInputStream ois = new ObjectInputStream(new FileInputStream(f));
                     ICacheable cacheable = (ICacheable) ois.readObject();
                     String path = f.getAbsolutePath();
-                    path = path.substring(0, path.length() - 6);                    
+                    path = path.substring(0, path.length() - 6);
                     result.put(new Path(path), cacheable);
                 }
             }

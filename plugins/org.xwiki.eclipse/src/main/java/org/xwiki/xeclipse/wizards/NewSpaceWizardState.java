@@ -23,7 +23,7 @@ package org.xwiki.xeclipse.wizards;
 public class NewSpaceWizardState
 {
     private String name;
-    
+
     private String description;
 
     public void setDescription(String description)
@@ -35,7 +35,7 @@ public class NewSpaceWizardState
     {
         return description;
     }
-    
+
     public String getName()
     {
         return name;

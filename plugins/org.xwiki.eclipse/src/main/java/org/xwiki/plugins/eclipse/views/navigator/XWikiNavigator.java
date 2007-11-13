@@ -109,7 +109,7 @@ public class XWikiNavigator extends ViewPart
      * Action for reverting a page.
      */
     private Action revertAction;
-    
+
     /**
      * Action for adding a new page.
      */
@@ -129,7 +129,7 @@ public class XWikiNavigator extends ViewPart
      * Action for grabbing an entire space into local store.
      */
     private Action grabSpaceAction;
-    
+
     /**
      * Action for removing a Space.
      */
@@ -139,7 +139,7 @@ public class XWikiNavigator extends ViewPart
      * Action executed when the user double clicks on a tree item (edit document).
      */
     private Action editAction;
-    
+
     /**
      * An static reference to Navigator instance.
      */
@@ -165,7 +165,7 @@ public class XWikiNavigator extends ViewPart
         viewer.setContentProvider(new XWikiNavigatorContentProvider());
         viewer.setLabelProvider(new WorkbenchLabelProvider());
         viewer.setSorter(new ViewerSorter());
-        viewer.setInput(getViewSite());        
+        viewer.setInput(getViewSite());
         getSite().setSelectionProvider(viewer);
         makeActions();
         hookContextMenu();
@@ -182,7 +182,7 @@ public class XWikiNavigator extends ViewPart
         } catch (IOException e) {
             // Will be logged elsewhere
         } catch (ClassNotFoundException e) {
-            // Will be logged elsewhere 
+            // Will be logged elsewhere
         }
         viewer.refresh();
     }
@@ -262,7 +262,7 @@ public class XWikiNavigator extends ViewPart
         manager.add(addConnectionAction);
         manager.add(logoutAction);
         manager.add(synchronizeAction);
-        manager.add(clearCacheAction);       
+        manager.add(clearCacheAction);
         manager.add(new Separator());
         drillDownAdapter.addNavigationActions(manager);
     }
@@ -284,7 +284,8 @@ public class XWikiNavigator extends ViewPart
         };
         addConnectionAction.setText("New Login");
         addConnectionAction.setToolTipText("New Login");
-        addConnectionAction.setImageDescriptor(XWikiEclipsePlugin.getImageDescriptor(XWikiConstants.ADD_CONNECTION_ICON));
+        addConnectionAction.setImageDescriptor(XWikiEclipsePlugin
+            .getImageDescriptor(XWikiConstants.ADD_CONNECTION_ICON));
 
         /**
          * Disconnect action.
@@ -310,7 +311,8 @@ public class XWikiNavigator extends ViewPart
         };
         logoutAction.setText("Logout");
         logoutAction.setToolTipText("Logout");
-        logoutAction.setImageDescriptor(XWikiEclipsePlugin.getImageDescriptor(XWikiConstants.LOGOUT_CONNECTION_ICON));
+        logoutAction.setImageDescriptor(XWikiEclipsePlugin
+            .getImageDescriptor(XWikiConstants.LOGOUT_CONNECTION_ICON));
         logoutAction.setEnabled(false);
 
         /**
@@ -339,7 +341,8 @@ public class XWikiNavigator extends ViewPart
         };
         synchronizeAction.setText("Synchronize");
         synchronizeAction.setToolTipText("Synchronize");
-        synchronizeAction.setImageDescriptor(XWikiEclipsePlugin.getImageDescriptor(XWikiConstants.SYNCHRONIZE_ICON));
+        synchronizeAction.setImageDescriptor(XWikiEclipsePlugin
+            .getImageDescriptor(XWikiConstants.SYNCHRONIZE_ICON));
         synchronizeAction.setEnabled(false);
 
         /**
@@ -365,7 +368,8 @@ public class XWikiNavigator extends ViewPart
         };
         clearCacheAction.setText("Clear Cache");
         clearCacheAction.setToolTipText("Clear Cache");
-        clearCacheAction.setImageDescriptor(XWikiEclipsePlugin.getImageDescriptor(XWikiConstants.CLEAR_CACHE_ICON));
+        clearCacheAction.setImageDescriptor(XWikiEclipsePlugin
+            .getImageDescriptor(XWikiConstants.CLEAR_CACHE_ICON));
         clearCacheAction.setEnabled(false);
 
         /**
@@ -378,8 +382,7 @@ public class XWikiNavigator extends ViewPart
                 ISelection selection = viewer.getSelection();
                 Object obj = ((IStructuredSelection) selection).getFirstElement();
                 if (obj instanceof IXWikiPage) {
-                    IXWikiPage page =
-                        new XWikiPageWrapper((IXWikiPage) obj);
+                    IXWikiPage page = new XWikiPageWrapper((IXWikiPage) obj);
                     if (!page.isOffline() && page.hasUncommitedChanges()) {
                         try {
                             page.revert();
@@ -387,16 +390,17 @@ public class XWikiNavigator extends ViewPart
                             // Will be logged elsewhere
                         }
                     }
-                    viewer.refresh();                  
+                    viewer.refresh();
                     viewer.setSelection(viewer.getSelection(), false);
                 }
             }
         };
         revertAction.setText("Revert Page");
         revertAction.setToolTipText("Revert Page");
-        revertAction.setImageDescriptor(XWikiEclipsePlugin.getImageDescriptor(XWikiConstants.REVERT_PAGE_ICON));
+        revertAction.setImageDescriptor(XWikiEclipsePlugin
+            .getImageDescriptor(XWikiConstants.REVERT_PAGE_ICON));
         revertAction.setEnabled(false);
-        
+
         /**
          * Add page action.
          */
@@ -419,7 +423,8 @@ public class XWikiNavigator extends ViewPart
         };
         addPageAction.setText("New Page");
         addPageAction.setToolTipText("New Page");
-        addPageAction.setImageDescriptor(XWikiEclipsePlugin.getImageDescriptor(XWikiConstants.ADD_PAGE_ICON));
+        addPageAction.setImageDescriptor(XWikiEclipsePlugin
+            .getImageDescriptor(XWikiConstants.ADD_PAGE_ICON));
         addPageAction.setEnabled(false);
 
         /**
@@ -428,20 +433,22 @@ public class XWikiNavigator extends ViewPart
         removePageAction = new Action()
         {
             public void run()
-            {                                               
+            {
                 ISelection selection = viewer.getSelection();
                 Object obj = ((IStructuredSelection) selection).getFirstElement();
                 if (obj instanceof IXWikiPage) {
                     IXWikiPage wikipage = (IXWikiPage) obj;
-                    
-                    MessageBox dialog = new MessageBox(getSite().getShell(), SWT.ICON_QUESTION | SWT.YES | SWT.NO);
+
+                    MessageBox dialog =
+                        new MessageBox(getSite().getShell(), SWT.ICON_QUESTION | SWT.YES | SWT.NO);
                     dialog.setText("Remove page");
-                    dialog.setMessage(String.format("Are you sure that you want to delete '%s'?", wikipage.getTitle()));
+                    dialog.setMessage(String.format("Are you sure that you want to delete '%s'?",
+                        wikipage.getTitle()));
                     int result = dialog.open();
-                    if(result == SWT.NO) {                       
+                    if (result == SWT.NO) {
                         return;
                     }
-                    
+
                     IXWikiSpace space = new XWikiSpaceWrapper(wikipage.getParentSpace());
                     try {
                         space.removeChildPage(wikipage.getId());
@@ -454,7 +461,8 @@ public class XWikiNavigator extends ViewPart
         };
         removePageAction.setText("Remove Page");
         removePageAction.setToolTipText("Remove Page");
-        removePageAction.setImageDescriptor(XWikiEclipsePlugin.getImageDescriptor(XWikiConstants.REMOVE_PAGE_ICON));
+        removePageAction.setImageDescriptor(XWikiEclipsePlugin
+            .getImageDescriptor(XWikiConstants.REMOVE_PAGE_ICON));
         removePageAction.setEnabled(false);
 
         /**
@@ -479,12 +487,13 @@ public class XWikiNavigator extends ViewPart
         };
         addSpaceAction.setText("New Space");
         addSpaceAction.setToolTipText("New Space");
-        addSpaceAction.setImageDescriptor(XWikiEclipsePlugin.getImageDescriptor(XWikiConstants.ADD_SPACE_ICON));
+        addSpaceAction.setImageDescriptor(XWikiEclipsePlugin
+            .getImageDescriptor(XWikiConstants.ADD_SPACE_ICON));
         addSpaceAction.setEnabled(false);
 
         /**
          * Grab space action.
-         */        
+         */
         grabSpaceAction = new Action()
         {
             public void run()
@@ -500,13 +509,14 @@ public class XWikiNavigator extends ViewPart
                     }
                     viewer.refresh();
                 }
-            }            
+            }
         };
         grabSpaceAction.setText("Grab Space");
         grabSpaceAction.setToolTipText("Grab Space");
-        grabSpaceAction.setImageDescriptor(XWikiEclipsePlugin.getImageDescriptor(XWikiConstants.GRAB_SPACE_ICON));
+        grabSpaceAction.setImageDescriptor(XWikiEclipsePlugin
+            .getImageDescriptor(XWikiConstants.GRAB_SPACE_ICON));
         grabSpaceAction.setEnabled(false);
-        
+
         /**
          * Remove space action.
          */
@@ -518,16 +528,17 @@ public class XWikiNavigator extends ViewPart
                 Object obj = ((IStructuredSelection) selection).getFirstElement();
                 if (obj instanceof IXWikiSpace) {
                     IXWikiSpace space = (IXWikiSpace) obj;
-                    
-                    MessageBox dialog = new MessageBox(getSite().getShell(), SWT.ICON_QUESTION | SWT.YES | SWT.NO);
+
+                    MessageBox dialog =
+                        new MessageBox(getSite().getShell(), SWT.ICON_QUESTION | SWT.YES | SWT.NO);
                     dialog.setText("Remove space");
-                    dialog.setMessage(String.format("Are you sure that you want to delete '%s'?", space.getName()));
+                    dialog.setMessage(String.format("Are you sure that you want to delete '%s'?",
+                        space.getName()));
                     int result = dialog.open();
-                    if(result == SWT.NO) {                       
+                    if (result == SWT.NO) {
                         return;
                     }
-                    
-                    
+
                     IXWikiConnection connection =
                         new XWikiConnectionWrapper(space.getConnection());
                     try {
@@ -541,7 +552,8 @@ public class XWikiNavigator extends ViewPart
         };
         removeSpaceAction.setText("Remove Space");
         removeSpaceAction.setToolTipText("Remove Space");
-        removeSpaceAction.setImageDescriptor(XWikiEclipsePlugin.getImageDescriptor(XWikiConstants.REMOVE_SPACE_ICON));
+        removeSpaceAction.setImageDescriptor(XWikiEclipsePlugin
+            .getImageDescriptor(XWikiConstants.REMOVE_SPACE_ICON));
         removeSpaceAction.setEnabled(false);
 
         /**
@@ -558,7 +570,7 @@ public class XWikiNavigator extends ViewPart
                     openEditor((IEditorInput) page);
                 }
             }
-        };                
+        };
 
         /**
          * Viewer selection listener TODO This code is messy, but works. (need to refactor)
@@ -610,8 +622,7 @@ public class XWikiNavigator extends ViewPart
                             addPageAction.setEnabled(false);
                         }
                         if (selection instanceof IXWikiPage) {
-                            IXWikiPage page =
-                                new XWikiPageWrapper((IXWikiPage) selection);
+                            IXWikiPage page = new XWikiPageWrapper((IXWikiPage) selection);
                             if (!page.isOffline() && page.hasUncommitedChanges()) {
                                 revertAction.setEnabled(true);
                             } else {
@@ -739,5 +750,5 @@ public class XWikiNavigator extends ViewPart
             GuiUtils.reportError(true, "Error", "Internal Error : Could not create page.");
         }
     }
-        
+
 }

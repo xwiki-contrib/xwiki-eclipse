@@ -62,7 +62,7 @@ public class XWikiPage implements IXWikiPage, TreeAdapter, IStorage, IStorageEdi
     private static final long serialVersionUID = -4667061709282873693L;
 
     private Date creationTimestamp;
-    
+
     /**
      * Parent XWikiSpace.
      */
@@ -277,7 +277,8 @@ public class XWikiPage implements IXWikiPage, TreeAdapter, IStorage, IStorageEdi
      */
     public ImageDescriptor getImageDescriptor()
     {
-        return XWikiEclipsePlugin.getImageDescriptor(XWikiConstants.NAV_PAGE_ONLINE_NOT_CACHED_ICON);
+        return XWikiEclipsePlugin
+            .getImageDescriptor(XWikiConstants.NAV_PAGE_ONLINE_NOT_CACHED_ICON);
     }
 
     /**
@@ -346,10 +347,10 @@ public class XWikiPage implements IXWikiPage, TreeAdapter, IStorage, IStorageEdi
      * @see java.lang.Object#equals(java.lang.Object)
      */
     public boolean equals(Object o)
-    {        
+    {
         if (o instanceof IXWikiPage) {
-            IXWikiPage other = (IXWikiPage) o;            
-            String hisOwner = other.getParentSpace().getConnection().getId();          
+            IXWikiPage other = (IXWikiPage) o;
+            String hisOwner = other.getParentSpace().getConnection().getId();
             String myOwner = getParentSpace().getConnection().getId();
             if (other.getId().equals(this.getId()) && myOwner.equals(hisOwner)) {
                 return true;
@@ -383,19 +384,20 @@ public class XWikiPage implements IXWikiPage, TreeAdapter, IStorage, IStorageEdi
      */
     public boolean synchronize(PageSummary newSummary) throws SwizzleConfluenceException
     {
-    	boolean success = false;
+        boolean success = false;
         if (!isOffline()) {
             this.summary = newSummary;
             if (isDataReady()) {
                 if (hasUncommitedChanges()) {
-                	int localVersion = getVersion();
-                	Page remotePage = getParentSpace().getConnection().getRpcProxy().getPage(getId());
-                	int remoteVersion = new Integer(remotePage.toMap().get("version").toString());
-                	if (localVersion == remoteVersion) {
-                		save();                    
-                    	setUncommitedChanges(false);
-                    	success = true;
-                	}
+                    int localVersion = getVersion();
+                    Page remotePage =
+                        getParentSpace().getConnection().getRpcProxy().getPage(getId());
+                    int remoteVersion = new Integer(remotePage.toMap().get("version").toString());
+                    if (localVersion == remoteVersion) {
+                        save();
+                        setUncommitedChanges(false);
+                        success = true;
+                    }
                 } else {
                     // Get a fresh copy of data from the server
                     this.page = getParentSpace().getConnection().getRpcProxy().getPage(getId());
@@ -408,21 +410,20 @@ public class XWikiPage implements IXWikiPage, TreeAdapter, IStorage, IStorageEdi
         return success;
     }
 
-    
     /**
      * {@inheritDoc}
      * 
      * @see org.xwiki.plugins.eclipse.model.IXWikiPage#revert()
      */
-    public void revert() throws SwizzleConfluenceException 
+    public void revert() throws SwizzleConfluenceException
     {
-		this.page = getParentSpace().getConnection().getRpcProxy().getPage(getId());
-		setUncommitedChanges(false);
-		setDataReady(true);
-		CacheUtils.updateCache(this);
-	}
+        this.page = getParentSpace().getConnection().getRpcProxy().getPage(getId());
+        setUncommitedChanges(false);
+        setDataReady(true);
+        CacheUtils.updateCache(this);
+    }
 
-	/**
+    /**
      * {@inheritDoc}
      * 
      * @see org.xwiki.plugins.eclipse.model.IXWikiPage#getContent()
@@ -704,7 +705,7 @@ public class XWikiPage implements IXWikiPage, TreeAdapter, IStorage, IStorageEdi
      * @see org.xwiki.plugins.eclipse.model.IXWikiPage#update()
      */
     public IXWikiPage save() throws SwizzleConfluenceException
-    {        
+    {
         if (!isOffline()) {
             Confluence rpc = getParentSpace().getConnection().getRpcProxy();
             this.page = rpc.storePage(page);
@@ -714,7 +715,7 @@ public class XWikiPage implements IXWikiPage, TreeAdapter, IStorage, IStorageEdi
             setUncommitedChanges(true);
         }
         CacheUtils.updateCache(this);
-        return this;           
+        return this;
     }
 
     /**

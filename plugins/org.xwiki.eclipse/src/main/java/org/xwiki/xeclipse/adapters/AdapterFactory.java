@@ -41,8 +41,7 @@ public class AdapterFactory implements IAdapterFactory
     /**
      * The adapter for XWiki spaces.
      */
-    private IDeferredWorkbenchAdapter xwikiSpaceAdapter =
-        new XWikiSpaceAdapter();
+    private IDeferredWorkbenchAdapter xwikiSpaceAdapter = new XWikiSpaceAdapter();
 
     /**
      * The adapter for XWiki pages.
@@ -65,11 +64,12 @@ public class AdapterFactory implements IAdapterFactory
         if (adapterType == IWorkbenchAdapter.class && adaptableObject instanceof IXWikiConnection) {
             return xwikiConnectionAdapter;
         }
-        
-        if (adapterType == IWorkbenchAdapter2.class && adaptableObject instanceof IXWikiConnection) {
+
+        if (adapterType == IWorkbenchAdapter2.class
+            && adaptableObject instanceof IXWikiConnection) {
             return xwikiConnectionAdapter;
         }
-        
+
         if (adapterType == IDeferredWorkbenchAdapter.class
             && adaptableObject instanceof IXWikiSpace) {
             return xwikiSpaceAdapter;
@@ -78,11 +78,11 @@ public class AdapterFactory implements IAdapterFactory
         if (adapterType == IWorkbenchAdapter.class && adaptableObject instanceof IXWikiSpace) {
             return xwikiSpaceAdapter;
         }
-        
+
         if (adapterType == IWorkbenchAdapter.class && adaptableObject instanceof IXWikiPage) {
             return xwikiPageAdapter;
         }
-                
+
         return null;
     }
 
@@ -94,7 +94,8 @@ public class AdapterFactory implements IAdapterFactory
     @SuppressWarnings("unchecked")
     public Class[] getAdapterList()
     {
-        return new Class[] {IDeferredWorkbenchAdapter.class, IWorkbenchAdapter.class, IWorkbenchAdapter2.class};
+        return new Class[] {IDeferredWorkbenchAdapter.class, IWorkbenchAdapter.class,
+        IWorkbenchAdapter2.class};
     }
 
 }

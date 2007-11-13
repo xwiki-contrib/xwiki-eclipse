@@ -340,7 +340,7 @@ public class XWikiPageWrapper implements IXWikiPage
     public void revert() throws SwizzleConfluenceException
     {
         XWikiProgressRunner operation = new XWikiProgressRunner()
-        {        
+        {
             public void run(IProgressMonitor monitor) throws InvocationTargetException,
                 InterruptedException
             {
@@ -412,7 +412,7 @@ public class XWikiPageWrapper implements IXWikiPage
     {
         return true;
     }
-    
+
     /**
      * {@inheritDoc}
      * 

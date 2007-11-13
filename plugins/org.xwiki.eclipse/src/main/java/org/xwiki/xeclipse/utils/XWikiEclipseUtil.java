@@ -26,6 +26,7 @@ import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
@@ -64,29 +65,32 @@ public class XWikiEclipseUtil
         dialog.run(true, false, operation);
     }
 
-    public static void closeReopenEditorsForConnection(IWorkbenchPage page,
-        IXWikiConnection connection)
+    public static void updateEditors(IWorkbenchPage page, IXWikiConnection connection)
     {
         try {
-            
+
             IEditorReference[] editorReferences = page.getEditorReferences();
             for (IEditorReference editorReference : editorReferences) {
                 XWikiPageEditorInput input;
 
                 input = (XWikiPageEditorInput) editorReference.getEditorInput();
-                
-                if (input.getXWikiPage().getConnection() == connection) {                    
-                    page.closeEditors(new IEditorReference[] {editorReference}, true);                    
-                    IXWikiPage xwikiPage = connection.getPage(input.getXWikiPage().getId());                    
-                    page.openEditor(new XWikiPageEditorInput(xwikiPage), XWikiPageEditor.ID);                    
+
+                if (input.getXWikiPage().getConnection() == connection) {
+                    IXWikiPage xwikiPage = connection.getPage(input.getXWikiPage().getId());
+                    IEditorPart editorPart = editorReference.getEditor(false);
+                    if (editorPart instanceof XWikiPageEditor) {
+                        XWikiPageEditor xwikiPageEditor = (XWikiPageEditor) editorPart;
+                        input.setXWikiPage(xwikiPage);
+                        xwikiPageEditor.updateEditor(xwikiPage);
+                    }
                 }
             }
         } catch (PartInitException e) {
             e.printStackTrace();
         } catch (XWikiConnectionException e) {
+            // TODO Auto-generated catch block
             e.printStackTrace();
-        } 
-
+        }
     }
 
 }

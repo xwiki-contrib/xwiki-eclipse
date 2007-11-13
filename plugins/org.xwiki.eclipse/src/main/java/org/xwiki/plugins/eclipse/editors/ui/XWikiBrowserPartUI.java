@@ -98,8 +98,8 @@ public class XWikiBrowserPartUI extends Composite
     public void createToggleButton()
     {
         toggleViewButton = new Button(this, SWT.TOGGLE | SWT.CENTER);
-        toggleViewButton.setImage(XWikiEclipsePlugin.getImageDescriptor(XWikiConstants.TOGGLE_BUTTON_ICON)
-            .createImage());
+        toggleViewButton.setImage(XWikiEclipsePlugin.getImageDescriptor(
+            XWikiConstants.TOGGLE_BUTTON_ICON).createImage());
         GridData toggleViewButtonLData = new GridData();
         toggleViewButtonLData.widthHint = 30;
         toggleViewButtonLData.heightHint = 30;

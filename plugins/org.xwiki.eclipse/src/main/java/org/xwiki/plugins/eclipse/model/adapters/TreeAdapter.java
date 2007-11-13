@@ -21,7 +21,6 @@
 
 package org.xwiki.plugins.eclipse.model.adapters;
 
-
 /**
  * Interface implemented by all nodes participating in the tree viewer of XWikiNavigator.
  */

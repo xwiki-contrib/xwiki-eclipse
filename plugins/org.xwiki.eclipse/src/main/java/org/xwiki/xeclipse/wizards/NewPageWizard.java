@@ -38,9 +38,11 @@ import org.xwiki.xeclipse.model.IXWikiPage;
 import org.xwiki.xeclipse.model.IXWikiSpace;
 
 public class NewPageWizard extends Wizard implements INewWizard
-{    
+{
     private NewPageWizardState newPageWizardState;
+
     private IXWikiSpace xwikiSpace;
+
     private IWorkbenchPage workbenchPage;
 
     public NewPageWizard(IXWikiSpace xwikiSpace, IWorkbenchPage workbenchPage)
@@ -63,21 +65,25 @@ public class NewPageWizard extends Wizard implements INewWizard
                 {
                     try {
                         monitor.beginTask("Creating page...", IProgressMonitor.UNKNOWN);
-                        final IXWikiPage xwikiPage = xwikiSpace.createPage(newPageWizardState.getTitle(), "Write here content"); 
-                                               
-                        Display.getDefault().asyncExec(new Runnable() {
+                        final IXWikiPage xwikiPage =
+                            xwikiSpace.createPage(newPageWizardState.getTitle(),
+                                "Write here content");
+
+                        Display.getDefault().asyncExec(new Runnable()
+                        {
                             public void run()
                             {
-                                XWikiPageEditorInput editorInput = new XWikiPageEditorInput(xwikiPage);
+                                XWikiPageEditorInput editorInput =
+                                    new XWikiPageEditorInput(xwikiPage);
                                 try {
-                                    workbenchPage.openEditor(editorInput, XWikiPageEditor.ID);                           
+                                    workbenchPage.openEditor(editorInput, XWikiPageEditor.ID);
                                 } catch (PartInitException e) {
                                     e.printStackTrace();
-                                }        
+                                }
                             }
-                            
+
                         });
-                        
+
                         monitor.done();
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -87,14 +93,11 @@ public class NewPageWizard extends Wizard implements INewWizard
             });
         } catch (Exception e) {
             WizardPage currentPage = (WizardPage) getContainer().getCurrentPage();
-            currentPage
-                .setErrorMessage("Error creating remote page.");
-            
+            currentPage.setErrorMessage("Error creating remote page.");
+
             return false;
         }
-        
-        
-                
+
         return true;
     }
 
@@ -111,11 +114,11 @@ public class NewPageWizard extends Wizard implements INewWizard
 
     @Override
     public boolean canFinish()
-    {                
-        if(newPageWizardState.getTitle() == null || newPageWizardState.getTitle().length() == 0) {
+    {
+        if (newPageWizardState.getTitle() == null || newPageWizardState.getTitle().length() == 0) {
             return false;
         }
-               
+
         return true;
     }
 

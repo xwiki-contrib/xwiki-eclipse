@@ -46,9 +46,10 @@ public abstract class AbstractXWikiConnection implements IXWikiConnection, Seria
      * 
      * @param serverUrl The url where the XML RPC endpoint is located.
      * @param userName The user name to be used when connecting to the remote server.
-     * @throws XWikiConnectionException 
+     * @throws XWikiConnectionException
      */
-    public AbstractXWikiConnection(String serverUrl, String userName) throws XWikiConnectionException
+    public AbstractXWikiConnection(String serverUrl, String userName)
+        throws XWikiConnectionException
     {
         this.serverUrl = serverUrl;
         this.userName = userName;
@@ -62,7 +63,7 @@ public abstract class AbstractXWikiConnection implements IXWikiConnection, Seria
      */
     protected void init() throws XWikiConnectionException
     {
-        isDisposed = false;     
+        isDisposed = false;
     }
 
     /**
@@ -100,7 +101,7 @@ public abstract class AbstractXWikiConnection implements IXWikiConnection, Seria
     abstract boolean isPageDirty(String pageId);
 
     abstract boolean isPageConflict(String pageId);
-    
+
     abstract boolean isPageCached(String pageId);
 
     abstract Page getRawPage(String pageId) throws XWikiConnectionException;
@@ -132,7 +133,6 @@ public abstract class AbstractXWikiConnection implements IXWikiConnection, Seria
         } else if (!id.equals(other.id))
             return false;
         return true;
-    }    
-    
-    
+    }
+
 }

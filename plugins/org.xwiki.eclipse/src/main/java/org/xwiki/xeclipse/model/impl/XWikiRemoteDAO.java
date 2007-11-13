@@ -31,14 +31,14 @@ import org.codehaus.swizzle.confluence.SwizzleConfluenceException;
 import org.codehaus.swizzle.confluence.SwizzleXWiki;
 
 /**
- * A Data Access Object for accessing a remote XWiki instance. 
+ * A Data Access Object for accessing a remote XWiki instance.
  */
 public class XWikiRemoteDAO implements IXWikiDAO
 {
     private SwizzleXWiki swizzleXWiki;
 
     /**
-     * Constructor. 
+     * Constructor.
      * 
      * @param serverUrl The remote URL for the XWiki XML-RPC service.
      * @param username The user name to be used when connecting to the remote server.
@@ -69,6 +69,7 @@ public class XWikiRemoteDAO implements IXWikiDAO
 
     /**
      * Close the connection to the remote XWiki instance.
+     * 
      * @throws XWikiDAOException
      */
     public void close() throws XWikiDAOException
@@ -102,7 +103,7 @@ public class XWikiRemoteDAO implements IXWikiDAO
     public Space getSpace(String key) throws XWikiDAOException
     {
         try {
-            return swizzleXWiki.getSpace(key);            
+            return swizzleXWiki.getSpace(key);
         } catch (Exception e) {
             throw new XWikiDAOException(e);
         }
@@ -110,13 +111,13 @@ public class XWikiRemoteDAO implements IXWikiDAO
 
     /**
      * @param spaceKey The space key.
-     * @return The page summaries for all the pages available in the given space. 
+     * @return The page summaries for all the pages available in the given space.
      * @throws XWikiDAOException
      */
     @SuppressWarnings("unchecked")
     public List<PageSummary> getPages(String spaceKey) throws XWikiDAOException
     {
-        try {            
+        try {
             return swizzleXWiki.getPages(spaceKey);
         } catch (Exception e) {
             throw new XWikiDAOException(e);
@@ -145,44 +146,46 @@ public class XWikiRemoteDAO implements IXWikiDAO
      */
     public void storePage(Page page) throws XWikiDAOException
     {
-        try {            
-            swizzleXWiki.storePage(page);            
+        try {
+            swizzleXWiki.storePage(page);
         } catch (Exception e) {
             throw new XWikiDAOException(e);
         }
     }
 
-    public Space createSpace(String key, String name, String description) throws XWikiDAOException
+    public Space createSpace(String key, String name, String description)
+        throws XWikiDAOException
     {
         Space space = new Space();
         space.setKey(key);
         space.setName(name);
         space.setDescription(description);
-                
+
         try {
-            space = swizzleXWiki.addSpace(space);            
-        } catch (SwizzleConfluenceException e) {            
+            space = swizzleXWiki.addSpace(space);
+        } catch (SwizzleConfluenceException e) {
             e.printStackTrace();
             throw new XWikiDAOException(e);
         }
-        
+
         return space;
     }
 
-    public Page createPage(String spaceKey, String title, String content) throws XWikiDAOException
+    public Page createPage(String spaceKey, String title, String content)
+        throws XWikiDAOException
     {
         Page page = new Page();
         page.setSpace(spaceKey);
         page.setTitle(title);
         page.setContent(content);
-        
+
         try {
             page = swizzleXWiki.storePage(page);
-        } catch (SwizzleConfluenceException e) {            
+        } catch (SwizzleConfluenceException e) {
             e.printStackTrace();
             throw new XWikiDAOException(e);
         }
-        
+
         return page;
     }
 
@@ -190,21 +193,21 @@ public class XWikiRemoteDAO implements IXWikiDAO
     {
         try {
             swizzleXWiki.removePage(id);
-        } catch (SwizzleConfluenceException e) {         
+        } catch (SwizzleConfluenceException e) {
             e.printStackTrace();
             throw new XWikiDAOException(e);
         }
-        
+
     }
 
     public void removeSpace(String key) throws XWikiDAOException
     {
         try {
             swizzleXWiki.removeSpace(key);
-        } catch (SwizzleConfluenceException e) {         
+        } catch (SwizzleConfluenceException e) {
             e.printStackTrace();
             throw new XWikiDAOException(e);
         }
     }
-    
+
 }

@@ -58,7 +58,7 @@ public class XWikiConnectionAdapter implements IDeferredWorkbenchAdapter
             if (xwikiConnection.isOffline()) {
                 return XWikiEclipsePlugin.getImageDescriptor(XWikiConstants.NAV_CON_OFFLINE_ICON);
             }
-            
+
             return XWikiEclipsePlugin.getImageDescriptor(XWikiConstants.NAV_CON_ICON);
         }
         return null;
@@ -90,19 +90,20 @@ public class XWikiConnectionAdapter implements IDeferredWorkbenchAdapter
      * @see org.eclipse.ui.progress.IWorkbenchAdapter#getP
      */
     public Object getParent(Object o)
-    {     
+    {
         return null;
     }
 
     /**
      * {@inheritDoc}
      * 
-     * @see org.eclipse.ui.progress.IDeferredWorkbenchAdapter#fetchDeferredChildren(Object, IElementCollector, IProgressMonitor)
+     * @see org.eclipse.ui.progress.IDeferredWorkbenchAdapter#fetchDeferredChildren(Object,
+     *      IElementCollector, IProgressMonitor)
      */
     public void fetchDeferredChildren(Object object, IElementCollector collector,
         IProgressMonitor monitor)
     {
-        // TODO Auto-generated method stub        
+        // TODO Auto-generated method stub
     }
 
     /**

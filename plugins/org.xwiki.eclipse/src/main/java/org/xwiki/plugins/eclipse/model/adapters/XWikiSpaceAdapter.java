@@ -54,14 +54,15 @@ public class XWikiSpaceAdapter implements IDeferredWorkbenchAdapter
     {
         if (object instanceof IXWikiSpace) {
             IXWikiSpace xwikiSpace = (IXWikiSpace) object;
-            
+
             if (xwikiSpace.isOffline()) {
-                return XWikiEclipsePlugin.getImageDescriptor(XWikiConstants.NAV_SPACE_OFFLINE_ICON);
+                return XWikiEclipsePlugin
+                    .getImageDescriptor(XWikiConstants.NAV_SPACE_OFFLINE_ICON);
             }
-            
+
             return XWikiEclipsePlugin.getImageDescriptor(XWikiConstants.NAV_SPACE_ICON);
         }
-        
+
         return null;
     }
 
@@ -74,10 +75,10 @@ public class XWikiSpaceAdapter implements IDeferredWorkbenchAdapter
     {
         if (object instanceof IXWikiSpace) {
             IXWikiSpace xwikiSpace = (IXWikiSpace) object;
-            
+
             return xwikiSpace.getName();
         }
-        
+
         return null;
     }
 
@@ -87,19 +88,20 @@ public class XWikiSpaceAdapter implements IDeferredWorkbenchAdapter
      * @see org.eclipse.ui.model.IWorkbenchAdapter#getParent(Object)
      */
     public Object getParent(Object o)
-    {     
+    {
         return null;
     }
 
     /**
      * {@inheritDoc}
      * 
-     * @see org.eclipse.ui.progress.IDeferredWorkbenchAdapter#fetchDeferredChildren(Object, IElementCollector, IProgressMonitor)
+     * @see org.eclipse.ui.progress.IDeferredWorkbenchAdapter#fetchDeferredChildren(Object,
+     *      IElementCollector, IProgressMonitor)
      */
     public void fetchDeferredChildren(Object object, IElementCollector collector,
         IProgressMonitor monitor)
     {
-        // TODO Auto-generated method stub        
+        // TODO Auto-generated method stub
     }
 
     /**
@@ -114,7 +116,7 @@ public class XWikiSpaceAdapter implements IDeferredWorkbenchAdapter
 
     /**
      * {@inheritDoc}
-     *
+     * 
      * Always returns true because an XWikiSpace is supposed to contain pages.
      * 
      * @see org.eclipse.ui.progress.IDeferredWorkbenchAdapter#isContainer()

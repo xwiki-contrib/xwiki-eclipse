@@ -96,7 +96,7 @@ public class XWikiConnection implements IXWikiConnection, TreeAdapter
      * True when operating in off-line mode.
      */
     private boolean offline = false;
-    
+
     /**
      * A String identifying this connection.
      */
@@ -290,9 +290,9 @@ public class XWikiConnection implements IXWikiConnection, TreeAdapter
      */
     public boolean synchronize() throws SwizzleConfluenceException
     {
-    	boolean success = false;
+        boolean success = false;
         if (isOffline()) {
-        	success = true;
+            success = true;
             // First login.
             SwizzleXWiki newRpc = new SwizzleXWiki(serverUrl);
             newRpc.login(userName, password);
@@ -321,7 +321,9 @@ public class XWikiConnection implements IXWikiConnection, TreeAdapter
             // Synchronize each space in cache.
             for (String cacheKey : cacheKeySet) {
                 if (newKeySet.contains(cacheKey)) {
-                    success = spacesByKey.get(cacheKey).synchronize(newSpaceSummaries.get(cacheKey)) ? success : false;
+                    success =
+                        spacesByKey.get(cacheKey).synchronize(newSpaceSummaries.get(cacheKey))
+                            ? success : false;
                 } else {
                     // For now, we'll just get rid of the cached space.
                     CacheUtils.clearCache(spacesByKey.get(cacheKey));
@@ -426,7 +428,7 @@ public class XWikiConnection implements IXWikiConnection, TreeAdapter
     {
         return serverUrl;
     }
-    
+
     /**
      * {@inheritDoc}
      * 
@@ -517,7 +519,7 @@ public class XWikiConnection implements IXWikiConnection, TreeAdapter
      */
     private void writeObject(ObjectOutputStream out) throws IOException
     {
-        out.defaultWriteObject();        
+        out.defaultWriteObject();
     }
 
     /**

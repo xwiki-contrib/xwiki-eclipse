@@ -28,50 +28,62 @@ import java.util.Date;
 public interface IXWikiPage
 {
     public String getId();
+
     public int getLocks();
+
     public String getParentId();
+
     public String getSpaceKey();
+
     public String getTitle();
+
     public String getUrl();
-    public String getCreator();       
+
+    public String getCreator();
+
     public String getContentStatus();
+
     public int getVersion();
+
     public Date getModified();
+
     public String getModifier();
-    
+
     public String getContent();
+
     public void setContent(String content);
-    
+
     /**
-     * @return true if the page has been modified locally but not yet synchronized with the remote XWiki instance.
-     * @throws XWikiConnectionException 
+     * @return true if the page has been modified locally but not yet synchronized with the remote
+     *         XWiki instance.
+     * @throws XWikiConnectionException
      */
     public boolean isDirty();
-    
+
     /**
      * @return true if the page has been modified both locally and remotely.
-     * @throws XWikiConnectionException 
+     * @throws XWikiConnectionException
      */
     public boolean isConflict();
-    
+
     /**
      * @return true if the page is locally cached.
      */
     public boolean isCached();
-    
+
     /**
      * Save the page content.
      * 
      * @throws XWikiConnectionException
      */
     public void save() throws XWikiConnectionException;
-    
+
     /**
      * @return The connection where this page has been fetched from.
      */
     public IXWikiConnection getConnection();
-    
+
     public IXWikiSpace getSpace() throws XWikiConnectionException;
-    
-    public void remove() throws XWikiConnectionException;        
+
+    public void remove() throws XWikiConnectionException;
 }
