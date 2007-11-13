@@ -30,6 +30,7 @@ import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.xwiki.xeclipse.XWikiConnectionManager;
 import org.xwiki.xeclipse.model.IXWikiConnection;
@@ -81,7 +82,11 @@ public class ConnectHandler extends AbstractHandler
                         monitor.done();
                     }
                     
-                }, HandlerUtil.getActiveShell(event));               
+                }, HandlerUtil.getActiveShell(event));
+                
+                XWikiEclipseUtil.closeReopenEditorsForConnection(HandlerUtil.getActiveWorkbenchWindow(event).getActivePage(),
+                    xwikiConnection);
+                
             } catch (InvocationTargetException e) {
                 e.printStackTrace();
                 MessageDialog.openError(HandlerUtil.getActiveShell(event), "Error", e.getMessage());

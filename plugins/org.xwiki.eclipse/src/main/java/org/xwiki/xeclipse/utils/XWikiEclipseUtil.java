@@ -26,6 +26,16 @@ import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IEditorReference;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchPartReference;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.handlers.HandlerUtil;
+import org.xwiki.xeclipse.editors.XWikiPageEditor;
+import org.xwiki.xeclipse.editors.XWikiPageEditorInput;
+import org.xwiki.xeclipse.model.IXWikiConnection;
+import org.xwiki.xeclipse.model.IXWikiPage;
+import org.xwiki.xeclipse.model.XWikiConnectionException;
 
 /**
  * Utility methods for different tasks.
@@ -49,10 +59,36 @@ public class XWikiEclipseUtil
         return null;
     }
 
-    public static void runOperationWithProgress(IRunnableWithProgress operation, Shell shell) throws InvocationTargetException, InterruptedException
+    public static void runOperationWithProgress(IRunnableWithProgress operation, Shell shell)
+        throws InvocationTargetException, InterruptedException
     {
         ProgressMonitorDialog dialog = new ProgressMonitorDialog(shell);
         dialog.run(true, false, operation);
+    }
+
+    public static void closeReopenEditorsForConnection(IWorkbenchPage page,
+        IXWikiConnection connection)
+    {
+        try {
+            
+            IEditorReference[] editorReferences = page.getEditorReferences();
+            for (IEditorReference editorReference : editorReferences) {
+                XWikiPageEditorInput input;
+
+                input = (XWikiPageEditorInput) editorReference.getEditorInput();
+                
+                if (input.getXWikiPage().getConnection() == connection) {                    
+                    page.closeEditors(new IEditorReference[] {editorReference}, true);                    
+                    IXWikiPage xwikiPage = connection.getPage(input.getXWikiPage().getId());                    
+                    page.openEditor(new XWikiPageEditorInput(xwikiPage), XWikiPageEditor.ID);                    
+                }
+            }
+        } catch (PartInitException e) {
+            e.printStackTrace();
+        } catch (XWikiConnectionException e) {
+            e.printStackTrace();
+        } 
+
     }
 
 }
