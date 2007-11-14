@@ -4,7 +4,7 @@
 <product name="XEclipse" id="org.xwiki.eclipse.rcp.product" application="org.xwiki.eclipse.rcp.application" useFeatures="false">
 
    <aboutInfo>
-      <image path="/org.xwiki.xeclipse.rcp/icons/about.png"/>
+      <image path="/org.xwiki.eclipse.rcp/icons/about.png"/>
       <text>
          XWiki Eclipse
 
@@ -18,15 +18,17 @@
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
 
-   <windowImages i16="/org.xwiki.xeclipse.rcp/icons/xwiki16.png" i32="/org.xwiki.xeclipse.rcp/icons/xwiki32.png" i48="/org.xwiki.xeclipse.rcp/icons/xwiki48.png" i64="/org.xwiki.xeclipse.rcp/icons/xwiki64.png" i128="/org.xwiki.xeclipse.rcp/icons/xwiki128.png"/>
+   <windowImages i16="/org.xwiki.eclipse.rcp/icons/xwiki16.png" i32="/org.xwiki.eclipse.rcp/icons/xwiki32.png" i48="/org.xwiki.eclipse.rcp/icons/xwiki48.png" i64="/org.xwiki.eclipse.rcp/icons/xwiki64.png" i128="/org.xwiki.eclipse.rcp/icons/xwiki128.png"/>
+
 
    <launcher name="XEclipse">
-      <macosx icon="/org.xwiki.xeclipse.rcp/icons/xwiki.icns"/>
+      <macosx icon="/org.xwiki.eclipse.rcp/icons/xwiki.icns"/>
       <solaris/>
       <win useIco="false">
          <bmp/>
       </win>
    </launcher>
+
 
    <vm>
    </vm>

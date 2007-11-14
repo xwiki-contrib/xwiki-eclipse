@@ -85,7 +85,7 @@
                </profilesXml>
            -->
           <eclipseInstall>${eclipseInstall}</eclipseInstall>
-          <pdeProductFilename>org.xwiki.xeclipse.product</pdeProductFilename>
+          <pdeProductFilename>org.xwiki.eclipse.product</pdeProductFilename>
           <pdeBuildVersion>${pdeBuildVersion}</pdeBuildVersion>
         </configuration>
         <executions>
