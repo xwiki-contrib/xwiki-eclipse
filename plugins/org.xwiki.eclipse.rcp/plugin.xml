@@ -48,15 +48,15 @@
       <menuContribution
             locationURI="menu:org.xwiki.xeclipse.menu.File">
             <command
-                  commandId="org.xwiki.xeclipse.command.NewConnection"
+                  commandId="org.xwiki.eclipse.command.NewConnection"
                   id="New connection...">
             </command>
             <command
-                  commandId="org.xwiki.xeclipse.command.NewSpace"
+                  commandId="org.xwiki.eclipse.command.NewSpace"
                   id="New space...">
             </command>
             <command
-                  commandId="org.xwiki.xeclipse.command.NewPage"
+                  commandId="org.xwiki.eclipse.command.NewPage"
                   id="New page...">
             </command>
             <separator
@@ -103,7 +103,7 @@
                   visible="true">
             </separator>
             <command
-                  commandId="org.xwiki.xeclipse.command.OpenPage"
+                  commandId="org.xwiki.eclipse.command.OpenPage"
                   id="Open page...">
             </command>         
       </menuContribution>
