@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>xeclipse</name>
+	<name>org.xwiki.eclipse</name>
 	<comment>Eclipse Integration Plugin</comment>
 	<projects>
 	</projects>
