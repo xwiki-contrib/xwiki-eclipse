@@ -1,4 +1,4 @@
-package org.xwiki.xeclipse.rcp;
+package org.xwiki.eclipse.rcp;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;

@@ -1,4 +1,4 @@
-package org.xwiki.xeclipse.rcp;
+package org.xwiki.eclipse.rcp;
 
 import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.application.WorkbenchAdvisor;

@@ -1,4 +1,4 @@
-package org.xwiki.xeclipse.rcp;
+package org.xwiki.eclipse.rcp;
 
 import java.util.ArrayList;
 import java.util.List;

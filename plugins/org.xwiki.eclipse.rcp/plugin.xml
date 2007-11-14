@@ -7,7 +7,7 @@
          point="org.eclipse.core.runtime.applications">
       <application>
          <run
-               class="org.xwiki.xeclipse.rcp.Application">
+               class="org.xwiki.eclipse.rcp.Application">
          </run>
       </application>
    </extension>
@@ -15,7 +15,7 @@
          point="org.eclipse.ui.perspectives">
       <perspective
             name="RCP Perspective"
-            class="org.xwiki.xeclipse.rcp.Perspective"
+            class="org.xwiki.eclipse.rcp.Perspective"
             id="org.xwiki.xeclipse.rcp.perspective">
       </perspective>
    </extension>
@@ -23,7 +23,7 @@
          id="product"
          point="org.eclipse.core.runtime.products">
       <product
-            application="org.xwiki.xeclipse.rcp.application"
+            application="org.xwiki.eclipse.rcp.application"
             name="XEclipse">
          <property
                name="appName"
@@ -31,7 +31,7 @@
          </property>
          <property
                name="aboutImage"
-               value="icons/about.png">
+               value="/org.xwiki.xeclipse.rcp/icons/about.png">
          </property>
          <property
                name="aboutText"
@@ -39,7 +39,7 @@
          </property>
          <property
                name="windowImages"
-               value="icons/xwiki16.png,icons/xwiki32.png,icons/xwiki48.png,icons/xwiki64.png,icons/xwiki128.png">
+               value="/org.xwiki.xeclipse.rcp/icons/xwiki16.png,/org.xwiki.xeclipse.rcp/icons/xwiki32.png,/org.xwiki.xeclipse.rcp/icons/xwiki48.png,/org.xwiki.xeclipse.rcp/icons/xwiki64.png,/org.xwiki.xeclipse.rcp/icons/xwiki128.png">
          </property>
       </product>
    </extension>

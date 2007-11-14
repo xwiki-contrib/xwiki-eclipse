@@ -1,4 +1,4 @@
-package org.xwiki.xeclipse.rcp;
+package org.xwiki.eclipse.rcp;
 
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.ui.application.ActionBarAdvisor;
