@@ -60,6 +60,7 @@
           <buildProperties>
             <javacSource>1.5</javacSource>
             <javacTarget>1.5</javacTarget>
+			<allElementsFile>${basedir}/buildConfiguration/allElements.xml</allElementsFile>
           </buildProperties>
           <!-- You must provide a profiles.xml file containing the value of eclipseInstall and pdeBuildVersion,
                or set them up in your settings.xml or pass them on the command line.
