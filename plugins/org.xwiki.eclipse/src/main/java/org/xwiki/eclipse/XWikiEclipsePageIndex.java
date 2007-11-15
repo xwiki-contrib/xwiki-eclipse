@@ -22,6 +22,7 @@ package org.xwiki.eclipse;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.xwiki.eclipse.model.IXWikiConnection;
 import org.xwiki.eclipse.model.IXWikiPage;
@@ -34,7 +35,7 @@ public class XWikiEclipsePageIndex
 
     private XWikiEclipsePageIndex()
     {
-        pages = new HashSet<IXWikiPage>();
+        pages = new CopyOnWriteArraySet<IXWikiPage>();
     }
 
     public static XWikiEclipsePageIndex getDefault()
