@@ -26,6 +26,8 @@ import java.io.File;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
+import org.xwiki.eclipse.XWikiEclipsePageIndex;
+import org.xwiki.eclipse.XWikiEclipsePageIndexer;
 import org.xwiki.plugins.eclipse.model.IXWikiConnection;
 import org.xwiki.plugins.eclipse.model.impl.XWikiConnectionManager;
 
@@ -75,6 +77,8 @@ public class XWikiEclipsePlugin extends AbstractUIPlugin
         if (workingSetsFile.exists()) {
             org.xwiki.eclipse.WorkingSetManager.getDefault().restoreWorkingSets(workingSetsFile);
         }
+        
+        XWikiEclipsePageIndexer.getDefault().start();
     }
 
     /**
@@ -84,6 +88,8 @@ public class XWikiEclipsePlugin extends AbstractUIPlugin
      */
     public void stop(BundleContext context) throws Exception
     {
+        XWikiEclipsePageIndexer.getDefault().stop();
+        
         for (IXWikiConnection con : XWikiConnectionManager.getInstance().getAllConnections()) {
             try {
                 con.disconnect();
