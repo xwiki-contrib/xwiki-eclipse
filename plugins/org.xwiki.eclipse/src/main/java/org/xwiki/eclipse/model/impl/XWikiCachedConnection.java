@@ -592,4 +592,6 @@ public class XWikiCachedConnection extends AbstractXWikiConnection implements Se
         Set<IXWikiPage> result = new HashSet<IXWikiPage>();
         return result;
     }
+    
+    
 }

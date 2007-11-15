@@ -113,7 +113,8 @@ public abstract class AbstractXWikiConnection implements IXWikiConnection, Seria
     {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        result = prime * result + ((serverUrl == null) ? 0 : serverUrl.hashCode());
+        result = prime * result + ((userName == null) ? 0 : userName.hashCode());
         return result;
     }
 
@@ -127,12 +128,19 @@ public abstract class AbstractXWikiConnection implements IXWikiConnection, Seria
         if (getClass() != obj.getClass())
             return false;
         final AbstractXWikiConnection other = (AbstractXWikiConnection) obj;
-        if (id == null) {
-            if (other.id != null)
+        if (serverUrl == null) {
+            if (other.serverUrl != null)
                 return false;
-        } else if (!id.equals(other.id))
+        } else if (!serverUrl.equals(other.serverUrl))
+            return false;
+        if (userName == null) {
+            if (other.userName != null)
+                return false;
+        } else if (!userName.equals(other.userName))
             return false;
         return true;
     }
+
+    
 
 }

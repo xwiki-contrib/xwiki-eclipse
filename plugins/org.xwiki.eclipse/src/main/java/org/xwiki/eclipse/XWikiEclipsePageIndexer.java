@@ -1,6 +1,8 @@
 package org.xwiki.eclipse;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -11,17 +13,20 @@ import org.xwiki.eclipse.model.IXWikiPage;
 import org.xwiki.eclipse.model.IXWikiSpace;
 import org.xwiki.plugins.eclipse.XWikiEclipsePlugin;
 
-public class XWikiEclipsePageIndexer
+public class XWikiEclipsePageIndexer implements IXWikiEclipseEventListener
 {
     private static XWikiEclipsePageIndexer instance;
-    private Job indexer;
-    
+
+    private Map<IXWikiConnection, Job> connectionToIndexerMapping;
+
     private class IndexerJob extends Job
     {
+        private IXWikiConnection connection;
 
-        public IndexerJob(String name)
+        public IndexerJob(IXWikiConnection connection)
         {
-            super(name);
+            super("Connection page indexer");
+            this.connection = connection;
         }
 
         @Override
@@ -29,39 +34,36 @@ public class XWikiEclipsePageIndexer
         {
             try {
                 XWikiEclipsePageIndex pageIndex = XWikiEclipsePageIndex.getDefault();
-                
-                monitor.beginTask(String.format("Indexing connections..."),
-                    XWikiConnectionManager.getDefault().getConnections().size());
 
-                for (IXWikiConnection xwikiConnection : XWikiConnectionManager.getDefault()
-                    .getConnections()) {
-                    
-                    if(monitor.isCanceled()) {
+                monitor.beginTask(String.format("Indexing connection..."),
+                    IProgressMonitor.UNKNOWN);
+
+                if (monitor.isCanceled()) {                   
+                    return Status.CANCEL_STATUS;
+                }
+
+                Collection<IXWikiSpace> spaces = connection.getSpaces();
+
+                for (IXWikiSpace space : spaces) {
+                    if (monitor.isCanceled()) {              
                         return Status.CANCEL_STATUS;
                     }
-                    
-                    Collection<IXWikiSpace> spaces = xwikiConnection.getSpaces();
-                    
-                    for(IXWikiSpace space : spaces) {
-                        if(monitor.isCanceled()) {
-                            return Status.CANCEL_STATUS;
-                        }
-                        
-                        Collection<IXWikiPage> pages = space.getPages();
-                        for(IXWikiPage page : pages) {
-                            pageIndex.addPage(page);
-                        }
+
+                    Collection<IXWikiPage> pages = space.getPages();
+                    for (IXWikiPage page : pages) {
+                        pageIndex.addPage(page);
                     }
-                    monitor.worked(1);
                 }
+
             } catch (Exception e) {
                 e.printStackTrace();
-                return new Status(IStatus.ERROR, XWikiEclipsePlugin.PLUGIN_ID, String.format("Error while indexing\n%s", e.getMessage()));
+                return new Status(IStatus.ERROR, XWikiEclipsePlugin.PLUGIN_ID, String.format(
+                    "Error while indexing\n%s", e.getMessage()));
             } finally {
                 monitor.done();
                 schedule(600000);
             }
-
+                  
             return Status.OK_STATUS;
         }
 
@@ -69,9 +71,9 @@ public class XWikiEclipsePageIndexer
 
     private XWikiEclipsePageIndexer()
     {
-        // TODO Auto-generated constructor stub
+        connectionToIndexerMapping = new HashMap<IXWikiConnection, Job>();
     }
-    
+
     public static XWikiEclipsePageIndexer getDefault()
     {
         if (instance == null) {
@@ -80,24 +82,57 @@ public class XWikiEclipsePageIndexer
 
         return instance;
     }
-    
-    public void start() {
-        if(indexer != null) {
-            return;
-        }
-        
-        indexer = new IndexerJob("Page indexer");
-        indexer.setSystem(true);
-        indexer.setPriority(Job.DECORATE);        
-        indexer.schedule();
+
+    public void start()
+    {
+        XWikiEclipseNotificationCenter.getDefault().addListener(
+            XWikiEclipseEvent.CONNECTION_ESTABLISHED, this);
+        XWikiEclipseNotificationCenter.getDefault().addListener(
+            XWikiEclipseEvent.CONNECTION_CLOSED, this);
     }
-    
-    public void stop() {
-        if(indexer == null) {
-            return;
-        }
+
+    public void stop()
+    {
+        XWikiEclipseNotificationCenter.getDefault().removeListener(
+            XWikiEclipseEvent.CONNECTION_ESTABLISHED, this);
+        XWikiEclipseNotificationCenter.getDefault().removeListener(
+            XWikiEclipseEvent.CONNECTION_CLOSED, this);
         
-        indexer.cancel();
-        indexer = null;
+        for(Job indexerJob : connectionToIndexerMapping.values()) {
+            indexerJob.cancel();            
+        }
+    }
+
+    public void handleEvent(Object sender, XWikiEclipseEvent event, Object data)
+    {
+        IXWikiConnection connection;
+
+        switch (event) {
+            case CONNECTION_ESTABLISHED:
+                connection = (IXWikiConnection) data;
+                if (XWikiConnectionManager.getDefault().getConnections().contains(connection)) {
+                    if (connectionToIndexerMapping.get(connection) != null) {
+                        connectionToIndexerMapping.get(connection).cancel();
+                        connectionToIndexerMapping.remove(connection);
+                    }
+
+                    IndexerJob indexerJob = new IndexerJob(connection);
+                    connectionToIndexerMapping.put(connection, indexerJob);
+                    indexerJob.setSystem(true);
+                    indexerJob.setPriority(Job.DECORATE);
+                    indexerJob.schedule();
+                }
+                break;
+            case CONNECTION_CLOSED:
+                connection = (IXWikiConnection) data;
+                if (XWikiConnectionManager.getDefault().getConnections().contains(connection)) {
+                    if (connectionToIndexerMapping.get(connection) != null) {
+                        connectionToIndexerMapping.get(connection).cancel();
+                        connectionToIndexerMapping.remove(connection);
+                    }
+                }
+                break;
+        }
+
     }
 }

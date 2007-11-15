@@ -140,7 +140,7 @@ public class OpenPageDialog extends FilteredItemsSelectionDialog
     {
         super(shell);
         setTitle("Open page");
-        setListLabelProvider(new OpenPageLabelProvider(new WorkbenchLabelProvider()));
+        setListLabelProvider(new OpenPageLabelProvider(new WorkbenchLabelProvider()));        
         setListSelectionLabelDecorator(new SelectionLabelDecorator());
         setDetailsLabelProvider(new WorkbenchLabelProvider());
     }
@@ -209,10 +209,12 @@ public class OpenPageDialog extends FilteredItemsSelectionDialog
     {
         return new Comparator()
         {
-
             public int compare(Object o1, Object o2)
             {
-                return o1.toString().compareTo(o2.toString());
+                IXWikiPage page1 = (IXWikiPage) o1;
+                IXWikiPage page2 = (IXWikiPage) o2;
+                
+                return page1.getTitle().compareTo(page2.getTitle());
             }
         };
     }
@@ -223,5 +225,4 @@ public class OpenPageDialog extends FilteredItemsSelectionDialog
         // TODO Auto-generated method stub
         return Status.OK_STATUS;
     }
-
 }

@@ -46,12 +46,12 @@ public class XWikiEclipsePageIndex
         return instance;
     }
 
-    public void addPage(IXWikiPage page)
+    public synchronized void addPage(IXWikiPage page)
     {
         pages.add(page);
     }
 
-    public void removePage(IXWikiPage page)
+    public synchronized  void removePage(IXWikiPage page)
     {
         pages.remove(page);
     }

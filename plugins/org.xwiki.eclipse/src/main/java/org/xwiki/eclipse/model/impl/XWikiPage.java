@@ -234,11 +234,51 @@ public class XWikiPage implements IXWikiPage
         return connection.isPageCached(page.getId());
     }
 
+//    @Override
+//    public int hashCode()
+//    {
+//        final int prime = 31;
+//        int result = 1;
+//        result = prime * result + ((id == null) ? 0 : id.hashCode());
+//        return result;
+//    }
+//
+//    @Override
+//    public boolean equals(Object obj)
+//    {
+//        if (this == obj)
+//            return true;
+//        if (obj == null)
+//            return false;
+//        if (getClass() != obj.getClass())
+//            return false;
+//        final XWikiPage other = (XWikiPage) obj;
+//        if (id == null) {
+//            if (other.id != null)
+//                return false;
+//        } else if (!id.equals(other.id))
+//            return false;
+//        return true;
+//    }
+
+    
+    
+    public IXWikiSpace getSpace() throws XWikiConnectionException
+    {
+        return space;
+    }
+
+    public void remove() throws XWikiConnectionException
+    {
+        connection.removePage(this);
+    }
+
     @Override
     public int hashCode()
     {
         final int prime = 31;
         int result = 1;
+        result = prime * result + ((connection == null) ? 0 : connection.hashCode());
         result = prime * result + ((id == null) ? 0 : id.hashCode());
         return result;
     }
@@ -253,21 +293,16 @@ public class XWikiPage implements IXWikiPage
         if (getClass() != obj.getClass())
             return false;
         final XWikiPage other = (XWikiPage) obj;
+        if (connection == null) {
+            if (other.connection != null)
+                return false;
+        } else if (!connection.equals(other.connection))
+            return false;
         if (id == null) {
             if (other.id != null)
                 return false;
         } else if (!id.equals(other.id))
             return false;
         return true;
-    }
-
-    public IXWikiSpace getSpace() throws XWikiConnectionException
-    {
-        return space;
-    }
-
-    public void remove() throws XWikiConnectionException
-    {
-        connection.removePage(this);
     }
 }

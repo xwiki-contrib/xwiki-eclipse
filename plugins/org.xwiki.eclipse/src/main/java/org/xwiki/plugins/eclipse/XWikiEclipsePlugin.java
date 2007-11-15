@@ -26,7 +26,6 @@ import java.io.File;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
-import org.xwiki.eclipse.XWikiEclipsePageIndex;
 import org.xwiki.eclipse.XWikiEclipsePageIndexer;
 import org.xwiki.plugins.eclipse.model.IXWikiConnection;
 import org.xwiki.plugins.eclipse.model.impl.XWikiConnectionManager;
