@@ -118,9 +118,11 @@ public class XWikiPageEditor extends AbstractTextEditor
 
         previewViewer.showPreview(page);
 
-        XWikiPageEditor.CaretState caretState = getCaretState();
-        getDocumentProvider().getDocument(getEditorInput()).set(page.getContent());
-        setCaretOffset(caretState);
+        if (!getDocumentProvider().getDocument(getEditorInput()).get().equals(page.getContent())) {
+            XWikiPageEditor.CaretState caretState = getCaretState();
+            getDocumentProvider().getDocument(getEditorInput()).set(page.getContent());
+            setCaretOffset(caretState);
+        }
 
         XWikiEclipseNotificationCenter.getDefault().fireEvent(this,
             XWikiEclipseEvent.PAGE_UPDATED, page);
