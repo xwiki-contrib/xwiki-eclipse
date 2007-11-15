@@ -31,7 +31,7 @@
          </property>
          <property
                name="aboutImage"
-               value="/org.xwiki.xeclipse.rcp/icons/about.png">
+               value="icons/about.png">
          </property>
          <property
                name="aboutText"
@@ -39,7 +39,7 @@
          </property>
          <property
                name="windowImages"
-               value="/org.xwiki.xeclipse.rcp/icons/xwiki16.png,/org.xwiki.xeclipse.rcp/icons/xwiki32.png,/org.xwiki.xeclipse.rcp/icons/xwiki48.png,/org.xwiki.xeclipse.rcp/icons/xwiki64.png,/org.xwiki.xeclipse.rcp/icons/xwiki128.png">
+               value="icons/xwiki16.png,icons/xwiki32.png,icons/xwiki48.png,icons/xwiki64.png,icons/xwiki128.png">
          </property>
       </product>
    </extension>
