@@ -91,7 +91,7 @@
         <executions>
           <execution>
             <id>clean-pde</id>
-            <phase>clean</phase>
+            <phase>pre-clean</phase>
             <goals>
               <goal>clean</goal>
             </goals>
@@ -99,6 +99,20 @@
         </executions>
       </plugin>
     </plugins>
+
+    <plugin>
+      <artifactId>maven-clean-plugin</artifactId>
+      <configuration>
+        <filesets>
+          <fileset>
+            <directory>buildConfiguration</directory>
+          </fileset>
+		  <fileset>
+            <directory>../../features</directory>
+          </fileset>
+        </filesets>
+      </configuration>
+    </plugin>
 
     <resources>
       <resource>

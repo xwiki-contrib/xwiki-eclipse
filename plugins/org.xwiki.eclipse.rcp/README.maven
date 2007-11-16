@@ -3,12 +3,12 @@ In order to compile with maven you must review the following settings:
 1) In pom.xml make sure that <eclipseInstall> and <pdeBuildVersion> settings match with your Eclipse installation.
    In order to discover the PDE build version go to ${eclipse-install-dir}/plugins and look for a dir called org.eclipse.pde.build_XYZ
    XYZ is the value you have to specify for the <pdeBuildVersion> setting.
-
-2) In buildConfiguration/build.properties change the following settings in order to match your environment:
-   * configs - set it in order to reflect your OS, windowing system and architecture.
-   * base - set it to the path where you have checked out the XEclipseTargetPlatform
    
-3) If maven complains that he cannot find startup.jar then copy ${eclipse-install-dir}/plugin/org.eclipse.equinox.launcher*-xyz.jar
+   You can set these parameters from the command line in the following way:
+   
+   mvn compile -DeclipseInstall=/Applications/Eclipse/eclipse-rcp-europa-fall -DpdeBuildVersion=3.3.1.v20070828 
+   
+2) If maven complains that he cannot find startup.jar then copy ${eclipse-install-dir}/plugin/org.eclipse.equinox.launcher*-xyz.jar
    to ${eclipse-install-dir}/startup.jar.
    
-Compile with maven compile and you should obtain a packaged version of XEclipse in ../../M.XEclipse
+Compile with mvn compile and you should obtain a packaged version of XEclipse in ../../M.XEclipse
