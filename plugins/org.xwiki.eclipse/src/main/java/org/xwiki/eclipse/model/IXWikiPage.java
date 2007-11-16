@@ -85,5 +85,10 @@ public interface IXWikiPage
 
     public IXWikiSpace getSpace() throws XWikiConnectionException;
 
+    /**
+     * Remove this page from the remote XWiki.
+     * 
+     * @throws XWikiConnectionException
+     */
     public void remove() throws XWikiConnectionException;
 }

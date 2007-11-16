@@ -33,6 +33,9 @@ import java.util.Map;
 import org.xwiki.eclipse.model.IXWikiConnection;
 import org.xwiki.eclipse.model.XWikiConnectionException;
 
+/**
+ * This singleton manages all the active connections
+ */
 public class XWikiConnectionManager
 {
     private static XWikiConnectionManager sharedInstance;
@@ -41,6 +44,9 @@ public class XWikiConnectionManager
 
     private Map<String, String> idToPasswordMapping;
 
+    /**
+     * @return The shared instance of the singleton.
+     */
     public static XWikiConnectionManager getDefault()
     {
         if (sharedInstance == null) {
@@ -56,11 +62,20 @@ public class XWikiConnectionManager
         idToPasswordMapping = new HashMap<String, String>();
     }
 
+    /**
+     * @return A list of all registered connections.
+     */
     public List<IXWikiConnection> getConnections()
     {
         return xwikiConnections;
     }
 
+    /**
+     * Add a connection.
+     * 
+     * @param xwikiConnection The connection to be added.
+     * @param password The password to be used for this connection.
+     */
     public void addConnection(IXWikiConnection xwikiConnection, String password)
     {
         if (!xwikiConnections.contains(xwikiConnection)) {
@@ -72,6 +87,11 @@ public class XWikiConnectionManager
         }
     }
 
+    /**
+     * Remove a connection.
+     * 
+     * @param xwikiConnection The connection to be removed.
+     */
     public void removeConnection(IXWikiConnection xwikiConnection)
     {
         xwikiConnections.remove(xwikiConnection);
@@ -79,11 +99,23 @@ public class XWikiConnectionManager
             XWikiEclipseEvent.CONNECTION_REMOVED, xwikiConnection);
     }
 
-    public String getPasswordForConnection(String id)
+    /**
+     * Get the password associated to a given connection.
+     * 
+     * @param xwikiConnection The connection object.
+     * @return The password associated to the given connection.
+     */
+    public String getPasswordForConnection(IXWikiConnection xwikiConnection)
     {
-        return idToPasswordMapping.get(id);
+        return idToPasswordMapping.get(xwikiConnection.getId());
     }
 
+    /**
+     * Serialize registered connections to persistent storage.
+     * 
+     * @param output The output file where to write the serialized data.
+     * @throws Exception
+     */
     public void saveConnections(File output) throws Exception
     {
         ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(output));
@@ -95,6 +127,12 @@ public class XWikiConnectionManager
         oos.close();
     }
 
+    /**
+     * Restore previously registered connections.
+     * 
+     * @param input The file from where reading connection data.
+     * @throws Exception
+     */
     @SuppressWarnings("unchecked")
     public void restoreConnections(File input) throws Exception
     {
@@ -104,6 +142,10 @@ public class XWikiConnectionManager
         ois.close();
     }
 
+    /**
+     * Close all registered connections. This method should be called before quitting the
+     * application in order to properly dispose all the resources associated to the connections.
+     */
     public void dispose()
     {
         for (IXWikiConnection xwikiConnecton : xwikiConnections) {

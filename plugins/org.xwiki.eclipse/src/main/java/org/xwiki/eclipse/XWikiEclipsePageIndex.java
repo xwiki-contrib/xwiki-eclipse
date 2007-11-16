@@ -27,6 +27,9 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import org.xwiki.eclipse.model.IXWikiConnection;
 import org.xwiki.eclipse.model.IXWikiPage;
 
+/**
+ * A thread safe index for storing all known pages 
+ */
 public class XWikiEclipsePageIndex
 {
     private Set<IXWikiPage> pages;
@@ -38,6 +41,9 @@ public class XWikiEclipsePageIndex
         pages = new CopyOnWriteArraySet<IXWikiPage>();
     }
 
+    /**
+     * @return The shared instance
+     */
     public static XWikiEclipsePageIndex getDefault()
     {
         if (instance == null) {

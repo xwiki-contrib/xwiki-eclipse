@@ -25,6 +25,9 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.ListenerList;
 
+/**
+ * This class implements a publish-subscribe notification hub for dispatching events.
+ */
 public class XWikiEclipseNotificationCenter
 {
     private Map<XWikiEclipseEvent, ListenerList> eventyTypeToListenersMapping;
@@ -36,6 +39,9 @@ public class XWikiEclipseNotificationCenter
         eventyTypeToListenersMapping = new HashMap<XWikiEclipseEvent, ListenerList>();
     }
 
+    /**
+     * @return The shared instance.
+     */
     public static XWikiEclipseNotificationCenter getDefault()
     {
         if (instance == null) {
@@ -45,7 +51,13 @@ public class XWikiEclipseNotificationCenter
         return instance;
     }
 
-    public void addListener(XWikiEclipseEvent eventType, Object listener)
+    /**
+     * Register a listener for a given event type.
+     * 
+     * @param eventType The event type.
+     * @param listener The associated listener.
+     */
+    public void addListener(XWikiEclipseEvent eventType, IXWikiEclipseEventListener listener)
     {
         ListenerList listenerList = eventyTypeToListenersMapping.get(eventType);
         if (listenerList == null) {
@@ -56,6 +68,12 @@ public class XWikiEclipseNotificationCenter
         listenerList.add(listener);
     }
 
+    /**
+     * Unregister a listener for a given event type.
+     * 
+     * @param eventType The event type.
+     * @param listener The associated listener.
+     */
     public void removeListener(XWikiEclipseEvent eventType, IXWikiEclipseEventListener listener)
     {
         ListenerList listenerList = eventyTypeToListenersMapping.get(eventType);
@@ -64,6 +82,13 @@ public class XWikiEclipseNotificationCenter
         }
     }
 
+    /**
+     * Dispatch an event to all the listener registered for it.
+     * 
+     * @param sender The object who sends the event.
+     * @param eventType The event type.
+     * @param data Additional data to be provided to the listener (depends on the event type. See {@link XWikiEclipseEvent}
+     */
     public void fireEvent(Object sender, XWikiEclipseEvent eventType, Object data)
     {
         ListenerList listenerList = eventyTypeToListenersMapping.get(eventType);

@@ -52,8 +52,7 @@ public class ConnectHandler extends AbstractHandler
             try {
 
                 String password =
-                    XWikiConnectionManager.getDefault().getPasswordForConnection(
-                        xwikiConnection.getId());
+                    XWikiConnectionManager.getDefault().getPasswordForConnection(xwikiConnection);
                 if (password == null) {
                     InputDialog inputDialog =
                         new InputDialog(HandlerUtil.getActiveShell(event), "Password", String

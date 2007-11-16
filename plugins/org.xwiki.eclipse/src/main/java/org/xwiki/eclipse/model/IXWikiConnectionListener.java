@@ -20,9 +20,20 @@
  */
 package org.xwiki.eclipse.model;
 
+/**
+ * Interface providing methods that deal with connection lifecycle.
+ */
 public interface IXWikiConnectionListener
 {
+    /**
+     * Called when a connection to the remote XWiki is established.
+     * @param connection The connection object that generated the event. 
+     */
     public void connectionEstablished(IXWikiConnection connection);
 
+    /**
+     * Called when a connection to the remote XWiki is closed.
+     * @param connection The connection object that generated the event. 
+     */    
     public void connectionClosed(IXWikiConnection connection);
 }

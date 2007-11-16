@@ -107,10 +107,6 @@ public class XWikiPageDocumentProvider extends StorageDocumentProvider
                         "The page being saved has been modified remotely, and is not up to date.\nLocal and remote content will be presented in the editor.\n\nMerge the contents and resave the page in order to actualy update the remote version.");
             }
 
-            // XWikiPageEditor.CaretState caretState = xwikiPageEditor.getCaretState();
-            // document.set(input.getXWikiPage().getContent());
-            // xwikiPageEditor.updateEditor(input.getXWikiPage());
-            // xwikiPageEditor.setCaretOffset(caretState);
             xwikiPageEditor.updateEditor(input.getXWikiPage());
         } catch (XWikiConnectionException e) {
             throw new CoreException(new Status(IStatus.ERROR,

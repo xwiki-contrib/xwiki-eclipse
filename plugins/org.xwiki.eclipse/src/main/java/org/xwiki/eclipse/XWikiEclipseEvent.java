@@ -20,6 +20,9 @@
  */
 package org.xwiki.eclipse;
 
+/**
+ * XWiki Eclipse event definitions.
+ */
 public enum XWikiEclipseEvent
 {
     /* Data: IXWikiConnection */

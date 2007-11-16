@@ -44,8 +44,20 @@ public interface IXWikiSpace
      */
     public IXWikiConnection getConnection();
 
+    /**
+     * @return A collection containing all the pages stored in this space.
+     * @throws XWikiConnectionException
+     */
     public Collection<IXWikiPage> getPages() throws XWikiConnectionException;
 
+    /**
+     * Create a page in this space.
+     * 
+     * @param name The page name. 
+     * @param content The page content.
+     * @return The newly created page.
+     * @throws XWikiConnectionException
+     */
     public IXWikiPage createPage(String name, String content) throws XWikiConnectionException;
 
     public void remove() throws XWikiConnectionException;

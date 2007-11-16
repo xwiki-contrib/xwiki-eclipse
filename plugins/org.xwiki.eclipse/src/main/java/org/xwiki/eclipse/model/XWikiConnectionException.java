@@ -20,6 +20,9 @@
  */
 package org.xwiki.eclipse.model;
 
+/**
+ * A checked exception representing errors generated while operating on a connection. 
+ */
 public class XWikiConnectionException extends Exception
 {
     private static final long serialVersionUID = -2193452805890817846L;

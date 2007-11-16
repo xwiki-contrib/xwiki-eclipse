@@ -13,16 +13,29 @@ import org.xwiki.eclipse.model.IXWikiPage;
 import org.xwiki.eclipse.model.IXWikiSpace;
 import org.xwiki.plugins.eclipse.XWikiEclipsePlugin;
 
+/**
+ * A singleton that handles the indexing of available connections.
+ *
+ */
 public class XWikiEclipsePageIndexer implements IXWikiEclipseEventListener
 {
     private static XWikiEclipsePageIndexer instance;
 
     private Map<IXWikiConnection, Job> connectionToIndexerMapping;
 
+    /**
+     * The Eclipse job that performs the actual indexing for a given connection
+     *
+     */
     private class IndexerJob extends Job
     {
         private IXWikiConnection connection;
 
+        /**
+         * Constructor.
+         * 
+         * @param connection The connection to be indexed by this job.
+         */
         public IndexerJob(IXWikiConnection connection)
         {
             super("Connection page indexer");
@@ -74,6 +87,9 @@ public class XWikiEclipsePageIndexer implements IXWikiEclipseEventListener
         connectionToIndexerMapping = new HashMap<IXWikiConnection, Job>();
     }
 
+    /**
+     * @return The shared instance.
+     */
     public static XWikiEclipsePageIndexer getDefault()
     {
         if (instance == null) {
@@ -83,6 +99,9 @@ public class XWikiEclipsePageIndexer implements IXWikiEclipseEventListener
         return instance;
     }
 
+    /**
+     * Start the indexer.
+     */
     public void start()
     {
         XWikiEclipseNotificationCenter.getDefault().addListener(
@@ -91,6 +110,9 @@ public class XWikiEclipsePageIndexer implements IXWikiEclipseEventListener
             XWikiEclipseEvent.CONNECTION_CLOSED, this);
     }
 
+    /**
+     * Stop the indexer.
+     */
     public void stop()
     {
         XWikiEclipseNotificationCenter.getDefault().removeListener(
@@ -103,6 +125,16 @@ public class XWikiEclipsePageIndexer implements IXWikiEclipseEventListener
         }
     }
 
+    /**
+     * Event handling.
+     * 
+     * When a connection is established, then an indexing job is created on that connection.
+     * The job is re-scheduled at a fixed interval.
+     * 
+     * When a connection is closed, the indexing job for that connection is canceled.
+     *
+     * So only active connections are indexed.
+     */
     public void handleEvent(Object sender, XWikiEclipseEvent event, Object data)
     {
         IXWikiConnection connection;

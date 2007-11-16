@@ -76,23 +76,63 @@ public interface IXWikiConnection
     public Collection<IXWikiPage> getPages(IXWikiSpace space) throws XWikiConnectionException;
 
     /**
-     * @return The pages that have already been fetched and for which we have a local knwoledge.
+     * @return The pages that have already been fetched and for which we have a local knowledge.
      */
     public Collection<IXWikiPage> getKnownPages();
 
+    /**
+     * @param pageId The page id for the page to be retrieved.
+     * @return The page with the given id
+     * @throws XWikiConnectionException
+     */
     public IXWikiPage getPage(String pageId) throws XWikiConnectionException;
 
+    /**
+     * @return The username associated to this connection.
+     */
     public String getUserName();
 
+    /**
+     * @return The URL of the XWiki associated to this connection.
+     */
     public String getServerUrl();
 
+    /**
+     * Create a space on the remove XWiki
+     * 
+     * @param key 
+     * @param name
+     * @param description
+     * @throws XWikiConnectionException
+     */
     public void createSpace(String key, String name, String description)
         throws XWikiConnectionException;
 
+    /**
+     * Create a page on the remote XWiki
+     * 
+     * @param space The space where the page will be created.
+     * @param name The page name.
+     * @param content The page content.
+     * @return The newly created page.
+     * @throws XWikiConnectionException
+     */
     public IXWikiPage createPage(IXWikiSpace space, String name, String content)
         throws XWikiConnectionException;
 
+    /**
+     * Remove a space from the remote XWiki.
+     * 
+     * @param space The space to be removed.
+     * @throws XWikiConnectionException
+     */
     public void removeSpace(IXWikiSpace space) throws XWikiConnectionException;
 
+    /**
+     * Remove a page from the remote XWiki.
+     * 
+     * @param page The page to be removed.
+     * @throws XWikiConnectionException
+     */
     public void removePage(IXWikiPage page) throws XWikiConnectionException;
 }

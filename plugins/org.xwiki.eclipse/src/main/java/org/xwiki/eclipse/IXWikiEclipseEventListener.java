@@ -20,7 +20,17 @@
  */
 package org.xwiki.eclipse;
 
+/**
+ * Interface that provides methods for dealing with XWiki Eclipse event handling.
+ */
 public interface IXWikiEclipseEventListener
 {
+    /**
+     * Event notification.
+     * 
+     * @param sender The object who generated the event.
+     * @param event The event type.
+     * @param data Additional data associated to the event (See {@link XWikiEclipseEvent})
+     */
     public void handleEvent(Object sender, XWikiEclipseEvent event, Object data);
 }

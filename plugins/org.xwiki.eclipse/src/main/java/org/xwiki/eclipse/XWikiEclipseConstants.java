@@ -20,6 +20,9 @@
  */
 package org.xwiki.eclipse;
 
+/**
+ * Constants
+ */
 public final class XWikiEclipseConstants
 {
     public static final Object[] NO_OBJECTS = new Object[0];
