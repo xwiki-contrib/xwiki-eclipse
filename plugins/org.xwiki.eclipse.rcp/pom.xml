@@ -98,21 +98,24 @@
           </execution>
         </executions>
       </plugin>
-    </plugins>
 
-    <plugin>
-      <artifactId>maven-clean-plugin</artifactId>
-      <configuration>
-        <filesets>
-          <fileset>
-            <directory>buildConfiguration</directory>
-          </fileset>
-		  <fileset>
-            <directory>../../features</directory>
-          </fileset>
-        </filesets>
-      </configuration>
-    </plugin>
+      <plugin>
+        <artifactId>maven-clean-plugin</artifactId>
+        <configuration>
+          <filesets>
+            <fileset>
+              <directory>buildConfiguration</directory>
+            </fileset>
+            <fileset>
+              <directory>../../features</directory>
+            </fileset>
+          </filesets>
+        </configuration>
+      </plugin>
+
+
+
+    </plugins>
 
     <resources>
       <resource>
