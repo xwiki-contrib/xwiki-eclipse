@@ -2,6 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+ 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.xwiki.eclipse</groupId>
   <artifactId>xwiki-eclipse-rcp-${pdePlatform}-${pdeToolkit}-${pdeArch}</artifactId>
@@ -9,9 +10,11 @@
   <name>XEclipse</name>
   <version>1.0-SNAPSHOT</version>
   <description>XWiki Eclipse Client</description>
+  
   <build>
 
     <plugins>
+  
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
@@ -112,9 +115,7 @@
           </filesets>
         </configuration>
       </plugin>
-
-
-
+  
     </plugins>
 
     <resources>
@@ -127,6 +128,7 @@
   </build>
 
   <profiles>
+  
     <profile>
       <id>unix</id>
       <activation>
@@ -141,6 +143,7 @@
         <pdeArch>x86</pdeArch>
       </properties>
     </profile>
+  
     <profile>
       <id>macx86</id>
       <activation>
@@ -155,6 +158,7 @@
         <pdeArch>x86</pdeArch>
       </properties>
     </profile>
+  
     <profile>
       <id>macppc</id>
       <activation>
@@ -169,6 +173,7 @@
         <pdeArch>ppc</pdeArch>
       </properties>
     </profile>
+    
     <profile>
       <id>windows</id>
       <activation>
@@ -182,6 +187,7 @@
         <pdeArch>x86</pdeArch>
       </properties>
     </profile>
+  
   </profiles>
 
 </project>
