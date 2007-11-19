@@ -38,6 +38,11 @@
   <name>XEclipse</name>
   <version>1.0-SNAPSHOT</version>
   <description>XWiki Eclipse Client</description>
+  <scm>
+    <connection>scm:svn:http://svn.xwiki.org/svnroot/xwiki/xwiki-extensions/xwiki-eclipse/trunk</connection>
+    <developerConnection>scm:svn:https://svn.xwiki.org/svnroot/xwiki/xwiki-extensions/xwiki-eclipse/trunk</developerConnection>
+    <url>http://svn.xwiki.org/svnroot/xwiki/xwiki-extensions/xwiki-eclipse/trunk</url>
+  </scm>
   <build>
     <plugins>
       <plugin>
