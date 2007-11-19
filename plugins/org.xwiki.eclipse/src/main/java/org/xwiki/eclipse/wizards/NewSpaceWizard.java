@@ -29,7 +29,10 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
+import org.xwiki.eclipse.WorkingSet;
+import org.xwiki.eclipse.WorkingSetManager;
 import org.xwiki.eclipse.model.IXWikiConnection;
+import org.xwiki.eclipse.model.IXWikiSpace;
 
 public class NewSpaceWizard extends Wizard implements INewWizard
 {
@@ -57,8 +60,14 @@ public class NewSpaceWizard extends Wizard implements INewWizard
                     try {
                         monitor.beginTask("Creating space...", IProgressMonitor.UNKNOWN);
                         String spaceKey = newSpaceWizardState.getName().trim().replace(' ', '_');
-                        xwikiConnection.createSpace(spaceKey, newSpaceWizardState.getName(),
+                        IXWikiSpace space = xwikiConnection.createSpace(spaceKey, newSpaceWizardState.getName(),
                             newSpaceWizardState.getDescription());
+                        
+                        WorkingSet currentWorkingSet = WorkingSetManager.getDefault().getActiveWorkingSet();
+                        if(currentWorkingSet != null) {
+                            currentWorkingSet.add(space);
+                        }
+                        
                         monitor.done();
                     } catch (Exception e) {
                         e.printStackTrace();

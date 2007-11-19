@@ -30,6 +30,8 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
+import org.xwiki.eclipse.WorkingSet;
+import org.xwiki.eclipse.WorkingSetManager;
 import org.xwiki.eclipse.XWikiConnectionManager;
 import org.xwiki.eclipse.model.IXWikiConnection;
 import org.xwiki.eclipse.model.XWikiConnectionFactory;
@@ -86,6 +88,12 @@ public class NewConnectionWizard extends Wizard implements INewWizard
                             .getDefault().getStateLocation().toFile(), "cache"));
             XWikiConnectionManager.getDefault().addConnection(connection,
                 newConnectionWizardState.getPassword());
+            
+            WorkingSet currentWorkingSet = WorkingSetManager.getDefault().getActiveWorkingSet();
+            if(currentWorkingSet != null) {
+                currentWorkingSet.add(connection);
+            }
+            
             connection.connect(newConnectionWizardState.getPassword());
         } catch (Exception e) {
             e.printStackTrace();

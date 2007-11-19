@@ -105,7 +105,7 @@ public interface IXWikiConnection
      * @param description
      * @throws XWikiConnectionException
      */
-    public void createSpace(String key, String name, String description)
+    public IXWikiSpace createSpace(String key, String name, String description)
         throws XWikiConnectionException;
 
     /**

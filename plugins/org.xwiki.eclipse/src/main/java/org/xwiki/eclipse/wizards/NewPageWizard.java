@@ -32,6 +32,8 @@ import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
+import org.xwiki.eclipse.WorkingSet;
+import org.xwiki.eclipse.WorkingSetManager;
 import org.xwiki.eclipse.editors.XWikiPageEditor;
 import org.xwiki.eclipse.editors.XWikiPageEditorInput;
 import org.xwiki.eclipse.model.IXWikiPage;
@@ -68,6 +70,12 @@ public class NewPageWizard extends Wizard implements INewWizard
                         final IXWikiPage xwikiPage =
                             xwikiSpace.createPage(newPageWizardState.getTitle(),
                                 "Write here content");
+
+                        WorkingSet currentWorkingSet =
+                            WorkingSetManager.getDefault().getActiveWorkingSet();
+                        if (currentWorkingSet != null) {
+                            currentWorkingSet.add(xwikiPage);
+                        }
 
                         Display.getDefault().asyncExec(new Runnable()
                         {

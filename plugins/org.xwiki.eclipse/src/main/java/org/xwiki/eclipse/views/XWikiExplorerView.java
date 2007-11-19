@@ -98,11 +98,12 @@ public class XWikiExplorerView extends ViewPart implements IXWikiEclipseEventLis
 
     private IHandlerActivation deleteCommandActivation;
 
-    private WorkingSet currentWorkingSet;
+    // private WorkingSet currentWorkingSet;
 
     private Form form;
-    
-    private class RefreshHandler extends AbstractHandler {
+
+    private class RefreshHandler extends AbstractHandler
+    {
         @Override
         public Object execute(ExecutionEvent event) throws ExecutionException
         {
@@ -111,15 +112,14 @@ public class XWikiExplorerView extends ViewPart implements IXWikiEclipseEventLis
             Object selectedObject =
                 XWikiEclipseUtil.getSingleSelectedObjectInStructuredSelection(selection);
 
-            if (selectedObject instanceof IXWikiConnection) {                
+            if (selectedObject instanceof IXWikiConnection) {
                 treeViewer.refresh(selectedObject);
-            }
-            else if (selectedObject instanceof IXWikiSpace) {
+            } else if (selectedObject instanceof IXWikiSpace) {
                 treeViewer.refresh(selectedObject);
             }
 
             return null;
-        }        
+        }
     }
 
     private class SelectWorkingSetAction extends Action
@@ -132,7 +132,7 @@ public class XWikiExplorerView extends ViewPart implements IXWikiEclipseEventLis
         {
             super(null, Action.AS_CHECK_BOX);
             setText(workingSet != null ? workingSet.getName() : "No working set");
-            setChecked(workingSet == currentWorkingSet);
+            setChecked(workingSet == WorkingSetManager.getDefault().getActiveWorkingSet());
             this.workingSet = workingSet;
             this.treeViewer = treeViewer;
 
@@ -146,7 +146,7 @@ public class XWikiExplorerView extends ViewPart implements IXWikiEclipseEventLis
         @Override
         public void run()
         {
-            currentWorkingSet = workingSet;
+            WorkingSetManager.getDefault().setActiveWorkingSet(workingSet);
             treeViewer.resetFilters();
             if (workingSet != null) {
                 form.setText(workingSet.getName());
@@ -246,8 +246,8 @@ public class XWikiExplorerView extends ViewPart implements IXWikiEclipseEventLis
                          * set to null
                          */
                         if (!WorkingSetManager.getDefault().getWorkingSets().contains(
-                            currentWorkingSet)) {
-                            currentWorkingSet = null;
+                            WorkingSetManager.getDefault().getActiveWorkingSet())) {
+                            WorkingSetManager.getDefault().setActiveWorkingSet(null);
                             treeViewer.resetFilters();
                         }
                     }
@@ -344,7 +344,7 @@ public class XWikiExplorerView extends ViewPart implements IXWikiEclipseEventLis
             SWT.NONE));
 
         menuManager.add(new Separator());
-        
+
         menuManager.add(new CommandContributionItem(getSite(),
             null,
             XWikiEclipseConstants.REFRESH_COMMAND,
@@ -356,7 +356,7 @@ public class XWikiExplorerView extends ViewPart implements IXWikiEclipseEventLis
             null,
             null,
             SWT.NONE));
-        
+
         menuManager.add(new Separator());
 
         menuManager.add(new CommandContributionItem(getSite(),
@@ -578,7 +578,7 @@ public class XWikiExplorerView extends ViewPart implements IXWikiEclipseEventLis
                     return EvaluationResult.FALSE;
                 }
             });
-        
+
         handlerService.activateHandler(XWikiEclipseConstants.REFRESH_COMMAND,
             new RefreshHandler(), new Expression()
             {
@@ -593,14 +593,14 @@ public class XWikiExplorerView extends ViewPart implements IXWikiEclipseEventLis
                 {
                     Object selection =
                         context.getVariable(ISources.ACTIVE_CURRENT_SELECTION_NAME);
-                    
+
                     Object selectedObject =
                         XWikiEclipseUtil.getSingleSelectedObjectInStructuredSelection(selection);
 
-                    if(selectedObject instanceof IXWikiConnection) {
+                    if (selectedObject instanceof IXWikiConnection) {
                         return EvaluationResult.TRUE;
                     }
-                    
+
                     if (selectedObject instanceof IXWikiSpace) {
                         return EvaluationResult.TRUE;
                     }
@@ -608,7 +608,6 @@ public class XWikiExplorerView extends ViewPart implements IXWikiEclipseEventLis
                     return EvaluationResult.FALSE;
                 }
             });
-
 
     }
 
@@ -670,6 +669,7 @@ public class XWikiExplorerView extends ViewPart implements IXWikiEclipseEventLis
     {
         IHandlerService handlerService =
             (IHandlerService) getSite().getService(IHandlerService.class);
+
         if (deleteCommandActivation != null) {
             handlerService.deactivateHandler(deleteCommandActivation);
         }

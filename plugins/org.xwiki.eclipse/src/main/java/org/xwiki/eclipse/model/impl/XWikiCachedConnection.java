@@ -509,14 +509,15 @@ public class XWikiCachedConnection extends AbstractXWikiConnection implements Se
         return cacheDAO.isCached(pageId);
     }
 
-    public void createSpace(String key, String name, String description)
+    public IXWikiSpace createSpace(String key, String name, String description)
         throws XWikiConnectionException
     {
         if (isConnected()) {
             try {
-                remoteDAO.createSpace(key, name, description);
+                Space space = remoteDAO.createSpace(key, name, description);
                 XWikiEclipseNotificationCenter.getDefault().fireEvent(this,
                     XWikiEclipseEvent.SPACE_CREATED, this);
+                return new XWikiSpace(this, space.getKey(), space.toMap());
             } catch (XWikiDAOException e) {
                 e.printStackTrace();
                 throw new XWikiConnectionException(e);

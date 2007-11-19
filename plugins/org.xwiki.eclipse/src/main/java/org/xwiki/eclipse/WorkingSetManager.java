@@ -28,22 +28,39 @@ import java.io.ObjectOutputStream;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * A singleton for managing working sets.
+ */
 public class WorkingSetManager
 {
     private Set<WorkingSet> workingSets;
 
     private static WorkingSetManager sharedInstance;
 
+    /**
+     * The currently selected working set.
+     */
+    private WorkingSet activeWorkingSet;
+
     private WorkingSetManager()
     {
         workingSets = new HashSet<WorkingSet>();
+        activeWorkingSet = null;
     }
 
+    /**
+     * Constructor for restoring a previously saved working set list
+     * 
+     * @param workingSets A set containing working sets.
+     */
     private WorkingSetManager(Set<WorkingSet> workingSets)
     {
         this.workingSets = workingSets;
     }
 
+    /**
+     * @return The shared instance.
+     */
     @SuppressWarnings("unchecked")
     public static WorkingSetManager getDefault()
     {
@@ -54,21 +71,40 @@ public class WorkingSetManager
         return sharedInstance;
     }
 
+    /**
+     * Add a working set to the manager.
+     * 
+     * @param workingSet The working set to be added.
+     */
     public void add(WorkingSet workingSet)
     {
         workingSets.add(workingSet);
     }
 
+    /**
+     * Remove a working set from the manager.
+     * 
+     * @param workingSet The working set to be removed.
+     */
     public void remove(WorkingSet workingSet)
     {
         workingSets.remove(workingSet);
     }
 
+    /**
+     * @return All the currently registered working set.
+     */
     public Set<WorkingSet> getWorkingSets()
     {
         return workingSets;
     }
 
+    /**
+     * Restore a previously saved working set list from a file.
+     * 
+     * @param inputFile The file with the serialized stream containing the working sets.
+     * @throws Exception
+     */
     public void restoreWorkingSets(File inputFile) throws Exception
     {
         ObjectInputStream ois = new ObjectInputStream(new FileInputStream(inputFile));
@@ -76,10 +112,36 @@ public class WorkingSetManager
         ois.close();
     }
 
+    /**
+     * Store the currently registered working set on a file.
+     * 
+     * @param outputFile The file where the serialized stream containing the working sets will be
+     *            stored.
+     * @throws Exception
+     */
     public void saveWorkingSets(File outputFile) throws Exception
     {
         ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(outputFile));
         oos.writeObject(workingSets);
         oos.close();
     }
+
+    /**
+     * @return The active working set. null if no working is active.
+     */
+    public WorkingSet getActiveWorkingSet()
+    {
+        return activeWorkingSet;
+    }
+
+    /**
+     * Set the active working set.
+     * 
+     * @param workingSet A working set to be activated.
+     */
+    public void setActiveWorkingSet(WorkingSet workingSet)
+    {
+        this.activeWorkingSet = workingSet;
+    }
+
 }

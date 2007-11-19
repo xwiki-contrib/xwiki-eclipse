@@ -26,6 +26,9 @@ import org.xwiki.eclipse.model.IXWikiConnection;
 import org.xwiki.eclipse.model.IXWikiPage;
 import org.xwiki.eclipse.model.IXWikiSpace;
 
+/**
+ * A filter for displaying only the resources that belong to a given working set.
+ */
 public class WorkingSetFilter extends ViewerFilter
 {
     private WorkingSet workingSet;

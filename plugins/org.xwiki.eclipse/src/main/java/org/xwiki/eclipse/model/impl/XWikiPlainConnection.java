@@ -291,13 +291,14 @@ public class XWikiPlainConnection extends AbstractXWikiConnection
         return false;
     }
 
-    public void createSpace(String key, String name, String description)
+    public IXWikiSpace createSpace(String key, String name, String description)
         throws XWikiConnectionException
     {
         try {
-            remoteDAO.createSpace(key, name, description);
+            Space space = remoteDAO.createSpace(key, name, description);
             XWikiEclipseNotificationCenter.getDefault().fireEvent(this,
                 XWikiEclipseEvent.SPACE_CREATED, this);
+            return new XWikiSpace(this, space.getKey(), space.toMap());
         } catch (XWikiDAOException e) {
             e.printStackTrace();
             throw new XWikiConnectionException(e);
