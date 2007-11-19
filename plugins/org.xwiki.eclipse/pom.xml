@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+ *
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ *
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.xpn.xwiki.platform</groupId>
+    <artifactId>xwiki</artifactId>
+    <version>6</version>
+    <relativePath>../../../xwiki-platform-pom</relativePath>
+  </parent>
+  <groupId>org.xwiki.eclipse</groupId>
+  <artifactId>xwiki-eclipse</artifactId>
+  <packaging>zip</packaging>
+  <name>Eclipse Integration Plugin</name>
+  <version>1.0</version>
+  <description>Eclipse Integration Plugin</description>
+  <scm>
+    <connection>scm:svn:http://svn.xwiki.org/svnroot/xwiki/xwiki-extensions/xwiki-eclipse/tags/xwiki-eclipse-1.0</connection>
+    <developerConnection>scm:svn:https://svn.xwiki.org/svnroot/xwiki/xwiki-extensions/xwiki-eclipse/tags/xwiki-eclipse-1.0</developerConnection>
+    <url>http://svn.xwiki.org/svnroot/xwiki/xwiki-extensions/xwiki-eclipse/tags/xwiki-eclipse-1.0</url>
+  </scm>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.5</source>
+          <target>1.5</target>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>testCompile</goal>
+            </goals>
+            <configuration>
+              <skip>true</skip>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>pde-maven-plugin</artifactId>
+        <extensions>true</extensions>
+        <configuration>
+          <!-- You must provide a profiles.xml file containing the value of eclipseInstall, or set it up in your
+               settings.xml or pass it on the command line.
+               For example, create the following profiles.xml file next to this pom.xml file:
+               
+               <profilesXml>
+                 <profiles>
+                   <profile>
+                     <id>vmassol</id>
+                     <properties>
+                       <eclipseInstall>/Applications/eclipse-europa-pde/</eclipseInstall>
+                     </properties>
+                   </profile>
+                 </profiles>
+                 <activeProfiles>
+                   <activeProfile>vmassol</activeProfile>
+                 </activeProfiles>
+               </profilesXml>
+           -->
+          <eclipseInstall>${eclipseInstall}</eclipseInstall>
+        </configuration>
+        <executions>
+          <execution>
+            <id>clean-pde</id>
+            <phase>clean</phase>
+            <goals>
+              <goal>clean</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>

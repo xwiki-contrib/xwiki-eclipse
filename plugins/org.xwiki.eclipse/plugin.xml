@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            contributorClass="org.xwiki.plugins.eclipse.editors.XWikiEditorContributor"
+            extensions="xw"
+            name="XWiki Editor"
+            icon="icons/xwiki-editor.png"
+            class="org.xwiki.plugins.eclipse.editors.XWikiEditor"
+            id="org.xwiki.plugins.eclipse.editors.XWikiEditor">
+      </editor>
+      <editor
+            class="org.xwiki.eclipse.editors.XWikiPageEditor"
+            contributorClass="org.xwiki.eclipse.editors.XWikiPageEditorContributor"
+            icon="icons/xwiki.png"
+            id="org.xwiki.xeclipse.editors.XWikiPage"
+            name="XWiki page editor">
+      </editor>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            name="XWiki"
+            id="XWiki">
+      </category>
+      <view
+            name="XWiki Navigator"
+            icon="icons/xwiki-navigator.png"
+            category="XWiki-old"
+            class="org.xwiki.plugins.eclipse.views.navigator.XWikiNavigator"
+            id="org.xwiki.plugins.eclipse.views.XWikiNavigator">
+      </view>
+      <view
+            category="XWiki"
+            class="org.xwiki.eclipse.views.XWikiExplorerView"
+            icon="icons/xwiki.png"
+            id="org.xwiki.eclipse.views.XWikiExplorer"
+            name="XWiki explorer">
+      </view>
+      <view
+            category="XWiki"
+            class="org.xwiki.eclipse.views.XWikiPagePreviewView"
+            id="org.xwiki.eclipse.views.XWikiPagePreview"
+            name="XWiki preview">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="org.eclipse.ui.resourcePerspective">
+         <view
+               relative="org.eclipse.ui.views.TaskList"
+               ratio="0.5"
+               relationship="right"
+               id="org.xwiki.plugins.eclipse.views.XWikiNavigator">
+         </view>
+      </perspectiveExtension>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.adapters">
+      <factory
+            adaptableType="org.xwiki.plugins.eclipse.model.IXWikiConnection"
+            class="org.xwiki.plugins.eclipse.model.adapters.AdapterFactory">
+         <adapter
+               type="org.eclipse.ui.model.IWorkbenchAdapter">
+         </adapter>
+      </factory>
+      <factory
+            adaptableType="org.xwiki.plugins.eclipse.model.IXWikiSpace"
+            class="org.xwiki.plugins.eclipse.model.adapters.AdapterFactory">
+         <adapter
+               type="org.eclipse.ui.model.IWorkbenchAdapter">
+         </adapter>
+      </factory>
+      <factory
+            adaptableType="org.xwiki.plugins.eclipse.model.IXWikiPage"
+            class="org.xwiki.plugins.eclipse.model.adapters.AdapterFactory">
+         <adapter
+               type="org.eclipse.ui.model.IWorkbenchAdapter">
+         </adapter>
+      </factory>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            id="org.xwiki.eclipse.command.Connect"
+            name="Connect">
+      </command>
+      <command
+            id="org.xwiki.eclipse.command.Disconnect"
+            name="Disconnect">
+      </command>
+      <command
+            defaultHandler="org.xwiki.eclipse.handlers.NewConnectionHandler"
+            id="org.xwiki.eclipse.command.NewConnection"
+            name="New connection...">
+      </command>
+      <command
+            id="org.xwiki.eclipse.command.RemoveConnection"
+            name="Remove connection">
+      </command>
+      <command
+            id="org.xwiki.eclipse.command.NewSpace"
+            name="New space...">
+      </command>
+      <command
+            id="org.xwiki.eclipse.command.NewPage"
+            name="New page...">
+      </command>
+      <command
+            id="org.xwiki.eclipse.command.RemoveSpace"
+            name="Remove space">
+      </command>
+      <command
+            id="org.xwiki.eclipse.command.RemovePage"
+            name="Remove page">
+      </command>
+      <command
+            defaultHandler="org.xwiki.eclipse.handlers.OpenPageHandler"
+            id="org.xwiki.eclipse.command.OpenPage"
+            name="Open page...">
+      </command>
+      <command
+            id="org.xwiki.eclipse.command.GrabSpace"
+            name="Grab space...">
+      </command>
+      <command
+            id="org.xwiki.eclipse.command.Refresh"
+            name="Refresh">
+      </command>
+   </extension>
+   <extension
+         name="NEW ADAPTERS"
+         point="org.eclipse.core.runtime.adapters">
+      <factory
+            adaptableType="org.xwiki.eclipse.model.IXWikiConnection"
+            class="org.xwiki.eclipse.adapters.AdapterFactory">
+         <adapter
+               type="org.eclipse.ui.model.IWorkbenchAdapter">
+         </adapter>
+         <adapter
+               type="org.eclipse.ui.model.IWorkbenchAdapter2">
+         </adapter>
+         <adapter
+               type="org.eclipse.ui.progress.IDeferredWorkbenchAdapter">
+         </adapter>
+      </factory>
+      <factory
+            adaptableType="org.xwiki.eclipse.model.IXWikiSpace"
+            class="org.xwiki.eclipse.adapters.AdapterFactory">
+         <adapter
+               type="org.eclipse.ui.model.IWorkbenchAdapter">
+         </adapter>
+         <adapter
+               type="org.eclipse.ui.progress.IDeferredWorkbenchAdapter">
+         </adapter>
+      </factory>
+      <factory
+            adaptableType="org.xwiki.eclipse.model.IXWikiPage"
+            class="org.xwiki.eclipse.adapters.AdapterFactory">
+         <adapter
+               type="org.eclipse.ui.model.IWorkbenchAdapter">
+         </adapter>
+      </factory>
+   </extension>
+   <extension
+         point="org.eclipse.ui.bindings">
+      <key
+            commandId="org.xwiki.eclipse.command.OpenPage"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+SHIFT+P">
+      </key>
+      <key
+            commandId="org.xwiki.eclipse.command.NewConnection"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+SHIFT+N">
+      </key>
+   </extension>
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <wizard
+            category="org.xwiki.xeclipse.wizard.category.XWiki"
+            class="org.xwiki.eclipse.wizards.NewConnectionWizard"
+            icon="icons/xwiki.png"
+            id="org.xwiki.eclipse.wizard.NewConnection"
+            name="New connection">
+      </wizard>
+      <category
+            id="org.xwiki.xeclipse.wizard.category.XWiki"
+            name="XWiki">
+      </category>
+      <wizard
+            class="org.xwiki.eclipse.wizards.NewWorkingSetWizard"
+            id="org.xwiki.eclipse.wizard.NewWorkingSet"
+            name="New working set">
+      </wizard>
+   </extension>
+
+</plugin>

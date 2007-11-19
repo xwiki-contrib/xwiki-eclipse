@@ -1,0 +1,23 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: XWiki Eclipse Integration
+Bundle-SymbolicName: org.xwiki.eclipse;singleton:=true
+Bundle-Version: 1.0.0.SNAPSHOT
+Bundle-ClassPath: org.xwiki.plugins.eclipse/,
+ lib/ws-commons-util-1.0.1.jar,
+ lib/xmlrpc-client-3.0.jar,
+ lib/xmlrpc-common-3.0.jar,
+ lib/swizzle-confluence-1.1-20070829-xwiki.jar
+Bundle-Activator: org.xwiki.plugins.eclipse.XWikiEclipsePlugin
+Bundle-Vendor: XWiki
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.jface.text,
+ org.eclipse.core.resources,
+ org.eclipse.ui.editors,
+ org.eclipse.ui.workbench.texteditor,
+ org.eclipse.core.expressions,
+ org.eclipse.ui.ide,
+ org.eclipse.ui.forms
+Eclipse-LazyStart: true
+Export-Package: org.xwiki.plugins.eclipse.model
