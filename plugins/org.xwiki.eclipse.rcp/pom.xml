@@ -39,9 +39,9 @@
   <version>1.1-SNAPSHOT</version>
   <description>XWiki Eclipse Client</description>
   <scm>
-    <connection>scm:svn:http://svn.xwiki.org/svnroot/xwiki/xwiki-extensions/xwiki-eclipse/tags/xwiki-eclipse-1.0</connection>
-    <developerConnection>scm:svn:https://svn.xwiki.org/svnroot/xwiki/xwiki-extensions/xwiki-eclipse/tags/xwiki-eclipse-1.0</developerConnection>
-    <url>http://svn.xwiki.org/svnroot/xwiki/xwiki-extensions/xwiki-eclipse/tags/xwiki-eclipse-1.0</url>
+    <connection>scm:svn:http://svn.xwiki.org/svnroot/xwiki/xwiki-extensions/xwiki-eclipse/trunk</connection>
+    <developerConnection>scm:svn:https://svn.xwiki.org/svnroot/xwiki/xwiki-extensions/xwiki-eclipse/trunk</developerConnection>
+    <url>http://svn.xwiki.org/svnroot/xwiki/xwiki-extensions/xwiki-eclipse/trunk</url>
   </scm>
   <build>
     <plugins>
