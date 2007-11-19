@@ -49,9 +49,6 @@ public class DisconnectHandler extends AbstractHandler
                 e.printStackTrace();
             }
 
-            // XWikiEclipseUtil.closeReopenEditorsForConnection(HandlerUtil.getActiveWorkbenchWindow(event).getActivePage(),
-            // xwikiConnection);
-
             XWikiEclipseUtil.updateEditors(HandlerUtil.getActiveWorkbenchWindow(event)
                 .getActivePage(), xwikiConnection);
 

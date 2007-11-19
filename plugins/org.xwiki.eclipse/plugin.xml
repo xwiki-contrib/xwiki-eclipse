@@ -127,6 +127,10 @@
             id="org.xwiki.eclipse.command.GrabSpace"
             name="Grab space...">
       </command>
+      <command
+            id="org.xwiki.eclipse.command.Refresh"
+            name="Refresh">
+      </command>
    </extension>
    <extension
          name="NEW ADAPTERS"

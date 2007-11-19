@@ -22,6 +22,9 @@ package org.xwiki.eclipse.views;
 
 import java.util.Collection;
 
+import org.eclipse.core.commands.AbstractHandler;
+import org.eclipse.core.commands.ExecutionEvent;
+import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.expressions.EvaluationResult;
 import org.eclipse.core.expressions.Expression;
 import org.eclipse.core.expressions.ExpressionInfo;
@@ -36,6 +39,7 @@ import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -54,6 +58,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.widgets.Form;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.handlers.IHandlerActivation;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.menus.CommandContributionItem;
@@ -96,6 +101,26 @@ public class XWikiExplorerView extends ViewPart implements IXWikiEclipseEventLis
     private WorkingSet currentWorkingSet;
 
     private Form form;
+    
+    private class RefreshHandler extends AbstractHandler {
+        @Override
+        public Object execute(ExecutionEvent event) throws ExecutionException
+        {
+            ISelection selection = HandlerUtil.getCurrentSelection(event);
+
+            Object selectedObject =
+                XWikiEclipseUtil.getSingleSelectedObjectInStructuredSelection(selection);
+
+            if (selectedObject instanceof IXWikiConnection) {                
+                treeViewer.refresh(selectedObject);
+            }
+            else if (selectedObject instanceof IXWikiSpace) {
+                treeViewer.refresh(selectedObject);
+            }
+
+            return null;
+        }        
+    }
 
     private class SelectWorkingSetAction extends Action
     {
@@ -319,6 +344,20 @@ public class XWikiExplorerView extends ViewPart implements IXWikiEclipseEventLis
             SWT.NONE));
 
         menuManager.add(new Separator());
+        
+        menuManager.add(new CommandContributionItem(getSite(),
+            null,
+            XWikiEclipseConstants.REFRESH_COMMAND,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            SWT.NONE));
+        
+        menuManager.add(new Separator());
 
         menuManager.add(new CommandContributionItem(getSite(),
             null,
@@ -539,6 +578,37 @@ public class XWikiExplorerView extends ViewPart implements IXWikiEclipseEventLis
                     return EvaluationResult.FALSE;
                 }
             });
+        
+        handlerService.activateHandler(XWikiEclipseConstants.REFRESH_COMMAND,
+            new RefreshHandler(), new Expression()
+            {
+                @Override
+                public void collectExpressionInfo(ExpressionInfo info)
+                {
+                    info.addVariableNameAccess(ISources.ACTIVE_CURRENT_SELECTION_NAME);
+                }
+
+                @Override
+                public EvaluationResult evaluate(IEvaluationContext context) throws CoreException
+                {
+                    Object selection =
+                        context.getVariable(ISources.ACTIVE_CURRENT_SELECTION_NAME);
+                    
+                    Object selectedObject =
+                        XWikiEclipseUtil.getSingleSelectedObjectInStructuredSelection(selection);
+
+                    if(selectedObject instanceof IXWikiConnection) {
+                        return EvaluationResult.TRUE;
+                    }
+                    
+                    if (selectedObject instanceof IXWikiSpace) {
+                        return EvaluationResult.TRUE;
+                    }
+
+                    return EvaluationResult.FALSE;
+                }
+            });
+
 
     }
 

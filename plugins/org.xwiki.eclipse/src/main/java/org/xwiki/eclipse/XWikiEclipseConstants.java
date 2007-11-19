@@ -46,6 +46,8 @@ public final class XWikiEclipseConstants
     public static final String REMOVE_PAGE_COMMAND = "org.xwiki.eclipse.command.RemovePage";
 
     public static final String GRAB_SPACE_COMMAND = "org.xwiki.eclipse.command.GrabSpace";
+    
+    public static final String REFRESH_COMMAND = "org.xwiki.eclipse.command.Refresh";
 
     public static final String CONNECTION_SETTINGS_BANNER =
         "icons/connection-settings-banner.png";
@@ -67,4 +69,5 @@ public final class XWikiEclipseConstants
     public static final String WORKING_SET_ICON = "icons/working-set.png";
 
     public static final String SHOW_EDITOR_PREVIEW_ICON = "icons/show-editor-preview.gif";
+    
 }

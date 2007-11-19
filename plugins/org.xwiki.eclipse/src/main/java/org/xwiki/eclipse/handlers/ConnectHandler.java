@@ -83,9 +83,6 @@ public class ConnectHandler extends AbstractHandler
 
                 }, HandlerUtil.getActiveShell(event));
 
-                // XWikiEclipseUtil.closeReopenEditorsForConnection(HandlerUtil.getActiveWorkbenchWindow(event).getActivePage(),
-                // xwikiConnection);
-
                 XWikiEclipseUtil.updateEditors(HandlerUtil.getActiveWorkbenchWindow(event)
                     .getActivePage(), xwikiConnection);
 
