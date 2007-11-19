@@ -1,0 +1,9 @@
+The directory structure may appear strange but it's required by the Maven PDE plugin.
+See http://mojo.codehaus.org/pde-maven-plugin/usage.html for more details.
+
+There are 2 builds:
+* The plugin build which generates an Eclipse plugin for XEclipse. It's located in plugins/org.xwiki.eclipse
+* The RCP build which generates a standalone executable version of XEClipse. It's located in plugins/org.xwiki.xeclipse.rcp
+
+To build each one just run "mvn install" in its build directory.
+
