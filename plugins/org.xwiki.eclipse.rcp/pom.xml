@@ -65,28 +65,7 @@
             <javacTarget>1.5</javacTarget>
             <allElementsFile>${basedir}/buildConfiguration/allElements.xml</allElementsFile>
           </buildProperties>
-          <!-- You must provide a profiles.xml file containing the value of eclipseInstall and pdeBuildVersion,
-               or set them up in your settings.xml or pass them on the command line.
-               To obtain the pdeBuildVersion by finding the version in
-               $eclipseInstall/plugins/org.eclipse.pde.build_pdeBuildVersion.
-
-               For example, create the following profiles.xml file next to this pom.xml file:
-               
-               <profilesXml>
-                 <profiles>
-                   <profile>
-                     <id>vmassol</id>
-                     <properties>
-                       <eclipseInstall>/Applications/eclipse-europa-pde/</eclipseInstall>
-                       <pdeBuildVersion>3.3.2.R331_v20071019</pdeBuildVersion>
-                     </properties>
-                   </profile>
-                 </profiles>
-                 <activeProfiles>
-                   <activeProfile>vmassol</activeProfile>
-                 </activeProfiles>
-               </profilesXml>
-           -->
+          <!-- See the README file next to this pom.xml file -->
           <eclipseInstall>${eclipseInstall}</eclipseInstall>
           <pdeProductFilename>org.xwiki.eclipse.product</pdeProductFilename>
           <pdeBuildVersion>${pdeBuildVersion}</pdeBuildVersion>
@@ -94,6 +73,8 @@
         <executions>
           <execution>
             <id>clean-pde</id>
+            <!-- Note: We need to execute the PDE plugin clean goal before the maven clean plugin executes since the PDE
+                 plugin requires the buildConfiguration/ directory which is cleaned by the clean plugin... -->
             <phase>pre-clean</phase>
             <goals>
               <goal>clean</goal>
@@ -128,66 +109,37 @@
   </build>
 
   <profiles>
-  
     <profile>
-      <id>unix</id>
-      <activation>
-        <os>
-          <family>unix</family>
-          <arch>x86</arch>
-        </os>
-      </activation>
+      <id>linux</id>
       <properties>
         <pdePlatform>linux</pdePlatform>
         <pdeToolkit>gtk</pdeToolkit>
         <pdeArch>x86</pdeArch>
       </properties>
     </profile>
-  
     <profile>
       <id>macx86</id>
-      <activation>
-        <os>
-          <family>mac</family>
-          <arch>i386</arch>          
-        </os>
-      </activation>
       <properties>
         <pdePlatform>macosx</pdePlatform>
         <pdeToolkit>carbon</pdeToolkit>
         <pdeArch>x86</pdeArch>
       </properties>
     </profile>
-  
     <profile>
       <id>macppc</id>
-      <activation>
-        <os>
-          <family>mac</family>
-          <arch>ppc</arch>          
-        </os>
-      </activation>
       <properties>
         <pdePlatform>macosx</pdePlatform>
         <pdeToolkit>carbon</pdeToolkit>
         <pdeArch>ppc</pdeArch>
       </properties>
     </profile>
-    
     <profile>
       <id>windows</id>
-      <activation>
-        <os>
-          <family>windows</family>
-        </os>
-      </activation>
       <properties>
         <pdePlatform>win32</pdePlatform>
         <pdeToolkit>win32</pdeToolkit>
         <pdeArch>x86</pdeArch>
       </properties>
     </profile>
-  
   </profiles>
-
 </project>
