@@ -28,6 +28,7 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.handlers.HandlerUtil;
+import org.xwiki.eclipse.XWikiEclipsePageIndex;
 import org.xwiki.eclipse.model.IXWikiPage;
 import org.xwiki.eclipse.model.XWikiConnectionException;
 import org.xwiki.eclipse.utils.XWikiEclipseUtil;
@@ -54,6 +55,7 @@ public class RemovePageHandler extends AbstractHandler
                 int result = messageBox.open();
                 if (result == SWT.YES) {
                     xwikiPage.remove();
+                    XWikiEclipsePageIndex.getDefault().removePage(xwikiPage);
                 }
             } catch (XWikiConnectionException e) {
                 e.printStackTrace();
