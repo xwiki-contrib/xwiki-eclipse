@@ -87,7 +87,7 @@ public class XWikiSpaceAdapter implements IDeferredWorkbenchAdapter
         if (object instanceof IXWikiSpace) {
             IXWikiSpace space = (IXWikiSpace) object;
 
-            return space.getName();
+            return space.getKey();
         }
 
         return null;
