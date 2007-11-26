@@ -20,17 +20,21 @@
  */
 package org.xwiki.eclipse.editors;
 
+import java.lang.reflect.InvocationTargetException;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.editors.text.StorageDocumentProvider;
 import org.xwiki.eclipse.model.IXWikiPage;
 import org.xwiki.eclipse.model.XWikiConnectionException;
+import org.xwiki.eclipse.utils.XWikiEclipseUtil;
 import org.xwiki.plugins.eclipse.XWikiEclipsePlugin;
 
 public class XWikiPageDocumentProvider extends StorageDocumentProvider
@@ -50,10 +54,29 @@ public class XWikiPageDocumentProvider extends StorageDocumentProvider
     @Override
     protected IDocument createDocument(Object element) throws CoreException
     {
-        IDocument document = new Document();
+        final IDocument document = new Document();
         if (element instanceof XWikiPageEditorInput) {
-            XWikiPageEditorInput input = (XWikiPageEditorInput) element;
-            document.set(input.getXWikiPage().getContent());
+            final XWikiPageEditorInput input = (XWikiPageEditorInput) element;
+
+            try {
+                XWikiEclipseUtil.runOperationWithProgress(new IRunnableWithProgress()
+                {
+                    public void run(IProgressMonitor monitor) throws InvocationTargetException,
+                        InterruptedException
+                    {
+                        monitor.beginTask("Loading page", IProgressMonitor.UNKNOWN);
+                        String content = input.getXWikiPage().getContent();
+                        document.set(content);
+                        monitor.done();
+                    }
+
+                }, Display.getDefault().getActiveShell());
+            } catch (Exception e) {
+                throw new CoreException(new Status(IStatus.ERROR,
+                    XWikiEclipsePlugin.PLUGIN_ID,
+                    "Error opening page",
+                    e));
+            }
         }
 
         return document;
