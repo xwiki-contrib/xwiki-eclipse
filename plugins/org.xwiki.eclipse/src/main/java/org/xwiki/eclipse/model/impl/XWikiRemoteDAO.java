@@ -52,13 +52,25 @@ public class XWikiRemoteDAO implements IXWikiDAO
             swizzleXWiki = new SwizzleXWiki(serverUrl);
             swizzleXWiki.login(username, password);
 
+            /*
+             * This is a workaround for handling XWiki 1.1 and XWiki 1.2. This must be solved in
+             * more elegant way (also on the server side). Basically we try to get the XWiki.WebHome
+             * page. If some exception is raised then there is a problem with conversion, so we
+             * proceed with executing the old initialization code (in the catch body). If the page
+             * is correctly retrieved then everything is fine and we can proceed without doing
+             * anything else.
+             */
             try {
-                // Workaround for finding out xwiki version (server)
-                // (compatibility with <= XWiki 1.1.m4)
-                swizzleXWiki.setNoConversion();
-            } catch (SwizzleConfluenceException e) {
-                // Assume older version of xwiki and turn-off conversion on client.
-                swizzleXWiki.setConvertor(new IdentityObjectConvertor());
+                Page page = swizzleXWiki.getPage("XWiki.WebHome");
+            } catch (ClassCastException e) {
+                try {
+                    // Workaround for finding out xwiki version (server)
+                    // (compatibility with <= XWiki 1.1.m4)
+                    swizzleXWiki.setNoConversion();
+                } catch (SwizzleConfluenceException ex) {
+                    // Assume older version of xwiki and turn-off conversion on client.
+                    swizzleXWiki.setConvertor(new IdentityObjectConvertor());
+                }
             }
 
         } catch (Exception e) {
