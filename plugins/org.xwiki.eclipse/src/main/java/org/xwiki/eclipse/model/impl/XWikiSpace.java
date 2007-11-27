@@ -155,12 +155,19 @@ public class XWikiSpace implements IXWikiSpace
         return connection;
     }
 
+    public void remove() throws XWikiConnectionException
+    {
+        connection.removeSpace(this);
+    }
+
     @Override
     public int hashCode()
     {
         final int prime = 31;
         int result = 1;
+        result = prime * result + ((connection == null) ? 0 : connection.hashCode());
         result = prime * result + ((key == null) ? 0 : key.hashCode());
+        result = prime * result + ((space == null) ? 0 : space.hashCode());
         return result;
     }
 
@@ -174,18 +181,22 @@ public class XWikiSpace implements IXWikiSpace
         if (getClass() != obj.getClass())
             return false;
         final XWikiSpace other = (XWikiSpace) obj;
+        if (connection == null) {
+            if (other.connection != null)
+                return false;
+        } else if (!connection.equals(other.connection))
+            return false;
         if (key == null) {
             if (other.key != null)
                 return false;
         } else if (!key.equals(other.key))
             return false;
+        if (space == null) {
+            if (other.space != null)
+                return false;
+        } else if (!space.equals(other.space))
+            return false;
         return true;
-    }
-
-    public void remove() throws XWikiConnectionException
-    {
-        connection.removeSpace(this);
-
     }
 
 }
