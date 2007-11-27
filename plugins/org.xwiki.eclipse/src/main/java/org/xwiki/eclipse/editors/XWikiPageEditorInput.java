@@ -78,13 +78,13 @@ public class XWikiPageEditorInput implements IEditorInput
 
         XWikiPageEditorInput other = (XWikiPageEditorInput) obj;
 
-        return xwikiPage.getId().equals(other.xwikiPage.getId());
+        return xwikiPage.getExtendedId().equals(other.xwikiPage.getExtendedId());
     }
 
     @Override
     public int hashCode()
     {
-        return xwikiPage.getId().hashCode();
+        return xwikiPage.getExtendedId().hashCode();
     }
 
     public IXWikiPage getXWikiPage()

@@ -28,6 +28,14 @@ import java.util.Date;
 public interface IXWikiPage
 {
     public String getId();
+    
+    /**
+     * The extended id contains also information taken from the connection associated with the page.
+     * This is used to discriminate between page with the same id coming from different connections.
+     * 
+     * @return The extended Id.
+     */
+    public String getExtendedId();
 
     public int getLocks();
 

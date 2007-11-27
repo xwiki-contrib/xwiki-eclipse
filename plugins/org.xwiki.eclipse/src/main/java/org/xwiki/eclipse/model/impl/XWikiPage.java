@@ -305,4 +305,9 @@ public class XWikiPage implements IXWikiPage
             return false;
         return true;
     }
+
+    public String getExtendedId()
+    {     
+        return String.format("%s@%s#%s", connection.getUserName(), connection.getServerUrl(), id);
+    }
 }
