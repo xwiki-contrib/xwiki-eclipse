@@ -7,3 +7,4 @@ Bundle-Activator: org.xwiki.eclipse.rcp.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime
 Eclipse-LazyStart: true
+Bundle-Vendor: XWiki
