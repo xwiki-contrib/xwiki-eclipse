@@ -82,9 +82,6 @@ public class XWikiPlainConnection extends AbstractXWikiConnection
 
             throw new XWikiConnectionException(e);
         }
-
-        XWikiEclipseNotificationCenter.getDefault().fireEvent(this,
-            XWikiEclipseEvent.CONNECTION_ESTABLISHED, this);
     }
 
     /**
@@ -106,9 +103,6 @@ public class XWikiPlainConnection extends AbstractXWikiConnection
         } catch (XWikiDAOException e) {
             e.printStackTrace();
         }
-
-        XWikiEclipseNotificationCenter.getDefault().fireEvent(this,
-            XWikiEclipseEvent.CONNECTION_CLOSED, this);
     }
 
     /**

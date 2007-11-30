@@ -11,6 +11,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.xwiki.eclipse.model.IXWikiConnection;
 import org.xwiki.eclipse.model.IXWikiPage;
 import org.xwiki.eclipse.model.IXWikiSpace;
+import org.xwiki.eclipse.model.XWikiConnectionFactory;
 import org.xwiki.plugins.eclipse.XWikiEclipsePlugin;
 
 /**
@@ -57,19 +58,28 @@ public class XWikiEclipsePageIndexer implements IXWikiEclipseEventListener
                 monitor.beginTask(String.format("Indexing connection..."),
                     IProgressMonitor.UNKNOWN);
 
-                if (monitor.isCanceled()) {                   
+                if (monitor.isCanceled() || !connection.isConnected()) {                   
                     return Status.CANCEL_STATUS;
                 }
 
-                Collection<IXWikiSpace> spaces = connection.getSpaces();
-
+                /* Use a working connection in order to not interfere with the "master" one */
+                IXWikiConnection workingConnection = XWikiConnectionFactory.createPlainConnection(connection.getServerUrl(), connection.getUserName());
+                workingConnection.connect(XWikiConnectionManager.getDefault().getPasswordForConnection(connection));                
+                
+                /* Check that the master connection is still "connected", otherwise cancel indexing */
+                if (monitor.isCanceled() || !connection.isConnected()) {                   
+                    return Status.CANCEL_STATUS;
+                }
+                
+                Collection<IXWikiSpace> spaces = workingConnection.getSpaces();
+                
                 for (IXWikiSpace space : spaces) {
-                    if (monitor.isCanceled()) {              
+                    if (monitor.isCanceled() || !connection.isConnected()) {              
                         return Status.CANCEL_STATUS;
                     }
 
                     Collection<IXWikiPage> pages = space.getPages();
-                    for (IXWikiPage page : pages) {
+                    for (IXWikiPage page : pages) {                 
                         pageIndex.addPage(page);
                     }
                 }
