@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: XWiki Eclipse Integration
 Bundle-SymbolicName: org.xwiki.eclipse;singleton:=true
-Bundle-Version: 1.0.1
+Bundle-Version: 1.1.0.SNAPSHOT
 Bundle-ClassPath: org.xwiki.plugins.eclipse/,
  lib/ws-commons-util-1.0.1.jar,
  lib/xmlrpc-client-3.0.jar,
