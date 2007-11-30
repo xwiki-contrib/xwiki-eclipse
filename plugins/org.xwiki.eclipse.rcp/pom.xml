@@ -36,7 +36,7 @@
   <artifactId>xwiki-eclipse-rcp-${pdePlatform}-${pdeToolkit}-${pdeArch}</artifactId>
   <packaging>zip</packaging>
   <name>XEclipse</name>
-  <version>1.1-SNAPSHOT</version>
+  <version>1.0.1</version>
   <description>XWiki Eclipse Client</description>
   <scm>
     <connection>scm:svn:http://svn.xwiki.org/svnroot/xwiki/xwiki-extensions/xwiki-eclipse/trunk</connection>

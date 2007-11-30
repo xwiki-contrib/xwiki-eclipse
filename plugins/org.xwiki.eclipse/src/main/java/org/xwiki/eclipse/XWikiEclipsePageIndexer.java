@@ -15,7 +15,6 @@ import org.xwiki.plugins.eclipse.XWikiEclipsePlugin;
 
 /**
  * A singleton that handles the indexing of available connections.
- *
  */
 public class XWikiEclipsePageIndexer implements IXWikiEclipseEventListener
 {
@@ -25,11 +24,11 @@ public class XWikiEclipsePageIndexer implements IXWikiEclipseEventListener
 
     /**
      * The Eclipse job that performs the actual indexing for a given connection
-     *
      */
     private class IndexerJob extends Job
     {
         private IXWikiConnection connection;
+        private boolean reschedule;
 
         /**
          * Constructor.
@@ -38,9 +37,16 @@ public class XWikiEclipsePageIndexer implements IXWikiEclipseEventListener
          */
         public IndexerJob(IXWikiConnection connection)
         {
+            this(connection, false);
+        }
+        
+        public IndexerJob(IXWikiConnection connection, boolean reschedule)
+        {
             super("Connection page indexer");
             this.connection = connection;
+            this.reschedule = reschedule;
         }
+
 
         @Override
         protected IStatus run(IProgressMonitor monitor)
@@ -74,12 +80,13 @@ public class XWikiEclipsePageIndexer implements IXWikiEclipseEventListener
                     "Error while indexing\n%s", e.getMessage()));
             } finally {
                 monitor.done();
-                schedule(600000);
+                if(reschedule) {
+                    schedule(1200000);
+                }
             }
                   
             return Status.OK_STATUS;
         }
-
     }
 
     private XWikiEclipsePageIndexer()
@@ -124,7 +131,7 @@ public class XWikiEclipsePageIndexer implements IXWikiEclipseEventListener
             indexerJob.cancel();            
         }
     }
-
+    
     /**
      * Event handling.
      * 
@@ -148,7 +155,7 @@ public class XWikiEclipsePageIndexer implements IXWikiEclipseEventListener
                         connectionToIndexerMapping.remove(connection);
                     }
 
-                    IndexerJob indexerJob = new IndexerJob(connection);
+                    IndexerJob indexerJob = new IndexerJob(connection, true);
                     connectionToIndexerMapping.put(connection, indexerJob);
                     indexerJob.setSystem(true);
                     indexerJob.setPriority(Job.DECORATE);
@@ -165,6 +172,5 @@ public class XWikiEclipsePageIndexer implements IXWikiEclipseEventListener
                 }
                 break;
         }
-
     }
 }

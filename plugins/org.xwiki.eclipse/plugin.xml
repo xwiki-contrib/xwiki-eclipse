@@ -131,6 +131,11 @@
             id="org.xwiki.eclipse.command.Refresh"
             name="Refresh">
       </command>
+      <command
+            defaultHandler="org.xwiki.eclipse.handlers.DebugInfoHandler"
+            id="org.xwiki.eclipse.command.DebugInfo"
+            name="Debug info">
+      </command>
    </extension>
    <extension
          name="NEW ADAPTERS"
