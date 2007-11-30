@@ -21,6 +21,7 @@
 package org.xwiki.eclipse.dialogs;
 
 import java.util.Comparator;
+import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -37,7 +38,9 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.FilteredItemsSelectionDialog;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
+import org.xwiki.eclipse.XWikiConnectionManager;
 import org.xwiki.eclipse.XWikiEclipsePageIndex;
+import org.xwiki.eclipse.model.IXWikiConnection;
 import org.xwiki.eclipse.model.IXWikiPage;
 import org.xwiki.plugins.eclipse.XWikiEclipsePlugin;
 
@@ -140,7 +143,7 @@ public class OpenPageDialog extends FilteredItemsSelectionDialog
     {
         super(shell);
         setTitle("Open page");
-        setListLabelProvider(new OpenPageLabelProvider(new WorkbenchLabelProvider()));        
+        setListLabelProvider(new OpenPageLabelProvider(new WorkbenchLabelProvider()));
         setListSelectionLabelDecorator(new SelectionLabelDecorator());
         setDetailsLabelProvider(new WorkbenchLabelProvider());
     }
@@ -182,8 +185,28 @@ public class OpenPageDialog extends FilteredItemsSelectionDialog
     {
         progressMonitor.beginTask("Searching...", IProgressMonitor.UNKNOWN);
         for (IXWikiPage page : XWikiEclipsePageIndex.getDefault().getPages()) {
-            if (page.isCached() || page.getConnection().isConnected()) {
-                contentProvider.add(page, itemsFilter);
+
+            List<IXWikiConnection> actualConnections =
+                XWikiConnectionManager.getDefault().getConnections();
+
+            /*
+             * Pages in the index have a different connection pointer with respect to pages shown in
+             * the explorer. This is because we use a "working" connection to harvest page
+             * information for the index. When presenting pages in the open-page list we need to
+             * refer to the actual connection they belong to in order to check the connection state.
+             */
+            IXWikiConnection actualConnection = null;
+            for (IXWikiConnection connection : actualConnections) {
+                if (connection.equals(page.getConnection())) {
+                    actualConnection = connection;
+                    break;
+                }
+            }
+
+            if (actualConnection != null) {
+                if (page.isCached() || actualConnection.isConnected()) {
+                    contentProvider.add(page, itemsFilter);
+                }
             }
         }
 
@@ -213,7 +236,7 @@ public class OpenPageDialog extends FilteredItemsSelectionDialog
             {
                 IXWikiPage page1 = (IXWikiPage) o1;
                 IXWikiPage page2 = (IXWikiPage) o2;
-                
+
                 return page1.getTitle().compareTo(page2.getTitle());
             }
         };

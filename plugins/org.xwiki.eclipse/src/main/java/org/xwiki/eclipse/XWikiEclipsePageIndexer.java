@@ -83,7 +83,10 @@ public class XWikiEclipsePageIndexer implements IXWikiEclipseEventListener
                         pageIndex.addPage(page);
                     }
                 }
-
+                
+                workingConnection.disconnect();
+                workingConnection.dispose();
+                workingConnection = null;
             } catch (Exception e) {
                 e.printStackTrace();
                 return new Status(IStatus.ERROR, XWikiEclipsePlugin.PLUGIN_ID, String.format(
