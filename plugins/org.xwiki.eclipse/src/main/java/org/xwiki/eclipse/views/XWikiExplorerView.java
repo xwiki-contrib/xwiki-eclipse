@@ -53,6 +53,7 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.ISources;
 import org.eclipse.ui.IViewSite;
+import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
@@ -226,7 +227,6 @@ public class XWikiExplorerView extends ViewPart implements IXWikiEclipseEventLis
                 manager.add(new SelectWorkingSetAction(null, treeViewer));
 
                 for (WorkingSet workingSet : WorkingSetManager.getDefault().getWorkingSets()) {
-
                     manager.add(new SelectWorkingSetAction(workingSet, treeViewer));
                 }
 
@@ -370,6 +370,8 @@ public class XWikiExplorerView extends ViewPart implements IXWikiEclipseEventLis
             null,
             null,
             SWT.NONE));
+        
+        menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 
         Menu menu = menuManager.createContextMenu(treeViewer.getControl());
         treeViewer.getControl().setMenu(menu);
