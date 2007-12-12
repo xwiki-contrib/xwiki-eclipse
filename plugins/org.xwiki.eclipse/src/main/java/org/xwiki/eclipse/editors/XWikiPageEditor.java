@@ -111,8 +111,8 @@ public class XWikiPageEditor extends AbstractTextEditor
         String serverUrl = connection.getServerUrl();
         boolean connected = connection.isConnected();
         int version = page.getVersion();
-
-        form.setText(String.format("%s version %d [%s]", id, version, connected ? "online"
+                
+        form.setText(String.format("%s version %d.%d [%s]", id, (version >> 16) + 1, version & 0xFFFF, connected ? "online"
             : "cached", id));
         form.setMessage(String.format("%s@%s", userName, serverUrl));
 
