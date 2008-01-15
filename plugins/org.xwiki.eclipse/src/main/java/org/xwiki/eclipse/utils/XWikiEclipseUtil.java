@@ -22,14 +22,18 @@ package org.xwiki.eclipse.utils;
 
 import java.lang.reflect.InvocationTargetException;
 
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.handlers.HandlerUtil;
+import org.xwiki.eclipse.XWikiConnectionManager;
 import org.xwiki.eclipse.editors.XWikiPageEditor;
 import org.xwiki.eclipse.editors.XWikiPageEditorInput;
 import org.xwiki.eclipse.model.IXWikiConnection;
@@ -92,5 +96,21 @@ public class XWikiEclipseUtil
             e.printStackTrace();
         }
     }
+
+	public static void reconnect(IXWikiConnection connection) {
+		try {
+			connection.disconnect();
+			connection.connect(XWikiConnectionManager.getDefault().getPasswordForConnection(connection));	
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+			Display.getDefault().asyncExec(new Runnable() {
+
+				public void run() {
+					MessageDialog.openError(Display.getDefault().getActiveShell(), "Error", "Connection was lost. Cannot reconnect");						
+				}				
+			});
+		}
+	}
 
 }

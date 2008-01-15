@@ -35,6 +35,7 @@ import org.xwiki.eclipse.XWikiEclipseConstants;
 import org.xwiki.eclipse.model.IXWikiConnection;
 import org.xwiki.eclipse.model.IXWikiSpace;
 import org.xwiki.eclipse.model.XWikiConnectionException;
+import org.xwiki.eclipse.utils.XWikiEclipseUtil;
 import org.xwiki.plugins.eclipse.XWikiEclipsePlugin;
 
 /**
@@ -57,6 +58,7 @@ public class XWikiConnectionAdapter implements IDeferredWorkbenchAdapter, IWorkb
                 result = xwikiConnection.getSpaces();
             } catch (XWikiConnectionException e) {
                 e.printStackTrace();
+                XWikiEclipseUtil.reconnect(xwikiConnection);
             }
 
             return result != null ? result.toArray() : XWikiEclipseConstants.NO_OBJECTS;

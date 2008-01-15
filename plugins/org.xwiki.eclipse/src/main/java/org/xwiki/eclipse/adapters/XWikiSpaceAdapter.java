@@ -32,6 +32,7 @@ import org.xwiki.eclipse.XWikiEclipsePageIndex;
 import org.xwiki.eclipse.model.IXWikiPage;
 import org.xwiki.eclipse.model.IXWikiSpace;
 import org.xwiki.eclipse.model.XWikiConnectionException;
+import org.xwiki.eclipse.utils.XWikiEclipseUtil;
 import org.xwiki.plugins.eclipse.XWikiEclipsePlugin;
 
 /**
@@ -59,6 +60,7 @@ public class XWikiSpaceAdapter implements IDeferredWorkbenchAdapter
                 }
             } catch (XWikiConnectionException e) {
                 e.printStackTrace();
+                XWikiEclipseUtil.reconnect(space.getConnection());
             }
 
             return result != null ? result.toArray() : XWikiEclipseConstants.NO_OBJECTS;

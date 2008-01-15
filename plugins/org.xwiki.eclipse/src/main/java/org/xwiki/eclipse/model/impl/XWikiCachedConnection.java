@@ -255,10 +255,12 @@ public class XWikiCachedConnection extends AbstractXWikiConnection implements Se
         }
 
         try {
-            remoteDAO.close();
-            remoteDAO = null;
+            remoteDAO.close();           
         } catch (XWikiDAOException e) {
             e.printStackTrace();
+        }
+        finally {
+        	remoteDAO = null;
         }
 
         XWikiEclipseNotificationCenter.getDefault().fireEvent(this,
