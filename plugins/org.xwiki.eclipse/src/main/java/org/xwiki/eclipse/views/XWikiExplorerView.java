@@ -375,6 +375,8 @@ public class XWikiExplorerView extends ViewPart implements IXWikiEclipseEventLis
 
         Menu menu = menuManager.createContextMenu(treeViewer.getControl());
         treeViewer.getControl().setMenu(menu);
+        
+        getSite().registerContextMenu("#XWikiExplorerPopup", menuManager, treeViewer);        
     }
 
     @Override

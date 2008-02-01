@@ -20,4 +20,5 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.ide,
  org.eclipse.ui.forms
 Eclipse-LazyStart: true
-Export-Package: org.xwiki.eclipse.model
+Export-Package: org.xwiki.eclipse,
+ org.xwiki.eclipse.model
