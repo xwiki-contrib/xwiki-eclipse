@@ -52,7 +52,7 @@ public class RemoveSpaceHandler extends AbstractHandler
                 messageBox
                     .setMessage(String.format(
                         "Do you really want to delete '%s' and all its pages?", xwikiSpace
-                            .getName()));
+                            .getKey()));
                 int result = messageBox.open();
                 if (result == SWT.YES) {
                     xwikiSpace.remove();
