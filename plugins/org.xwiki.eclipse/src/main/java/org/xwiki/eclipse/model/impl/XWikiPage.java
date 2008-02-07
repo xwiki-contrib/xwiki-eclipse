@@ -202,7 +202,7 @@ public class XWikiPage implements IXWikiPage
         return page.getUrl();
     }
 
-    public boolean isConflict()
+    public ConflictData isConflict()
     {
         return connection.isPageConflict(page.getId());
     }

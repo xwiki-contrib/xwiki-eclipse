@@ -22,6 +22,8 @@ package org.xwiki.eclipse.model;
 
 import java.util.Date;
 
+import org.xwiki.eclipse.model.impl.ConflictData;
+
 /**
  * This interface provides access to all page data and related information.
  */
@@ -69,10 +71,10 @@ public interface IXWikiPage
     public boolean isDirty();
 
     /**
-     * @return true if the page has been modified both locally and remotely.
+     * @return ConflictData containing the local and remote versions.
      * @throws XWikiConnectionException
      */
-    public boolean isConflict();
+    public ConflictData isConflict();
 
     /**
      * @return true if the page is locally cached.

@@ -24,6 +24,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.xwiki.eclipse.XWikiEclipseConstants;
 import org.xwiki.eclipse.model.IXWikiPage;
+import org.xwiki.eclipse.model.impl.ConflictData;
 import org.xwiki.plugins.eclipse.XWikiEclipsePlugin;
 
 /**
@@ -52,7 +53,9 @@ public class XWikiPageAdapter implements IWorkbenchAdapter
         if (object instanceof IXWikiPage) {
             IXWikiPage page = (IXWikiPage) object;
 
-            if (page.isConflict()) {
+            ConflictData conflictData = page.isConflict();
+            
+            if (conflictData != null) {
                 return XWikiEclipsePlugin
                     .getImageDescriptor(XWikiEclipseConstants.XWIKI_PAGE_CONFLICT_ICON);
             }

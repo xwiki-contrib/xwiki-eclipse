@@ -127,8 +127,8 @@ public class XWikiPageEditor extends AbstractTextEditor
         XWikiEclipseNotificationCenter.getDefault().fireEvent(this,
             XWikiEclipseEvent.PAGE_UPDATED, page);
     }
-
-    class CaretState
+            
+	class CaretState
     {
         private int topPixel;
 
@@ -164,5 +164,5 @@ public class XWikiPageEditor extends AbstractTextEditor
     {
         getSourceViewer().getTextWidget().setCaretOffset(caretState.getCaretOffset());
         getSourceViewer().getTextWidget().setTopPixel(caretState.getTopPixel());
-    }
+    }        
 }

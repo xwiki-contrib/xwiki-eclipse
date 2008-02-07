@@ -83,7 +83,7 @@ public class DiskCacheDAO implements IXWikiCacheDAO
         /**
          * A list of page ids that are marked as in conflict.
          */
-        private Set<String> conflictPagesIndex;
+        private Map<String, ConflictData> pagetToconflictDataIndex;
 
         public IndexAggregate()
         {
@@ -92,7 +92,7 @@ public class DiskCacheDAO implements IXWikiCacheDAO
             spaceToPagesIndex = new HashMap<String, Set<String>>();
             spaceToDataFileNameIndex = new HashMap<String, String>();
             dirtyPagesIndex = new HashSet<String>();
-            conflictPagesIndex = new HashSet<String>();
+            pagetToconflictDataIndex = new HashMap<String, ConflictData>();
         }
 
         public Map<String, String> getPageToDataFileNameIndex()
@@ -115,9 +115,9 @@ public class DiskCacheDAO implements IXWikiCacheDAO
             return dirtyPagesIndex;
         }
 
-        public Set<String> getConflictPagesIndex()
+        public Map<String, ConflictData> getConflictPagesIndex()
         {
-            return conflictPagesIndex;
+            return pagetToconflictDataIndex;
         }
 
         public static long getSerialVersionUID()
@@ -386,9 +386,9 @@ public class DiskCacheDAO implements IXWikiCacheDAO
      * @param pageId The page id.
      * @return true if the page identified by the id is marked as in conflict.
      */
-    public boolean isInConflict(String pageId)
+    public ConflictData isInConflict(String pageId)
     {
-        return indexAggregate.conflictPagesIndex.contains(pageId);
+        return indexAggregate.pagetToconflictDataIndex.get(pageId);
     }
 
     /**
@@ -397,12 +397,12 @@ public class DiskCacheDAO implements IXWikiCacheDAO
      * @param pageId The page id.
      * @param conflict The new "in conflict" state.
      */
-    public void setConflict(String pageId, boolean conflict)
+    public void setConflict(String pageId, ConflictData conflictData)
     {
-        if (conflict) {
-            indexAggregate.conflictPagesIndex.add(pageId);
+        if (conflictData != null) {
+            indexAggregate.pagetToconflictDataIndex.put(pageId, conflictData);
         } else {
-            indexAggregate.conflictPagesIndex.remove(pageId);
+            indexAggregate.pagetToconflictDataIndex.remove(pageId);
         }
     }
 

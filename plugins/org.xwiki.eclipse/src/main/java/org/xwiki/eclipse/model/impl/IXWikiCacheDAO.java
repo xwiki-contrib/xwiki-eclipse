@@ -32,9 +32,9 @@ public interface IXWikiCacheDAO extends IXWikiDAO
 
     public Set<String> getDirtyPages();
 
-    public boolean isInConflict(String pageId);
+    public ConflictData isInConflict(String pageId);
 
-    public void setConflict(String pageId, boolean conflict);
+    public void setConflict(String pageId, ConflictData conflictData);
 
     public void storeSpaceSummary(SpaceSummary spaceSummary) throws XWikiDAOException;
 

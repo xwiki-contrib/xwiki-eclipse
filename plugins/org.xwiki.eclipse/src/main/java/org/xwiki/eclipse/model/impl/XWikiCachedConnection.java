@@ -146,7 +146,7 @@ public class XWikiCachedConnection extends AbstractXWikiConnection implements Se
             remotePage = remoteDAO.getPage(pageId);
             cacheDAO.storePage(remotePage);
             cacheDAO.setDirty(pageId, false);
-            cacheDAO.setConflict(pageId, false);
+            cacheDAO.setConflict(pageId, null);
 
             return remotePage;
         }
@@ -162,25 +162,25 @@ public class XWikiCachedConnection extends AbstractXWikiConnection implements Se
                 remotePage = remoteDAO.getPage(pageId);
                 cacheDAO.storePage(remotePage);
                 cacheDAO.setDirty(pageId, false);
-                cacheDAO.setConflict(pageId, false);
+                cacheDAO.setConflict(pageId, null);
             }
         } else {
             // This is case 3.2
             if (cacheDAO.isDirty(pageId)) {
                 // TODO: Do a more intelligent and helpful diff
-                String diff =
-                    String.format(">>> LOCAL >>>\n%s\n>>> REMOTE >>>\n%s", cachedPage
-                        .getContent(), remotePage.getContent());
-                remotePage.setContent(diff);
+//                String diff =
+//                    String.format(">>> LOCAL >>>\n%s\n>>> REMOTE >>>\n%s", cachedPage
+//                        .getContent(), remotePage.getContent());
+//                remotePage.setContent(diff);
 
                 cacheDAO.storePage(remotePage);
                 cacheDAO.setDirty(pageId, true);
-                cacheDAO.setConflict(pageId, true);
+                cacheDAO.setConflict(pageId, new ConflictData(cachedPage.getContent(), remotePage.getContent()));
             } else {
                 // This is case 3.1
                 cacheDAO.storePage(remotePage);
                 cacheDAO.setDirty(pageId, false);
-                cacheDAO.setConflict(pageId, false);
+                cacheDAO.setConflict(pageId, null);
             }
         }
 
@@ -462,7 +462,7 @@ public class XWikiCachedConnection extends AbstractXWikiConnection implements Se
      *         remotely)
      * @throws XWikiConnectionException
      */
-    boolean isPageConflict(String pageId)
+    ConflictData isPageConflict(String pageId)
     {
         assertNotDisposed();
 

@@ -100,7 +100,7 @@ public abstract class AbstractXWikiConnection implements IXWikiConnection, Seria
 
     abstract boolean isPageDirty(String pageId);
 
-    abstract boolean isPageConflict(String pageId);
+    abstract ConflictData isPageConflict(String pageId);
 
     abstract boolean isPageCached(String pageId);
 

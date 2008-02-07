@@ -251,11 +251,11 @@ public class XWikiPlainConnection extends AbstractXWikiConnection
      *         remotely)
      * @throws XWikiConnectionException
      */
-    boolean isPageConflict(String pageId)
+    ConflictData isPageConflict(String pageId)
     {
         assertNotDisposed();
 
-        return false;
+        return null;
     }
 
     private synchronized void writeObject(java.io.ObjectOutputStream s) throws IOException
