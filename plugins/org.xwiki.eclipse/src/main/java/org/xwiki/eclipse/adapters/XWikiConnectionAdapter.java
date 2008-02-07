@@ -57,7 +57,7 @@ public class XWikiConnectionAdapter implements IDeferredWorkbenchAdapter, IWorkb
             try {
                 result = xwikiConnection.getSpaces();
             } catch (XWikiConnectionException e) {
-                e.printStackTrace();
+                //e.printStackTrace();
                 XWikiEclipseUtil.reconnect(xwikiConnection);
             }
 
