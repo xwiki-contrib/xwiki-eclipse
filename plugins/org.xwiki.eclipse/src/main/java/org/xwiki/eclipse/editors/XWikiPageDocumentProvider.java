@@ -157,7 +157,11 @@ public class XWikiPageDocumentProvider extends StorageDocumentProvider
 											conflictData.getLocalContent(),
 											conflictData.getRemoteContent()));
 					
-					 MessageDialog.openWarning(Display.getDefault().getActiveShell(), "Warning", "Content has been merged, please review changes and save them to make them effective");
+					 MessageDialog
+							.openWarning(
+									Display.getDefault().getActiveShell(),
+									"Warning",
+									"Content has been merged, please review changes and save them to make them effective");
 					break;
 				default:
 					xwikiPage.setContent(conflictData.getLocalContent());

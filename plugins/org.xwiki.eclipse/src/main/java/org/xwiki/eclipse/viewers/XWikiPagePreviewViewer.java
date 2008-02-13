@@ -27,6 +27,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.xwiki.eclipse.model.IXWikiPage;
 
@@ -41,6 +42,8 @@ public class XWikiPagePreviewViewer
     private Composite notConnectedComposite;
 
     private Composite noPageSelectedComposite;
+    
+    private IXWikiPage xwikiPage;
 
     public XWikiPagePreviewViewer(Composite parent)
     {
@@ -79,6 +82,8 @@ public class XWikiPagePreviewViewer
 
     public void showPreview(IXWikiPage xwikiPage)
     {
+    	this.xwikiPage = xwikiPage;
+    	
         if (xwikiPage == null) {
             stackLayout.topControl = noPageSelectedComposite;
             composite.layout();
@@ -93,4 +98,25 @@ public class XWikiPagePreviewViewer
             }
         }
     }
+    
+    public void showURL(String url) {
+    	browser.setUrl(url);
+        stackLayout.topControl = browser;
+        composite.layout();
+    }
+
+	public IXWikiPage getXwikiPage()
+	{
+		return xwikiPage;
+	}
+
+	public Browser getBrowser()
+	{
+		return browser;
+	}
+	
+	public Control getControl() {
+		return composite;
+	}
+    
 }
