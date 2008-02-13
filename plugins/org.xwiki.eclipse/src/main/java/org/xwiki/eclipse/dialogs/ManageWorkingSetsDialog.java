@@ -42,176 +42,229 @@ import org.eclipse.swt.widgets.Shell;
 import org.xwiki.eclipse.WorkingSet;
 import org.xwiki.eclipse.WorkingSetManager;
 import org.xwiki.eclipse.XWikiEclipseConstants;
+import org.xwiki.eclipse.wizards.EditWorkingSetWizard;
 import org.xwiki.eclipse.wizards.NewWorkingSetWizard;
 import org.xwiki.plugins.eclipse.XWikiEclipsePlugin;
 
 public class ManageWorkingSetsDialog extends Dialog
 {
-    public ManageWorkingSetsDialog(Shell parentShell)
-    {
-        super(parentShell);
-        setShellStyle(getShellStyle() | SWT.RESIZE);
-    }
+	public ManageWorkingSetsDialog(Shell parentShell)
+	{
+		super(parentShell);
+		setShellStyle(getShellStyle() | SWT.RESIZE);
+	}
 
-    @Override
-    protected void configureShell(Shell shell)
-    {
-        super.configureShell(shell);
+	@Override
+	protected void configureShell(Shell shell)
+	{
+		super.configureShell(shell);
 
-        shell.setText("Manage working sets");
-        shell.setSize(600, 300);
+		shell.setText("Manage working sets");
+		shell.setSize(600, 300);
 
-    }
+	}
 
-    @Override
-    protected Control createDialogArea(Composite parent)
-    {
-        Composite composite = new Composite(parent, SWT.NONE);
-        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, true).applyTo(
-            composite);
-        GridLayoutFactory.fillDefaults().margins(10, 10).numColumns(2).applyTo(composite);
+	@Override
+	protected Control createDialogArea(Composite parent)
+	{
+		Composite composite = new Composite(parent, SWT.NONE);
+		GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true,
+				true).applyTo(composite);
+		GridLayoutFactory.fillDefaults().margins(10, 10).numColumns(2).applyTo(
+				composite);
 
-        final TableViewer tableViewer = new TableViewer(composite, SWT.BORDER);
-        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, true).applyTo(
-            tableViewer.getControl());
-        tableViewer.setContentProvider(new IStructuredContentProvider()
-        {
+		final TableViewer tableViewer = new TableViewer(composite, SWT.BORDER);
+		GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true,
+				true).applyTo(tableViewer.getControl());
+		tableViewer.setContentProvider(new IStructuredContentProvider()
+		{
 
-            public void dispose()
-            {
-            }
+			public void dispose()
+			{
+			}
 
-            public void inputChanged(Viewer viewer, Object oldInput, Object newInput)
-            {
-            }
+			public void inputChanged(Viewer viewer, Object oldInput,
+					Object newInput)
+			{
+			}
 
-            public Object[] getElements(Object inputElement)
-            {
-                return WorkingSetManager.getDefault().getWorkingSets().toArray();
-            }
-        });
+			public Object[] getElements(Object inputElement)
+			{
+				return WorkingSetManager.getDefault().getWorkingSets()
+						.toArray();
+			}
+		});
 
-        tableViewer.setLabelProvider(new LabelProvider()
-        {
+		tableViewer.setLabelProvider(new LabelProvider()
+		{
 
-            @Override
-            public String getText(Object element)
-            {
-                if (element instanceof WorkingSet) {
-                    WorkingSet workingSet = (WorkingSet) element;
+			@Override
+			public String getText(Object element)
+			{
+				if (element instanceof WorkingSet)
+				{
+					WorkingSet workingSet = (WorkingSet) element;
 
-                    return workingSet.getName();
-                }
+					return workingSet.getName();
+				}
 
-                return super.getText(element);
-            }
+				return super.getText(element);
+			}
 
-            @Override
-            public Image getImage(Object element)
-            {
-                if (element instanceof WorkingSet) {
-                    return XWikiEclipsePlugin.getImageDescriptor(
-                        XWikiEclipseConstants.WORKING_SET_ICON).createImage();
-                }
+			@Override
+			public Image getImage(Object element)
+			{
+				if (element instanceof WorkingSet)
+				{
+					return XWikiEclipsePlugin.getImageDescriptor(
+							XWikiEclipseConstants.WORKING_SET_ICON)
+							.createImage();
+				}
 
-                return super.getImage(element);
-            }
+				return super.getImage(element);
+			}
 
-        });
-        tableViewer.setInput(WorkingSetManager.getDefault().getWorkingSets());
+		});
+		tableViewer.setInput(WorkingSetManager.getDefault().getWorkingSets());
 
-        Composite buttonBar = new Composite(composite, SWT.NONE);
-        GridLayoutFactory.fillDefaults().applyTo(buttonBar);
-        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(false, true).applyTo(
-            buttonBar);
+		Composite buttonBar = new Composite(composite, SWT.NONE);
+		GridLayoutFactory.fillDefaults().applyTo(buttonBar);
+		GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(false,
+				true).applyTo(buttonBar);
 
-        Button button = new Button(buttonBar, SWT.PUSH);
-        button.setText("New...");
-        button.addSelectionListener(new SelectionListener()
-        {
+		Button button = new Button(buttonBar, SWT.PUSH);
+		button.setText("New...");
+		button.addSelectionListener(new SelectionListener()
+		{
 
-            public void widgetDefaultSelected(SelectionEvent e)
-            {
-            }
+			public void widgetDefaultSelected(SelectionEvent e)
+			{
+			}
 
-            public void widgetSelected(SelectionEvent event)
-            {
-                try {
-                    NewWorkingSetWizard wizard = new NewWorkingSetWizard();
+			public void widgetSelected(SelectionEvent event)
+			{
+				try
+				{
+					NewWorkingSetWizard wizard = new NewWorkingSetWizard();
 
-                    WizardDialog dialog = new WizardDialog(getShell(), wizard);
-                    dialog.create();
-                    dialog.open();
-                    tableViewer.refresh();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+					WizardDialog dialog = new WizardDialog(getShell(), wizard);
+					dialog.create();
+					dialog.open();
+					tableViewer.refresh();
+				} catch (Exception e)
+				{
+					e.printStackTrace();
+				}
 
-            }
+			}
 
-        });
+		});
 
-        button = new Button(buttonBar, SWT.PUSH);
-        button.setText("Remove");
-        button.addSelectionListener(new SelectionListener()
-        {
+		button = new Button(buttonBar, SWT.PUSH);
+		button.setText("Remove");
+		button.addSelectionListener(new SelectionListener()
+		{
 
-            public void widgetDefaultSelected(SelectionEvent e)
-            {
-                // TODO Auto-generated method stub
+			public void widgetDefaultSelected(SelectionEvent e)
+			{
+				// TODO Auto-generated method stub
 
-            }
+			}
 
-            public void widgetSelected(SelectionEvent e)
-            {
-                IStructuredSelection selection =
-                    (IStructuredSelection) tableViewer.getSelection();
-                if (!selection.isEmpty()) {
-                    Object selectedObject = selection.getFirstElement();
-                    if (selectedObject instanceof WorkingSet) {
-                        WorkingSet workingSet = (WorkingSet) selectedObject;
+			public void widgetSelected(SelectionEvent e)
+			{
+				IStructuredSelection selection = (IStructuredSelection) tableViewer
+						.getSelection();
+				if (!selection.isEmpty())
+				{
+					Object selectedObject = selection.getFirstElement();
+					if (selectedObject instanceof WorkingSet)
+					{
+						WorkingSet workingSet = (WorkingSet) selectedObject;
 
-                        MessageBox messageBox =
-                            new MessageBox(getShell(), SWT.YES | SWT.NO | SWT.ICON_QUESTION);
-                        messageBox.setMessage(String.format(
-                            "Do you really want to remove the working set '%s'?", workingSet
-                                .getName()));
-                        int result = messageBox.open();
-                        if (result == SWT.YES) {
-                            WorkingSetManager.getDefault().remove(workingSet);
-                            tableViewer.refresh();
-                        }
-                    }
-                }
+						MessageBox messageBox = new MessageBox(getShell(),
+								SWT.YES | SWT.NO | SWT.ICON_QUESTION);
+						messageBox
+								.setMessage(String
+										.format(
+												"Do you really want to remove the working set '%s'?",
+												workingSet.getName()));
+						int result = messageBox.open();
+						if (result == SWT.YES)
+						{
+							WorkingSetManager.getDefault().remove(workingSet);
+							tableViewer.refresh();
+						}
+					}
+				}
 
-            }
+			}
 
-        });
+		});
 
-        return composite;
-    }
+		button = new Button(buttonBar, SWT.PUSH);
+		button.setText("Edit...");
+		button.addSelectionListener(new SelectionListener()
+		{
+			public void widgetDefaultSelected(SelectionEvent e)
+			{
+			}
 
-    @Override
-    protected void createButtonsForButtonBar(Composite parent)
-    {
-        Button button =
-            createButton(parent, IDialogConstants.CLOSE_ID, IDialogConstants.CLOSE_LABEL, true);
-        button.addSelectionListener(new SelectionListener()
-        {
+			public void widgetSelected(SelectionEvent event)
+			{
+				IStructuredSelection selection = (IStructuredSelection) tableViewer
+						.getSelection();
+				if (!selection.isEmpty())
+				{
+					Object selectedObject = selection.getFirstElement();
+					if (selectedObject instanceof WorkingSet)
+					{
+						WorkingSet workingSet = (WorkingSet) selectedObject;
 
-            public void widgetDefaultSelected(SelectionEvent e)
-            {
-                // TODO Auto-generated method stub
+						try
+						{
+							EditWorkingSetWizard wizard = new EditWorkingSetWizard(
+									workingSet);
 
-            }
+							WizardDialog dialog = new WizardDialog(getShell(),
+									wizard);
+							dialog.create();
+							dialog.open();
+							tableViewer.refresh();
+						} catch (Exception e)
+						{
+							e.printStackTrace();
+						}
 
-            public void widgetSelected(SelectionEvent e)
-            {
-                close();
-            }
+					}
+				}
+			}
+		});
 
-        });
+		return composite;
+	}
 
-    }
+	@Override
+	protected void createButtonsForButtonBar(Composite parent)
+	{
+		Button button = createButton(parent, IDialogConstants.CLOSE_ID,
+				IDialogConstants.CLOSE_LABEL, true);
+		button.addSelectionListener(new SelectionListener()
+		{
+
+			public void widgetDefaultSelected(SelectionEvent e)
+			{
+				// TODO Auto-generated method stub
+
+			}
+
+			public void widgetSelected(SelectionEvent e)
+			{
+				close();
+			}
+
+		});
+
+	}
 
 }

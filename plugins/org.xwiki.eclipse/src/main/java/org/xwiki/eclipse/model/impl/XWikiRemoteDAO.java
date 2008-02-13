@@ -72,7 +72,7 @@ public class XWikiRemoteDAO implements IXWikiDAO
                     swizzleXWiki.setConvertor(new IdentityObjectConvertor());
                 }
             }
-
+                        
         } catch (Exception e) {
             throw new XWikiDAOException(e);
         }
@@ -84,7 +84,7 @@ public class XWikiRemoteDAO implements IXWikiDAO
      * 
      * @throws XWikiDAOException
      */
-    public void close() throws XWikiDAOException
+    public synchronized void close() throws XWikiDAOException
     {
         try {
             swizzleXWiki.logout();
@@ -98,10 +98,11 @@ public class XWikiRemoteDAO implements IXWikiDAO
      * @throws XWikiDAOException
      */
     @SuppressWarnings("unchecked")
-    public List<SpaceSummary> getSpaces() throws XWikiDAOException
+    public synchronized List<SpaceSummary> getSpaces() throws XWikiDAOException
     {
-        try {
-            return swizzleXWiki.getSpaces();
+        try {        	
+        	List<SpaceSummary> spaces = swizzleXWiki.getSpaces();        	
+            return spaces;
         } catch (Exception e) {
             throw new XWikiDAOException(e);
         }
@@ -112,7 +113,7 @@ public class XWikiRemoteDAO implements IXWikiDAO
      * @return The information about the remote space.
      * @throws XWikiDAOException
      */
-    public Space getSpace(String key) throws XWikiDAOException
+    public synchronized Space getSpace(String key) throws XWikiDAOException
     {
         try {
             return swizzleXWiki.getSpace(key);
@@ -127,7 +128,7 @@ public class XWikiRemoteDAO implements IXWikiDAO
      * @throws XWikiDAOException
      */
     @SuppressWarnings("unchecked")
-    public List<PageSummary> getPages(String spaceKey) throws XWikiDAOException
+    public synchronized List<PageSummary> getPages(String spaceKey) throws XWikiDAOException
     {
         try {
             return swizzleXWiki.getPages(spaceKey);
@@ -141,7 +142,7 @@ public class XWikiRemoteDAO implements IXWikiDAO
      * @return All the page information for the page identified by the given id.
      * @throws XWikiDAOException
      */
-    public Page getPage(String id) throws XWikiDAOException
+    public synchronized Page getPage(String id) throws XWikiDAOException
     {
         try {
             return swizzleXWiki.getPage(id);
@@ -156,7 +157,7 @@ public class XWikiRemoteDAO implements IXWikiDAO
      * @param page The page information to be stored.
      * @throws XWikiDAOException
      */
-    public void storePage(Page page) throws XWikiDAOException
+    public synchronized void storePage(Page page) throws XWikiDAOException
     {
         try {
             swizzleXWiki.storePage(page);
@@ -165,7 +166,7 @@ public class XWikiRemoteDAO implements IXWikiDAO
         }
     }
 
-    public Space createSpace(String key, String name, String description)
+    public synchronized Space createSpace(String key, String name, String description)
         throws XWikiDAOException
     {
         Space space = new Space();
@@ -183,7 +184,7 @@ public class XWikiRemoteDAO implements IXWikiDAO
         return space;
     }
 
-    public Page createPage(String spaceKey, String title, String content)
+    public synchronized Page createPage(String spaceKey, String title, String content)
         throws XWikiDAOException
     {
         Page page = new Page();
@@ -201,7 +202,7 @@ public class XWikiRemoteDAO implements IXWikiDAO
         return page;
     }
 
-    public void removePage(String id) throws XWikiDAOException
+    public synchronized void removePage(String id) throws XWikiDAOException
     {
         try {
             swizzleXWiki.removePage(id);
@@ -212,7 +213,7 @@ public class XWikiRemoteDAO implements IXWikiDAO
 
     }
 
-    public void removeSpace(String key) throws XWikiDAOException
+    public synchronized void removeSpace(String key) throws XWikiDAOException
     {
         try {
             swizzleXWiki.removeSpace(key);

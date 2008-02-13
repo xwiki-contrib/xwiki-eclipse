@@ -21,6 +21,7 @@
 package org.xwiki.eclipse;
 
 import java.io.Serializable;
+import java.util.Formatter;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -190,5 +191,22 @@ public class WorkingSet implements Serializable
     {
         this.name = name;
     }
+
+	@Override
+	public String toString()
+	{
+		StringBuffer sb = new StringBuffer();
+		Formatter f = new Formatter(sb);
+		f.format("%s: [", name);
+		for(String id : ids) {
+			f.format("%s ", id);
+		}
+		f.format("]\n");
+		
+		return f.toString();
+		
+	}
+    
+    
 
 }
