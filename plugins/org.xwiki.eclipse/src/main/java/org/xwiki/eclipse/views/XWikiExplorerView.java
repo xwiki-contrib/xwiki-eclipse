@@ -25,6 +25,9 @@ import java.util.Collection;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.commands.NotEnabledException;
+import org.eclipse.core.commands.NotHandledException;
+import org.eclipse.core.commands.common.NotDefinedException;
 import org.eclipse.core.expressions.EvaluationResult;
 import org.eclipse.core.expressions.Expression;
 import org.eclipse.core.expressions.ExpressionInfo;
@@ -183,12 +186,17 @@ public class XWikiExplorerView extends ViewPart implements IXWikiEclipseEventLis
         {
 
             public void doubleClick(DoubleClickEvent event)
-            {
+            {            	            	
                 IWorkbenchPage page =
                     PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
                 Object selectedObject =
                     XWikiEclipseUtil.getSingleSelectedObjectInStructuredSelection(treeViewer
                         .getSelection());
+                
+                if(selectedObject != null) {
+                	treeViewer.expandToLevel(selectedObject, 1);
+                }
+                
                 if (selectedObject instanceof IXWikiPage) {
                     IXWikiPage xwikiPage = (IXWikiPage) selectedObject;
                     XWikiPageEditorInput editorInput = new XWikiPageEditorInput(xwikiPage);
@@ -203,6 +211,26 @@ public class XWikiExplorerView extends ViewPart implements IXWikiEclipseEventLis
                     } catch (PartInitException e) {
                         e.printStackTrace();
                     }
+                }
+                
+                if(selectedObject instanceof IXWikiConnection) {  
+                	IXWikiConnection xwikiConnection = (IXWikiConnection) selectedObject;                	                
+                	
+                	if(xwikiConnection.isConnected()) {
+                		return;
+                	}
+                	
+                	IHandlerService handlerService = (IHandlerService) getSite()
+    				.getService(IHandlerService.class);
+                	
+                	try
+					{
+						handlerService.executeCommand(XWikiEclipseConstants.CONNECT_COMMAND, null);
+					} catch (Exception e)
+					{
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} 
                 }
             }
         });

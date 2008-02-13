@@ -20,29 +20,21 @@
  */
 package org.xwiki.eclipse.views;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.eclipse.jface.action.IMenuListener;
-import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
-import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.browser.IWebBrowser;
 import org.eclipse.ui.browser.IWorkbenchBrowserSupport;
@@ -54,7 +46,6 @@ import org.xwiki.eclipse.editors.XWikiPageEditor;
 import org.xwiki.eclipse.model.IXWikiPage;
 import org.xwiki.eclipse.utils.XWikiEclipseUtil;
 import org.xwiki.eclipse.viewers.XWikiPagePreviewViewer;
-import org.xwiki.plugins.eclipse.views.navigator.XWikiNavigator;
 
 public class XWikiPagePreviewView extends ViewPart implements
 		ISelectionListener, IXWikiEclipseEventListener
