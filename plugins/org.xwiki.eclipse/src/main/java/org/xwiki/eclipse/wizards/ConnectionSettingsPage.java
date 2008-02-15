@@ -103,7 +103,7 @@ public class ConnectionSettingsPage extends WizardPage
         {
             public void modifyText(ModifyEvent e)
             {
-                newConnectionWizardState.setUserName(userNameText.getText());
+                newConnectionWizardState.setUserName(userNameText.getText().replaceAll(" ", ""));
                 getContainer().updateButtons();
             }
         });
