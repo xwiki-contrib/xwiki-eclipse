@@ -36,7 +36,7 @@
   <artifactId>xwiki-eclipse</artifactId>
   <packaging>zip</packaging>
   <name>Eclipse Integration Plugin</name>
-  <version>1.1-SNAPSHOT</version>
+  <version>1.1</version>
   <description>Eclipse Integration Plugin</description>
   <scm>
     <connection>scm:svn:http://svn.xwiki.org/svnroot/xwiki/xwiki-extensions/xwiki-eclipse/trunk</connection>
