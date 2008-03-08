@@ -23,6 +23,14 @@ package org.xwiki.plugins.eclipse;
 
 import java.io.File;
 
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+import java.security.cert.X509Certificate;
+
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
@@ -76,8 +84,45 @@ public class XWikiEclipsePlugin extends AbstractUIPlugin
         if (workingSetsFile.exists()) {
             org.xwiki.eclipse.WorkingSetManager.getDefault().restoreWorkingSets(workingSetsFile);
         }
-        
+
         XWikiEclipsePageIndexer.getDefault().start();
+
+        /*
+         * This is the Quick&Dirty solution as explained at http://ws.apache.org/xmlrpc/ssl.html to
+         * make XMLRPC work even on SSL.
+         */
+        TrustManager[] trustAllCerts = new TrustManager[] {new X509TrustManager()
+        {
+            public X509Certificate[] getAcceptedIssuers()
+            {
+                return null;
+            }
+
+            public void checkClientTrusted(X509Certificate[] certs, String authType)
+            {
+                // Trust always
+            }
+
+            public void checkServerTrusted(X509Certificate[] certs, String authType)
+            {
+                // Trust always
+            }
+        }};
+
+        // Install the all-trusting trust manager
+        SSLContext sc = SSLContext.getInstance("SSL");
+        // Create empty HostnameVerifier
+        HostnameVerifier hv = new HostnameVerifier()
+        {
+            public boolean verify(String arg0, SSLSession arg1)
+            {
+                return true;
+            }
+        };
+
+        sc.init(null, trustAllCerts, new java.security.SecureRandom());
+        HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+        HttpsURLConnection.setDefaultHostnameVerifier(hv);
     }
 
     /**
@@ -88,7 +133,7 @@ public class XWikiEclipsePlugin extends AbstractUIPlugin
     public void stop(BundleContext context) throws Exception
     {
         XWikiEclipsePageIndexer.getDefault().stop();
-        
+
         for (IXWikiConnection con : XWikiConnectionManager.getInstance().getAllConnections()) {
             try {
                 con.disconnect();

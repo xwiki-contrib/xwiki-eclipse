@@ -118,7 +118,8 @@ public class NewConnectionWizard extends Wizard implements INewWizard
     public boolean canFinish()
     {
         if (newConnectionWizardState.getServerUrl() == null
-            || !newConnectionWizardState.getServerUrl().startsWith("http://")) {
+            || !(newConnectionWizardState.getServerUrl().startsWith("http://")
+            || newConnectionWizardState.getServerUrl().startsWith("https://"))) {
             return false;
         }
 
