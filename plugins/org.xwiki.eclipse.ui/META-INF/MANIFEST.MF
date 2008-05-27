@@ -1,0 +1,22 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: XWiki Eclipse UI Plug-in
+Bundle-SymbolicName: org.xwiki.eclipse.ui;singleton:=true
+Bundle-Version: 1.2.0.SNAPSHOT
+Bundle-Activator: org.xwiki.eclipse.ui.UIPlugin
+Bundle-Vendor: XWiki
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.xwiki.eclipse.core;bundle-version="1.2.0",
+ org.xwiki.eclipse.xmlrpc;bundle-version="1.4.0",
+ org.eclipse.ui.navigator;bundle-version="3.3.2",
+ org.eclipse.ui.editors;bundle-version="3.3.2",
+ org.eclipse.jface.text;bundle-version="3.3.2",
+ org.eclipse.ui.forms;bundle-version="3.3.0",
+ org.eclipse.core.resources;bundle-version="3.3.1",
+ org.eclipse.compare;bundle-version="3.3.2",
+ org.eclipse.ui.views;bundle-version="3.2.101",
+ org.eclipse.core.expressions;bundle-version="3.3.0",
+ org.eclipse.ui.ide;bundle-version="3.3.2"
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-ActivationPolicy: lazy
