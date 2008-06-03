@@ -226,10 +226,31 @@
   <handler
         class="org.xwiki.eclipse.ui.handlers.NewPageHandler"
         commandId="org.xwiki.eclipse.ui.commands.NewPage">
+     <activeWhen>
+        <iterate
+              operator="and">
+           <or>
+              <instanceof
+                    value="org.xwiki.eclipse.core.DataManager">
+              </instanceof>
+              <instanceof
+                    value="org.xwiki.eclipse.core.model.XWikiEclipseSpaceSummary">
+              </instanceof>
+           </or>
+        </iterate>
+     </activeWhen>
   </handler>
   <handler
         class="org.xwiki.eclipse.ui.handlers.NewObjectHandler"
         commandId="org.xwiki.eclipse.ui.commands.NewObject">
+     <activeWhen>
+        <iterate
+              operator="and">
+           <instanceof
+                 value="org.xwiki.eclipse.core.model.XWikiEclipsePageSummary">
+           </instanceof>
+        </iterate>
+     </activeWhen>
   </handler>
   <handler
         class="org.xwiki.eclipse.ui.handlers.DeleteXWikiElementHandler"
@@ -247,5 +268,15 @@
           id="org.xwiki.eclipse"
           natureId="org.xwiki.eclipse.XWikiEclipseNature">
     </image>
+ </extension>
+ <extension
+       point="org.eclipse.ui.menus">
+    <menuContribution
+          locationURI="popup:org.xwiki.eclipse.ui.views.Navigator?after=additions">
+       <command
+             commandId="org.eclipse.ui.newWizard"
+             style="push">
+       </command>
+    </menuContribution>
  </extension>
 </plugin>

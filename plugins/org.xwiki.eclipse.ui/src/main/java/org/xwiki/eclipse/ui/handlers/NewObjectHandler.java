@@ -33,8 +33,7 @@ import org.xwiki.eclipse.ui.utils.UIUtils;
 import org.xwiki.eclipse.ui.wizards.NewObjectWizard;
 
 public class NewObjectHandler extends AbstractHandler
-{
-    @Override
+{    
     public Object execute(ExecutionEvent event) throws ExecutionException
     {
         ISelection selection = HandlerUtil.getCurrentSelection(event);

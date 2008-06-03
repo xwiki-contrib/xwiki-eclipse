@@ -34,8 +34,7 @@ import org.xwiki.eclipse.ui.utils.UIUtils;
 import org.xwiki.eclipse.ui.wizards.NewPageWizard;
 
 public class NewPageHandler extends AbstractHandler
-{
-    @Override
+{    
     public Object execute(ExecutionEvent event) throws ExecutionException
     {
         String spaceKey = null;

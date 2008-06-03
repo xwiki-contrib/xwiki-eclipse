@@ -36,8 +36,7 @@ import org.xwiki.eclipse.ui.utils.UIUtils;
 import org.xwiki.eclipse.ui.utils.XWikiEclipseSafeRunnable;
 
 public class DataManagerConnectHandler extends AbstractHandler
-{
-    @Override
+{    
     public Object execute(ExecutionEvent event) throws ExecutionException
     {
         ISelection selection = HandlerUtil.getCurrentSelection(event);

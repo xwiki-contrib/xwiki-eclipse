@@ -32,8 +32,7 @@ import org.xwiki.eclipse.core.notifications.NotificationManager;
 import org.xwiki.eclipse.ui.utils.UIUtils;
 
 public class RefreshHandler extends AbstractHandler
-{
-    @Override
+{    
     public Object execute(ExecutionEvent event) throws ExecutionException
     {
         ISelection selection = HandlerUtil.getCurrentSelection(event);

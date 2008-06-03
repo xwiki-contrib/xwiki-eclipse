@@ -34,8 +34,7 @@ import org.xwiki.eclipse.core.DataManager;
 import org.xwiki.eclipse.ui.utils.UIUtils;
 
 public class DataManagerDisconnectHandler extends AbstractHandler
-{
-    @Override
+{    
     public Object execute(ExecutionEvent event) throws ExecutionException
     {
         ISelection selection = HandlerUtil.getCurrentSelection(event);
