@@ -63,15 +63,12 @@ public class DataManagerRegistry implements IResourceChangeListener
                     IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
                     for (IProject project : projects) {
                         if (project.isOpen()) {
-                            if (project.isOpen()) {
-                                try {
-                                    if (hasXWikiEclipseNature(project)) {
-                                        sharedInstance.register(new DataManager(project));
-                                    }
-                                } catch (CoreException e) {
-                                    // TODO Auto-generated catch block
-                                    e.printStackTrace();
+                            try {
+                                if (hasXWikiEclipseNature(project)) {
+                                    sharedInstance.register(new DataManager(project));
                                 }
+                            } catch (CoreException e) {
+                                CoreLog.logError(String.format("Unable to read project %s's nature.", project.getName()), e);
                             }
                         }
                     }
@@ -102,7 +99,9 @@ public class DataManagerRegistry implements IResourceChangeListener
                 dataManager.connect();
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            CoreLog.logWarning(String.format(
+                "Cannot connect '%s'. Disabling auto connect option for the future.", dataManager
+                    .getName()));
         }
 
         NotificationManager.getDefault().fireCoreEvent(CoreEvent.Type.DATA_MANAGER_REGISTERED,
