@@ -27,7 +27,13 @@ In order to install:
 You can start using XWiki Eclipse by creating a connection using the File->New->Other... menu command.
 XWiki connections will be accessible from the Project Explorer and XWiki Navigator.
 
+In order to build the RCP version, please refer to:
+http://svn.xwiki.org/svnroot/xwiki/xwiki-extensions/xwiki-eclipse/trunk/plugins/org.xwiki.eclipse.rcp/README
+
 Enjoy.
+
+
+
 
 
 
@@ -38,7 +44,7 @@ There are 2 builds:
 
 * The plugin build which generates an Eclipse plugin for XEclipse. It's located in plugins/org.xwiki.eclipse
 
-* The RCP build which generates a standalone executable version of XEClipse. It's located in plugins/org.xwiki.xeclipse.rcp
+* The RCP build which generates a standalone executable version of XEClipse. It's located in plugins/org.xwiki.xeclipse.rcp.old
 
 To build each one please refer to build instructions at the following URL:
 http://www.xwiki.org/xwiki/bin/Community/Building#HBuildingXEclipse
