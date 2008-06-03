@@ -75,6 +75,9 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
 
     protected void makeActions(IWorkbenchWindow window)
     {
+    	IWorkbenchAction newAction = ActionFactory.NEW.create(window);
+    	register(newAction);
+    	
         IWorkbenchAction saveAction = ActionFactory.SAVE.create(window);
         register(saveAction);
 
@@ -101,11 +104,23 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
             boolean addView = false;
             if (categoryPath != null) {
                 for (String category : categoryPath) {
-                    if (category.equalsIgnoreCase("XWIKI")) {
+                    if (category.equalsIgnoreCase("org.xwiki.eclipse")) {
                         addView = true;
                         break;
                     }
                 }
+            }    
+            
+            if(v.getId().equals("org.eclipse.pde.runtime.LogView")) {
+                addView = true;
+            }
+            
+            if(v.getId().equals("org.eclipse.ui.views.ContentOutline")) {
+                addView = true;
+            }
+            
+            if(v.getId().equals("org.eclipse.ui.navigator.ProjectExplorer")) {
+                addView = true;
             }
 
             if (addView) {
@@ -114,6 +129,8 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
                 register(action);
             }
         }
+        
+        
 
         IWorkbenchAction deleteAction = ActionFactory.DELETE.create(window);
         register(deleteAction);
@@ -144,5 +161,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
         menuBar.add(helpMenu);
 
     }
+    
+    
 
 }

@@ -1,6 +1,27 @@
-1) You must provide a profiles.xml file containing the value of eclipseInstall and pdeBuildVersion,
+0) In order to compile this version of XWiki Eclipse RCP you will need to download from 
+   http://download.eclipse.org/eclipse/downloads/ an Eclipse SDK 3.4 and the corresponding RCP SDK and delta pack.
+   
+   For example, for Eclipse 3.4RC1 you will download from
+   http://download.eclipse.org/eclipse/downloads/drops/S-3.4RC1-200805161333/index.php
+   
+   - http://download.eclipse.org/eclipse/downloads/drops/S-3.4RC1-200805161333/download.php?dropFile=eclipse-SDK-3.4RC1-macosx-carbon.tar.gz (Depending on your platform)
+   - http://download.eclipse.org/eclipse/downloads/drops/S-3.4RC1-200805161333/download.php?dropFile=eclipse-RCP-3.4RC1-macosx-carbon.tar.gz (Whatever platform is fine)
+   - http://download.eclipse.org/eclipse/downloads/drops/S-3.4RC1-200805161333/download.php?dropFile=eclipse-3.4RC1-delta-pack.zip
+
+   You might not need to download the SDK if you are already have it installed on your system.
+   
+   Unpack the SDK and rename its directory to a meaningful name like eclipse-SDK-3.4RC1, different from the standard one 'eclipse'
+   Unpack the RCP SDK and the Delta Pack. You can rename its directory to eclipse-RCP-SDK-3.4RC1 (though it's not necessary).
+   
+   Renaming the SDK directory is necessary (if unpacking in all the files in the same directory) because otherwise the RCP SDK and the
+   Delta Pack will be unpacked in the same directory of the SDK (i.e., 'eclipse') and this would cause build errors.
+   
+   The underlying principle is that at the end of this step you must have the SDK separated 
+   from the RCP-SDK + DeltaPack.      
+
+1) You must provide a profiles.xml file containing the value of eclipseInstall, eclipseRCPSDK and pdeBuildVersion,
 or set them up in your settings.xml or pass them on the command line.
-To obtain the pdeBuildVersion by finding the version in $eclipseInstall/plugins/org.eclipse.pde.build_pdeBuildVersion.
+To can obtain the pdeBuildVersion by looking at the version in $eclipseInstall/plugins/org.eclipse.pde.build_pdeBuildVersion.
 
 For example, create the following profiles.xml file next to this pom.xml file:
 
@@ -9,8 +30,9 @@ For example, create the following profiles.xml file next to this pom.xml file:
     <profile>
       <id>vmassol</id>
       <properties>
-        <eclipseInstall>/Applications/eclipse-europa-pde/</eclipseInstall>
-        <pdeBuildVersion>3.3.2.R331_v20071019</pdeBuildVersion>
+        <eclipseInstall>/path/to/eclipse-SDK-3.4RC1</eclipseInstall>
+        <eclipseRCPSDK>/path/to/eclipse-RCP-SDK-3.4RC1-DeltaPack</eclipseRCPSDK>
+        <pdeBuildVersion>3.4.0.v20080514</pdeBuildVersion>
       </properties>
     </profile>
   </profiles>
@@ -20,7 +42,7 @@ For example, create the following profiles.xml file next to this pom.xml file:
 </profilesXml>
 
 Example on the command line:
-mvn install -DeclipseInstall=/Applications/Eclipse/eclipse-rcp-europa-fall -DpdeBuildVersion=3.3.1.v20070828 ...
+mvn install -DeclipseInstall=/path/to/eclipse-SDK-3.4RC1 -DeclipseRCPSDK=/path/to/eclipse-RCP-SDK-3.4RC1-DeltaPack -DpdeBuildVersion=3.4.0.v20080514 ...
 
 2) You must also tell maven the target platform you want to build for. Valid values are:
    linux, windows, macx86 or macppc.
@@ -28,7 +50,7 @@ mvn install -DeclipseInstall=/Applications/Eclipse/eclipse-rcp-europa-fall -Dpde
 Example on the command line:
 mvn install ... -Plinux
 
-3) If maven complains that he cannot find startup.jar then copy ${eclipse-install-dir}/plugin/org.eclipse.equinox.launcher*-xyz.jar
-   to ${eclipse-install-dir}/startup.jar.
+3) If maven complains that he cannot find startup.jar then copy ${eclipseInstall}/plugin/org.eclipse.equinox.launcher*-xyz.jar
+   to ${eclipseInstall}/startup.jar.
    
 Build with "mvn install".

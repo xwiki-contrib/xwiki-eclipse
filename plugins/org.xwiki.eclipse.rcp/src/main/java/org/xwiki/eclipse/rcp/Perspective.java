@@ -20,18 +20,27 @@
  */
 package org.xwiki.eclipse.rcp;
 
+import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
 
 public class Perspective implements IPerspectiveFactory
 {
-
     public void createInitialLayout(IPageLayout layout)
     {
-        layout.addView("org.xwiki.eclipse.views.XWikiExplorer", IPageLayout.LEFT, 0.30f, layout
-            .getEditorArea());
+        IFolderLayout leftFolder =
+            layout.createFolder("leftFolder", IPageLayout.LEFT, 0.20f, layout.getEditorArea());
 
-        layout.addView("org.xwiki.eclipse.views.XWikiPagePreview", IPageLayout.BOTTOM, 0.60f,
-            layout.getEditorArea());
+        leftFolder.addView("org.xwiki.eclipse.ui.views.Navigator");
+        leftFolder.addView("org.eclipse.ui.navigator.ProjectExplorer");
+
+        IFolderLayout bottomFolder =
+            layout
+                .createFolder("bottomFolder", IPageLayout.BOTTOM, 0.60f, layout.getEditorArea());
+        bottomFolder.addView("org.xwiki.eclipse.ui.views.PagePreview");
+        bottomFolder.addView("org.eclipse.pde.runtime.LogView");
+
+        layout.addView("org.eclipse.ui.views.ContentOutline", IPageLayout.RIGHT, 0.80f, layout
+            .getEditorArea());
     }
 }

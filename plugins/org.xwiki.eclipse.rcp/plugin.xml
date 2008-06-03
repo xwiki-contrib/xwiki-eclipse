@@ -24,10 +24,10 @@
          point="org.eclipse.core.runtime.products">
       <product
             application="org.xwiki.eclipse.rcp.application"
-            name="XEclipse">
+            name="XWiki Eclipse">
          <property
                name="appName"
-               value="XEclipse">
+               value="XWiki Eclipse">
          </property>
          <property
                name="aboutImage"
@@ -48,16 +48,16 @@
       <menuContribution
             locationURI="menu:org.xwiki.xeclipse.menu.File">
             <command
-                  commandId="org.xwiki.eclipse.command.NewConnection"
+                  commandId="org.eclipse.ui.newWizard"
                   id="New connection...">
             </command>
             <command
-                  commandId="org.xwiki.eclipse.command.NewSpace"
-                  id="New space...">
+                  commandId="org.xwiki.eclipse.ui.commands.NewPage"
+                  id="New page...">
             </command>
             <command
-                  commandId="org.xwiki.eclipse.command.NewPage"
-                  id="New page...">
+                  commandId="org.xwiki.eclipse.ui.commands.NewObject"
+                  id="New object...">
             </command>
             <separator
                   name="separator1"
@@ -95,17 +95,9 @@
                   visible="true">
             </separator>
             <command
-                  commandId="org.eclipse.ui.edit.delete"
+                  commandId="org.xwiki.eclipse.ui.commands.Delete"
                   id="Delete">
             </command>
-            <separator
-                  name="separator2"
-                  visible="true">
-            </separator>
-            <command
-                  commandId="org.xwiki.eclipse.command.OpenPage"
-                  id="Open page...">
-            </command>         
       </menuContribution>
       <menuContribution
             locationURI="menu:org.xwiki.xeclipse.menu.Help">
