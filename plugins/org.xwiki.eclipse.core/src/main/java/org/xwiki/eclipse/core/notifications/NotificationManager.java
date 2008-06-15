@@ -27,8 +27,7 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.ListenerList;
 
 /**
- * A singleton implementing a notification manager. XWiki Core classes should use this singleton for
- * publishing events.
+ * A singleton implementing a notification manager. XWiki Core classes should use this singleton for publishing events.
  * 
  * @author fmancinelli
  */
@@ -39,8 +38,7 @@ public class NotificationManager
     private ListenerList listenerList;
 
     /**
-     * A private class that contains information about a listener and the even type it is interested
-     * in.
+     * A private class that contains information about a listener and the even type it is interested in.
      * 
      * @author fmancinelli
      */

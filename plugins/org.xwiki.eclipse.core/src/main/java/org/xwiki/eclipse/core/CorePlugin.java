@@ -44,7 +44,6 @@ public class CorePlugin extends Plugin
 
     /*
      * (non-Javadoc)
-     * 
      * @see org.eclipse.core.runtime.Plugins#start(org.osgi.framework.BundleContext)
      */
     public void start(BundleContext context) throws Exception
@@ -55,7 +54,6 @@ public class CorePlugin extends Plugin
 
     /*
      * (non-Javadoc)
-     * 
      * @see org.eclipse.core.runtime.Plugin#stop(org.osgi.framework.BundleContext)
      */
     public void stop(BundleContext context) throws Exception

@@ -39,7 +39,6 @@ import com.thoughtworks.xstream.io.xml.DomDriver;
  * A class containing utility methods.
  * 
  * @author fmancinelli
- * 
  */
 public class CoreUtils
 {
@@ -77,8 +76,8 @@ public class CoreUtils
     }
 
     /**
-     * Write an XML serialization of the given object to a file. Overwrites the previous file
-     * content is the file already exists.
+     * Write an XML serialization of the given object to a file. Overwrites the previous file content is the file
+     * already exists.
      * 
      * @param file The file where the serialization should be written to.
      * @param data
@@ -121,6 +120,7 @@ public class CoreUtils
     {
         XStream xstream = getXStream();
 
+        file.refreshLocal(1, null);
         return xstream.fromXML(file.getContents());
     }
 

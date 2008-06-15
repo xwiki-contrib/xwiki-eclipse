@@ -68,7 +68,8 @@ public class DataManagerRegistry implements IResourceChangeListener
                                     sharedInstance.register(new DataManager(project));
                                 }
                             } catch (CoreException e) {
-                                CoreLog.logError(String.format("Unable to read project %s's nature.", project.getName()), e);
+                                CoreLog.logError(String
+                                    .format("Unable to read project %s's nature.", project.getName()), e);
                             }
                         }
                     }
@@ -78,8 +79,7 @@ public class DataManagerRegistry implements IResourceChangeListener
             };
             job.schedule();
 
-            ResourcesPlugin.getWorkspace().addResourceChangeListener(sharedInstance,
-                IResourceChangeEvent.POST_BUILD);
+            ResourcesPlugin.getWorkspace().addResourceChangeListener(sharedInstance, IResourceChangeEvent.POST_BUILD);
         }
 
         return sharedInstance;
@@ -99,21 +99,18 @@ public class DataManagerRegistry implements IResourceChangeListener
                 dataManager.connect();
             }
         } catch (Exception e) {
-            CoreLog.logWarning(String.format(
-                "Cannot connect '%s'. Disabling auto connect option for the future.", dataManager
-                    .getName()));
+            CoreLog.logWarning(String.format("Cannot connect '%s'. Disabling auto connect option for the future.",
+                dataManager.getName()));
         }
 
-        NotificationManager.getDefault().fireCoreEvent(CoreEvent.Type.DATA_MANAGER_REGISTERED,
-            this, dataManager);
+        NotificationManager.getDefault().fireCoreEvent(CoreEvent.Type.DATA_MANAGER_REGISTERED, this, dataManager);
     }
 
     public synchronized void unregister(DataManager dataManager)
     {
         System.out.format("Unregister %s\n", dataManager.getProject());
         dataManagers.remove(dataManager);
-        NotificationManager.getDefault().fireCoreEvent(CoreEvent.Type.DATA_MANAGER_UNREGISTERED,
-            this, dataManager);
+        NotificationManager.getDefault().fireCoreEvent(CoreEvent.Type.DATA_MANAGER_UNREGISTERED, this, dataManager);
     }
 
     public void resourceChanged(IResourceChangeEvent event)
@@ -145,8 +142,7 @@ public class DataManagerRegistry implements IResourceChangeListener
                             return false;
                         }
 
-                        if (delta.getKind() == IResourceDelta.REMOVED
-                            && (delta.getResource() instanceof IProject)) {
+                        if (delta.getKind() == IResourceDelta.REMOVED && (delta.getResource() instanceof IProject)) {
                             IProject project = (IProject) delta.getResource();
                             System.out.format("Project %s removed...", project);
                             DataManager dataManager = findDataManagerByProject(project);

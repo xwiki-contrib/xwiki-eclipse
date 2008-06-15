@@ -55,25 +55,20 @@ import org.xwiki.xmlrpc.model.XWikiPage;
 import org.xwiki.xmlrpc.model.XWikiPageSummary;
 
 /**
- * A class that implements a controller for handling data and the connection towards an XWiki
- * server. It takes care of synchronizing pages, objects, handling local copies, conflicts, etc.
+ * A class that implements a controller for handling data and the connection towards an XWiki server. It takes care of
+ * synchronizing pages, objects, handling local copies, conflicts, etc.
  * 
  * @author fmancinelli
- * 
  */
 public class DataManager
 {
-
     private static final IPath DATA_MANAGER_DIRECTORY = new Path(".xwikieclipse"); //$NON-NLS-1$
 
-    private static final IPath LOCAL_STORAGE_DIRECTORY =
-        DATA_MANAGER_DIRECTORY.append("local_storage"); //$NON-NLS-1$
+    private static final IPath LOCAL_STORAGE_DIRECTORY = DATA_MANAGER_DIRECTORY.append("local_storage"); //$NON-NLS-1$
 
-    private static final IPath LAST_RETRIEVED_PAGE_DIRECTORY =
-        DATA_MANAGER_DIRECTORY.append("last_retrieved_pages"); //$NON-NLS-1$
+    private static final IPath LAST_RETRIEVED_PAGE_DIRECTORY = DATA_MANAGER_DIRECTORY.append("last_retrieved_pages"); //$NON-NLS-1$
 
-    private static final IPath CONFLICTING_PAGES_DIRECTORY =
-        DATA_MANAGER_DIRECTORY.append("conflicting_pages"); //$NON-NLS-1$
+    private static final IPath CONFLICTING_PAGES_DIRECTORY = DATA_MANAGER_DIRECTORY.append("conflicting_pages"); //$NON-NLS-1$
 
     private static final String PAGES_STATUS = "pagesStatus.index"; //$NON-NLS-1$
 
@@ -98,8 +93,6 @@ public class DataManager
 
     private LocalXWikiDataStorage conflictingPagesDataStorage;
 
-    private boolean extendedSupport;
-
     private static final String DIRTY_STATUS = "dirty"; //$NON-NLS-1$
 
     private static final String CONFLICTING_STATUS = "conflicting"; //$NON-NLS-1$
@@ -108,9 +101,10 @@ public class DataManager
 
     private PersistentMap objectToStatusMap;
 
+    private Set<Functionality> supportedFunctionalities;
+
     /* Properties for projects associated to data managers */
-    public static final QualifiedName AUTO_CONNECT =
-        new QualifiedName("xwiki.eclipse", "auto_connect"); //$NON-NLS-1$ //$NON-NLS-2$
+    public static final QualifiedName AUTO_CONNECT = new QualifiedName("xwiki.eclipse", "auto_connect"); //$NON-NLS-1$ //$NON-NLS-2$
 
     public static final QualifiedName PASSWORD = new QualifiedName("xwiki.eclipse", "password"); //$NON-NLS-1$ //$NON-NLS-2$
 
@@ -131,26 +125,23 @@ public class DataManager
 
         remoteXWikiDataStorage = null;
 
-        localXWikiDataStorage =
-            new LocalXWikiDataStorage(project.getFolder(LOCAL_STORAGE_DIRECTORY));
+        localXWikiDataStorage = new LocalXWikiDataStorage(project.getFolder(LOCAL_STORAGE_DIRECTORY));
 
-        lastRetrievedPagesDataStorage =
-            new LocalXWikiDataStorage(project.getFolder(LAST_RETRIEVED_PAGE_DIRECTORY));
+        lastRetrievedPagesDataStorage = new LocalXWikiDataStorage(project.getFolder(LAST_RETRIEVED_PAGE_DIRECTORY));
 
-        conflictingPagesDataStorage =
-            new LocalXWikiDataStorage(project.getFolder(CONFLICTING_PAGES_DIRECTORY));
+        conflictingPagesDataStorage = new LocalXWikiDataStorage(project.getFolder(CONFLICTING_PAGES_DIRECTORY));
 
-        pageToStatusMap =
-            new PersistentMap(project.getFolder(DATA_MANAGER_DIRECTORY).getFile(PAGES_STATUS));
+        pageToStatusMap = new PersistentMap(project.getFolder(DATA_MANAGER_DIRECTORY).getFile(PAGES_STATUS));
 
-        objectToStatusMap =
-            new PersistentMap(project.getFolder(DATA_MANAGER_DIRECTORY).getFile(OBJECTS_STATUS));
+        objectToStatusMap = new PersistentMap(project.getFolder(DATA_MANAGER_DIRECTORY).getFile(OBJECTS_STATUS));
 
         /*
-         * At the beginning we operate local, and the local storage always support extended
-         * features, i.e., objects
+         * At the beginning we operate locally, and the local storage always support all extended functionalities, i.e.,
+         * objects, etc.
          */
-        extendedSupport = true;
+        supportedFunctionalities = new HashSet<Functionality>();
+        supportedFunctionalities.add(Functionality.OBJECTS);
+        supportedFunctionalities.add(Functionality.RENAME);
     }
 
     /*
@@ -161,14 +152,14 @@ public class DataManager
         return project;
     }
 
+    public Set<Functionality> getSupportedFunctionalities()
+    {
+        return supportedFunctionalities;
+    }
+
     public String getName()
     {
         return project.getName();
-    }
-
-    public boolean isExtendedSupport()
-    {
-        return extendedSupport;
     }
 
     public String getEndpoint() throws CoreException
@@ -225,23 +216,27 @@ public class DataManager
             return;
         }
 
-        remoteXWikiDataStorage =
-            new RemoteXWikiDataStorage(getEndpoint(), getUserName(), getPassword());
+        remoteXWikiDataStorage = new RemoteXWikiDataStorage(getEndpoint(), getUserName(), getPassword());
         try {
             ServerInfo serverInfo = remoteXWikiDataStorage.getServerInfo();
-            extendedSupport = true;
-            // TODO: Put here some check on the result for understanding which
-            // server we are talking to.
+
+            // TODO: Check if the server is Confluence
+
+            if (serverInfo.getMajorVersion() == 1) {
+                if (serverInfo.getMinorVersion() < 5) {
+                    supportedFunctionalities.remove(Functionality.RENAME);
+                }
+            }
         } catch (Exception e) {
-            extendedSupport = false;
+            /* Here we are talking to an XWiki < 1.4. In this case we only support basic functionalities. */
+            supportedFunctionalities.clear();
         }
 
         /* When connected synchronize all the pages and objects */
         synchronizePages(new HashSet<String>(pageToStatusMap.keySet()));
         synchronizeObjects(new HashSet<String>(objectToStatusMap.keySet()));
 
-        NotificationManager.getDefault().fireCoreEvent(CoreEvent.Type.DATA_MANAGER_CONNECTED,
-            this, this);
+        NotificationManager.getDefault().fireCoreEvent(CoreEvent.Type.DATA_MANAGER_CONNECTED, this, this);
     }
 
     public void disconnect()
@@ -250,10 +245,11 @@ public class DataManager
         remoteXWikiDataStorage = null;
 
         /* Set this to true, because the local storage always support extended features */
-        extendedSupport = true;
+        supportedFunctionalities.clear();
+        supportedFunctionalities.add(Functionality.OBJECTS);
+        supportedFunctionalities.add(Functionality.RENAME);
 
-        NotificationManager.getDefault().fireCoreEvent(CoreEvent.Type.DATA_MANAGER_DISCONNECTED,
-            this, this);
+        NotificationManager.getDefault().fireCoreEvent(CoreEvent.Type.DATA_MANAGER_DISCONNECTED, this, this);
     }
 
     /*
@@ -280,8 +276,7 @@ public class DataManager
     /*
      * Page retrieval
      */
-    public List<XWikiEclipsePageSummary> getPages(final String spaceKey)
-        throws XWikiEclipseException
+    public List<XWikiEclipsePageSummary> getPages(final String spaceKey) throws XWikiEclipseException
     {
         List<XWikiPageSummary> pageSummaries;
 
@@ -313,9 +308,8 @@ public class DataManager
         }
 
         /*
-         * If we are here either there is no cached page, or the cached page is not dirty and not in
-         * conflict, so we can grab the latest version of the page and store it in the local
-         * storage.
+         * If we are here either there is no cached page, or the cached page is not dirty and not in conflict, so we can
+         * grab the latest version of the page and store it in the local storage.
          */
         if (isConnected()) {
             page = remoteXWikiDataStorage.getPage(pageId);
@@ -327,8 +321,7 @@ public class DataManager
 
             XWikiEclipsePage result = new XWikiEclipsePage(this, page);
 
-            NotificationManager.getDefault().fireCoreEvent(CoreEvent.Type.PAGE_STORED, this,
-                result);
+            NotificationManager.getDefault().fireCoreEvent(CoreEvent.Type.PAGE_STORED, this, result);
 
             return result;
         }
@@ -343,8 +336,8 @@ public class DataManager
         XWikiPage storedPage = localXWikiDataStorage.storePage(page.getData());
 
         /*
-         * Set the dirty flag only if the page has no status. In fact it might be already dirty
-         * (should not be possible though) or in conflict
+         * Set the dirty flag only if the page has no status. In fact it might be already dirty (should not be possible
+         * though) or in conflict
          */
         if (pageToStatusMap.get(page.getData().getId()) == null) {
             pageToStatusMap.put(page.getData().getId(), DIRTY_STATUS);
@@ -365,8 +358,7 @@ public class DataManager
         }
 
         /*
-         * If the page is not dirty (i.e., is in conflict or has no status associated) then do
-         * nothing
+         * If the page is not dirty (i.e., is in conflict or has no status associated) then do nothing
          */
         if (!DIRTY_STATUS.equals(pageToStatusMap.get(page.getId()))) {
             return page;
@@ -380,8 +372,8 @@ public class DataManager
             remotePage = remoteXWikiDataStorage.getPage(page.getId());
         } catch (XWikiEclipseException e) {
             /*
-             * This can fail if the remote page does not yet exist. So ignore the exception here and
-             * handle the condition later: remotePage will be null if we are here.
+             * This can fail if the remote page does not yet exist. So ignore the exception here and handle the
+             * condition later: remotePage will be null if we are here.
              */
         }
 
@@ -392,9 +384,12 @@ public class DataManager
 
             clearPageStatus(page.getId());
         } else if (page.getVersion() == remotePage.getVersion()) {
-            /* If the local and remote content are equals, no need to re-store remotely the page. */
-            if (remotePage.getContent().equals(page.getContent())) {
-                page = remotePage;
+            /* This might be a rename */
+            if (remotePage.getTitle().equals(page.getTitle())) {
+                /* If the local and remote content are equals, no need to re-store remotely the page. */
+                if (remotePage.getContent().equals(page.getContent())) {
+                    page = remotePage;
+                }
             } else {
                 page = remoteXWikiDataStorage.storePage(page);
             }
@@ -446,7 +441,7 @@ public class DataManager
     {
         List<XWikiEclipseObjectSummary> result = new ArrayList<XWikiEclipseObjectSummary>();
 
-        if (!extendedSupport) {
+        if (!supportedFunctionalities.contains(Functionality.OBJECTS)) {
             return result;
         }
 
@@ -456,23 +451,20 @@ public class DataManager
             List<XWikiObjectSummary> objects = remoteXWikiDataStorage.getObjects(pageId);
 
             for (XWikiObjectSummary object : objects) {
-                result
-                    .add(new XWikiEclipseObjectSummary(this, object, xwikiPageSummary.getData()));
+                result.add(new XWikiEclipseObjectSummary(this, object, xwikiPageSummary.getData()));
             }
         } else {
             List<XWikiObjectSummary> objects = localXWikiDataStorage.getObjects(pageId);
 
             for (XWikiObjectSummary object : objects) {
-                result
-                    .add(new XWikiEclipseObjectSummary(this, object, xwikiPageSummary.getData()));
+                result.add(new XWikiEclipseObjectSummary(this, object, xwikiPageSummary.getData()));
             }
         }
 
         return result;
     }
 
-    public XWikiEclipseObject getObject(String pageId, String className, int id)
-        throws XWikiEclipseException
+    public XWikiEclipseObject getObject(String pageId, String className, int id) throws XWikiEclipseException
     {
         if (isConnected()) {
             XWikiClass xwikiClass = remoteXWikiDataStorage.getClass(className);
@@ -482,16 +474,15 @@ public class DataManager
             localXWikiDataStorage.storeObject(xwikiObject);
             localXWikiDataStorage.storeClass(xwikiClass);
 
-            XWikiEclipseObject result =
-                new XWikiEclipseObject(this, xwikiObject, xwikiClass, xwikiPageSummary);
+            XWikiEclipseObject result = new XWikiEclipseObject(this, xwikiObject, xwikiClass, xwikiPageSummary);
 
             return result;
         } else {
             XWikiClass xwikiClass = localXWikiDataStorage.getClass(className);
             XWikiPageSummary xwikiPageSummary = localXWikiDataStorage.getPageSummary(pageId);
 
-            return new XWikiEclipseObject(this, localXWikiDataStorage.getObject(pageId,
-                className, id), xwikiClass, xwikiPageSummary);
+            return new XWikiEclipseObject(this, localXWikiDataStorage.getObject(pageId, className, id), xwikiClass,
+                xwikiPageSummary);
         }
     }
 
@@ -508,8 +499,7 @@ public class DataManager
     public XWikiEclipsePageSummary getPageSummary(String pageId) throws XWikiEclipseException
     {
         if (isConnected()) {
-            return new XWikiEclipsePageSummary(this, remoteXWikiDataStorage
-                .getPageSummary(pageId));
+            return new XWikiEclipsePageSummary(this, remoteXWikiDataStorage.getPageSummary(pageId));
 
         } else {
             return new XWikiEclipsePageSummary(this, localXWikiDataStorage.getPageSummary(pageId));
@@ -523,13 +513,9 @@ public class DataManager
         objectToStatusMap.put(getCompactIdForObject(object.getData()), DIRTY_STATUS);
 
         object =
-            new XWikiEclipseObject(this,
-                synchronize(object.getData()),
-                object.getXWikiClass(),
-                object.getPageSummary());
+            new XWikiEclipseObject(this, synchronize(object.getData()), object.getXWikiClass(), object.getPageSummary());
 
-        NotificationManager.getDefault()
-            .fireCoreEvent(CoreEvent.Type.OBJECT_STORED, this, object);
+        NotificationManager.getDefault().fireCoreEvent(CoreEvent.Type.OBJECT_STORED, this, object);
 
         return object;
     }
@@ -542,8 +528,7 @@ public class DataManager
         }
 
         /*
-         * If the page is not dirty (i.e., is in conflict or has no status associated) then do
-         * nothing
+         * If the page is not dirty (i.e., is in conflict or has no status associated) then do nothing
          */
         if (!DIRTY_STATUS.equals(objectToStatusMap.get(getCompactIdForObject(object)))) {
             return object;
@@ -554,14 +539,13 @@ public class DataManager
 
         if (object.getId() == -1) {
             /*
-             * If we are here we are synchronizing an object that has been created locally and does
-             * not exist remotely.
+             * If we are here we are synchronizing an object that has been created locally and does not exist remotely.
              */
 
             /*
-             * We save the current object because its id will be assigned when the object is stored
-             * remotely. In this way, we will be able to cleanup all the references to the locally
-             * created object with the -1 id from the status map, index and local storage.
+             * We save the current object because its id will be assigned when the object is stored remotely. In this
+             * way, we will be able to cleanup all the references to the locally created object with the -1 id from the
+             * status map, index and local storage.
              */
             XWikiObject previousObject = object;
 
@@ -570,8 +554,8 @@ public class DataManager
             objectToStatusMap.remove(getCompactIdForObject(object));
 
             /* Cleanup */
-            localXWikiDataStorage.removeObject(previousObject.getPageId(), previousObject
-                .getClassName(), previousObject.getId());
+            localXWikiDataStorage.removeObject(previousObject.getPageId(), previousObject.getClassName(),
+                previousObject.getId());
             objectToStatusMap.remove(getCompactIdForObject(previousObject));
         } else {
             object = remoteXWikiDataStorage.storeObject(object);
@@ -612,18 +596,17 @@ public class DataManager
 
     public boolean isLocallyAvailable(XWikiEclipseObjectSummary objectSummary)
     {
-        return localXWikiDataStorage.exists(objectSummary.getData().getPageId(), objectSummary
-            .getData().getClassName(), objectSummary.getData().getId());
+        return localXWikiDataStorage.exists(objectSummary.getData().getPageId(),
+            objectSummary.getData().getClassName(), objectSummary.getData().getId());
     }
 
     private String getCompactIdForObject(XWikiObject object)
     {
-        return String.format("%s/%s/%d", object.getPageId(), object.getClassName(), object
-            .getId());
+        return String.format("%s/%s/%d", object.getPageId(), object.getClassName(), object.getId());
     }
 
-    private XWikiObject getObjectByCompactId(IDataStorage storage, String compactId)
-        throws NumberFormatException, XWikiEclipseException
+    private XWikiObject getObjectByCompactId(IDataStorage storage, String compactId) throws NumberFormatException,
+        XWikiEclipseException
     {
         String[] components = compactId.split("/");
         return storage.getObject(components[0], components[1], Integer.parseInt(components[2]));
@@ -654,8 +637,7 @@ public class DataManager
         return storePage(page);
     }
 
-    public XWikiEclipseObject createObject(String pageId, String className)
-        throws XWikiEclipseException
+    public XWikiEclipseObject createObject(String pageId, String className) throws XWikiEclipseException
     {
         XWikiObject xwikiObject = new XWikiObject();
         xwikiObject.setClassName(className);
@@ -667,8 +649,7 @@ public class DataManager
         XWikiEclipsePageSummary xwikiPageSummary = getPageSummary(pageId);
 
         XWikiEclipseObject object =
-            new XWikiEclipseObject(this, xwikiObject, xwikiClass.getData(), xwikiPageSummary
-                .getData());
+            new XWikiEclipseObject(this, xwikiObject, xwikiClass.getData(), xwikiPageSummary.getData());
 
         object = storeObject(object);
 
@@ -705,8 +686,7 @@ public class DataManager
 
     }
 
-    public void removeObject(String pageId, String className, int objectId)
-        throws XWikiEclipseException
+    public void removeObject(String pageId, String className, int objectId) throws XWikiEclipseException
     {
         if (isConnected()) {
             remoteXWikiDataStorage.removeObject(pageId, className, objectId);
@@ -714,8 +694,27 @@ public class DataManager
 
         localXWikiDataStorage.removeObject(pageId, className, objectId);
 
-        NotificationManager.getDefault().fireCoreEvent(CoreEvent.Type.OBJECT_REMOVED, this,
-            pageId);
+        NotificationManager.getDefault().fireCoreEvent(CoreEvent.Type.OBJECT_REMOVED, this, pageId);
+    }
 
+    public boolean renamePage(String pageId, String newSpace, String newPageName) throws XWikiEclipseException
+    {
+        if (!supportedFunctionalities.contains(Functionality.RENAME)) {
+            return false;
+
+        }
+        XWikiEclipsePage page = getPage(pageId);
+        page.getData().setSpace(newSpace);
+        page.getData().setTitle(newPageName);
+        storePage(page);
+
+        /* Remove the old page from the cache */
+        clearPageStatus(pageId);
+        localXWikiDataStorage.removePage(pageId);
+
+        /* Retrieve the new page for caching it */
+        getPage(String.format("%s.%s", newSpace, newPageName));
+
+        return true;
     }
 }

@@ -47,9 +47,8 @@ import org.xwiki.xmlrpc.model.XWikiPage;
 import org.xwiki.xmlrpc.model.XWikiPageSummary;
 
 /**
- * This class implements a local data storage for XWiki elements that uses the Eclipse resource
- * component. The local storage is rooted at an IFolder passed to the constructor. The structure of
- * the local storage is the following:
+ * This class implements a local data storage for XWiki elements that uses the Eclipse resource component. The local
+ * storage is rooted at an IFolder passed to the constructor. The structure of the local storage is the following:
  * 
  * <pre>
  * Root 
@@ -120,8 +119,7 @@ public class LocalXWikiDataStorage implements IDataStorage
 
             IFile pageFile = pageFolder.getFile(getFileNameForPage(pageId)); //$NON-NLS-1$
             if (pageFile.exists()) {
-                Map<String, Object> map =
-                    (Map<String, Object>) CoreUtils.readDataFromXML(pageFile);
+                Map<String, Object> map = (Map<String, Object>) CoreUtils.readDataFromXML(pageFile);
                 return new XWikiPage(map);
             }
         } catch (CoreException e) {
@@ -131,8 +129,7 @@ public class LocalXWikiDataStorage implements IDataStorage
         return null;
     }
 
-    private List<IResource> getChildResources(final IContainer parent, int depth)
-        throws CoreException
+    private List<IResource> getChildResources(final IContainer parent, int depth) throws CoreException
     {
         final List<IResource> result = new ArrayList<IResource>();
 
@@ -159,21 +156,18 @@ public class LocalXWikiDataStorage implements IDataStorage
         IFolder spaceFolder = baseFolder.getFolder(INDEX_DIRECTORY).getFolder(spaceKey);
         if (spaceFolder.exists()) {
             try {
-                List<IResource> spaceFolderResources =
-                    getChildResources(spaceFolder, IResource.DEPTH_ONE);
+                List<IResource> spaceFolderResources = getChildResources(spaceFolder, IResource.DEPTH_ONE);
                 for (IResource spaceFolderResource : spaceFolderResources) {
                     if (spaceFolderResource instanceof IFolder) {
                         IFolder pageFolder = (IFolder) spaceFolderResource;
-                        List<IResource> pageFolderResources =
-                            getChildResources(pageFolder, IResource.DEPTH_ONE);
+                        List<IResource> pageFolderResources = getChildResources(pageFolder, IResource.DEPTH_ONE);
 
                         boolean pageSummaryFound = false;
                         for (IResource pageFolderResource : pageFolderResources) {
                             if (pageFolderResource instanceof IFile) {
                                 IFile file = (IFile) pageFolderResource;
                                 if (file.getFileExtension().equals(PAGE_SUMMARY_FILE_EXTENSION)) {
-                                    Map<String, Object> map =
-                                        (Map<String, Object>) CoreUtils.readDataFromXML(file);
+                                    Map<String, Object> map = (Map<String, Object>) CoreUtils.readDataFromXML(file);
                                     XWikiPageSummary pageSummary = new XWikiPageSummary(map);
                                     result.add(pageSummary);
                                     pageSummaryFound = true;
@@ -182,11 +176,10 @@ public class LocalXWikiDataStorage implements IDataStorage
                         }
 
                         /*
-                         * This can happen, for example, if the user stores an object and has never
-                         * stored the page it belongs to: we have a folder named after the page id
-                         * containing the object summary, but no page summary is available in that
-                         * folder. In this case we build a reduced summary with the information
-                         * extracted from the folder name.
+                         * This can happen, for example, if the user stores an object and has never stored the page it
+                         * belongs to: we have a folder named after the page id containing the object summary, but no
+                         * page summary is available in that folder. In this case we build a reduced summary with the
+                         * information extracted from the folder name.
                          */
                         if (!pageSummaryFound) {
                             String[] pageIdComponents = pageFolder.getName().split("\\."); //$NON-NLS-1$
@@ -213,11 +206,9 @@ public class LocalXWikiDataStorage implements IDataStorage
         final List<SpaceSummary> result = new ArrayList<SpaceSummary>();
 
         try {
-            final IFolder indexFolder =
-                CoreUtils.createFolder(baseFolder.getFolder(INDEX_DIRECTORY));
+            final IFolder indexFolder = CoreUtils.createFolder(baseFolder.getFolder(INDEX_DIRECTORY));
 
-            List<IResource> indexFolderResources =
-                getChildResources(indexFolder, IResource.DEPTH_ONE);
+            List<IResource> indexFolderResources = getChildResources(indexFolder, IResource.DEPTH_ONE);
             for (IResource indexFolderResource : indexFolderResources) {
                 if (indexFolderResource instanceof IFolder) {
                     IFolder folder = (IFolder) indexFolderResource;
@@ -248,12 +239,11 @@ public class LocalXWikiDataStorage implements IDataStorage
                     pageSummary.setLocks(page.getLocks());
                     pageSummary.setParentId(page.getParentId());
                     pageSummary.setTitle(page.getTitle());
-                    pageSummary.setTranslations(page.getTranslations() != null ? page
-                        .getTranslations() : new ArrayList());
+                    pageSummary.setTranslations(page.getTranslations() != null ? page.getTranslations()
+                        : new ArrayList());
                     pageSummary.setUrl(page.getUrl());
-                    CoreUtils.writeDataToXML(baseFolder.getFolder(INDEX_DIRECTORY).getFolder(
-                        page.getSpace()).getFolder(page.getId()).getFile(
-                        getFileNameForPageSummary(pageSummary.getId())), //$NON-NLS-1$
+                    CoreUtils.writeDataToXML(baseFolder.getFolder(INDEX_DIRECTORY).getFolder(page.getSpace())
+                        .getFolder(page.getId()).getFile(getFileNameForPageSummary(pageSummary.getId())), //$NON-NLS-1$
                         pageSummary.toRawMap());
 
                     /* Write the page */
@@ -281,19 +271,16 @@ public class LocalXWikiDataStorage implements IDataStorage
                     String spaceKey = pageIdComponents[0];
 
                     /*
-                     * Remove the index page folder with all the information (page and object
-                     * summaries)
+                     * Remove the index page folder with all the information (page and object summaries)
                      */
                     IFolder indexPageFolder =
-                        baseFolder.getFolder(INDEX_DIRECTORY).getFolder(spaceKey).getFolder(
-                            pageId);
+                        baseFolder.getFolder(INDEX_DIRECTORY).getFolder(spaceKey).getFolder(pageId);
                     if (indexPageFolder.exists()) {
                         indexPageFolder.delete(true, null);
                     }
 
                     /* Remove page */
-                    IFolder pageFolder =
-                        CoreUtils.createFolder(baseFolder.getFolder(PAGES_DIRECTORY));
+                    IFolder pageFolder = CoreUtils.createFolder(baseFolder.getFolder(PAGES_DIRECTORY));
                     IFile pageFile = pageFolder.getFile(getFileNameForPage(pageId)); //$NON-NLS-1$
                     if (pageFile.exists()) {
                         pageFile.delete(true, null);
@@ -315,18 +302,15 @@ public class LocalXWikiDataStorage implements IDataStorage
         Assert.isTrue(pageIdComponents.length == 2);
         String spaceKey = pageIdComponents[0];
 
-        IFolder pageFolder =
-            baseFolder.getFolder(INDEX_DIRECTORY).getFolder(spaceKey).getFolder(pageId);
+        IFolder pageFolder = baseFolder.getFolder(INDEX_DIRECTORY).getFolder(spaceKey).getFolder(pageId);
         if (pageFolder.exists()) {
             try {
-                List<IResource> pageFolderResources =
-                    getChildResources(pageFolder, IResource.DEPTH_ONE);
+                List<IResource> pageFolderResources = getChildResources(pageFolder, IResource.DEPTH_ONE);
                 for (IResource pageFolderResource : pageFolderResources) {
                     if (pageFolderResource instanceof IFile) {
                         IFile file = (IFile) pageFolderResource;
                         if (file.getFileExtension().equals(OBJECT_SUMMARY_FILE_EXTENSION)) {
-                            Map<String, Object> map =
-                                (Map<String, Object>) CoreUtils.readDataFromXML(file);
+                            Map<String, Object> map = (Map<String, Object>) CoreUtils.readDataFromXML(file);
                             XWikiObjectSummary objectSummary = new XWikiObjectSummary(map);
                             result.add(objectSummary);
                         }
@@ -340,18 +324,14 @@ public class LocalXWikiDataStorage implements IDataStorage
         return result;
     }
 
-    public XWikiObject getObject(String pageId, String className, int objectId)
-        throws XWikiEclipseException
+    public XWikiObject getObject(String pageId, String className, int objectId) throws XWikiEclipseException
     {
         try {
-            IFolder objectsFolder =
-                CoreUtils.createFolder(baseFolder.getFolder(OBJECTS_DIRECTORY));
+            IFolder objectsFolder = CoreUtils.createFolder(baseFolder.getFolder(OBJECTS_DIRECTORY));
 
-            IFile objectFile =
-                objectsFolder.getFile(getFileNameForObject(pageId, className, objectId)); //$NON-NLS-1$
+            IFile objectFile = objectsFolder.getFile(getFileNameForObject(pageId, className, objectId)); //$NON-NLS-1$
             if (objectFile.exists()) {
-                Map<String, Object> map =
-                    (Map<String, Object>) CoreUtils.readDataFromXML(objectFile);
+                Map<String, Object> map = (Map<String, Object>) CoreUtils.readDataFromXML(objectFile);
                 return new XWikiObject(map);
             }
         } catch (CoreException e) {
@@ -364,13 +344,11 @@ public class LocalXWikiDataStorage implements IDataStorage
     public XWikiClass getClass(String classId) throws XWikiEclipseException
     {
         try {
-            IFolder classesFolder =
-                CoreUtils.createFolder(baseFolder.getFolder(CLASSES_DIRECTORY));
+            IFolder classesFolder = CoreUtils.createFolder(baseFolder.getFolder(CLASSES_DIRECTORY));
 
             IFile classFile = classesFolder.getFile(getFileNameForClass(classId)); //$NON-NLS-1$
             if (classFile.exists()) {
-                Map<String, Object> map =
-                    (Map<String, Object>) CoreUtils.readDataFromXML(classFile);
+                Map<String, Object> map = (Map<String, Object>) CoreUtils.readDataFromXML(classFile);
                 return new XWikiClass(map);
             }
         } catch (CoreException e) {
@@ -398,16 +376,15 @@ public class LocalXWikiDataStorage implements IDataStorage
                     Assert.isTrue(pageIdComponents.length == 2);
                     String spaceKey = pageIdComponents[0];
 
-                    CoreUtils.writeDataToXML(baseFolder.getFolder(INDEX_DIRECTORY).getFolder(
-                        spaceKey).getFolder(object.getPageId()).getFile(
-                        getFileNameForObjectSummary(objectSummary.getPageId(), objectSummary
-                            .getClassName(), objectSummary.getId())), //$NON-NLS-1$
+                    CoreUtils.writeDataToXML(baseFolder.getFolder(INDEX_DIRECTORY).getFolder(spaceKey).getFolder(
+                        object.getPageId()).getFile(
+                        getFileNameForObjectSummary(objectSummary.getPageId(), objectSummary.getClassName(),
+                            objectSummary.getId())), //$NON-NLS-1$
                         objectSummary.toRawMap());
 
                     /* Write the object */
                     CoreUtils.writeDataToXML(baseFolder.getFolder(OBJECTS_DIRECTORY).getFile(
-                        getFileNameForObject(object.getPageId(), object.getClassName(), object
-                            .getId())), object //$NON-NLS-1$
+                        getFileNameForObject(object.getPageId(), object.getClassName(), object.getId())), object //$NON-NLS-1$
                         .toRawMap());
                 }
             }, null);
@@ -437,16 +414,14 @@ public class LocalXWikiDataStorage implements IDataStorage
 
     public boolean exists(String pageId)
     {
-        IFile pageFile =
-            baseFolder.getFolder(PAGES_DIRECTORY).getFile(getFileNameForPage(pageId));
+        IFile pageFile = baseFolder.getFolder(PAGES_DIRECTORY).getFile(getFileNameForPage(pageId));
         return pageFile.exists();
     }
 
     public boolean exists(String pageId, String className, int objectId)
     {
         IFile objectFile =
-            baseFolder.getFolder(OBJECTS_DIRECTORY).getFile(
-                getFileNameForObject(pageId, className, objectId));
+            baseFolder.getFolder(OBJECTS_DIRECTORY).getFile(getFileNameForObject(pageId, className, objectId));
         return objectFile.exists();
     }
 
@@ -486,8 +461,7 @@ public class LocalXWikiDataStorage implements IDataStorage
                 if (classFolderResource instanceof IFile) {
                     IFile file = (IFile) classFolderResource;
                     if (file.getFileExtension().equals(CLASS_FILE_EXTENSION)) {
-                        Map<String, Object> map =
-                            (Map<String, Object>) CoreUtils.readDataFromXML(file);
+                        Map<String, Object> map = (Map<String, Object>) CoreUtils.readDataFromXML(file);
                         XWikiClass xwikiClass = new XWikiClass(map);
                         XWikiClassSummary classSummary = new XWikiClassSummary();
                         classSummary.setId(xwikiClass.getId());
@@ -522,8 +496,7 @@ public class LocalXWikiDataStorage implements IDataStorage
                     String spaceKey = pageIdComponents[0];
 
                     file =
-                        baseFolder.getFolder(INDEX_DIRECTORY).getFolder(spaceKey).getFolder(
-                            pageId).getFile(
+                        baseFolder.getFolder(INDEX_DIRECTORY).getFolder(spaceKey).getFolder(pageId).getFile(
                             getFileNameForObjectSummary(pageId, className, objectId));
                     if (file.exists()) {
                         file.delete(true, null);

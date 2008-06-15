@@ -39,7 +39,6 @@ import org.xwiki.xmlrpc.model.XWikiPageSummary;
  * This class implements a remote XWiki data storage. Basically it wraps the XWiki XMLRPC interface.
  * 
  * @author fmancinelli
- * 
  */
 public class RemoteXWikiDataStorage implements IDataStorage
 {
@@ -47,8 +46,7 @@ public class RemoteXWikiDataStorage implements IDataStorage
 
     private boolean disposed;
 
-    public RemoteXWikiDataStorage(String endpoint, String userName, String password)
-        throws XWikiEclipseException
+    public RemoteXWikiDataStorage(String endpoint, String userName, String password) throws XWikiEclipseException
     {
         try {
             rpc = new XWikiXmlRpcClient(endpoint);
@@ -83,8 +81,7 @@ public class RemoteXWikiDataStorage implements IDataStorage
         }
     }
 
-    public synchronized List<XWikiPageSummary> getPages(String spaceKey)
-        throws XWikiEclipseException
+    public synchronized List<XWikiPageSummary> getPages(String spaceKey) throws XWikiEclipseException
     {
         Assert.isTrue(!disposed);
 
@@ -140,8 +137,7 @@ public class RemoteXWikiDataStorage implements IDataStorage
 
     }
 
-    public synchronized List<XWikiObjectSummary> getObjects(String pageId)
-        throws XWikiEclipseException
+    public synchronized List<XWikiObjectSummary> getObjects(String pageId) throws XWikiEclipseException
     {
         Assert.isTrue(!disposed);
 
@@ -215,8 +211,7 @@ public class RemoteXWikiDataStorage implements IDataStorage
         }
     }
 
-    public boolean removeObject(String pageId, String className, int objectId)
-        throws XWikiEclipseException
+    public boolean removeObject(String pageId, String className, int objectId) throws XWikiEclipseException
     {
         Assert.isTrue(!disposed);
 

@@ -24,9 +24,8 @@ import org.eclipse.core.runtime.Assert;
 import org.xwiki.eclipse.core.DataManager;
 
 /**
- * Base class for all the objects that are used to model XWiki elements in XWiki Eclipse. This class
- * is used basically to associate the elements returned by XWiki to the data manager that retrieved
- * them.
+ * Base class for all the objects that are used to model XWiki elements in XWiki Eclipse. This class is used basically
+ * to associate the elements returned by XWiki to the data manager that retrieved them.
  * 
  * @see DataManager
  * @author fmancinelli
@@ -58,11 +57,10 @@ public abstract class ModelObject
     }
 
     /**
-     * This method is used to associate an unique identifier that will be used for comparisons.
-     * Using identifiers from the XWiki elements is not enough when, for example, a page with the
-     * same id exists in two different remote XWikis. With this method subclasses may provide
-     * additional information to build an unique identifier that can be used to differentiate the
-     * objects. Typically the data manager id will be part of this identifier.
+     * This method is used to associate an unique identifier that will be used for comparisons. Using identifiers from
+     * the XWiki elements is not enough when, for example, a page with the same id exists in two different remote
+     * XWikis. With this method subclasses may provide additional information to build an unique identifier that can be
+     * used to differentiate the objects. Typically the data manager id will be part of this identifier.
      * 
      * @return An unique identifier for this object.
      */
@@ -73,15 +71,13 @@ public abstract class ModelObject
     {
         final int prime = 31;
         int result = 1;
-        result =
-            prime * result + ((getXWikiEclipseId() == null) ? 0 : getXWikiEclipseId().hashCode());
+        result = prime * result + ((getXWikiEclipseId() == null) ? 0 : getXWikiEclipseId().hashCode());
         return result;
     }
 
     /*
-     * Comparisons for object equality are done by using the XWiki Eclipse id provided by the
-     * getXWikiEclipseId() method. (non-Javadoc)
-     * 
+     * Comparisons for object equality are done by using the XWiki Eclipse id provided by the getXWikiEclipseId()
+     * method. (non-Javadoc)
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override

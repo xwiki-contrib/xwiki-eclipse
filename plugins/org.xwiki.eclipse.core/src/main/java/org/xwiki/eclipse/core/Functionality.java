@@ -18,37 +18,14 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  *
  */
-package org.xwiki.eclipse.core.model;
-
-import org.codehaus.swizzle.confluence.SpaceSummary;
-import org.eclipse.core.runtime.Assert;
-import org.xwiki.eclipse.core.DataManager;
+package org.xwiki.eclipse.core;
 
 /**
- * A class representing a space summary.
- * 
- * @author fmancinelli
+ * An enumeration for keeping track of the available advanced functionalities associated to a data manager.
+ * @author fmancine
+ *
  */
-public class XWikiEclipseSpaceSummary extends ModelObject
+public enum Functionality
 {
-    private SpaceSummary data;
-
-    public XWikiEclipseSpaceSummary(DataManager dataManager, SpaceSummary data)
-    {
-        super(dataManager);
-
-        Assert.isNotNull(data);
-        this.data = data;
-    }
-
-    public SpaceSummary getData()
-    {
-        return data;
-    }
-
-    @Override
-    public String getXWikiEclipseId()
-    {
-        return String.format("xwikieclipse://%s/%s", getDataManager().getName(), data.getKey()); //$NON-NLS-1$
-    }
+    OBJECTS, RENAME
 }

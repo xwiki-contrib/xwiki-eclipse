@@ -31,7 +31,6 @@ import org.eclipse.core.runtime.CoreException;
  * A class that implements a Map from strings to strings, that saves its content to the disk.
  * 
  * @author fmancinelli
- * 
  */
 public class PersistentMap
 {

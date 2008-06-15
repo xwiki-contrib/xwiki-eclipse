@@ -23,9 +23,8 @@ package org.xwiki.eclipse.core.model;
 import org.eclipse.core.runtime.Assert;
 
 /**
- * This class is an utility class used for encapsulating and accessing the information concerning a
- * property in a more usable way (in this way properties can be compactly passed around using a
- * single reference)
+ * This class is an utility class used for encapsulating and accessing the information concerning a property in a more
+ * usable way (in this way properties can be compactly passed around using a single reference)
  * 
  * @author fmancinelli
  */
@@ -91,17 +90,15 @@ public class XWikiEclipseObjectProperty extends ModelObject
     }
 
     /**
-     * This method allows the user to access to the attributes defined for the property. For example
-     * "unmodifiable", "prettyName", etc. Attributes are defined in the XWiki class of the object
-     * the property belongs to.
+     * This method allows the user to access to the attributes defined for the property. For example "unmodifiable",
+     * "prettyName", etc. Attributes are defined in the XWiki class of the object the property belongs to.
      * 
      * @param attributeName
      * @return The value for the attribute.
      */
     public String getAttribute(String attributeName)
     {
-        Object attribute =
-            object.getXWikiClass().getPropertyAttribute(propertyName, attributeName);
+        Object attribute = object.getXWikiClass().getPropertyAttribute(propertyName, attributeName);
 
         if (attribute != null) {
             return attribute.toString();

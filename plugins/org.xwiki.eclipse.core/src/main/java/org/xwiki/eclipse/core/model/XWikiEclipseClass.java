@@ -28,7 +28,6 @@ import org.xwiki.xmlrpc.model.XWikiClass;
  * A class representing an XWiki class.
  * 
  * @author fmancinelli
- * 
  */
 public class XWikiEclipseClass extends ModelObject
 {
@@ -53,7 +52,6 @@ public class XWikiEclipseClass extends ModelObject
     @Override
     public String getXWikiEclipseId()
     {
-        return String.format(
-            "xwikieclipse://%s/class/%s", getDataManager().getName(), data.getId()); //$NON-NLS-1$
+        return String.format("xwikieclipse://%s/class/%s", getDataManager().getName(), data.getId()); //$NON-NLS-1$
     }
 }

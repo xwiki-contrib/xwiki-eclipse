@@ -35,7 +35,6 @@ import org.xwiki.xmlrpc.model.XWikiPageSummary;
  * An interface for an abstract XWiki data storage component.
  * 
  * @author fmancinelli
- * 
  */
 public interface IDataStorage
 {
@@ -53,8 +52,7 @@ public interface IDataStorage
 
     public List<XWikiObjectSummary> getObjects(String pageId) throws XWikiEclipseException;
 
-    public XWikiObject getObject(String pageId, String className, int objectId)
-        throws XWikiEclipseException;
+    public XWikiObject getObject(String pageId, String className, int objectId) throws XWikiEclipseException;
 
     public List<XWikiClassSummary> getClasses() throws XWikiEclipseException;
 
@@ -64,8 +62,7 @@ public interface IDataStorage
 
     public XWikiObject storeObject(XWikiObject object) throws XWikiEclipseException;
 
-    public boolean removeObject(String pageId, String className, int objectId)
-        throws XWikiEclipseException;
+    public boolean removeObject(String pageId, String className, int objectId) throws XWikiEclipseException;
 
     public void storeClass(XWikiClass xwikiClass) throws XWikiEclipseException;
 

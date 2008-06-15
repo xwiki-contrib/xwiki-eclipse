@@ -29,7 +29,6 @@ import org.xwiki.xmlrpc.model.XWikiPageSummary;
  * A class representing an object summary.
  * 
  * @author fmancinelli
- * 
  */
 public class XWikiEclipseObjectSummary extends ModelObject
 {
@@ -37,8 +36,7 @@ public class XWikiEclipseObjectSummary extends ModelObject
 
     private XWikiPageSummary pageSummary;
 
-    public XWikiEclipseObjectSummary(DataManager dataManager, XWikiObjectSummary data,
-        XWikiPageSummary pageSummary)
+    public XWikiEclipseObjectSummary(DataManager dataManager, XWikiObjectSummary data, XWikiPageSummary pageSummary)
     {
         super(dataManager);
 
