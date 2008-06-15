@@ -28,19 +28,16 @@ public class Perspective implements IPerspectiveFactory
 {
     public void createInitialLayout(IPageLayout layout)
     {
-        IFolderLayout leftFolder =
-            layout.createFolder("leftFolder", IPageLayout.LEFT, 0.20f, layout.getEditorArea());
+        IFolderLayout leftFolder = layout.createFolder("leftFolder", IPageLayout.LEFT, 0.20f, layout.getEditorArea());
 
         leftFolder.addView("org.xwiki.eclipse.ui.views.Navigator");
         leftFolder.addView("org.eclipse.ui.navigator.ProjectExplorer");
 
         IFolderLayout bottomFolder =
-            layout
-                .createFolder("bottomFolder", IPageLayout.BOTTOM, 0.60f, layout.getEditorArea());
+            layout.createFolder("bottomFolder", IPageLayout.BOTTOM, 0.60f, layout.getEditorArea());
         bottomFolder.addView("org.xwiki.eclipse.ui.views.PagePreview");
         bottomFolder.addView("org.eclipse.pde.runtime.LogView");
 
-        layout.addView("org.eclipse.ui.views.ContentOutline", IPageLayout.RIGHT, 0.80f, layout
-            .getEditorArea());
+        layout.addView("org.eclipse.ui.views.ContentOutline", IPageLayout.RIGHT, 0.80f, layout.getEditorArea());
     }
 }

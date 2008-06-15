@@ -75,9 +75,9 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
 
     protected void makeActions(IWorkbenchWindow window)
     {
-    	IWorkbenchAction newAction = ActionFactory.NEW.create(window);
-    	register(newAction);
-    	
+        IWorkbenchAction newAction = ActionFactory.NEW.create(window);
+        register(newAction);
+
         IWorkbenchAction saveAction = ActionFactory.SAVE.create(window);
         register(saveAction);
 
@@ -109,17 +109,17 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
                         break;
                     }
                 }
-            }    
-            
-            if(v.getId().equals("org.eclipse.pde.runtime.LogView")) {
+            }
+
+            if (v.getId().equals("org.eclipse.pde.runtime.LogView")) {
                 addView = true;
             }
-            
-            if(v.getId().equals("org.eclipse.ui.views.ContentOutline")) {
+
+            if (v.getId().equals("org.eclipse.ui.views.ContentOutline")) {
                 addView = true;
             }
-            
-            if(v.getId().equals("org.eclipse.ui.navigator.ProjectExplorer")) {
+
+            if (v.getId().equals("org.eclipse.ui.navigator.ProjectExplorer")) {
                 addView = true;
             }
 
@@ -129,8 +129,6 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
                 register(action);
             }
         }
-        
-        
 
         IWorkbenchAction deleteAction = ActionFactory.DELETE.create(window);
         register(deleteAction);
@@ -146,8 +144,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
 
         MenuManager windowMenu = new MenuManager("Window", "org.xwiki.xeclipse.menu.Window");
 
-        MenuManager showViewMenu =
-            new MenuManager("Show view", "org.xwiki.xeclipse.menu.ShowView");
+        MenuManager showViewMenu = new MenuManager("Show view", "org.xwiki.xeclipse.menu.ShowView");
 
         for (Action action : showViewActions) {
             showViewMenu.add(action);
@@ -161,7 +158,5 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
         menuBar.add(helpMenu);
 
     }
-    
-    
 
 }

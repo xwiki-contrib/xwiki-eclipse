@@ -20,6 +20,8 @@
  */
 package org.xwiki.eclipse.rcp;
 
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
@@ -45,7 +47,6 @@ public class Activator extends AbstractUIPlugin
 
     /*
      * (non-Javadoc)
-     * 
      * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
      */
     public void start(BundleContext context) throws Exception
@@ -56,12 +57,14 @@ public class Activator extends AbstractUIPlugin
 
     /*
      * (non-Javadoc)
-     * 
      * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
      */
     public void stop(BundleContext context) throws Exception
     {
         plugin = null;
+
+        ResourcesPlugin.getWorkspace().save(true, new NullProgressMonitor());
+
         super.stop(context);
     }
 
