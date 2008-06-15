@@ -35,8 +35,7 @@ public class StringPropertyEditor extends BasePropertyEditor
 {
     Text text;
 
-    public StringPropertyEditor(FormToolkit toolkit, Composite parent,
-        XWikiEclipseObjectProperty property)
+    public StringPropertyEditor(FormToolkit toolkit, Composite parent, XWikiEclipseObjectProperty property)
     {
         super(toolkit, parent, property);
     }

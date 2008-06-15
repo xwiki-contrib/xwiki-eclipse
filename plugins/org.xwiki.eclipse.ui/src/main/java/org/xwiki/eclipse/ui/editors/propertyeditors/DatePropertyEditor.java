@@ -40,8 +40,7 @@ public class DatePropertyEditor extends BasePropertyEditor
 
     DateTime time;
 
-    public DatePropertyEditor(FormToolkit toolkit, Composite parent,
-        XWikiEclipseObjectProperty property)
+    public DatePropertyEditor(FormToolkit toolkit, Composite parent, XWikiEclipseObjectProperty property)
     {
         super(toolkit, parent, property);
     }

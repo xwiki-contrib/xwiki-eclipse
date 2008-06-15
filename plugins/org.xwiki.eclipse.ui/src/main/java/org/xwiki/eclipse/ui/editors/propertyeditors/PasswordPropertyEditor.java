@@ -35,8 +35,7 @@ public class PasswordPropertyEditor extends BasePropertyEditor
 {
     Text text;
 
-    public PasswordPropertyEditor(FormToolkit toolkit, Composite parent,
-        XWikiEclipseObjectProperty property)
+    public PasswordPropertyEditor(FormToolkit toolkit, Composite parent, XWikiEclipseObjectProperty property)
     {
         super(toolkit, parent, property);
     }

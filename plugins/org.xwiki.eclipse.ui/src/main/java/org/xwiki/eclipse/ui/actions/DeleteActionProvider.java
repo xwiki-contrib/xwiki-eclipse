@@ -43,17 +43,8 @@ public class DeleteActionProvider extends CommonActionProvider
         // 0);
         // delete = new CommandContributionItem(contributionItemParameter);
         delete =
-            new CommandContributionItem(PlatformUI.getWorkbench(),
-                null,
-                UIConstants.DELETE_COMMAND,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                SWT.NONE);
+            new CommandContributionItem(PlatformUI.getWorkbench(), null, UIConstants.DELETE_COMMAND, null, null, null,
+                null, null, null, null, SWT.NONE);
 
     }
 

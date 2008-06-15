@@ -43,17 +43,8 @@ public class XWikiEclipseSpaceSummaryActionProvider extends CommonActionProvider
         // newPage = new CommandContributionItem(contributionItemParameter);
 
         newPage =
-            new CommandContributionItem(PlatformUI.getWorkbench(),
-                null,
-                UIConstants.NEW_PAGE_COMMAND,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                SWT.NONE);
+            new CommandContributionItem(PlatformUI.getWorkbench(), null, UIConstants.NEW_PAGE_COMMAND, null, null,
+                null, null, null, null, null, SWT.NONE);
 
     }
 

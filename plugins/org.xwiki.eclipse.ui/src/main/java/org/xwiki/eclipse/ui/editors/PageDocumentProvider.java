@@ -73,8 +73,8 @@ public class PageDocumentProvider extends FileDocumentProvider
     }
 
     @Override
-    protected void doSaveDocument(IProgressMonitor monitor, Object element, IDocument document,
-        boolean overwrite) throws CoreException
+    protected void doSaveDocument(IProgressMonitor monitor, Object element, IDocument document, boolean overwrite)
+        throws CoreException
     {
         if (element instanceof PageEditorInput) {
             final PageEditorInput pageEditorInput = (PageEditorInput) element;
@@ -85,8 +85,7 @@ public class PageDocumentProvider extends FileDocumentProvider
                 public void run() throws Exception
                 {
                     final XWikiEclipsePage page =
-                        pageEditorInput.getPage().getDataManager().storePage(
-                            pageEditorInput.getPage());
+                        pageEditorInput.getPage().getDataManager().storePage(pageEditorInput.getPage());
 
                     Display.getDefault().syncExec(new Runnable()
                     {

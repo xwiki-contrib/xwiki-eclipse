@@ -32,7 +32,7 @@ import org.xwiki.eclipse.core.notifications.NotificationManager;
 import org.xwiki.eclipse.ui.utils.UIUtils;
 
 public class RefreshHandler extends AbstractHandler
-{    
+{
     public Object execute(ExecutionEvent event) throws ExecutionException
     {
         ISelection selection = HandlerUtil.getCurrentSelection(event);
@@ -40,8 +40,7 @@ public class RefreshHandler extends AbstractHandler
         Set selectedObjects = UIUtils.getSelectedObjectsFromSelection(selection);
         if (selectedObjects.size() == 1) {
             Object selectedObject = selectedObjects.iterator().next();
-            NotificationManager.getDefault().fireCoreEvent(CoreEvent.Type.REFRESH, this,
-                selectedObject);
+            NotificationManager.getDefault().fireCoreEvent(CoreEvent.Type.REFRESH, this, selectedObject);
         }
 
         return null;

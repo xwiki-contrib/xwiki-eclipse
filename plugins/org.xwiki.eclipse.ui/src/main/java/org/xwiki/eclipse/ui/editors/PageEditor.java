@@ -114,8 +114,7 @@ public class PageEditor extends TextEditor implements ICoreEventListener
 
         Composite editorComposite = new Composite(form.getBody(), SWT.NONE);
         editorComposite.setLayout(new FillLayout());
-        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, true).applyTo(
-            editorComposite);
+        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, true).applyTo(editorComposite);
         super.createPartControl(editorComposite);
 
         updateInfo();
@@ -125,9 +124,7 @@ public class PageEditor extends TextEditor implements ICoreEventListener
     protected void doSetInput(IEditorInput input) throws CoreException
     {
         if (!(input instanceof PageEditorInput)) {
-            throw new CoreException(new Status(IStatus.ERROR,
-                CorePlugin.PLUGIN_ID,
-                "Invalid input for editor"));
+            throw new CoreException(new Status(IStatus.ERROR, CorePlugin.PLUGIN_ID, "Invalid input for editor"));
         }
 
         PageEditorInput pageEditorInput = (PageEditorInput) input;
@@ -147,8 +144,7 @@ public class PageEditor extends TextEditor implements ICoreEventListener
         } else {
             super.doSetInput(pageEditorInput);
 
-            if (pageEditorInput.getPage().getDataManager().isInConflict(
-                pageEditorInput.getPage().getData().getId())) {
+            if (pageEditorInput.getPage().getDataManager().isInConflict(pageEditorInput.getPage().getData().getId())) {
                 MessageBox mb = new MessageBox(getSite().getShell());
                 mb.setText("Page is still in conflict.");
                 mb
@@ -179,16 +175,14 @@ public class PageEditor extends TextEditor implements ICoreEventListener
                     minorVersion = temp & 0xFFFF;
                 }
 
-                form.setText(String.format("%s version %s.%s", page.getData().getId(), version,
-                    minorVersion));
+                form.setText(String.format("%s version %s.%s", page.getData().getId(), version, minorVersion));
             }
 
             if (input.getPage().getDataManager().isInConflict(input.getPage().getData().getId())) {
                 boolean editConlictActionFound = false;
                 for (IContributionItem contributionItem : form.getToolBarManager().getItems()) {
                     if (contributionItem instanceof ActionContributionItem) {
-                        ActionContributionItem actionContributionItem =
-                            (ActionContributionItem) contributionItem;
+                        ActionContributionItem actionContributionItem = (ActionContributionItem) contributionItem;
                         if (actionContributionItem.getAction().equals(editConflictAction)) {
                             editConlictActionFound = true;
                         }
@@ -218,16 +212,13 @@ public class PageEditor extends TextEditor implements ICoreEventListener
 
         if (dataManager.isInConflict(currentPage.getData().getId())) {
             try {
-                XWikiEclipsePage conflictingPage =
-                    dataManager.getConflictingPage(currentPage.getData().getId());
+                XWikiEclipsePage conflictingPage = dataManager.getConflictingPage(currentPage.getData().getId());
 
                 XWikiEclipsePage conflictAncestorPage =
                     dataManager.getConflictAncestorPage(currentPage.getData().getId());
 
                 PageConflictDialog compareDialog =
-                    new PageConflictDialog(Display.getDefault().getActiveShell(),
-                        currentPage,
-                        conflictingPage,
+                    new PageConflictDialog(Display.getDefault().getActiveShell(), currentPage, conflictingPage,
                         conflictAncestorPage);
                 int result = compareDialog.open();
 
@@ -258,7 +249,8 @@ public class PageEditor extends TextEditor implements ICoreEventListener
                         break;
                     case PageConflictDialog.ID_MERGE:
                         newPage = new XWikiPage(conflictingPage.getData().toRawMap());
-                        newPage.setContent("MERGE!");
+                        newPage.setContent(String.format(">>>>>>>LOCAL>>>>>>>>%s\n\n\n>>>>>>>REMOTE>>>>>>>>\n%s",
+                            currentPage.getData().getContent(), conflictingPage.getData().getContent()));
                         dataManager.clearConflictingStatus(newPage.getId());
                         setInput(new PageEditorInput(new XWikiEclipsePage(dataManager, newPage)));
 
@@ -299,11 +291,10 @@ public class PageEditor extends TextEditor implements ICoreEventListener
         switch (event.getType()) {
             case OBJECT_STORED:
                 /*
-                 * When objects are modified, the version number of the page is incremented. Here,
-                 * we retrieve the current page. If the version numbers are not equal and the editor
-                 * is not dirty then it means that an object of the page has been modified, but not
-                 * the page content. So we basically update the page content. If the editor is dirty
-                 * then we do not do nothing.
+                 * When objects are modified, the version number of the page is incremented. Here, we retrieve the
+                 * current page. If the version numbers are not equal and the editor is not dirty then it means that an
+                 * object of the page has been modified, but not the page content. So we basically update the page
+                 * content. If the editor is dirty then we do not do nothing.
                  */
                 XWikiEclipseObject object = (XWikiEclipseObject) event.getData();
                 objectPageId = object.getData().getPageId();
@@ -314,19 +305,17 @@ public class PageEditor extends TextEditor implements ICoreEventListener
         }
 
         try {
-            if (page.getDataManager().equals(dataManager)
-                && page.getData().getId().equals(objectPageId)) {
+            if (page.getDataManager().equals(dataManager) && page.getData().getId().equals(objectPageId)) {
 
                 if (!isDirty()) {
 
-                    XWikiEclipsePage newPage =
-                        page.getDataManager().getPage(page.getData().getId());
+                    XWikiEclipsePage newPage = page.getDataManager().getPage(page.getData().getId());
 
                     if (page.getData().getVersion() != newPage.getData().getVersion()) {
 
                         /*
-                         * If we are here then the editor is not dirty and the page versions differ.
-                         * So we update the page being edited.
+                         * If we are here then the editor is not dirty and the page versions differ. So we update the
+                         * page being edited.
                          */
 
                         ISourceViewer sourceViewer = getSourceViewer();

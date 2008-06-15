@@ -58,20 +58,18 @@ public class XWikiEclipseSpaceSummaryPropertiesPage extends PropertyPage
         Label property = new Label(composite, SWT.NONE);
         property.setText("Key:");
         Label value = new Label(composite, SWT.NONE);
-        value.setText(spaceSummary.getData().getKey() == null ? "" : spaceSummary.getData()
-            .getKey());
+        value.setText(spaceSummary.getData().getKey() == null ? "" : spaceSummary.getData().getKey());
 
         property = new Label(composite, SWT.NONE);
         property.setText("Name:");
         value = new Label(composite, SWT.NONE);
-        value.setText(spaceSummary.getData().getName() == null ? "" : spaceSummary.getData()
-            .getName());
+        value.setText(spaceSummary.getData().getName() == null ? "" : spaceSummary.getData().getName());
 
         property = new Label(composite, SWT.NONE);
         property.setText("Url:");
         Link link = new Link(composite, SWT.NONE);
-        link.setText(spaceSummary.getData().getUrl() == null ? "" : String.format("<a>%s</a>",
-            spaceSummary.getData().getUrl()));
+        link.setText(spaceSummary.getData().getUrl() == null ? "" : String.format("<a>%s</a>", spaceSummary.getData()
+            .getUrl()));
         link.addSelectionListener(new SelectionListener()
         {
 
@@ -87,8 +85,7 @@ public class XWikiEclipseSpaceSummaryPropertiesPage extends PropertyPage
                 {
                     public void run() throws Exception
                     {
-                        IWorkbenchBrowserSupport browserSupport =
-                            PlatformUI.getWorkbench().getBrowserSupport();
+                        IWorkbenchBrowserSupport browserSupport = PlatformUI.getWorkbench().getBrowserSupport();
                         IWebBrowser browser = browserSupport.createBrowser("XWiki Eclipse");
                         browser.openURL(new URL(e.text));
                     }

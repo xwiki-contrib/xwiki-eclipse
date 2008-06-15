@@ -82,8 +82,7 @@ public class ListPropertyEditor extends BasePropertyEditor
 
     boolean multiSelect;
 
-    public ListPropertyEditor(FormToolkit toolkit, Composite parent,
-        XWikiEclipseObjectProperty property)
+    public ListPropertyEditor(FormToolkit toolkit, Composite parent, XWikiEclipseObjectProperty property)
     {
         super(toolkit, parent, property);
     }
@@ -114,13 +113,11 @@ public class ListPropertyEditor extends BasePropertyEditor
     {
         Composite composite = toolkit.createComposite(parent);
         GridLayoutFactory.fillDefaults().numColumns(2).applyTo(composite);
-        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, true).applyTo(
-            composite);
+        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, true).applyTo(composite);
 
         toolkit.createLabel(composite, "Current selection:");
         final Label currentSelectionLabel = toolkit.createLabel(composite, "");
-        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(
-            currentSelectionLabel);
+        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(currentSelectionLabel);
 
         String multiSelectAttributeString = property.getAttribute("multiSelect").toString();
         if (multiSelectAttributeString == null || multiSelectAttributeString.equals("0")) {
@@ -183,8 +180,7 @@ public class ListPropertyEditor extends BasePropertyEditor
         });
 
         GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).span(2, 1).hint(0,
-            5 * listViewer.getList().getItemHeight()).grab(true, false).applyTo(
-            listViewer.getList());
+            5 * listViewer.getList().getItemHeight()).grab(true, false).applyTo(listViewer.getList());
 
         return composite;
     }
@@ -194,24 +190,21 @@ public class ListPropertyEditor extends BasePropertyEditor
     {
         Composite composite = toolkit.createComposite(parent);
         GridLayoutFactory.fillDefaults().numColumns(2).applyTo(composite);
-        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, true).applyTo(
-            composite);
+        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, true).applyTo(composite);
 
         listViewer = new ListViewer(composite, SWT.BORDER | SWT.V_SCROLL);
         listViewer.setContentProvider(new ListContentProvider());
         listViewer.setLabelProvider(new LabelProvider());
         listViewer.setInput(property.getValue());
 
-        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).hint(0,
-            5 * listViewer.getList().getItemHeight()).grab(true, false).applyTo(
-            listViewer.getList());
+        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).hint(0, 5 * listViewer.getList().getItemHeight())
+            .grab(true, false).applyTo(listViewer.getList());
         Composite buttonBar = toolkit.createComposite(composite);
         GridDataFactory.fillDefaults().align(SWT.FILL, SWT.BEGINNING).applyTo(buttonBar);
         GridLayoutFactory.fillDefaults().applyTo(buttonBar);
 
         Button button = toolkit.createButton(buttonBar, "Add", SWT.PUSH);
-        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(
-            button);
+        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(button);
         button.addSelectionListener(new SelectionListener()
         {
             public void widgetDefaultSelected(SelectionEvent e)
@@ -222,10 +215,7 @@ public class ListPropertyEditor extends BasePropertyEditor
             public void widgetSelected(SelectionEvent e)
             {
                 InputDialog input =
-                    new InputDialog(parent.getShell(),
-                        "Add value",
-                        "Please enter the value to add to the list",
-                        "",
+                    new InputDialog(parent.getShell(), "Add value", "Please enter the value to add to the list", "",
                         null);
                 input.open();
 
@@ -245,8 +235,7 @@ public class ListPropertyEditor extends BasePropertyEditor
         });
 
         button = toolkit.createButton(buttonBar, "Remove", SWT.PUSH);
-        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(
-            button);
+        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(button);
         button.addSelectionListener(new SelectionListener()
         {
 
@@ -269,9 +258,8 @@ public class ListPropertyEditor extends BasePropertyEditor
 
         });
 
-        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).hint(0,
-            5 * listViewer.getList().getItemHeight()).grab(true, false).applyTo(
-            listViewer.getList());
+        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).hint(0, 5 * listViewer.getList().getItemHeight())
+            .grab(true, false).applyTo(listViewer.getList());
 
         return composite;
 

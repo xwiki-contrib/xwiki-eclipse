@@ -33,8 +33,7 @@ import org.xwiki.eclipse.core.notifications.CoreEvent;
 import org.xwiki.eclipse.core.notifications.ICoreEventListener;
 import org.xwiki.eclipse.core.notifications.NotificationManager;
 
-public class NavigatorContentProvider extends BaseWorkbenchContentProvider implements
-    ICoreEventListener
+public class NavigatorContentProvider extends BaseWorkbenchContentProvider implements ICoreEventListener
 {
     private static final Object[] NO_OBJECTS = new Object[0];
 
@@ -45,10 +44,9 @@ public class NavigatorContentProvider extends BaseWorkbenchContentProvider imple
         super();
         NotificationManager.getDefault().addListener(
             this,
-            new CoreEvent.Type[] {CoreEvent.Type.DATA_MANAGER_REGISTERED,
-            CoreEvent.Type.DATA_MANAGER_UNREGISTERED, CoreEvent.Type.DATA_MANAGER_CONNECTED,
-            CoreEvent.Type.DATA_MANAGER_DISCONNECTED, CoreEvent.Type.PAGE_STORED,
-            CoreEvent.Type.OBJECT_STORED, CoreEvent.Type.PAGE_REMOVED,
+            new CoreEvent.Type[] {CoreEvent.Type.DATA_MANAGER_REGISTERED, CoreEvent.Type.DATA_MANAGER_UNREGISTERED,
+            CoreEvent.Type.DATA_MANAGER_CONNECTED, CoreEvent.Type.DATA_MANAGER_DISCONNECTED,
+            CoreEvent.Type.PAGE_STORED, CoreEvent.Type.OBJECT_STORED, CoreEvent.Type.PAGE_REMOVED,
             CoreEvent.Type.OBJECT_REMOVED, CoreEvent.Type.REFRESH});
     }
 
@@ -65,8 +63,7 @@ public class NavigatorContentProvider extends BaseWorkbenchContentProvider imple
         /* If our parent is a project then return the data manager associated to that project */
         if (element instanceof IProject) {
             IProject project = (IProject) element;
-            DataManager dataManager =
-                DataManagerRegistry.getDefault().findDataManagerByProject(project);
+            DataManager dataManager = DataManagerRegistry.getDefault().findDataManagerByProject(project);
             if (dataManager != null) {
                 return new Object[] {dataManager};
             } else {

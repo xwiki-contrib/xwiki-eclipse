@@ -34,7 +34,7 @@ import org.xwiki.eclipse.ui.utils.UIUtils;
 import org.xwiki.eclipse.ui.utils.XWikiEclipseSafeRunnable;
 
 public class DeleteXWikiElementHandler extends AbstractHandler
-{    
+{
     public Object execute(ExecutionEvent event) throws ExecutionException
     {
         ISelection selection = HandlerUtil.getCurrentSelection(event);
@@ -42,8 +42,7 @@ public class DeleteXWikiElementHandler extends AbstractHandler
         Set selectedObjects = UIUtils.getSelectedObjectsFromSelection(selection);
         for (Object selectedObject : selectedObjects) {
             if (selectedObject instanceof XWikiEclipsePageSummary) {
-                final XWikiEclipsePageSummary pageSummary =
-                    (XWikiEclipsePageSummary) selectedObject;
+                final XWikiEclipsePageSummary pageSummary = (XWikiEclipsePageSummary) selectedObject;
                 SafeRunner.run(new XWikiEclipseSafeRunnable()
                 {
                     public void run() throws Exception
@@ -55,16 +54,13 @@ public class DeleteXWikiElementHandler extends AbstractHandler
             }
 
             if (selectedObject instanceof XWikiEclipseObjectSummary) {
-                final XWikiEclipseObjectSummary objectSummary =
-                    (XWikiEclipseObjectSummary) selectedObject;
+                final XWikiEclipseObjectSummary objectSummary = (XWikiEclipseObjectSummary) selectedObject;
                 SafeRunner.run(new XWikiEclipseSafeRunnable()
                 {
                     public void run() throws Exception
                     {
-                        objectSummary.getDataManager().removeObject(
-                            objectSummary.getData().getPageId(),
-                            objectSummary.getData().getClassName(),
-                            objectSummary.getData().getId());
+                        objectSummary.getDataManager().removeObject(objectSummary.getData().getPageId(),
+                            objectSummary.getData().getClassName(), objectSummary.getData().getId());
                     }
                 });
 

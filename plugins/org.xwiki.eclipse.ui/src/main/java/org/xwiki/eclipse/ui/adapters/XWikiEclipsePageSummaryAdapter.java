@@ -44,8 +44,7 @@ public class XWikiEclipsePageSummaryAdapter extends WorkbenchAdapter
                 {
                     public void run() throws Exception
                     {
-                        setResult(pageSummary.getDataManager().getObjects(
-                            pageSummary.getData().getId()));
+                        setResult(pageSummary.getDataManager().getObjects(pageSummary.getData().getId()));
                     }
 
                 };

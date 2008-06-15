@@ -57,8 +57,7 @@ public class OpenXWikiModelObjectAction extends Action
     @Override
     public void run()
     {
-        Set selectedObjects =
-            UIUtils.getSelectedObjectsFromSelection(selectionProvider.getSelection());
+        Set selectedObjects = UIUtils.getSelectedObjectsFromSelection(selectionProvider.getSelection());
         for (Object object : selectedObjects) {
             if (object instanceof XWikiEclipsePageSummary) {
                 final XWikiEclipsePageSummary pageSummary = (XWikiEclipsePageSummary) object;
@@ -67,8 +66,7 @@ public class OpenXWikiModelObjectAction extends Action
                 {
                     public void run() throws Exception
                     {
-                        XWikiEclipsePage page =
-                            pageSummary.getDataManager().getPage(pageSummary.getData().getId());
+                        XWikiEclipsePage page = pageSummary.getDataManager().getPage(pageSummary.getData().getId());
 
                         if (page == null) {
                             MessageBox mb = new MessageBox(Display.getDefault().getActiveShell());
@@ -79,28 +77,25 @@ public class OpenXWikiModelObjectAction extends Action
                             return;
                         }
 
-                        PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
-                            .openEditor(new PageEditorInput(page), PageEditor.ID);
+                        PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().openEditor(
+                            new PageEditorInput(page), PageEditor.ID);
                     }
                 });
             }
 
             if (object instanceof XWikiEclipseObjectSummary) {
-                final XWikiEclipseObjectSummary objectSummary =
-                    (XWikiEclipseObjectSummary) object;
+                final XWikiEclipseObjectSummary objectSummary = (XWikiEclipseObjectSummary) object;
 
                 SafeRunner.run(new XWikiEclipseSafeRunnable()
                 {
                     public void run() throws Exception
                     {
                         XWikiEclipseObject xwikiObject =
-                            objectSummary.getDataManager().getObject(
-                                objectSummary.getData().getPageId(),
-                                objectSummary.getData().getClassName(),
-                                objectSummary.getData().getId());
+                            objectSummary.getDataManager().getObject(objectSummary.getData().getPageId(),
+                                objectSummary.getData().getClassName(), objectSummary.getData().getId());
 
-                        PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
-                            .openEditor(new ObjectEditorInput(xwikiObject), ObjectEditor.ID);
+                        PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().openEditor(
+                            new ObjectEditorInput(xwikiObject), ObjectEditor.ID);
                     }
                 });
 

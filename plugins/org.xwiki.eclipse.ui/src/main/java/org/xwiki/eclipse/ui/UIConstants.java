@@ -34,8 +34,7 @@ public class UIConstants
 
     public static final String OBJECT_ICON = "icons/object.png";
 
-    public static final String OBJECT_LOCALLY_AVAILABLE_ICON =
-        "icons/object.locally.available.png";
+    public static final String OBJECT_LOCALLY_AVAILABLE_ICON = "icons/object.locally.available.png";
 
     public final static String CONFLICT_ICON = "icons/conflict.png";
 
@@ -45,14 +44,11 @@ public class UIConstants
 
     public static final String OBJECT_SETTINGS_BANNER = "icons/object.settings.banner.png";
 
-    public final static String CONNECTION_SETTINGS_BANNER =
-        "icons/connection.settings.banner.png";
+    public final static String CONNECTION_SETTINGS_BANNER = "icons/connection.settings.banner.png";
 
-    public static final String DATA_MANAGER_CONNECT_COMMAND =
-        "org.xwiki.eclipse.ui.commands.DataManagerConnect";
+    public static final String DATA_MANAGER_CONNECT_COMMAND = "org.xwiki.eclipse.ui.commands.DataManagerConnect";
 
-    public static final String DATA_MANAGER_DISCONNECT_COMMAND =
-        "org.xwiki.eclipse.ui.commands.DataManagerDisconnect";
+    public static final String DATA_MANAGER_DISCONNECT_COMMAND = "org.xwiki.eclipse.ui.commands.DataManagerDisconnect";
 
     public static final String NEW_PAGE_COMMAND = "org.xwiki.eclipse.ui.commands.NewPage";
 
@@ -61,5 +57,7 @@ public class UIConstants
     public static final String DELETE_COMMAND = "org.xwiki.eclipse.ui.commands.Delete";
 
     public static final String REFRESH_COMMAND = "org.xwiki.eclipse.ui.commands.Refresh";
+
+    public static final String RENAME_PAGE_COMMAND = "org.xwiki.eclipse.ui.commands.RenamePage";
 
 }

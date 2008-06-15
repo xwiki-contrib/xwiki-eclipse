@@ -70,8 +70,7 @@ public class PageSettingsPage extends WizardPage
         if (newPageWizardState.getSpace() != null) {
             spaceText.setText(newPageWizardState.getSpace());
         }
-        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, false).applyTo(
-            spaceText);
+        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, false).applyTo(spaceText);
         spaceText.addModifyListener(new ModifyListener()
         {
             public void modifyText(ModifyEvent e)
@@ -86,8 +85,7 @@ public class PageSettingsPage extends WizardPage
         label.setText("Name:");
 
         nameText = new Text(group, SWT.BORDER);
-        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, false).applyTo(
-            nameText);
+        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, false).applyTo(nameText);
         nameText.addModifyListener(new ModifyListener()
         {
             public void modifyText(ModifyEvent e)
@@ -102,8 +100,7 @@ public class PageSettingsPage extends WizardPage
         label.setText("Title:");
 
         titleText = new Text(group, SWT.BORDER);
-        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, false).applyTo(
-            titleText);
+        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, false).applyTo(titleText);
         titleText.addModifyListener(new ModifyListener()
         {
             public void modifyText(ModifyEvent e)

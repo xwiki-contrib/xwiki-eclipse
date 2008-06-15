@@ -43,17 +43,8 @@ public class RefreshActionProvider extends CommonActionProvider
         // 0);
         // refresh = new CommandContributionItem(contributionItemParameter);
         refresh =
-            new CommandContributionItem(PlatformUI.getWorkbench(),
-                null,
-                UIConstants.REFRESH_COMMAND,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                SWT.NONE);
+            new CommandContributionItem(PlatformUI.getWorkbench(), null, UIConstants.REFRESH_COMMAND, null, null, null,
+                null, null, null, null, SWT.NONE);
 
     }
 

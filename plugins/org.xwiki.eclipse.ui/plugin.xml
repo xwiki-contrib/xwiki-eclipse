@@ -205,6 +205,10 @@
         id="org.xwiki.eclipse.ui.commands.Refresh"
         name="Refresh">
   </command>
+  <command
+        id="org.xwiki.eclipse.ui.commands.RenamePage"
+        name="Rename">
+  </command>
 	</extension>
 	<extension point="org.eclipse.ui.handlers">
 		<handler class="org.xwiki.eclipse.ui.handlers.DataManagerConnectHandler" commandId="org.xwiki.eclipse.ui.commands.DataManagerConnect">
@@ -259,6 +263,18 @@
   <handler
         class="org.xwiki.eclipse.ui.handlers.RefreshHandler"
         commandId="org.xwiki.eclipse.ui.commands.Refresh">
+  </handler>
+  <handler
+        class="org.xwiki.eclipse.ui.handlers.RenamePageHandler"
+        commandId="org.xwiki.eclipse.ui.commands.RenamePage">
+     <activeWhen>
+        <iterate
+              operator="and">
+           <instanceof
+                 value="org.xwiki.eclipse.core.model.XWikiEclipsePageSummary">
+           </instanceof>
+        </iterate>
+     </activeWhen>
   </handler>
 	</extension>
  <extension

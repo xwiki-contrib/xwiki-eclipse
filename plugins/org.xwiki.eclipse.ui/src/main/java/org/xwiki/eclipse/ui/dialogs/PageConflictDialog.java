@@ -94,8 +94,8 @@ public class PageConflictDialog extends TitleAreaDialog
 
     }
 
-    public PageConflictDialog(Shell parentShell, XWikiEclipsePage page,
-        XWikiEclipsePage conflictingPage, XWikiEclipsePage ancestorPage)
+    public PageConflictDialog(Shell parentShell, XWikiEclipsePage page, XWikiEclipsePage conflictingPage,
+        XWikiEclipsePage ancestorPage)
     {
         super(parentShell);
         setShellStyle(getShellStyle() | SWT.RESIZE | SWT.MAX);
@@ -205,8 +205,7 @@ public class PageConflictDialog extends TitleAreaDialog
         cc.setRightLabel(String.format("%s (Conflicting)", conflictingPage.getData().getId()));
         TextMergeViewer viewer = new TextMergeViewer(pane, cc);
         pane.setContent(viewer.getControl());
-        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, true).applyTo(
-            viewer.getControl());
+        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, true).applyTo(viewer.getControl());
 
         CompareElement left = new CompareElement(page);
         CompareElement right = new CompareElement(conflictingPage);

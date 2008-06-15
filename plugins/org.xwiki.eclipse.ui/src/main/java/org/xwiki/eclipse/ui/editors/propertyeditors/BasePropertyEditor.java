@@ -38,8 +38,7 @@ public abstract class BasePropertyEditor
 
     protected XWikiEclipseObjectProperty property;
 
-    public BasePropertyEditor(FormToolkit toolkit, Composite parent,
-        XWikiEclipseObjectProperty property)
+    public BasePropertyEditor(FormToolkit toolkit, Composite parent, XWikiEclipseObjectProperty property)
     {
         this.toolkit = toolkit;
         this.property = property;

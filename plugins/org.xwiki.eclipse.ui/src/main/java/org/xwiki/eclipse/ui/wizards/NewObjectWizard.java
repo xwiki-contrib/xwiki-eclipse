@@ -59,14 +59,13 @@ public class NewObjectWizard extends Wizard implements INewWizard
         try {
             getContainer().run(true, false, new IRunnableWithProgress()
             {
-                public void run(IProgressMonitor monitor) throws InvocationTargetException,
-                    InterruptedException
+                public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException
                 {
                     try {
                         monitor.beginTask("Creating object...", IProgressMonitor.UNKNOWN);
                         final XWikiEclipseObject object =
-                            dataManager.createObject(newObjectWizardState.getPageId(),
-                                newObjectWizardState.getClassName());
+                            dataManager.createObject(newObjectWizardState.getPageId(), newObjectWizardState
+                                .getClassName());
 
                         Display.getDefault().asyncExec(new Runnable()
                         {
@@ -76,9 +75,8 @@ public class NewObjectWizard extends Wizard implements INewWizard
                                 {
                                     public void run() throws Exception
                                     {
-                                        PlatformUI.getWorkbench().getActiveWorkbenchWindow()
-                                            .getActivePage().openEditor(
-                                                new ObjectEditorInput(object), ObjectEditor.ID);
+                                        PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+                                            .openEditor(new ObjectEditorInput(object), ObjectEditor.ID);
                                     }
                                 });
                             }

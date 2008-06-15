@@ -44,8 +44,7 @@ public class XWikiEclipseSpaceSummaryAdapter extends WorkbenchAdapter
                 {
                     public void run() throws Exception
                     {
-                        setResult(spaceSummary.getDataManager().getPages(
-                            spaceSummary.getData().getKey()));
+                        setResult(spaceSummary.getDataManager().getPages(spaceSummary.getData().getKey()));
                     }
 
                 };

@@ -90,12 +90,10 @@ public class PagePreview extends ViewPart implements ISelectionListener, ICoreEv
         getSite().getWorkbenchWindow().getSelectionService().addPostSelectionListener(this);
         NotificationManager.getDefault().addListener(
             this,
-            new CoreEvent.Type[] {CoreEvent.Type.DATA_MANAGER_CONNECTED,
-            CoreEvent.Type.DATA_MANAGER_DISCONNECTED, CoreEvent.Type.DATA_MANAGER_REGISTERED,
-            CoreEvent.Type.DATA_MANAGER_UNREGISTERED, CoreEvent.Type.OBJECT_REMOVED,
-            CoreEvent.Type.OBJECT_STORED, CoreEvent.Type.PAGE_REMOVED,
-            CoreEvent.Type.PAGE_STORED, CoreEvent.Type.PAGE_SELECTED,
-            CoreEvent.Type.OBJECT_SELECTED});
+            new CoreEvent.Type[] {CoreEvent.Type.DATA_MANAGER_CONNECTED, CoreEvent.Type.DATA_MANAGER_DISCONNECTED,
+            CoreEvent.Type.DATA_MANAGER_REGISTERED, CoreEvent.Type.DATA_MANAGER_UNREGISTERED,
+            CoreEvent.Type.OBJECT_REMOVED, CoreEvent.Type.OBJECT_STORED, CoreEvent.Type.PAGE_REMOVED,
+            CoreEvent.Type.PAGE_STORED, CoreEvent.Type.PAGE_SELECTED, CoreEvent.Type.OBJECT_SELECTED});
     }
 
     @Override
@@ -112,10 +110,9 @@ public class PagePreview extends ViewPart implements ISelectionListener, ICoreEv
         GridLayoutFactory.fillDefaults().margins(0, 0).spacing(0, 0).applyTo(mainComposite);
 
         addressBarComposite = new Composite(mainComposite, SWT.NONE);
-        GridLayoutFactory.fillDefaults().numColumns(3).margins(0, 5).spacing(0, 0).applyTo(
+        GridLayoutFactory.fillDefaults().numColumns(3).margins(0, 5).spacing(0, 0).applyTo(addressBarComposite);
+        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).exclude(true).applyTo(
             addressBarComposite);
-        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false)
-            .exclude(true).applyTo(addressBarComposite);
 
         Label label = new Label(addressBarComposite, SWT.NONE);
         label.setText("URL:");
@@ -137,8 +134,7 @@ public class PagePreview extends ViewPart implements ISelectionListener, ICoreEv
             }
 
         });
-        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(
-            urlText);
+        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(urlText);
         addressBarComposite.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
         addressBarComposite.setVisible(false);
         Button button = new Button(addressBarComposite, SWT.PUSH);
@@ -154,16 +150,15 @@ public class PagePreview extends ViewPart implements ISelectionListener, ICoreEv
 
             public void widgetSelected(SelectionEvent e)
             {
-                IWorkbenchBrowserSupport browserSupport =
-                    PlatformUI.getWorkbench().getBrowserSupport();
+                IWorkbenchBrowserSupport browserSupport = PlatformUI.getWorkbench().getBrowserSupport();
 
                 IWebBrowser browser;
                 try {
                     browser = browserSupport.createBrowser("xeclipse");
                     browser.openURL(new URL(urlText.getText()));
                 } catch (Exception e1) {
-                    MessageDialog.openWarning(Display.getDefault().getActiveShell(), "Warning",
-                        String.format("Unable to open external browser\n%s", e1));
+                    MessageDialog.openWarning(Display.getDefault().getActiveShell(), "Warning", String.format(
+                        "Unable to open external browser\n%s", e1));
                 }
 
             }
@@ -171,8 +166,7 @@ public class PagePreview extends ViewPart implements ISelectionListener, ICoreEv
         });
 
         browserComposite = new Composite(mainComposite, SWT.NONE);
-        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, true).applyTo(
-            browserComposite);
+        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, true).applyTo(browserComposite);
 
         stackLayout = new StackLayout();
         browserComposite.setLayout(stackLayout);
@@ -183,20 +177,17 @@ public class PagePreview extends ViewPart implements ISelectionListener, ICoreEv
         GridLayoutFactory.fillDefaults().margins(0, 0).applyTo(notConnectedComposite);
         notConnectedComposite.setBackground(parent.getDisplay().getSystemColor(SWT.COLOR_WHITE));
         label = new Label(notConnectedComposite, SWT.NONE);
-        GridDataFactory.fillDefaults().align(SWT.CENTER, SWT.CENTER).grab(true, true).applyTo(
-            label);
+        GridDataFactory.fillDefaults().align(SWT.CENTER, SWT.CENTER).grab(true, true).applyTo(label);
         label.setText("No preview available if not connected.");
         label.setFont(JFaceResources.getHeaderFont());
         label.setBackground(parent.getDisplay().getSystemColor(SWT.COLOR_WHITE));
         label.setForeground(parent.getDisplay().getSystemColor(SWT.COLOR_DARK_GRAY));
 
         noPageSelectedComposite = new Composite(browserComposite, SWT.NONE);
-        noPageSelectedComposite
-            .setBackground(parent.getDisplay().getSystemColor(SWT.COLOR_WHITE));
+        noPageSelectedComposite.setBackground(parent.getDisplay().getSystemColor(SWT.COLOR_WHITE));
         GridLayoutFactory.fillDefaults().margins(0, 0).applyTo(noPageSelectedComposite);
         label = new Label(noPageSelectedComposite, SWT.NONE);
-        GridDataFactory.fillDefaults().align(SWT.CENTER, SWT.CENTER).grab(true, true).applyTo(
-            label);
+        GridDataFactory.fillDefaults().align(SWT.CENTER, SWT.CENTER).grab(true, true).applyTo(label);
         label.setText("No page selected");
         label.setFont(JFaceResources.getHeaderFont());
         label.setBackground(parent.getDisplay().getSystemColor(SWT.COLOR_WHITE));
@@ -229,8 +220,8 @@ public class PagePreview extends ViewPart implements ISelectionListener, ICoreEv
         if (selectedObject instanceof XWikiEclipseObjectSummary) {
             XWikiEclipseObjectSummary objectSummary = (XWikiEclipseObjectSummary) selectedObject;
 
-            update(objectSummary.getPageSummary() != null ? objectSummary.getPageSummary()
-                .getUrl() : null, objectSummary.getDataManager().isConnected());
+            update(objectSummary.getPageSummary() != null ? objectSummary.getPageSummary().getUrl() : null,
+                objectSummary.getDataManager().isConnected());
         }
 
     }
@@ -284,8 +275,8 @@ public class PagePreview extends ViewPart implements ISelectionListener, ICoreEv
         if (object instanceof XWikiEclipseObject) {
             XWikiEclipseObject xwikiObject = (XWikiEclipseObject) object;
 
-            update(xwikiObject.getPageSummary() != null ? xwikiObject.getPageSummary().getUrl()
-                : null, xwikiObject.getDataManager().isConnected());
+            update(xwikiObject.getPageSummary() != null ? xwikiObject.getPageSummary().getUrl() : null, xwikiObject
+                .getDataManager().isConnected());
         }
     }
 

@@ -59,15 +59,13 @@ public class NewPageWizard extends Wizard implements INewWizard
         try {
             getContainer().run(true, false, new IRunnableWithProgress()
             {
-                public void run(IProgressMonitor monitor) throws InvocationTargetException,
-                    InterruptedException
+                public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException
                 {
                     try {
                         monitor.beginTask("Creating page...", IProgressMonitor.UNKNOWN);
                         final XWikiEclipsePage page =
-                            dataManager.createPage(newPageWizardState.getSpace(),
-                                newPageWizardState.getName(), newPageWizardState.getTitle(),
-                                "Write here content");
+                            dataManager.createPage(newPageWizardState.getSpace(), newPageWizardState.getName(),
+                                newPageWizardState.getTitle(), "Write here content");
 
                         Display.getDefault().asyncExec(new Runnable()
                         {
@@ -77,9 +75,8 @@ public class NewPageWizard extends Wizard implements INewWizard
                                 {
                                     public void run() throws Exception
                                     {
-                                        PlatformUI.getWorkbench().getActiveWorkbenchWindow()
-                                            .getActivePage().openEditor(
-                                                new PageEditorInput(page), PageEditor.ID);
+                                        PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+                                            .openEditor(new PageEditorInput(page), PageEditor.ID);
                                     }
                                 });
                             }

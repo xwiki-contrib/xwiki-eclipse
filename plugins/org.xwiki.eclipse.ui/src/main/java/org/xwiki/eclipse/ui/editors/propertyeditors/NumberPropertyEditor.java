@@ -35,8 +35,7 @@ public class NumberPropertyEditor extends BasePropertyEditor
 {
     Text text;
 
-    public NumberPropertyEditor(FormToolkit toolkit, Composite parent,
-        XWikiEclipseObjectProperty property)
+    public NumberPropertyEditor(FormToolkit toolkit, Composite parent, XWikiEclipseObjectProperty property)
     {
         super(toolkit, parent, property);
     }

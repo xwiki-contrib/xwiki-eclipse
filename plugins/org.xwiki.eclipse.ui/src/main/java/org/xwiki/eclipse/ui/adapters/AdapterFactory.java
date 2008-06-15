@@ -34,51 +34,43 @@ public class AdapterFactory implements IAdapterFactory
 
     private DataManagerAdapter xwikiEclipseDataManagerAdapter = new DataManagerAdapter();
 
-    private XWikiEclipseSpaceSummaryAdapter xwikiEclipseSpaceSummaryAdapter =
-        new XWikiEclipseSpaceSummaryAdapter();
+    private XWikiEclipseSpaceSummaryAdapter xwikiEclipseSpaceSummaryAdapter = new XWikiEclipseSpaceSummaryAdapter();
 
-    private XWikiEclipsePageSummaryAdapter xwikiEclipsePageSummaryAdapter =
-        new XWikiEclipsePageSummaryAdapter();
+    private XWikiEclipsePageSummaryAdapter xwikiEclipsePageSummaryAdapter = new XWikiEclipsePageSummaryAdapter();
 
-    private XWikiEclipseObjectSummaryAdapter xwikiEclipseObjectSummaryAdapter =
-        new XWikiEclipseObjectSummaryAdapter();
+    private XWikiEclipseObjectSummaryAdapter xwikiEclipseObjectSummaryAdapter = new XWikiEclipseObjectSummaryAdapter();
 
     public Object getAdapter(Object adaptableObject, Class adapterType)
     {
         /*
          * Adapters for DataManager
          */
-        if ((adaptableObject instanceof DataManager)
-            && adapterType.equals(IWorkbenchAdapter.class)) {
+        if ((adaptableObject instanceof DataManager) && adapterType.equals(IWorkbenchAdapter.class)) {
             return xwikiEclipseDataManagerAdapter;
         }
 
-        if ((adaptableObject instanceof DataManager)
-            && adapterType.equals(IWorkbenchAdapter2.class)) {
+        if ((adaptableObject instanceof DataManager) && adapterType.equals(IWorkbenchAdapter2.class)) {
             return xwikiEclipseDataManagerAdapter;
         }
 
         /*
          * Adapters for XWikiEclipseSpaceSummary
          */
-        if ((adaptableObject instanceof XWikiEclipseSpaceSummary)
-            && adapterType.equals(IWorkbenchAdapter.class)) {
+        if ((adaptableObject instanceof XWikiEclipseSpaceSummary) && adapterType.equals(IWorkbenchAdapter.class)) {
             return xwikiEclipseSpaceSummaryAdapter;
         }
 
         /*
          * Adapters for XWikiEclipsePageSummary
          */
-        if ((adaptableObject instanceof XWikiEclipsePageSummary)
-            && adapterType.equals(IWorkbenchAdapter.class)) {
+        if ((adaptableObject instanceof XWikiEclipsePageSummary) && adapterType.equals(IWorkbenchAdapter.class)) {
             return xwikiEclipsePageSummaryAdapter;
         }
 
         /*
          * Adapters for XWikiEclipseObjectSummary
          */
-        if ((adaptableObject instanceof XWikiEclipseObjectSummary)
-            && adapterType.equals(IWorkbenchAdapter.class)) {
+        if ((adaptableObject instanceof XWikiEclipseObjectSummary) && adapterType.equals(IWorkbenchAdapter.class)) {
             return xwikiEclipseObjectSummaryAdapter;
         }
 

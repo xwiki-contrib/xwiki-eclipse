@@ -181,52 +181,44 @@ public class ObjectEditor extends EditorPart
 
             if ("com.xpn.xwiki.objects.classes.StringClass".equals(property
                 .getAttribute(XWikiClass.XWIKICLASS_ATTRIBUTE))) {
-                propertyEditor =
-                    new StringPropertyEditor(toolkit, scrolledForm.getBody(), property);
+                propertyEditor = new StringPropertyEditor(toolkit, scrolledForm.getBody(), property);
             }
 
             if ("com.xpn.xwiki.objects.classes.PasswordClass".equals(property
                 .getAttribute(XWikiClass.XWIKICLASS_ATTRIBUTE))) {
-                propertyEditor =
-                    new PasswordPropertyEditor(toolkit, scrolledForm.getBody(), property);
+                propertyEditor = new PasswordPropertyEditor(toolkit, scrolledForm.getBody(), property);
             }
 
             if ("com.xpn.xwiki.objects.classes.NumberClass".equals(property
                 .getAttribute(XWikiClass.XWIKICLASS_ATTRIBUTE))) {
-                propertyEditor =
-                    new NumberPropertyEditor(toolkit, scrolledForm.getBody(), property);
+                propertyEditor = new NumberPropertyEditor(toolkit, scrolledForm.getBody(), property);
             }
 
             if ("com.xpn.xwiki.objects.classes.BooleanClass".equals(property
                 .getAttribute(XWikiClass.XWIKICLASS_ATTRIBUTE))) {
-                propertyEditor =
-                    new BooleanPropertyEditor(toolkit, scrolledForm.getBody(), property);
+                propertyEditor = new BooleanPropertyEditor(toolkit, scrolledForm.getBody(), property);
             }
 
             if ("com.xpn.xwiki.objects.classes.TextAreaClass".equals(property
                 .getAttribute(XWikiClass.XWIKICLASS_ATTRIBUTE))) {
-                propertyEditor =
-                    new TextAreaPropertyEditor(toolkit, scrolledForm.getBody(), property);
+                propertyEditor = new TextAreaPropertyEditor(toolkit, scrolledForm.getBody(), property);
             }
 
-            if ("com.xpn.xwiki.objects.classes.DateClass".equals(property
-                .getAttribute(XWikiClass.XWIKICLASS_ATTRIBUTE))) {
-                propertyEditor =
-                    new DatePropertyEditor(toolkit, scrolledForm.getBody(), property);
+            if ("com.xpn.xwiki.objects.classes.DateClass"
+                .equals(property.getAttribute(XWikiClass.XWIKICLASS_ATTRIBUTE))) {
+                propertyEditor = new DatePropertyEditor(toolkit, scrolledForm.getBody(), property);
             }
 
             if ("com.xpn.xwiki.objects.classes.StaticListClass".equals(property
                 .getAttribute(XWikiClass.XWIKICLASS_ATTRIBUTE))
                 || "com.xpn.xwiki.objects.classes.DBListClass".equals(property
                     .getAttribute(XWikiClass.XWIKICLASS_ATTRIBUTE))) {
-                propertyEditor =
-                    new ListPropertyEditor(toolkit, scrolledForm.getBody(), property);
+                propertyEditor = new ListPropertyEditor(toolkit, scrolledForm.getBody(), property);
             }
 
             if (propertyEditor != null) {
                 propertyToEditorMap.put(property, propertyEditor);
-                propertyEditor.getControl().setLayoutData(
-                    new TableWrapData(TableWrapData.FILL_GRAB));
+                propertyEditor.getControl().setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
                 propertyEditor.addPropertyModifyListener(new IPropertyModifyListener()
                 {
                     public void modifyProperty(XWikiEclipseObjectProperty property)
@@ -252,8 +244,7 @@ public class ObjectEditor extends EditorPart
         ObjectEditorInput input = (ObjectEditorInput) getEditorInput();
         XWikiEclipseObject object = input.getObject();
 
-        NotificationManager.getDefault().fireCoreEvent(CoreEvent.Type.OBJECT_SELECTED, this,
-            object);
+        NotificationManager.getDefault().fireCoreEvent(CoreEvent.Type.OBJECT_SELECTED, this, object);
     }
 
     private void updateInfo()
@@ -262,8 +253,8 @@ public class ObjectEditor extends EditorPart
             ObjectEditorInput input = (ObjectEditorInput) getEditorInput();
             if (input != null) {
                 XWikiEclipseObject object = input.getObject();
-                scrolledForm.setText(String.format("%s (Class %s) on page %s", object.getName(),
-                    object.getXWikiClass().getId(), object.getData().getPageId()));
+                scrolledForm.setText(String.format("%s (Class %s) on page %s", object.getName(), object.getXWikiClass()
+                    .getId(), object.getData().getPageId()));
 
                 scrolledForm.getForm().setMessage(object.getDataManager().getName());
             }

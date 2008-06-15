@@ -60,8 +60,8 @@ public class UIUtils
         return null;
     }
 
-    public static void runWithProgress(IRunnableWithProgress operation, Shell shell)
-        throws InvocationTargetException, InterruptedException
+    public static void runWithProgress(IRunnableWithProgress operation, Shell shell) throws InvocationTargetException,
+        InterruptedException
     {
         ProgressMonitorDialog dialog = new ProgressMonitorDialog(shell);
         dialog.run(true, false, operation);

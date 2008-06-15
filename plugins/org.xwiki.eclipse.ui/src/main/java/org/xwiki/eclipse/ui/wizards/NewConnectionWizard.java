@@ -69,13 +69,11 @@ public class NewConnectionWizard extends Wizard implements INewWizard
             return false;
         }
 
-        if (newConnectionWizardState.getUserName() == null
-            || newConnectionWizardState.getUserName().length() == 0) {
+        if (newConnectionWizardState.getUserName() == null || newConnectionWizardState.getUserName().length() == 0) {
             return false;
         }
 
-        if (newConnectionWizardState.getPassword() == null
-            || newConnectionWizardState.getPassword().length() == 0) {
+        if (newConnectionWizardState.getPassword() == null || newConnectionWizardState.getPassword().length() == 0) {
             return false;
         }
 
@@ -89,11 +87,9 @@ public class NewConnectionWizard extends Wizard implements INewWizard
 
         IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
 
-        final IProject project =
-            workspaceRoot.getProject(newConnectionWizardState.getConnectionName());
+        final IProject project = workspaceRoot.getProject(newConnectionWizardState.getConnectionName());
         if (project.exists()) {
-            currentPage.setErrorMessage(String.format(
-                "Connection '%s' already exist. Please choose another name.",
+            currentPage.setErrorMessage(String.format("Connection '%s' already exist. Please choose another name.",
                 newConnectionWizardState.getConnectionName()));
             return false;
         }
@@ -101,17 +97,14 @@ public class NewConnectionWizard extends Wizard implements INewWizard
         try {
             getContainer().run(true, false, new IRunnableWithProgress()
             {
-                public void run(IProgressMonitor monitor) throws InvocationTargetException,
-                    InterruptedException
+                public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException
                 {
                     try {
                         monitor.beginTask("Setting up connection", IProgressMonitor.UNKNOWN);
 
                         /* Try to login with the specified username + password */
-                        XWikiXmlRpcClient client =
-                            new XWikiXmlRpcClient(newConnectionWizardState.getServerUrl());
-                        client.login(newConnectionWizardState.getUserName(),
-                            newConnectionWizardState.getPassword());
+                        XWikiXmlRpcClient client = new XWikiXmlRpcClient(newConnectionWizardState.getServerUrl());
+                        client.login(newConnectionWizardState.getUserName(), newConnectionWizardState.getPassword());
                         client.logout();
 
                     } catch (Exception e) {
@@ -123,8 +116,7 @@ public class NewConnectionWizard extends Wizard implements INewWizard
             });
         } catch (Exception e) {
             currentPage.setErrorMessage(String.format(
-                "Error connecting to remote XWiki: '%s'. Please check your settings.", e
-                    .getMessage()));
+                "Error connecting to remote XWiki: '%s'. Please check your settings.", e.getMessage()));
             return false;
         }
 
@@ -132,14 +124,11 @@ public class NewConnectionWizard extends Wizard implements INewWizard
         try {
             getContainer().run(true, false, new IRunnableWithProgress()
             {
-                public void run(IProgressMonitor monitor) throws InvocationTargetException,
-                    InterruptedException
+                public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException
                 {
                     try {
                         IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
-                        IProject project =
-                            workspaceRoot
-                                .getProject(newConnectionWizardState.getConnectionName());
+                        IProject project = workspaceRoot.getProject(newConnectionWizardState.getConnectionName());
                         if (project.exists()) {
                             return;
                         }
@@ -147,12 +136,9 @@ public class NewConnectionWizard extends Wizard implements INewWizard
                         project.create(null);
                         project.open(null);
 
-                        project.setPersistentProperty(DataManager.ENDPOINT,
-                            newConnectionWizardState.getServerUrl());
-                        project.setPersistentProperty(DataManager.USERNAME,
-                            newConnectionWizardState.getUserName());
-                        project.setPersistentProperty(DataManager.PASSWORD,
-                            newConnectionWizardState.getPassword());
+                        project.setPersistentProperty(DataManager.ENDPOINT, newConnectionWizardState.getServerUrl());
+                        project.setPersistentProperty(DataManager.USERNAME, newConnectionWizardState.getUserName());
+                        project.setPersistentProperty(DataManager.PASSWORD, newConnectionWizardState.getPassword());
                         project.setPersistentProperty(DataManager.AUTO_CONNECT, "true");
 
                         IProjectDescription description = project.getDescription();
@@ -164,8 +150,7 @@ public class NewConnectionWizard extends Wizard implements INewWizard
                 }
             });
         } catch (Exception e) {
-            currentPage.setErrorMessage(String.format("Error creating project data: '%s'.", e
-                .getMessage()));
+            currentPage.setErrorMessage(String.format("Error creating project data: '%s'.", e.getMessage()));
             e.printStackTrace();
             return false;
 

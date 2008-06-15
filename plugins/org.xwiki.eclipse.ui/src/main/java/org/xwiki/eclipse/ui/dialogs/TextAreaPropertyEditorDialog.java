@@ -70,23 +70,20 @@ public class TextAreaPropertyEditorDialog extends Dialog
     protected Control createContents(Composite parent)
     {
         Composite composite = new Composite(parent, SWT.NONE);
-        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, true).applyTo(
-            composite);
+        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, true).applyTo(composite);
         GridLayoutFactory.fillDefaults().applyTo(composite);
 
         FormToolkit toolkit = new FormToolkit(parent.getDisplay());
         Form form = toolkit.createForm(composite);
         toolkit.decorateFormHeading(form);
-        form.setText(String.format("Property %s of object %s on page %s", property
-            .getPrettyName(), property.getObject().getName(), property.getObject().getData()
-            .getPageId()));
+        form.setText(String.format("Property %s of object %s on page %s", property.getPrettyName(), property
+            .getObject().getName(), property.getObject().getData().getPageId()));
         GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, true).applyTo(form);
         GridLayoutFactory.fillDefaults().applyTo(form.getBody());
 
         final StyledText styledText = new StyledText(form.getBody(), SWT.BORDER);
         styledText.setText(property.getValue() != null ? (String) property.getValue() : "");
-        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, true).applyTo(
-            styledText);
+        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, true).applyTo(styledText);
         styledText.addModifyListener(new ModifyListener()
         {
             public void modifyText(ModifyEvent e)
@@ -97,14 +94,11 @@ public class TextAreaPropertyEditorDialog extends Dialog
         });
 
         Composite buttonBar = toolkit.createComposite(form.getBody());
-        GridLayoutFactory.fillDefaults().numColumns(3).extendedMargins(0, 0, 0, 10).applyTo(
-            buttonBar);
-        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, false).applyTo(
-            buttonBar);
+        GridLayoutFactory.fillDefaults().numColumns(3).extendedMargins(0, 0, 0, 10).applyTo(buttonBar);
+        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, false).applyTo(buttonBar);
 
         Label filler = toolkit.createLabel(buttonBar, " ");
-        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(
-            filler);
+        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(filler);
 
         Button cancel = toolkit.createButton(buttonBar, "Cancel", SWT.PUSH);
         cancel.addSelectionListener(new SelectionListener()

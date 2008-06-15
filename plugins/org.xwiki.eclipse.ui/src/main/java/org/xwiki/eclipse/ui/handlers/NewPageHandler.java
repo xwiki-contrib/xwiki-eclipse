@@ -34,7 +34,7 @@ import org.xwiki.eclipse.ui.utils.UIUtils;
 import org.xwiki.eclipse.ui.wizards.NewPageWizard;
 
 public class NewPageHandler extends AbstractHandler
-{    
+{
     public Object execute(ExecutionEvent event) throws ExecutionException
     {
         String spaceKey = null;
@@ -58,8 +58,7 @@ public class NewPageHandler extends AbstractHandler
         if (dataManager != null) {
             NewPageWizard wizard = new NewPageWizard(dataManager, spaceKey);
 
-            WizardDialog dialog =
-                new WizardDialog(HandlerUtil.getActiveWorkbenchWindow(event).getShell(), wizard);
+            WizardDialog dialog = new WizardDialog(HandlerUtil.getActiveWorkbenchWindow(event).getShell(), wizard);
             dialog.create();
             dialog.open();
         }

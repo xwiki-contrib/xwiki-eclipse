@@ -22,7 +22,6 @@ package org.xwiki.eclipse.ui.adapters;
 
 import java.util.List;
 
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.JFaceResources;
@@ -62,7 +61,7 @@ public class DataManagerAdapter extends WorkbenchAdapter
     @Override
     public String getLabel(Object object)
     {
-        if (object instanceof DataManager) {                                    
+        if (object instanceof DataManager) {
             DataManager dataManager = (DataManager) object;
             return dataManager.getName();
         }
@@ -83,8 +82,7 @@ public class DataManagerAdapter extends WorkbenchAdapter
             DataManager dataManager = (DataManager) object;
 
             if (dataManager.isConnected()) {
-                return JFaceResources.getFontRegistry().getBold(JFaceResources.DEFAULT_FONT)
-                    .getFontData()[0];
+                return JFaceResources.getFontRegistry().getBold(JFaceResources.DEFAULT_FONT).getFontData()[0];
             }
         }
 

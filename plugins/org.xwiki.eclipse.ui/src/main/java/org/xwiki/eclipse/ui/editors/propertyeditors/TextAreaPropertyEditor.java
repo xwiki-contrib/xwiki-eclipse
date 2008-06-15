@@ -40,8 +40,7 @@ public class TextAreaPropertyEditor extends BasePropertyEditor
 {
     StyledText textArea;
 
-    public TextAreaPropertyEditor(FormToolkit toolkit, Composite parent,
-        XWikiEclipseObjectProperty property)
+    public TextAreaPropertyEditor(FormToolkit toolkit, Composite parent, XWikiEclipseObjectProperty property)
     {
         super(toolkit, parent, property);
     }
@@ -68,8 +67,7 @@ public class TextAreaPropertyEditor extends BasePropertyEditor
             }
         });
 
-        Button button =
-            toolkit.createButton(composite, "Open editor in a separate window...", SWT.PUSH);
+        Button button = toolkit.createButton(composite, "Open editor in a separate window...", SWT.PUSH);
         GridDataFactory.fillDefaults().align(SWT.END, SWT.CENTER).applyTo(button);
         button.addSelectionListener(new SelectionListener()
         {
@@ -81,8 +79,7 @@ public class TextAreaPropertyEditor extends BasePropertyEditor
 
             public void widgetSelected(SelectionEvent e)
             {
-                TextAreaPropertyEditorDialog dialog =
-                    new TextAreaPropertyEditorDialog(parent.getShell(), property);
+                TextAreaPropertyEditorDialog dialog = new TextAreaPropertyEditorDialog(parent.getShell(), property);
                 int result = dialog.open();
                 if (result == Dialog.OK) {
                     textArea.setText(dialog.getText() != null ? dialog.getText() : "");

@@ -48,17 +48,8 @@ public class DataManagerActionProvider extends CommonActionProvider
         // 0);
         // connect = new CommandContributionItem(contributionItemParameter);
         connect =
-            new CommandContributionItem(PlatformUI.getWorkbench(),
-                null,
-                UIConstants.DATA_MANAGER_CONNECT_COMMAND,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                SWT.NONE);
+            new CommandContributionItem(PlatformUI.getWorkbench(), null, UIConstants.DATA_MANAGER_CONNECT_COMMAND,
+                null, null, null, null, null, null, null, SWT.NONE);
 
         /* This is for Eclipse 3.4 */
         // contributionItemParameter =
@@ -68,17 +59,8 @@ public class DataManagerActionProvider extends CommonActionProvider
         // 0);
         // disconnect = new CommandContributionItem(contributionItemParameter);
         disconnect =
-            new CommandContributionItem(PlatformUI.getWorkbench(),
-                null,
-                UIConstants.DATA_MANAGER_DISCONNECT_COMMAND,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                SWT.NONE);
+            new CommandContributionItem(PlatformUI.getWorkbench(), null, UIConstants.DATA_MANAGER_DISCONNECT_COMMAND,
+                null, null, null, null, null, null, null, SWT.NONE);
 
         /* This is for Eclipse 3.4 */
         // contributionItemParameter =
@@ -88,17 +70,8 @@ public class DataManagerActionProvider extends CommonActionProvider
         // 0);
         // newPage = new CommandContributionItem(contributionItemParameter);
         newPage =
-            new CommandContributionItem(PlatformUI.getWorkbench(),
-                null,
-                UIConstants.NEW_PAGE_COMMAND,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                SWT.NONE);
+            new CommandContributionItem(PlatformUI.getWorkbench(), null, UIConstants.NEW_PAGE_COMMAND, null, null,
+                null, null, null, null, null, SWT.NONE);
 
     }
 

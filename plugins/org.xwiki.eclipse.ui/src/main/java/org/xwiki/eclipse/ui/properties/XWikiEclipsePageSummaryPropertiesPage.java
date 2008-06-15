@@ -63,20 +63,17 @@ public class XWikiEclipsePageSummaryPropertiesPage extends PropertyPage
         property = new Label(composite, SWT.NONE);
         property.setText("Title:");
         value = new Label(composite, SWT.NONE);
-        value.setText(pageSummary.getData().getTitle() == null ? "" : pageSummary.getData()
-            .getTitle());
+        value.setText(pageSummary.getData().getTitle() == null ? "" : pageSummary.getData().getTitle());
 
         property = new Label(composite, SWT.NONE);
         property.setText("Parent:");
         value = new Label(composite, SWT.NONE);
-        value.setText(pageSummary.getData().getParentId() == null ? "" : pageSummary.getData()
-            .getParentId());
+        value.setText(pageSummary.getData().getParentId() == null ? "" : pageSummary.getData().getParentId());
 
         property = new Label(composite, SWT.NONE);
         property.setText("Space:");
         value = new Label(composite, SWT.NONE);
-        value.setText(pageSummary.getData().getSpace() == null ? "" : pageSummary.getData()
-            .getSpace());
+        value.setText(pageSummary.getData().getSpace() == null ? "" : pageSummary.getData().getSpace());
 
         property = new Label(composite, SWT.NONE);
         property.setText("Translations:");
@@ -86,8 +83,8 @@ public class XWikiEclipsePageSummaryPropertiesPage extends PropertyPage
         property = new Label(composite, SWT.NONE);
         property.setText("Url:");
         Link link = new Link(composite, SWT.NONE);
-        link.setText(pageSummary.getData().getUrl() == null ? "" : String.format("<a>%s</a>",
-            pageSummary.getData().getUrl()));
+        link.setText(pageSummary.getData().getUrl() == null ? "" : String.format("<a>%s</a>", pageSummary.getData()
+            .getUrl()));
         link.addSelectionListener(new SelectionListener()
         {
 
@@ -102,8 +99,7 @@ public class XWikiEclipsePageSummaryPropertiesPage extends PropertyPage
                 {
                     public void run() throws Exception
                     {
-                        IWorkbenchBrowserSupport browserSupport =
-                            PlatformUI.getWorkbench().getBrowserSupport();
+                        IWorkbenchBrowserSupport browserSupport = PlatformUI.getWorkbench().getBrowserSupport();
                         IWebBrowser browser = browserSupport.createBrowser("XWiki Eclipse");
                         browser.openURL(new URL(e.text));
                     }

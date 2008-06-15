@@ -20,6 +20,8 @@
  */
 package org.xwiki.eclipse.ui.properties;
 
+import java.util.Formatter;
+
 import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
@@ -31,6 +33,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.PropertyPage;
 import org.xwiki.eclipse.core.DataManager;
+import org.xwiki.eclipse.core.Functionality;
 import org.xwiki.eclipse.ui.utils.XWikiEclipseSafeRunnable;
 
 public class DataManagerPropertiesPage extends PropertyPage
@@ -70,9 +73,11 @@ public class DataManagerPropertiesPage extends PropertyPage
                 label.setText("Status:");
                 label = new Label(composite, SWT.BORDER);
                 if (dataManager.isConnected()) {
-                    label.setText(dataManager.isExtendedSupport()
-                        ? "Connected with extended support available"
-                        : "Connected to an older version of XWiki");
+                    Formatter f = new Formatter();
+                    for (Functionality functionality : dataManager.getSupportedFunctionalities()) {
+                        f.format("%s ", functionality);
+                    }
+                    label.setText(String.format("Connected. Support for: %s", f.toString()));
                 } else {
                     label.setText("Not connected");
                 }
@@ -80,32 +85,28 @@ public class DataManagerPropertiesPage extends PropertyPage
                 label = new Label(composite, SWT.BORDER);
                 label.setText("Endpoint:");
                 endpointText = new Text(composite, SWT.BORDER);
-                GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, false)
-                    .applyTo(endpointText);
+                GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, false).applyTo(endpointText);
                 String endpoint = dataManager.getEndpoint();
                 endpointText.setText(endpoint != null ? endpoint : "No endpoint defined");
 
                 label = new Label(composite, SWT.BORDER);
                 label.setText("User name:");
                 userNameText = new Text(composite, SWT.BORDER);
-                GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, false)
-                    .applyTo(userNameText);
+                GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, false).applyTo(userNameText);
                 String userName = dataManager.getUserName();
                 userNameText.setText(userName != null ? userName : "No username defined");
 
                 label = new Label(composite, SWT.BORDER);
                 label.setText("Password:");
                 passwordText = new Text(composite, SWT.BORDER | SWT.PASSWORD);
-                GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, false)
-                    .applyTo(passwordText);
+                GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, false).applyTo(passwordText);
                 String password = dataManager.getPassword();
                 passwordText.setText(password != null ? password : "");
 
                 label = new Label(composite, SWT.BORDER);
                 autoConnect = new Button(composite, SWT.CHECK);
                 autoConnect.setText("Auto connect");
-                GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, false)
-                    .applyTo(autoConnect);
+                GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, false).applyTo(autoConnect);
                 autoConnect.setSelection(dataManager.isAutoConnect());
 
             }

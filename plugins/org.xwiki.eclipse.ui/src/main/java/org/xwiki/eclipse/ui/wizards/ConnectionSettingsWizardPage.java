@@ -54,8 +54,7 @@ public class ConnectionSettingsWizardPage extends WizardPage
 
     public void createControl(Composite parent)
     {
-        newConnectionWizardState =
-            ((NewConnectionWizard) getWizard()).getNewConnectionWizardState();
+        newConnectionWizardState = ((NewConnectionWizard) getWizard()).getNewConnectionWizardState();
 
         Composite composite = new Composite(parent, SWT.NONE);
         GridLayoutFactory.fillDefaults().numColumns(2).margins(10, 10).applyTo(composite);
@@ -65,8 +64,7 @@ public class ConnectionSettingsWizardPage extends WizardPage
 
         /* Connection name (this will be the corresponding project name in the workspace) */
         connectionNameText = new Text(composite, SWT.BORDER);
-        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, false).applyTo(
-            connectionNameText);
+        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, false).applyTo(connectionNameText);
         connectionNameText.addModifyListener(new ModifyListener()
         {
             public void modifyText(ModifyEvent e)
@@ -79,8 +77,7 @@ public class ConnectionSettingsWizardPage extends WizardPage
 
         Group group = new Group(composite, SWT.NONE);
         GridLayoutFactory.fillDefaults().numColumns(2).margins(5, 5).applyTo(group);
-        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, false).span(2, 1)
-            .applyTo(group);
+        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, false).span(2, 1).applyTo(group);
         group.setText("Connection settings");
 
         /* Server URL */
@@ -88,8 +85,7 @@ public class ConnectionSettingsWizardPage extends WizardPage
         label.setText("Server URL:");
 
         serverUrlText = new Text(group, SWT.BORDER);
-        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, false).applyTo(
-            serverUrlText);
+        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, false).applyTo(serverUrlText);
         serverUrlText.addModifyListener(new ModifyListener()
         {
             public void modifyText(ModifyEvent e)
@@ -105,8 +101,7 @@ public class ConnectionSettingsWizardPage extends WizardPage
         label.setText("Username:");
 
         userNameText = new Text(group, SWT.BORDER);
-        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, false).applyTo(
-            userNameText);
+        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, false).applyTo(userNameText);
         userNameText.addModifyListener(new ModifyListener()
         {
             public void modifyText(ModifyEvent e)
@@ -121,8 +116,7 @@ public class ConnectionSettingsWizardPage extends WizardPage
         label.setText("Password:");
 
         passwordText = new Text(group, SWT.BORDER | SWT.PASSWORD);
-        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, false).applyTo(
-            passwordText);
+        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, false).applyTo(passwordText);
         passwordText.addModifyListener(new ModifyListener()
         {
             public void modifyText(ModifyEvent e)
@@ -144,8 +138,7 @@ public class ConnectionSettingsWizardPage extends WizardPage
         }
 
         if (serverUrlText.getText() == null
-            || !(serverUrlText.getText().startsWith("http://") || serverUrlText.getText()
-                .startsWith("https://"))) {
+            || !(serverUrlText.getText().startsWith("http://") || serverUrlText.getText().startsWith("https://"))) {
             setErrorMessage("A server URL starting with 'http://' or 'https://' must be specified.");
             return false;
         }

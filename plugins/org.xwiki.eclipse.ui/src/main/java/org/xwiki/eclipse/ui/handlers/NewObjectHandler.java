@@ -33,7 +33,7 @@ import org.xwiki.eclipse.ui.utils.UIUtils;
 import org.xwiki.eclipse.ui.wizards.NewObjectWizard;
 
 public class NewObjectHandler extends AbstractHandler
-{    
+{
     public Object execute(ExecutionEvent event) throws ExecutionException
     {
         ISelection selection = HandlerUtil.getCurrentSelection(event);
@@ -45,12 +45,9 @@ public class NewObjectHandler extends AbstractHandler
                 XWikiEclipsePageSummary pageSummary = (XWikiEclipsePageSummary) selectedObject;
 
                 NewObjectWizard wizard =
-                    new NewObjectWizard(pageSummary.getDataManager(), pageSummary.getData()
-                        .getId());
+                    new NewObjectWizard(pageSummary.getDataManager(), pageSummary.getData().getId());
 
-                WizardDialog dialog =
-                    new WizardDialog(HandlerUtil.getActiveWorkbenchWindow(event).getShell(),
-                        wizard);
+                WizardDialog dialog = new WizardDialog(HandlerUtil.getActiveWorkbenchWindow(event).getShell(), wizard);
                 dialog.create();
                 dialog.open();
             }

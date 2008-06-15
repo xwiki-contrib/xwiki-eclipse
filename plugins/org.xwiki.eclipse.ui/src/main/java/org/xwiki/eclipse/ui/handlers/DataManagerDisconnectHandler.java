@@ -34,7 +34,7 @@ import org.xwiki.eclipse.core.DataManager;
 import org.xwiki.eclipse.ui.utils.UIUtils;
 
 public class DataManagerDisconnectHandler extends AbstractHandler
-{    
+{
     public Object execute(ExecutionEvent event) throws ExecutionException
     {
         ISelection selection = HandlerUtil.getCurrentSelection(event);
@@ -47,11 +47,11 @@ public class DataManagerDisconnectHandler extends AbstractHandler
                 try {
                     UIUtils.runWithProgress(new IRunnableWithProgress()
                     {
-                        public void run(IProgressMonitor monitor)
-                            throws InvocationTargetException, InterruptedException
+                        public void run(IProgressMonitor monitor) throws InvocationTargetException,
+                            InterruptedException
                         {
-                            monitor.beginTask(String.format("Connecting %s", dataManager
-                                .getName()), IProgressMonitor.UNKNOWN);
+                            monitor.beginTask(String.format("Connecting %s", dataManager.getName()),
+                                IProgressMonitor.UNKNOWN);
                             dataManager.disconnect();
                             monitor.done();
                         }

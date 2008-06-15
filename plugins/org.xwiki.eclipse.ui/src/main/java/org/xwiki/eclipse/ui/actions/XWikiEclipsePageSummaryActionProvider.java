@@ -39,6 +39,8 @@ public class XWikiEclipsePageSummaryActionProvider extends CommonActionProvider
 
     private CommandContributionItem newObject;
 
+    private CommandContributionItem renamePage;
+
     public void init(final ICommonActionExtensionSite aSite)
     {
         open = new OpenXWikiModelObjectAction(aSite.getViewSite().getSelectionProvider());
@@ -51,17 +53,12 @@ public class XWikiEclipsePageSummaryActionProvider extends CommonActionProvider
         // newObject = new CommandContributionItem(contributionItemParameter);
 
         newObject =
-            new CommandContributionItem(PlatformUI.getWorkbench(),
-                null,
-                UIConstants.NEW_OBJECT_COMMAND,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                SWT.NONE);
+            new CommandContributionItem(PlatformUI.getWorkbench(), null, UIConstants.NEW_OBJECT_COMMAND, null, null,
+                null, null, null, null, null, SWT.NONE);
+
+        renamePage =
+            new CommandContributionItem(PlatformUI.getWorkbench(), null, UIConstants.RENAME_PAGE_COMMAND, null, null,
+                null, null, null, null, null, SWT.NONE);
 
     }
 
@@ -70,6 +67,7 @@ public class XWikiEclipsePageSummaryActionProvider extends CommonActionProvider
         super.fillContextMenu(menu);
         menu.appendToGroup(ICommonMenuConstants.GROUP_OPEN, open);
         menu.appendToGroup(ICommonMenuConstants.GROUP_ADDITIONS, new Separator());
+        menu.appendToGroup(ICommonMenuConstants.GROUP_ADDITIONS, renamePage);
         menu.appendToGroup(ICommonMenuConstants.GROUP_ADDITIONS, newObject);
     }
 

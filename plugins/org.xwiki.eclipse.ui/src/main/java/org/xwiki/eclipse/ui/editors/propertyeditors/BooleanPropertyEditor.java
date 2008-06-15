@@ -34,8 +34,7 @@ public class BooleanPropertyEditor extends BasePropertyEditor
 {
     Button button;
 
-    public BooleanPropertyEditor(FormToolkit toolkit, Composite parent,
-        XWikiEclipseObjectProperty property)
+    public BooleanPropertyEditor(FormToolkit toolkit, Composite parent, XWikiEclipseObjectProperty property)
     {
         super(toolkit, parent, property);
     }
@@ -49,8 +48,7 @@ public class BooleanPropertyEditor extends BasePropertyEditor
         Composite composite = toolkit.createComposite(section, SWT.NONE);
         GridLayoutFactory.fillDefaults().extendedMargins(0, 0, 0, 10).applyTo(composite);
 
-        button =
-            toolkit.createButton(composite, property.getPrettyName(), SWT.BORDER | SWT.CHECK);
+        button = toolkit.createButton(composite, property.getPrettyName(), SWT.BORDER | SWT.CHECK);
         button.addSelectionListener(new SelectionListener()
         {
             public void widgetDefaultSelected(SelectionEvent e)

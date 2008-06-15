@@ -20,60 +20,61 @@
  */
 package org.xwiki.eclipse.ui.handlers;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SafeRunner;
-import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.handlers.HandlerUtil;
-import org.xwiki.eclipse.core.DataManager;
+import org.xwiki.eclipse.core.Functionality;
+import org.xwiki.eclipse.core.model.XWikiEclipsePageSummary;
+import org.xwiki.eclipse.ui.dialogs.RenamePageDialog;
 import org.xwiki.eclipse.ui.utils.UIUtils;
 import org.xwiki.eclipse.ui.utils.XWikiEclipseSafeRunnable;
 
-public class DataManagerConnectHandler extends AbstractHandler
+public class RenamePageHandler extends AbstractHandler
 {
     public Object execute(ExecutionEvent event) throws ExecutionException
     {
         ISelection selection = HandlerUtil.getCurrentSelection(event);
 
         Set selectedObjects = UIUtils.getSelectedObjectsFromSelection(selection);
-        for (Object selectedObject : selectedObjects) {
-            if (selectedObject instanceof DataManager) {
-                final DataManager dataManager = (DataManager) selectedObject;
+        if (selectedObjects.size() == 1) {
+            Object selectedObject = selectedObjects.iterator().next();
+            if (selectedObject instanceof XWikiEclipsePageSummary) {
+                final XWikiEclipsePageSummary pageSummary = (XWikiEclipsePageSummary) selectedObject;
 
-                try {
-                    UIUtils.runWithProgress(new IRunnableWithProgress()
-                    {
-                        public void run(IProgressMonitor monitor) throws InvocationTargetException,
-                            InterruptedException
-                        {
-                            monitor.beginTask(String.format("Connecting %s", dataManager.getName()),
-                                IProgressMonitor.UNKNOWN);
-                            SafeRunner.run(new XWikiEclipseSafeRunnable()
-                            {
-                                public void run() throws Exception
-                                {
-                                    dataManager.connect();
-                                }
-
-                            });
-
-                            monitor.done();
-                        }
-
-                    }, HandlerUtil.getActiveShell(event));
-                } catch (Exception e) {
-                    throw new ExecutionException("Unable to connect", e);
+                if (!pageSummary.getDataManager().getSupportedFunctionalities().contains(Functionality.RENAME)) {
+                    MessageBox mb = new MessageBox(Display.getDefault().getActiveShell());
+                    mb.setText("Rename not supported");
+                    mb.setMessage("This data manager is connected to an XWiki that does not support page renaming.");
+                    mb.open();
+                    return null;
                 }
+
+                final RenamePageDialog dialog = new RenamePageDialog(HandlerUtil.getActiveShell(event), pageSummary);
+                dialog.open();
+
+                if (dialog.getReturnCode() == IDialogConstants.OK_ID) {
+                    SafeRunner.run(new XWikiEclipseSafeRunnable()
+                    {
+                        public void run() throws Exception
+                        {
+                            pageSummary.getDataManager().renamePage(pageSummary.getData().getId(),
+                                dialog.getNewSpace(), dialog.getNewPageName());
+                        }
+                    });
+
+                }
+
             }
         }
 
         return null;
     }
-
 }
