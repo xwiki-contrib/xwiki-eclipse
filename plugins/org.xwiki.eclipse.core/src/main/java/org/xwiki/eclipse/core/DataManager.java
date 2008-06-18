@@ -390,6 +390,9 @@ public class DataManager
                 if (remotePage.getContent().equals(page.getContent())) {
                     page = remotePage;
                 }
+                else {
+                    page = remoteXWikiDataStorage.storePage(page);
+                }
             } else {
                 page = remoteXWikiDataStorage.storePage(page);
             }

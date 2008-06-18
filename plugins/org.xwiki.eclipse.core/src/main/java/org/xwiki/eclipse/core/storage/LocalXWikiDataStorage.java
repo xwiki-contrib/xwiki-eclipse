@@ -37,6 +37,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Status;
+import org.xwiki.eclipse.core.CorePlugin;
 import org.xwiki.eclipse.core.XWikiEclipseException;
 import org.xwiki.eclipse.core.utils.CoreUtils;
 import org.xwiki.xmlrpc.model.XWikiClass;
@@ -266,24 +268,29 @@ public class LocalXWikiDataStorage implements IDataStorage
             {
                 public void run(IProgressMonitor monitor) throws CoreException
                 {
-                    String[] pageIdComponents = pageId.split("\\."); //$NON-NLS-1$
-                    Assert.isTrue(pageIdComponents.length == 2);
-                    String spaceKey = pageIdComponents[0];
+                    try {
+                        XWikiPage page = getPage(pageId);
+                        if(page == null) {
+                            return;
+                        }
 
-                    /*
-                     * Remove the index page folder with all the information (page and object summaries)
-                     */
-                    IFolder indexPageFolder =
-                        baseFolder.getFolder(INDEX_DIRECTORY).getFolder(spaceKey).getFolder(pageId);
-                    if (indexPageFolder.exists()) {
-                        indexPageFolder.delete(true, null);
-                    }
+                        /*
+                         * Remove the index page folder with all the information (page and object summaries)
+                         */
+                        IFolder indexPageFolder =
+                            baseFolder.getFolder(INDEX_DIRECTORY).getFolder(page.getSpace()).getFolder(pageId);
+                        if (indexPageFolder.exists()) {
+                            indexPageFolder.delete(true, null);
+                        }
 
-                    /* Remove page */
-                    IFolder pageFolder = CoreUtils.createFolder(baseFolder.getFolder(PAGES_DIRECTORY));
-                    IFile pageFile = pageFolder.getFile(getFileNameForPage(pageId)); //$NON-NLS-1$
-                    if (pageFile.exists()) {
-                        pageFile.delete(true, null);
+                        /* Remove page */
+                        IFolder pageFolder = CoreUtils.createFolder(baseFolder.getFolder(PAGES_DIRECTORY));
+                        IFile pageFile = pageFolder.getFile(getFileNameForPage(pageId)); //$NON-NLS-1$
+                        if (pageFile.exists()) {
+                            pageFile.delete(true, null);
+                        }
+                    } catch (XWikiEclipseException e) {
+                        throw new CoreException(new Status(Status.ERROR, CorePlugin.PLUGIN_ID, "Error", e));
                     }
                 }
             }, null);
@@ -298,11 +305,12 @@ public class LocalXWikiDataStorage implements IDataStorage
     {
         List<XWikiObjectSummary> result = new ArrayList<XWikiObjectSummary>();
 
-        String[] pageIdComponents = pageId.split("\\."); //$NON-NLS-1$
-        Assert.isTrue(pageIdComponents.length == 2);
-        String spaceKey = pageIdComponents[0];
+        XWikiPage page = getPage(pageId);
+        if(page == null) {
+            return result;
+        }
 
-        IFolder pageFolder = baseFolder.getFolder(INDEX_DIRECTORY).getFolder(spaceKey).getFolder(pageId);
+        IFolder pageFolder = baseFolder.getFolder(INDEX_DIRECTORY).getFolder(page.getSpace()).getFolder(pageId);
         if (pageFolder.exists()) {
             try {
                 List<IResource> pageFolderResources = getChildResources(pageFolder, IResource.DEPTH_ONE);
@@ -365,27 +373,32 @@ public class LocalXWikiDataStorage implements IDataStorage
             {
                 public void run(IProgressMonitor monitor) throws CoreException
                 {
-                    /* Write the object summary */
-                    XWikiObjectSummary objectSummary = new XWikiObjectSummary();
-                    objectSummary.setClassName(object.getClassName());
-                    objectSummary.setId(object.getId());
-                    objectSummary.setPageId(object.getPageId());
-                    objectSummary.setPrettyName(object.getPrettyName());
+                    try {
+                        /* Write the object summary */
+                        XWikiObjectSummary objectSummary = new XWikiObjectSummary();
+                        objectSummary.setClassName(object.getClassName());
+                        objectSummary.setId(object.getId());
+                        objectSummary.setPageId(object.getPageId());
+                        objectSummary.setPrettyName(object.getPrettyName());
 
-                    String[] pageIdComponents = object.getPageId().split("\\."); //$NON-NLS-1$
-                    Assert.isTrue(pageIdComponents.length == 2);
-                    String spaceKey = pageIdComponents[0];
+                        XWikiPage page = getPage(object.getPageId());
+                        if(page == null) {
+                            return;
+                        }
 
-                    CoreUtils.writeDataToXML(baseFolder.getFolder(INDEX_DIRECTORY).getFolder(spaceKey).getFolder(
-                        object.getPageId()).getFile(
-                        getFileNameForObjectSummary(objectSummary.getPageId(), objectSummary.getClassName(),
-                            objectSummary.getId())), //$NON-NLS-1$
-                        objectSummary.toRawMap());
+                        CoreUtils.writeDataToXML(baseFolder.getFolder(INDEX_DIRECTORY).getFolder(page.getSpace())
+                            .getFolder(object.getPageId()).getFile(
+                                getFileNameForObjectSummary(objectSummary.getPageId(), objectSummary.getClassName(),
+                                    objectSummary.getId())), //$NON-NLS-1$
+                            objectSummary.toRawMap());
 
-                    /* Write the object */
-                    CoreUtils.writeDataToXML(baseFolder.getFolder(OBJECTS_DIRECTORY).getFile(
-                        getFileNameForObject(object.getPageId(), object.getClassName(), object.getId())), object //$NON-NLS-1$
-                        .toRawMap());
+                        /* Write the object */
+                        CoreUtils.writeDataToXML(baseFolder.getFolder(OBJECTS_DIRECTORY).getFile(
+                            getFileNameForObject(object.getPageId(), object.getClassName(), object.getId())), object //$NON-NLS-1$
+                            .toRawMap());
+                    } catch (XWikiEclipseException e) {
+                        throw new CoreException(new Status(Status.ERROR, CorePlugin.PLUGIN_ID, "Error", e));
+                    }
                 }
             }, null);
         } catch (CoreException e) {
@@ -484,6 +497,7 @@ public class LocalXWikiDataStorage implements IDataStorage
             {
                 public void run(IProgressMonitor monitor) throws CoreException
                 {
+                    try {
                     IFile file =
                         baseFolder.getFolder(OBJECTS_DIRECTORY).getFile(
                             getFileNameForObject(pageId, className, objectId));
@@ -491,15 +505,19 @@ public class LocalXWikiDataStorage implements IDataStorage
                         file.delete(true, null);
                     }
 
-                    String[] pageIdComponents = pageId.split("\\."); //$NON-NLS-1$
-                    Assert.isTrue(pageIdComponents.length == 2);
-                    String spaceKey = pageIdComponents[0];
+                    XWikiPage page = getPage(pageId); 
+                    if(page == null) {
+                        return;
+                    }
 
                     file =
-                        baseFolder.getFolder(INDEX_DIRECTORY).getFolder(spaceKey).getFolder(pageId).getFile(
+                        baseFolder.getFolder(INDEX_DIRECTORY).getFolder(page.getSpace()).getFolder(pageId).getFile(
                             getFileNameForObjectSummary(pageId, className, objectId));
                     if (file.exists()) {
                         file.delete(true, null);
+                    }
+                    } catch (XWikiEclipseException e) {
+                        throw new CoreException(new Status(Status.ERROR, CorePlugin.PLUGIN_ID, "Error", e));
                     }
                 }
             }, null);
@@ -511,11 +529,13 @@ public class LocalXWikiDataStorage implements IDataStorage
     }
 
     public XWikiPageSummary getPageSummary(String pageId) throws XWikiEclipseException
-    {
-        String[] pageIdComponents = pageId.split("\\."); //$NON-NLS-1$
-        Assert.isTrue(pageIdComponents.length == 2);
+    {        
+        XWikiPage page = getPage(pageId);
+        if(page == null) {
+            return null;
+        }
 
-        List<XWikiPageSummary> pageSummaries = getPages(pageIdComponents[0]);
+        List<XWikiPageSummary> pageSummaries = getPages(page.getSpace());
 
         for (XWikiPageSummary pageSummary : pageSummaries) {
             if (pageSummary.getId().equals(pageId)) {
