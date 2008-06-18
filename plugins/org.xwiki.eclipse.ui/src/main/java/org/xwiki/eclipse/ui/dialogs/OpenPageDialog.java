@@ -1,3 +1,23 @@
+/*
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ *
+ */
 package org.xwiki.eclipse.ui.dialogs;
 
 import java.util.Comparator;
@@ -7,12 +27,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.management.monitor.Monitor;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.IDialogSettings;
@@ -103,7 +120,8 @@ public class OpenPageDialog extends FilteredItemsSelectionDialog
         label.setText("Select the connections to be searched for opening pages:");
 
         CheckboxTreeViewer dataManagerTreeViewers = new CheckboxTreeViewer(composite, SWT.BORDER);
-        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(dataManagerTreeViewers.getControl());
+        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(
+            dataManagerTreeViewers.getControl());
         dataManagerTreeViewers.setContentProvider(new ITreeContentProvider()
         {
 
@@ -196,10 +214,10 @@ public class OpenPageDialog extends FilteredItemsSelectionDialog
         final IProgressMonitor progressMonitor) throws CoreException
     {
         progressMonitor.beginTask("Searching...", IProgressMonitor.UNKNOWN);
-                
+
         for (DataManager dataManager : targetDataManagers) {
             final DataManager currentDataManager = (DataManager) dataManager;
-        
+
             /* If we don't already have summaries, then fetch them from the data manager */
             if (dataManagerToPageSummariesMap.get(currentDataManager) == null) {
                 SafeRunner.run(new XWikiEclipseSafeRunnable()
@@ -210,10 +228,10 @@ public class OpenPageDialog extends FilteredItemsSelectionDialog
 
                         List<XWikiEclipseSpaceSummary> spaces = currentDataManager.getSpaces();
                         for (XWikiEclipseSpaceSummary space : spaces) {
-                            if(progressMonitor.isCanceled()) {
-                                return;                                
+                            if (progressMonitor.isCanceled()) {
+                                return;
                             }
-                            
+
                             List<XWikiEclipsePageSummary> pages = currentDataManager.getPages(space.getData().getKey());
                             for (XWikiEclipsePageSummary pageSummary : pages) {
                                 pageSummaries.add(pageSummary);
@@ -224,9 +242,9 @@ public class OpenPageDialog extends FilteredItemsSelectionDialog
                     }
                 });
             }
-            
-            if(progressMonitor.isCanceled()) {
-                break;                                
+
+            if (progressMonitor.isCanceled()) {
+                break;
             }
 
             for (XWikiEclipsePageSummary pageSummary : dataManagerToPageSummariesMap.get(currentDataManager)) {
