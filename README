@@ -30,8 +30,11 @@ XWiki connections will be accessible from the Project Explorer and XWiki Navigat
 In order to build the RCP version, please refer to:
 http://svn.xwiki.org/svnroot/xwiki/xwiki-extensions/xwiki-eclipse/trunk/plugins/org.xwiki.eclipse.rcp/README
 
-Enjoy.
+In case of a Linux installation, the Web preview requires that XEclipse is launched with the following environment variables:
+* MOZILLA_FIVE_HOME pointing to the directory containing a Firefox executable (ex: /usr/lib/firefox-2.0.0.6/)
+* LD_LIBRARY_PATH pointing to the directory containing Firefox libraries (ex: /usr/lib/firefox-2.0.0.6/)
 
+Enjoy.
 
 
 
