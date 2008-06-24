@@ -34,6 +34,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.QualifiedName;
+import org.xwiki.eclipse.core.model.ModelObject;
 import org.xwiki.eclipse.core.model.XWikiEclipseClass;
 import org.xwiki.eclipse.core.model.XWikiEclipseClassSummary;
 import org.xwiki.eclipse.core.model.XWikiEclipseObject;
@@ -719,5 +720,10 @@ public class DataManager
         getPage(String.format("%s.%s", newSpace, newPageName));
 
         return true;
+    }
+   
+    public String getXWikiEclipseId()
+    {       
+        return String.format("xwikieclipse://%s", getName()); //$NON-NLS-1$
     }
 }
