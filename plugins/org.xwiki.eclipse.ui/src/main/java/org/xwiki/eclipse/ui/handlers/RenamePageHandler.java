@@ -29,7 +29,6 @@ import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.xwiki.eclipse.core.Functionality;
 import org.xwiki.eclipse.core.model.XWikiEclipsePageSummary;
@@ -50,10 +49,9 @@ public class RenamePageHandler extends AbstractHandler
                 final XWikiEclipsePageSummary pageSummary = (XWikiEclipsePageSummary) selectedObject;
 
                 if (!pageSummary.getDataManager().getSupportedFunctionalities().contains(Functionality.RENAME)) {
-                    MessageBox mb = new MessageBox(Display.getDefault().getActiveShell());
-                    mb.setText("Rename not supported");
-                    mb.setMessage("This data manager is connected to an XWiki that does not support page renaming.");
-                    mb.open();
+                    UIUtils.showMessageDialog(Display.getDefault().getActiveShell(), "Rename not supported",
+                        "This data manager is connected to an XWiki that does not support page renaming.");
+
                     return null;
                 }
 
@@ -71,7 +69,6 @@ public class RenamePageHandler extends AbstractHandler
                     });
 
                 }
-
             }
         }
 

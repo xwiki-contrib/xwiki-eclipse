@@ -28,6 +28,8 @@ import java.util.Set;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 
 public class UIUtils
@@ -65,5 +67,18 @@ public class UIUtils
     {
         ProgressMonitorDialog dialog = new ProgressMonitorDialog(shell);
         dialog.run(true, false, operation);
+    }
+
+    public static void showMessageDialog(Shell shell, String title, String message)
+    {
+        showMessageDialog(shell, SWT.ICON_INFORMATION, title, message);
+    }
+
+    public static void showMessageDialog(Shell shell, int style, String title, String message)
+    {
+        MessageBox mb = new MessageBox(shell, style | SWT.APPLICATION_MODAL);
+        mb.setText(title);
+        mb.setMessage(message);
+        mb.open();
     }
 }

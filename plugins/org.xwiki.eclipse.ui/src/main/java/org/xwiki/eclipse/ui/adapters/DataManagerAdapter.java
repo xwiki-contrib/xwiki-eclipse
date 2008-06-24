@@ -22,16 +22,19 @@ package org.xwiki.eclipse.ui.adapters;
 
 import java.util.List;
 
-import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.model.WorkbenchAdapter;
+import org.xwiki.eclipse.core.CoreLog;
 import org.xwiki.eclipse.core.DataManager;
+import org.xwiki.eclipse.core.XWikiEclipseException;
 import org.xwiki.eclipse.core.model.XWikiEclipseSpaceSummary;
 import org.xwiki.eclipse.ui.UIConstants;
 import org.xwiki.eclipse.ui.UIPlugin;
-import org.xwiki.eclipse.ui.utils.XWikiEclipseSafeRunnableWithResult;
+import org.xwiki.eclipse.ui.utils.UIUtils;
 
 public class DataManagerAdapter extends WorkbenchAdapter
 {
@@ -41,18 +44,22 @@ public class DataManagerAdapter extends WorkbenchAdapter
         if (object instanceof DataManager) {
             final DataManager dataManager = (DataManager) object;
 
-            XWikiEclipseSafeRunnableWithResult<List<XWikiEclipseSpaceSummary>> runnable =
-                new XWikiEclipseSafeRunnableWithResult<List<XWikiEclipseSpaceSummary>>()
-                {
-                    public void run() throws Exception
-                    {
-                        setResult(dataManager.getSpaces());
-                    }
+            try {
+                List<XWikiEclipseSpaceSummary> result = dataManager.getSpaces();
+                return result.toArray();
+            } catch (XWikiEclipseException e) {
+                UIUtils
+                    .showMessageDialog(
+                        Display.getDefault().getActiveShell(),
+                        SWT.ICON_ERROR,
+                        "Error getting spaces.",
+                        "There was a communication error while getting spaces. XWiki Eclipse is taking the connection offline in order to prevent further errors. Please check your remote XWiki status and then try to reconnect.");
 
-                };
-            SafeRunner.run(runnable);
+                CoreLog.logError("Error getting spaces.", e);
 
-            return runnable.getResult() != null ? runnable.getResult().toArray() : NO_CHILDREN;
+                dataManager.disconnect();
+                return NO_CHILDREN;
+            }
         }
 
         return super.getChildren(object);

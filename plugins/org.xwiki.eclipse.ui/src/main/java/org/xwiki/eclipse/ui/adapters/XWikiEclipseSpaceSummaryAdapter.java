@@ -22,14 +22,17 @@ package org.xwiki.eclipse.ui.adapters;
 
 import java.util.List;
 
-import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.model.WorkbenchAdapter;
+import org.xwiki.eclipse.core.CoreLog;
+import org.xwiki.eclipse.core.XWikiEclipseException;
 import org.xwiki.eclipse.core.model.XWikiEclipsePageSummary;
 import org.xwiki.eclipse.core.model.XWikiEclipseSpaceSummary;
 import org.xwiki.eclipse.ui.UIConstants;
 import org.xwiki.eclipse.ui.UIPlugin;
-import org.xwiki.eclipse.ui.utils.XWikiEclipseSafeRunnableWithResult;
+import org.xwiki.eclipse.ui.utils.UIUtils;
 
 public class XWikiEclipseSpaceSummaryAdapter extends WorkbenchAdapter
 {
@@ -39,18 +42,24 @@ public class XWikiEclipseSpaceSummaryAdapter extends WorkbenchAdapter
         if (object instanceof XWikiEclipseSpaceSummary) {
             final XWikiEclipseSpaceSummary spaceSummary = (XWikiEclipseSpaceSummary) object;
 
-            XWikiEclipseSafeRunnableWithResult<List<XWikiEclipsePageSummary>> runnable =
-                new XWikiEclipseSafeRunnableWithResult<List<XWikiEclipsePageSummary>>()
-                {
-                    public void run() throws Exception
-                    {
-                        setResult(spaceSummary.getDataManager().getPages(spaceSummary.getData().getKey()));
-                    }
+            try {
+                List<XWikiEclipsePageSummary> result =
+                    spaceSummary.getDataManager().getPages(spaceSummary.getData().getKey());
+                return result.toArray();
+            } catch (XWikiEclipseException e) {
+                UIUtils
+                    .showMessageDialog(
+                        Display.getDefault().getActiveShell(),
+                        SWT.ICON_ERROR,
+                        "Error getting pages.",
+                        "There was a communication error while getting pages. XWiki Eclipse is taking the connection offline in order to prevent further errors. Please check your remote XWiki status and then try to reconnect.");
 
-                };
-            SafeRunner.run(runnable);
+                CoreLog.logError("Error getting pages", e);
 
-            return runnable.getResult() != null ? runnable.getResult().toArray() : NO_CHILDREN;
+                spaceSummary.getDataManager().disconnect();
+                return NO_CHILDREN;
+            }
+
         }
 
         return super.getChildren(object);

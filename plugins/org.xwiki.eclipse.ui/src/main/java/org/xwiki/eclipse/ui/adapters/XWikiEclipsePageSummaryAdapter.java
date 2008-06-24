@@ -22,14 +22,17 @@ package org.xwiki.eclipse.ui.adapters;
 
 import java.util.List;
 
-import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.model.WorkbenchAdapter;
+import org.xwiki.eclipse.core.CoreLog;
+import org.xwiki.eclipse.core.XWikiEclipseException;
 import org.xwiki.eclipse.core.model.XWikiEclipseObjectSummary;
 import org.xwiki.eclipse.core.model.XWikiEclipsePageSummary;
 import org.xwiki.eclipse.ui.UIConstants;
 import org.xwiki.eclipse.ui.UIPlugin;
-import org.xwiki.eclipse.ui.utils.XWikiEclipseSafeRunnableWithResult;
+import org.xwiki.eclipse.ui.utils.UIUtils;
 
 public class XWikiEclipsePageSummaryAdapter extends WorkbenchAdapter
 {
@@ -39,18 +42,23 @@ public class XWikiEclipsePageSummaryAdapter extends WorkbenchAdapter
         if (object instanceof XWikiEclipsePageSummary) {
             final XWikiEclipsePageSummary pageSummary = (XWikiEclipsePageSummary) object;
 
-            XWikiEclipseSafeRunnableWithResult<List<XWikiEclipseObjectSummary>> runnable =
-                new XWikiEclipseSafeRunnableWithResult<List<XWikiEclipseObjectSummary>>()
-                {
-                    public void run() throws Exception
-                    {
-                        setResult(pageSummary.getDataManager().getObjects(pageSummary.getData().getId()));
-                    }
+            try {
+                List<XWikiEclipseObjectSummary> result =
+                    pageSummary.getDataManager().getObjects(pageSummary.getData().getId());
+                return result.toArray();
+            } catch (XWikiEclipseException e) {
+                UIUtils
+                    .showMessageDialog(
+                        Display.getDefault().getActiveShell(),
+                        SWT.ICON_ERROR,
+                        "Error getting objects.",
+                        "There was a communication error while getting objects. XWiki Eclipse is taking the connection offline in order to prevent further errors. Please check your remote XWiki status and then try to reconnect.");
+                pageSummary.getDataManager().disconnect();
 
-                };
-            SafeRunner.run(runnable);
+                CoreLog.logError("Error getting objects.", e);
 
-            return runnable.getResult() != null ? runnable.getResult().toArray() : NO_CHILDREN;
+                return NO_CHILDREN;
+            }
         }
 
         return super.getChildren(object);

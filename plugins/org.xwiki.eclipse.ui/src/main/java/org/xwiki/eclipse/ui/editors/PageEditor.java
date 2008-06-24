@@ -34,7 +34,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
@@ -52,6 +51,7 @@ import org.xwiki.eclipse.core.notifications.NotificationManager;
 import org.xwiki.eclipse.ui.UIConstants;
 import org.xwiki.eclipse.ui.UIPlugin;
 import org.xwiki.eclipse.ui.dialogs.PageConflictDialog;
+import org.xwiki.eclipse.ui.utils.UIUtils;
 import org.xwiki.xmlrpc.model.XWikiPage;
 
 public class PageEditor extends TextEditor implements ICoreEventListener
@@ -145,11 +145,11 @@ public class PageEditor extends TextEditor implements ICoreEventListener
             super.doSetInput(pageEditorInput);
 
             if (pageEditorInput.getPage().getDataManager().isInConflict(pageEditorInput.getPage().getData().getId())) {
-                MessageBox mb = new MessageBox(getSite().getShell());
-                mb.setText("Page is still in conflict.");
-                mb
-                    .setMessage("The page is still in conflict. In order to handle the conflict click on icon in the upper left corner of the title bar. You may continue to edit the page, changes will be saved locally until you decide to solve the conflict.");
-                mb.open();
+                UIUtils
+                    .showMessageDialog(
+                        getSite().getShell(),
+                        "Page is still in conflict.",
+                        "The page is still in conflict. In order to handle the conflict click on icon in the upper left corner of the title bar. You may continue to edit the page, changes will be saved locally until you decide to solve the conflict.");
 
                 conflictDialogDisplayed = true;
             }
