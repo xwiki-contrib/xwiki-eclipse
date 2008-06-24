@@ -31,6 +31,8 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IWorkingSet;
+import org.xwiki.eclipse.ui.workingsets.XWikiEclipseElementId;
 
 public class UIUtils
 {
@@ -80,5 +82,23 @@ public class UIUtils
         mb.setText(title);
         mb.setMessage(message);
         mb.open();
+    }
+
+    public static boolean isXWikiEcipseIdInWorkingSet(String xwikiEclipseId, IWorkingSet workingSet)
+    {
+        if (workingSet == null) {
+            return false;
+        }
+
+        for (Object object : workingSet.getElements()) {
+            if (object instanceof XWikiEclipseElementId) {
+                XWikiEclipseElementId element = (XWikiEclipseElementId) object;
+                if (element.getXwikiEclipseId().equals(xwikiEclipseId)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 }

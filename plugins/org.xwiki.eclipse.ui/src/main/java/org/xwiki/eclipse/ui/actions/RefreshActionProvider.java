@@ -35,6 +35,8 @@ public class RefreshActionProvider extends CommonActionProvider
 
     public void init(final ICommonActionExtensionSite aSite)
     {
+        System.out.format("MITICO\n");
+
         /* This is the preferred way for creating a command contribution item in Eclipse 3.4 */
         // CommandContributionItemParameter contributionItemParameter =
         // new CommandContributionItemParameter(PlatformUI.getWorkbench(),

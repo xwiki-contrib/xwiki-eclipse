@@ -20,24 +20,32 @@
  */
 package org.xwiki.eclipse.ui;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.model.BaseWorkbenchContentProvider;
 import org.xwiki.eclipse.core.DataManager;
 import org.xwiki.eclipse.core.DataManagerRegistry;
+import org.xwiki.eclipse.core.model.ModelObject;
 import org.xwiki.eclipse.core.model.XWikiEclipsePageSummary;
 import org.xwiki.eclipse.core.model.XWikiEclipseSpaceSummary;
 import org.xwiki.eclipse.core.notifications.CoreEvent;
 import org.xwiki.eclipse.core.notifications.ICoreEventListener;
 import org.xwiki.eclipse.core.notifications.NotificationManager;
+import org.xwiki.eclipse.ui.utils.UIUtils;
 
 public class NavigatorContentProvider extends BaseWorkbenchContentProvider implements ICoreEventListener
 {
     private static final Object[] NO_OBJECTS = new Object[0];
 
     private AbstractTreeViewer viewer;
+
+    private IWorkingSet workingSet;
 
     public NavigatorContentProvider()
     {
@@ -48,6 +56,8 @@ public class NavigatorContentProvider extends BaseWorkbenchContentProvider imple
             CoreEvent.Type.DATA_MANAGER_CONNECTED, CoreEvent.Type.DATA_MANAGER_DISCONNECTED,
             CoreEvent.Type.PAGE_STORED, CoreEvent.Type.OBJECT_STORED, CoreEvent.Type.PAGE_REMOVED,
             CoreEvent.Type.OBJECT_REMOVED, CoreEvent.Type.REFRESH});
+
+        workingSet = null;
     }
 
     @Override
@@ -71,7 +81,8 @@ public class NavigatorContentProvider extends BaseWorkbenchContentProvider imple
             }
         }
 
-        return super.getChildren(element);
+        Object[] result = super.getChildren(element);
+        return filterByWorkingSet(result, workingSet);
     }
 
     @Override
@@ -95,14 +106,48 @@ public class NavigatorContentProvider extends BaseWorkbenchContentProvider imple
     @Override
     public Object[] getElements(Object element)
     {
-        return DataManagerRegistry.getDefault().getDataManagers().toArray();
+        Object[] result = DataManagerRegistry.getDefault().getDataManagers().toArray();
+        return filterByWorkingSet(result, workingSet);
     }
 
     @Override
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput)
     {
         this.viewer = (AbstractTreeViewer) viewer;
+
+        if (newInput instanceof IWorkingSet) {
+            workingSet = (IWorkingSet) newInput;
+        } else {
+            workingSet = null;
+        }
+
         super.inputChanged(viewer, oldInput, newInput);
+    }
+
+    private Object[] filterByWorkingSet(Object[] objects, IWorkingSet workingSet)
+    {
+        if (workingSet == null) {
+            return objects;
+        }
+
+        Set result = new HashSet();
+        for (Object object : objects) {
+            if (object instanceof DataManager) {
+                DataManager dataManager = (DataManager) object;
+                if (UIUtils.isXWikiEcipseIdInWorkingSet(dataManager.getXWikiEclipseId(), workingSet)) {
+                    result.add(object);
+                }
+            }
+
+            if (object instanceof ModelObject) {
+                ModelObject modelObject = (ModelObject) object;
+                if (UIUtils.isXWikiEcipseIdInWorkingSet(modelObject.getXWikiEclipseId(), workingSet)) {
+                    result.add(object);
+                }
+            }
+        }
+
+        return result.toArray();
     }
 
     public void handleCoreEvent(final CoreEvent event)

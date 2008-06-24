@@ -15,19 +15,28 @@
         restorable="true">
   </view>
 	</extension>
-	<extension point="org.eclipse.ui.navigator.viewer">
-		<viewerContentBinding viewerId="org.eclipse.ui.navigator.ProjectExplorer">
+ <extension
+       point="org.eclipse.ui.navigator.viewer">
+    <viewer
+          viewerId="org.eclipse.ui.navigator.ProjectExplorer">
+    </viewer>
+    <viewerContentBinding viewerId="org.eclipse.ui.navigator.ProjectExplorer">
 			<includes>
-				<contentExtension pattern="org.xwiki.eclipse.ui.navigator.content.XWikiEclipseDataManagers">
-            </contentExtension>
+      <contentExtension
+            pattern="org.xwiki.eclipse.ui.navigator.content.XWikiEclipseDataManagers">
+      </contentExtension>
 			</includes>
 		</viewerContentBinding>
 		<viewerActionBinding viewerId="org.eclipse.ui.navigator.ProjectExplorer">
 			<includes>
-				<actionExtension pattern="org.xwiki.eclipse.ui.actions.*">
-            </actionExtension>
 			</includes>
 		</viewerActionBinding>
+ </extension>
+	<extension point="org.eclipse.ui.navigator.viewer">
+    <viewer
+          viewerId="org.xwiki.eclipse.ui.views.Navigator">
+    </viewer>
+		
 		<viewerContentBinding viewerId="org.xwiki.eclipse.ui.views.Navigator">
 			<includes>
 				<contentExtension isRoot="true" pattern="org.xwiki.eclipse.ui.navigator.content.XWikiEclipseDataManagers">
@@ -36,8 +45,9 @@
 		</viewerContentBinding>
 		<viewerActionBinding viewerId="org.xwiki.eclipse.ui.views.Navigator">
 			<includes>
-				<actionExtension pattern="org.xwiki.eclipse.ui.actions.*">
-            </actionExtension>
+      <actionExtension
+            pattern="org.xwiki.eclipse.ui.actions.*">
+      </actionExtension>
 			</includes>
 		</viewerActionBinding>
 	</extension>
@@ -135,6 +145,11 @@
            </instanceof>
         </or>
      </enablement>
+  </actionProvider>
+  <actionProvider
+        class="org.xwiki.eclipse.ui.actions.WorkingSetActionProvider"
+        id="org.xwiki.eclipse.ui.actions.WorkingSetActionProvider">
+     <enablement></enablement>
   </actionProvider>
 	</extension>
 	<extension point="org.eclipse.core.runtime.adapters">
@@ -319,5 +334,21 @@
           schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
           sequence="M1+CTRL+P">
     </key>
+ </extension>
+ <extension
+       point="org.eclipse.ui.workingSets">
+    <workingSet
+          icon="icons/xwiki.png"
+          id="org.xwiki.eclipse"
+          name="XWiki Eclipse"
+          pageClass="org.xwiki.eclipse.ui.workingsets.XWikiEclipseWorkingSetPage">
+    </workingSet>
+ </extension>
+ <extension
+       point="org.eclipse.ui.elementFactories">
+    <factory
+          class="org.xwiki.eclipse.ui.workingsets.XWikiEclipseElementIdFactory"
+          id="org.xwiki.eclipse.ui.workingsets.XWikiEclipseElementFactory">
+    </factory>
  </extension>
 </plugin>
