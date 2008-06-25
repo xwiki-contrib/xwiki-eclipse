@@ -40,6 +40,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.forms.widgets.Form;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.xwiki.eclipse.core.CoreLog;
 import org.xwiki.eclipse.core.CorePlugin;
 import org.xwiki.eclipse.core.DataManager;
 import org.xwiki.eclipse.core.XWikiEclipseException;
@@ -264,8 +265,7 @@ public class PageEditor extends TextEditor implements ICoreEventListener
                         break;
                 }
             } catch (XWikiEclipseException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                CoreLog.logError("Error while handling conflict", e);
             }
         }
     }
@@ -332,11 +332,9 @@ public class PageEditor extends TextEditor implements ICoreEventListener
                 }
             }
         } catch (CoreException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            CoreLog.logError("Error while handling XWiki Eclipse event", e);
         } catch (XWikiEclipseException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            CoreLog.logError("Error while handling XWiki Eclipse event", e);
         }
 
     }

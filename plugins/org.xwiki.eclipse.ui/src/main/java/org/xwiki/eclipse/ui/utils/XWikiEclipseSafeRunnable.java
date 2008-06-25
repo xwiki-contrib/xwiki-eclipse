@@ -32,7 +32,6 @@ public abstract class XWikiEclipseSafeRunnable extends SafeRunnable
     @Override
     public void handleException(Throwable e)
     {
-        e.printStackTrace();
         super.handleException(e);
     }
 

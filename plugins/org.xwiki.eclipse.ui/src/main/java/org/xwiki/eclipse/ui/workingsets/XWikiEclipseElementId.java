@@ -35,8 +35,6 @@ public class XWikiEclipseElementId implements IAdaptable, IPersistableElement
 
     public Object getAdapter(Class adapter)
     {
-        System.out.format("getAdapter %s\n", adapter);
-
         if (adapter.equals(IPersistableElement.class)) {
             return this;
         }

@@ -84,7 +84,6 @@ public class NewObjectWizard extends Wizard implements INewWizard
 
                         monitor.done();
                     } catch (Exception e) {
-                        e.printStackTrace();
                         throw new InvocationTargetException(e);
                     }
                 }

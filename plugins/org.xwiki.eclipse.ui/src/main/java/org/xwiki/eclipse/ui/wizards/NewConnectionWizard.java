@@ -151,7 +151,6 @@ public class NewConnectionWizard extends Wizard implements INewWizard
             });
         } catch (Exception e) {
             currentPage.setErrorMessage(String.format("Error creating project data: '%s'.", e.getMessage()));
-            e.printStackTrace();
             return false;
 
         }
