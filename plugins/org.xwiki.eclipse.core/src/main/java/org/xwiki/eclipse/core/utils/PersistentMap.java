@@ -26,6 +26,7 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
+import org.xwiki.eclipse.core.CoreLog;
 
 /**
  * A class that implements a Map from strings to strings, that saves its content to the disk.
@@ -87,8 +88,7 @@ public class PersistentMap
         try {
             CoreUtils.writeDataToXML(file, map);
         } catch (CoreException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+           CoreLog.logError("Unable to synchronize persistent map", e);
         }
     }
 }

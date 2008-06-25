@@ -107,8 +107,7 @@ public class DataManagerRegistry implements IResourceChangeListener
     }
 
     public synchronized void unregister(DataManager dataManager)
-    {
-        System.out.format("Unregister %s\n", dataManager.getProject());
+    {        
         dataManagers.remove(dataManager);
         NotificationManager.getDefault().fireCoreEvent(CoreEvent.Type.DATA_MANAGER_UNREGISTERED, this, dataManager);
     }
@@ -143,8 +142,7 @@ public class DataManagerRegistry implements IResourceChangeListener
                         }
 
                         if (delta.getKind() == IResourceDelta.REMOVED && (delta.getResource() instanceof IProject)) {
-                            IProject project = (IProject) delta.getResource();
-                            System.out.format("Project %s removed...", project);
+                            IProject project = (IProject) delta.getResource();                            
                             DataManager dataManager = findDataManagerByProject(project);
                             if (dataManager != null) {
                                 unregister(dataManager);
@@ -158,8 +156,7 @@ public class DataManagerRegistry implements IResourceChangeListener
                 });
 
             } catch (CoreException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                CoreLog.logError("Problem while visiting resources for changes", e);
             }
         }
     }

@@ -573,8 +573,7 @@ public class DataManager
 
     private void synchronizePages(Set<String> pageIds) throws XWikiEclipseException
     {
-        for (String pageId : pageIds) {
-            System.out.format("Synchronize all pages - %s\n", pageId);
+        for (String pageId : pageIds) {            
             XWikiPage page = localXWikiDataStorage.getPage(pageId);
             if (page != null) {
                 synchronize(page);
@@ -585,7 +584,6 @@ public class DataManager
     private void synchronizeObjects(Set<String> objectCompactIds) throws XWikiEclipseException
     {
         for (String objectCompactId : objectCompactIds) {
-            System.out.format("Synchronize all objects - %s\n", objectCompactId);
             XWikiObject object = getObjectByCompactId(localXWikiDataStorage, objectCompactId);
             if (object != null) {
                 synchronize(object);
