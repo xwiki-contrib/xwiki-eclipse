@@ -26,10 +26,20 @@ import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.HandlerUtil;
+import org.xwiki.eclipse.core.CoreLog;
 import org.xwiki.eclipse.core.DataManager;
+import org.xwiki.eclipse.core.XWikiEclipseException;
 import org.xwiki.eclipse.core.model.ModelObject;
+import org.xwiki.eclipse.core.model.XWikiEclipsePage;
+import org.xwiki.eclipse.core.model.XWikiEclipsePageSummary;
 import org.xwiki.eclipse.ui.dialogs.OpenPageDialog;
+import org.xwiki.eclipse.ui.editors.PageEditor;
+import org.xwiki.eclipse.ui.editors.PageEditorInput;
 import org.xwiki.eclipse.ui.utils.UIUtils;
 
 public class OpenPageHandler extends AbstractHandler
@@ -54,6 +64,31 @@ public class OpenPageHandler extends AbstractHandler
 
         OpenPageDialog dialog = new OpenPageDialog(HandlerUtil.getActiveShell(event), dataManager);
         dialog.open();
+
+        for (Object object : dialog.getResult()) {
+            XWikiEclipsePageSummary pageSummary = (XWikiEclipsePageSummary) object;
+
+            try {
+                XWikiEclipsePage page = pageSummary.getDataManager().getPage(pageSummary.getData().getId());
+
+                PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().openEditor(
+                    new PageEditorInput(page), PageEditor.ID);
+            } catch (XWikiEclipseException e) {
+                UIUtils
+                    .showMessageDialog(
+                        Display.getDefault().getActiveShell(),
+                        SWT.ICON_ERROR,
+                        "Error opening page.",
+                        "There was a communication error while opening the page. XWiki Eclipse is taking the connection offline in order to prevent further errors. Please check your remote XWiki status and then try to reconnect.");
+
+                CoreLog.logError("Error opening page", e);
+
+                pageSummary.getDataManager().disconnect();
+            } catch (PartInitException e) {
+                UIUtils.showMessageDialog(Display.getDefault().getActiveShell(), "Error opening editor",
+                    "There was an error while opening the editor.");
+            }
+        }
 
         return null;
     }

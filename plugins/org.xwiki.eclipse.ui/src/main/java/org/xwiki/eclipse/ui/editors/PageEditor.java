@@ -53,6 +53,7 @@ import org.xwiki.eclipse.ui.UIConstants;
 import org.xwiki.eclipse.ui.UIPlugin;
 import org.xwiki.eclipse.ui.dialogs.PageConflictDialog;
 import org.xwiki.eclipse.ui.utils.UIUtils;
+import org.xwiki.xmlrpc.model.XWikiExtendedId;
 import org.xwiki.xmlrpc.model.XWikiPage;
 
 public class PageEditor extends TextEditor implements ICoreEventListener
@@ -98,8 +99,10 @@ public class PageEditor extends TextEditor implements ICoreEventListener
     public void init(IEditorSite site, IEditorInput input) throws PartInitException
     {
         super.init(site, input);
-        NotificationManager.getDefault().addListener(this,
-            new CoreEvent.Type[] {CoreEvent.Type.OBJECT_STORED, CoreEvent.Type.OBJECT_REMOVED});
+        NotificationManager.getDefault().addListener(
+            this,
+            new CoreEvent.Type[] {CoreEvent.Type.DATA_MANAGER_CONNECTED, CoreEvent.Type.OBJECT_STORED,
+            CoreEvent.Type.OBJECT_REMOVED});
     }
 
     @Override
@@ -176,7 +179,9 @@ public class PageEditor extends TextEditor implements ICoreEventListener
                     minorVersion = temp & 0xFFFF;
                 }
 
-                form.setText(String.format("%s version %s.%s", page.getData().getId(), version, minorVersion));
+                XWikiExtendedId extendedId = new XWikiExtendedId(page.getData().getId());
+                form.setText(String.format("%s version %s.%s [Language: %s]", extendedId.getBasePageId(), version,
+                    minorVersion, !page.getData().getLanguage().equals("") ? page.getData().getLanguage() : "Default"));
             }
 
             if (input.getPage().getDataManager().isInConflict(input.getPage().getData().getId())) {
@@ -285,8 +290,9 @@ public class PageEditor extends TextEditor implements ICoreEventListener
     {
         PageEditorInput input = (PageEditorInput) getEditorInput();
         XWikiEclipsePage page = input.getPage();
-        String objectPageId = null;
+        String targetPageId = null;
         DataManager dataManager = (DataManager) event.getSource();
+        boolean updatePage = false;
 
         switch (event.getType()) {
             case OBJECT_STORED:
@@ -297,42 +303,60 @@ public class PageEditor extends TextEditor implements ICoreEventListener
                  * content. If the editor is dirty then we do not do nothing.
                  */
                 XWikiEclipseObject object = (XWikiEclipseObject) event.getData();
-                objectPageId = object.getData().getPageId();
+                targetPageId = object.getData().getPageId();
+
+                updatePage = page.getDataManager().equals(dataManager) && page.getData().getId().equals(targetPageId);
+
                 break;
             case OBJECT_REMOVED:
-                objectPageId = (String) event.getData();
+                targetPageId = (String) event.getData();
+
+                updatePage = page.getDataManager().equals(dataManager) && page.getData().getId().equals(targetPageId);
+
+                break;
+            case DATA_MANAGER_CONNECTED:
+
+                updatePage = page.getDataManager().equals(dataManager);
+
                 break;
         }
 
         try {
-            if (page.getDataManager().equals(dataManager) && page.getData().getId().equals(objectPageId)) {
-
+            if (updatePage) {
                 if (!isDirty()) {
-
-                    XWikiEclipsePage newPage = page.getDataManager().getPage(page.getData().getId());
+                    final XWikiEclipsePage newPage = page.getDataManager().getPage(page.getData().getId());
 
                     if (page.getData().getVersion() != newPage.getData().getVersion()) {
-
                         /*
                          * If we are here then the editor is not dirty and the page versions differ. So we update the
-                         * page being edited.
+                         * page being edited. This may happen when an object associated to a page is stored or when
+                         * pages are synchronized when a data manager is connected.
                          */
-
-                        ISourceViewer sourceViewer = getSourceViewer();
+                        final ISourceViewer sourceViewer = getSourceViewer();
                         if (sourceViewer != null) {
-                            int caretOffset = sourceViewer.getTextWidget().getCaretOffset();
-                            int topPixel = sourceViewer.getTextWidget().getTopPixel();
-                            super.doSetInput(new PageEditorInput(newPage));
-                            sourceViewer.getTextWidget().setCaretOffset(caretOffset);
-                            sourceViewer.getTextWidget().setTopPixel(topPixel);
-                            updateInfo();
+                            Display.getDefault().syncExec(new Runnable()
+                            {
+                                public void run()
+                                {
+                                    int caretOffset = sourceViewer.getTextWidget().getCaretOffset();
+                                    int topPixel = sourceViewer.getTextWidget().getTopPixel();
+                                    try {
+                                        doSetInput(new PageEditorInput(newPage));
+                                    } catch (CoreException e) {
+                                        CoreLog.logError("Error while handling XWiki Eclipse event", e);
+                                    }
+                                    sourceViewer.getTextWidget().setCaretOffset(caretOffset);
+                                    sourceViewer.getTextWidget().setTopPixel(topPixel);
+                                    updateInfo();
+                                }
+
+                            });
+
                         }
 
                     }
                 }
             }
-        } catch (CoreException e) {
-            CoreLog.logError("Error while handling XWiki Eclipse event", e);
         } catch (XWikiEclipseException e) {
             CoreLog.logError("Error while handling XWiki Eclipse event", e);
         }

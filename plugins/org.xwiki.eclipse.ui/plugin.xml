@@ -29,6 +29,9 @@
 		</viewerContentBinding>
 		<viewerActionBinding viewerId="org.eclipse.ui.navigator.ProjectExplorer">
 			<includes>
+      <actionExtension
+            pattern="org.xwiki.eclipse.ui.actions.*">
+      </actionExtension>
 			</includes>
 		</viewerActionBinding>
  </extension>
