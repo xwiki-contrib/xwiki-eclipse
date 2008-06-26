@@ -160,7 +160,7 @@ public class LocalXWikiDataStorage implements IDataStorage
             try {
                 List<IResource> spaceFolderResources = getChildResources(spaceFolder, IResource.DEPTH_ONE);
                 for (IResource spaceFolderResource : spaceFolderResources) {
-                    if (spaceFolderResource instanceof IFolder) {
+                    if (spaceFolderResource instanceof IFolder && spaceFolderResource.getName().indexOf('?') == -1) {
                         IFolder pageFolder = (IFolder) spaceFolderResource;
                         List<IResource> pageFolderResources = getChildResources(pageFolder, IResource.DEPTH_ONE);
 
@@ -270,7 +270,7 @@ public class LocalXWikiDataStorage implements IDataStorage
                 {
                     try {
                         XWikiPage page = getPage(pageId);
-                        if(page == null) {
+                        if (page == null) {
                             return;
                         }
 
@@ -306,7 +306,7 @@ public class LocalXWikiDataStorage implements IDataStorage
         List<XWikiObjectSummary> result = new ArrayList<XWikiObjectSummary>();
 
         XWikiPage page = getPage(pageId);
-        if(page == null) {
+        if (page == null) {
             return result;
         }
 
@@ -382,7 +382,7 @@ public class LocalXWikiDataStorage implements IDataStorage
                         objectSummary.setPrettyName(object.getPrettyName());
 
                         XWikiPage page = getPage(object.getPageId());
-                        if(page == null) {
+                        if (page == null) {
                             return;
                         }
 
@@ -498,24 +498,24 @@ public class LocalXWikiDataStorage implements IDataStorage
                 public void run(IProgressMonitor monitor) throws CoreException
                 {
                     try {
-                    IFile file =
-                        baseFolder.getFolder(OBJECTS_DIRECTORY).getFile(
-                            getFileNameForObject(pageId, className, objectId));
-                    if (file.exists()) {
-                        file.delete(true, null);
-                    }
+                        IFile file =
+                            baseFolder.getFolder(OBJECTS_DIRECTORY).getFile(
+                                getFileNameForObject(pageId, className, objectId));
+                        if (file.exists()) {
+                            file.delete(true, null);
+                        }
 
-                    XWikiPage page = getPage(pageId); 
-                    if(page == null) {
-                        return;
-                    }
+                        XWikiPage page = getPage(pageId);
+                        if (page == null) {
+                            return;
+                        }
 
-                    file =
-                        baseFolder.getFolder(INDEX_DIRECTORY).getFolder(page.getSpace()).getFolder(pageId).getFile(
-                            getFileNameForObjectSummary(pageId, className, objectId));
-                    if (file.exists()) {
-                        file.delete(true, null);
-                    }
+                        file =
+                            baseFolder.getFolder(INDEX_DIRECTORY).getFolder(page.getSpace()).getFolder(pageId).getFile(
+                                getFileNameForObjectSummary(pageId, className, objectId));
+                        if (file.exists()) {
+                            file.delete(true, null);
+                        }
                     } catch (XWikiEclipseException e) {
                         throw new CoreException(new Status(Status.ERROR, CorePlugin.PLUGIN_ID, "Error", e));
                     }
@@ -529,9 +529,9 @@ public class LocalXWikiDataStorage implements IDataStorage
     }
 
     public XWikiPageSummary getPageSummary(String pageId) throws XWikiEclipseException
-    {        
+    {
         XWikiPage page = getPage(pageId);
-        if(page == null) {
+        if (page == null) {
             return null;
         }
 

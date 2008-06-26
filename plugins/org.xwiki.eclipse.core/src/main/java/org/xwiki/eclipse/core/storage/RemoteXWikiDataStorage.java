@@ -75,7 +75,16 @@ public class RemoteXWikiDataStorage implements IDataStorage
         Assert.isTrue(!disposed);
 
         try {
-            return rpc.getPage(pageId);
+            XWikiPage page = rpc.getPage(pageId);
+
+            /*
+             * Adjust the page ID in order to embed the language in its id. This is necessary because the page returned
+             * does not embed in its id extended information. So for example requesting a page Main.WebHome?language=fr
+             * returns a page whose id is Main.WebHome and its language field is 'fr'
+             */
+            page.setId(pageId);
+
+            return page;
         } catch (XmlRpcException e) {
             throw new XWikiEclipseException(e);
         }
@@ -108,7 +117,16 @@ public class RemoteXWikiDataStorage implements IDataStorage
         Assert.isTrue(!disposed);
 
         try {
-            return rpc.storePage(page);
+            String originalPageId = page.getId();
+            page = rpc.storePage(page);
+            /*
+             * Adjust the page ID in order to embed the language in its id. This is necessary because the page returned
+             * does not embed in its id extended information. So for example requesting a page Main.WebHome?language=fr
+             * returns a page whose id is Main.WebHome and its language field is 'fr'
+             */
+            page.setId(originalPageId);
+
+            return page;
         } catch (XmlRpcException e) {
             throw new XWikiEclipseException(e);
         }

@@ -34,7 +34,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.QualifiedName;
-import org.xwiki.eclipse.core.model.ModelObject;
 import org.xwiki.eclipse.core.model.XWikiEclipseClass;
 import org.xwiki.eclipse.core.model.XWikiEclipseClassSummary;
 import org.xwiki.eclipse.core.model.XWikiEclipseObject;
@@ -143,6 +142,7 @@ public class DataManager
         supportedFunctionalities = new HashSet<Functionality>();
         supportedFunctionalities.add(Functionality.OBJECTS);
         supportedFunctionalities.add(Functionality.RENAME);
+        supportedFunctionalities.add(Functionality.TRANSLATIONS);
     }
 
     /*
@@ -226,6 +226,10 @@ public class DataManager
             if (serverInfo.getMajorVersion() == 1) {
                 if (serverInfo.getMinorVersion() < 5) {
                     supportedFunctionalities.remove(Functionality.RENAME);
+                }
+
+                if (serverInfo.getMinorVersion() < 4) {
+                    supportedFunctionalities.remove(Functionality.TRANSLATIONS);
                 }
             }
         } catch (Exception e) {
@@ -322,12 +326,14 @@ public class DataManager
 
             XWikiEclipsePage result = new XWikiEclipsePage(this, page);
 
+            /* Fire the stored notification to communicate that the page has been stored in the local storage */
             NotificationManager.getDefault().fireCoreEvent(CoreEvent.Type.PAGE_STORED, this, result);
 
             return result;
         }
 
-        return null;
+        /* If we are here we are not connected so we can return the page that we have retrieved at the beginning */
+        return new XWikiEclipsePage(this, page);
     }
 
     public XWikiEclipsePage storePage(XWikiEclipsePage page) throws XWikiEclipseException
@@ -390,8 +396,7 @@ public class DataManager
                 /* If the local and remote content are equals, no need to re-store remotely the page. */
                 if (remotePage.getContent().equals(page.getContent())) {
                     page = remotePage;
-                }
-                else {
+                } else {
                     page = remoteXWikiDataStorage.storePage(page);
                 }
             } else {
@@ -573,7 +578,7 @@ public class DataManager
 
     private void synchronizePages(Set<String> pageIds) throws XWikiEclipseException
     {
-        for (String pageId : pageIds) {            
+        for (String pageId : pageIds) {
             XWikiPage page = localXWikiDataStorage.getPage(pageId);
             if (page != null) {
                 synchronize(page);
@@ -617,17 +622,31 @@ public class DataManager
     public XWikiEclipsePage createPage(String spaceKey, String name, String title, String content)
         throws XWikiEclipseException
     {
+        return createPage(spaceKey, name, title, null, content);
+    }
+
+    public XWikiEclipsePage createPage(String spaceKey, String name, String title, String language, String content)
+        throws XWikiEclipseException
+    {
         XWikiPage xwikiPage = new XWikiPage();
         xwikiPage.setSpace(spaceKey);
         xwikiPage.setTitle(title);
-        xwikiPage.setId(String.format("%s.%s", spaceKey, name));
+        if (language != null) {
+            xwikiPage.setId(String.format("%s.%s?language=%s", spaceKey, name, language));
+        } else {
+            xwikiPage.setId(String.format("%s.%s", spaceKey, name));
+        }
         xwikiPage.setContent(content);
         xwikiPage.setVersion(1);
         xwikiPage.setMinorVersion(1);
         xwikiPage.setContentStatus("");
         xwikiPage.setCreated(new Date());
         xwikiPage.setCreator("");
-        xwikiPage.setLanguage("");
+        if (language != null) {
+            xwikiPage.setLanguage(language);
+        } else {
+            xwikiPage.setLanguage("");
+        }
         xwikiPage.setModified(new Date());
         xwikiPage.setModifier("");
         xwikiPage.setParentId("");
@@ -719,9 +738,9 @@ public class DataManager
 
         return true;
     }
-   
+
     public String getXWikiEclipseId()
-    {       
+    {
         return String.format("xwikieclipse://%s", getName()); //$NON-NLS-1$
     }
 }

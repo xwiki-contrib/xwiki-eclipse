@@ -88,7 +88,7 @@ public class PersistentMap
         try {
             CoreUtils.writeDataToXML(file, map);
         } catch (CoreException e) {
-           CoreLog.logError("Unable to synchronize persistent map", e);
+            CoreLog.logError("Unable to synchronize persistent map", e);
         }
     }
 }

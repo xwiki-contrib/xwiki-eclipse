@@ -22,10 +22,10 @@ package org.xwiki.eclipse.core;
 
 /**
  * An enumeration for keeping track of the available advanced functionalities associated to a data manager.
+ * 
  * @author fmancine
- *
  */
 public enum Functionality
 {
-    OBJECTS, RENAME
+    OBJECTS, RENAME, TRANSLATIONS
 }

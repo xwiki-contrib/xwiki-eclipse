@@ -107,7 +107,7 @@ public class DataManagerRegistry implements IResourceChangeListener
     }
 
     public synchronized void unregister(DataManager dataManager)
-    {        
+    {
         dataManagers.remove(dataManager);
         NotificationManager.getDefault().fireCoreEvent(CoreEvent.Type.DATA_MANAGER_UNREGISTERED, this, dataManager);
     }
@@ -142,7 +142,7 @@ public class DataManagerRegistry implements IResourceChangeListener
                         }
 
                         if (delta.getKind() == IResourceDelta.REMOVED && (delta.getResource() instanceof IProject)) {
-                            IProject project = (IProject) delta.getResource();                            
+                            IProject project = (IProject) delta.getResource();
                             DataManager dataManager = findDataManagerByProject(project);
                             if (dataManager != null) {
                                 unregister(dataManager);
