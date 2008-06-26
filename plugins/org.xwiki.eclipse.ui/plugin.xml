@@ -203,34 +203,51 @@
       </page>
 	</extension>
 	<extension point="org.eclipse.ui.commands">
-		<command id="org.xwiki.eclipse.ui.commands.DataManagerConnect" name="Connect">
+		<command
+        categoryId="org.xwiki.eclipse"
+        id="org.xwiki.eclipse.ui.commands.DataManagerConnect"
+        name="Connect">
       </command>
-		<command id="org.xwiki.eclipse.ui.commands.DataManagerDisconnect" name="Disconnect">
+		<command
+        categoryId="org.xwiki.eclipse"
+        id="org.xwiki.eclipse.ui.commands.DataManagerDisconnect"
+        name="Disconnect">
       </command>
   <command
+        categoryId="org.xwiki.eclipse"
         id="org.xwiki.eclipse.ui.commands.NewPage"
         name="New page">
   </command>
   <command
+        categoryId="org.xwiki.eclipse"
         id="org.xwiki.eclipse.ui.commands.NewObject"
         name="New object">
   </command>
   <command
+        categoryId="org.xwiki.eclipse"
         id="org.xwiki.eclipse.ui.commands.Delete"
         name="Delete">
   </command>
   <command
+        categoryId="org.xwiki.eclipse"
         id="org.xwiki.eclipse.ui.commands.Refresh"
         name="Refresh">
   </command>
   <command
+        categoryId="org.xwiki.eclipse"
         id="org.xwiki.eclipse.ui.commands.RenamePage"
         name="Rename">
   </command>
   <command
+        categoryId="org.xwiki.eclipse"
+        description="Open an XWiki page from all the available ones"
         id="org.xwiki.eclipse.ui.commands.OpenPage"
         name="Open XWiki page">
   </command>
+  <category
+        id="org.xwiki.eclipse"
+        name="XWiki Eclipse">
+  </category>
 	</extension>
 	<extension point="org.eclipse.ui.handlers">
 		<handler class="org.xwiki.eclipse.ui.handlers.DataManagerConnectHandler" commandId="org.xwiki.eclipse.ui.commands.DataManagerConnect">
