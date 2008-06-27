@@ -60,4 +60,6 @@ public class UIConstants
 
     public static final String RENAME_PAGE_COMMAND = "org.xwiki.eclipse.ui.commands.RenamePage";
 
+    public static final String GRAB_SPACE_COMMAND = "org.xwiki.eclipse.ui.commands.GrabSpace";
+
 }

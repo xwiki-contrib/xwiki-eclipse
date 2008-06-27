@@ -21,6 +21,7 @@
 package org.xwiki.eclipse.ui.actions;
 
 import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.swt.SWT;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.menus.CommandContributionItem;
@@ -32,6 +33,8 @@ import org.xwiki.eclipse.ui.UIConstants;
 public class XWikiEclipseSpaceSummaryActionProvider extends CommonActionProvider
 {
     private CommandContributionItem newPage;
+
+    private CommandContributionItem grabSpace;
 
     public void init(final ICommonActionExtensionSite aSite)
     {
@@ -46,11 +49,17 @@ public class XWikiEclipseSpaceSummaryActionProvider extends CommonActionProvider
             new CommandContributionItem(PlatformUI.getWorkbench(), null, UIConstants.NEW_PAGE_COMMAND, null, null,
                 null, null, null, null, null, SWT.NONE);
 
+        grabSpace =
+            new CommandContributionItem(PlatformUI.getWorkbench(), null, UIConstants.GRAB_SPACE_COMMAND, null, null,
+                null, null, null, null, null, SWT.NONE);
+
     }
 
     public void fillContextMenu(IMenuManager menu)
     {
         super.fillContextMenu(menu);
         menu.appendToGroup(ICommonMenuConstants.GROUP_ADDITIONS, newPage);
+        menu.appendToGroup(ICommonMenuConstants.GROUP_ADDITIONS, new Separator());
+        menu.appendToGroup(ICommonMenuConstants.GROUP_ADDITIONS, grabSpace);
     }
 }

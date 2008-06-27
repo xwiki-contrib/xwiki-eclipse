@@ -240,7 +240,6 @@
   </command>
   <command
         categoryId="org.xwiki.eclipse"
-        description="Open an XWiki page from all the available ones"
         id="org.xwiki.eclipse.ui.commands.OpenPage"
         name="Open XWiki page">
   </command>
@@ -248,6 +247,11 @@
         id="org.xwiki.eclipse"
         name="XWiki Eclipse">
   </category>
+  <command
+        categoryId="org.xwiki.eclipse"
+        id="org.xwiki.eclipse.ui.commands.GrabSpace"
+        name="Grab space">
+  </command>
 	</extension>
 	<extension point="org.eclipse.ui.handlers">
 		<handler class="org.xwiki.eclipse.ui.handlers.DataManagerConnectHandler" commandId="org.xwiki.eclipse.ui.commands.DataManagerConnect">
@@ -318,6 +322,20 @@
   <handler
         class="org.xwiki.eclipse.ui.handlers.OpenPageHandler"
         commandId="org.xwiki.eclipse.ui.commands.OpenPage">
+  </handler>
+  <handler
+        class="org.xwiki.eclipse.ui.handlers.GrabSpaceHandler"
+        commandId="org.xwiki.eclipse.ui.commands.GrabSpace">
+     <activeWhen>
+        <iterate
+              operator="and">
+           <or>
+              <instanceof
+                    value="org.xwiki.eclipse.core.model.XWikiEclipseSpaceSummary">
+              </instanceof>
+           </or>
+        </iterate>
+     </activeWhen>
   </handler>
 	</extension>
  <extension
