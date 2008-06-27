@@ -28,32 +28,27 @@ import org.eclipse.ui.PlatformUI;
 import org.xwiki.eclipse.core.CoreLog;
 import org.xwiki.eclipse.core.XWikiEclipseException;
 import org.xwiki.eclipse.core.model.XWikiEclipsePage;
-import org.xwiki.eclipse.core.model.XWikiEclipsePageSummary;
+import org.xwiki.eclipse.core.model.XWikiEclipsePageHistorySummary;
 import org.xwiki.eclipse.ui.editors.PageEditor;
 import org.xwiki.eclipse.ui.editors.PageEditorInput;
 import org.xwiki.eclipse.ui.utils.UIUtils;
 
-public class OpenPageTranslationAction extends Action
+public class OpenPageHistoryItemAction extends Action
 {
+    private XWikiEclipsePageHistorySummary pageHistorySummary;
 
-    private XWikiEclipsePageSummary pageSummary;
-
-    private String translation;
-
-    public OpenPageTranslationAction(XWikiEclipsePageSummary pageSummary, String translation)
+    public OpenPageHistoryItemAction(XWikiEclipsePageHistorySummary pageHistorySummary)
     {
-        super(translation);
-        this.pageSummary = pageSummary;
-        this.translation = translation;
+        super(String.format("Version %d.%d", pageHistorySummary.getData().getVersion(), pageHistorySummary.getData()
+            .getMinorVersion()));
+        this.pageHistorySummary = pageHistorySummary;
     }
 
     @Override
     public void run()
     {
         try {
-            XWikiEclipsePage page =
-                pageSummary.getDataManager().getPage(
-                    String.format("%s?language=%s", pageSummary.getData().getId(), translation));
+            XWikiEclipsePage page = pageHistorySummary.getDataManager().getPage(pageHistorySummary.getData().getId());
 
             if (page == null) {
                 UIUtils
@@ -66,7 +61,7 @@ public class OpenPageTranslationAction extends Action
             }
 
             PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().openEditor(
-                new PageEditorInput(page, false), PageEditor.ID);
+                new PageEditorInput(page, true), PageEditor.ID);
         } catch (XWikiEclipseException e) {
             UIUtils
                 .showMessageDialog(
@@ -77,7 +72,7 @@ public class OpenPageTranslationAction extends Action
 
             CoreLog.logError("Error opening page", e);
 
-            pageSummary.getDataManager().disconnect();
+            pageHistorySummary.getDataManager().disconnect();
         } catch (PartInitException e) {
             UIUtils.showMessageDialog(Display.getDefault().getActiveShell(), "Error opening editor",
                 "There was an error while opening the editor.");

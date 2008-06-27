@@ -56,7 +56,8 @@ public class PageDocumentProvider extends FileDocumentProvider
     public boolean isModifiable(Object element)
     {
         if (element instanceof PageEditorInput) {
-            return true;
+            PageEditorInput pageEditorInput = (PageEditorInput) element;
+            return !pageEditorInput.isReadOnly();
         }
 
         return super.isModifiable(element);
@@ -66,7 +67,8 @@ public class PageDocumentProvider extends FileDocumentProvider
     public boolean isReadOnly(Object element)
     {
         if (element instanceof PageEditorInput) {
-            return false;
+            PageEditorInput pageEditorInput = (PageEditorInput) element;
+            return pageEditorInput.isReadOnly();
         }
 
         return super.isReadOnly(element);
@@ -91,7 +93,7 @@ public class PageDocumentProvider extends FileDocumentProvider
                     {
                         public void run()
                         {
-                            pageEditor.setInput(new PageEditorInput(page));
+                            pageEditor.setInput(new PageEditorInput(page, pageEditorInput.isReadOnly()));
                         }
                     });
                 }

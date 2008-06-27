@@ -25,15 +25,24 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;
 import org.xwiki.eclipse.core.model.XWikiEclipsePage;
+import org.xwiki.xmlrpc.model.XWikiExtendedId;
 
 public class PageEditorInput implements IEditorInput
 {
     private XWikiEclipsePage page;
 
-    public PageEditorInput(XWikiEclipsePage page)
+    private boolean readOnly;
+
+    public PageEditorInput(XWikiEclipsePage page, boolean readOnly)
     {
         Assert.isNotNull(page);
         this.page = page;
+        this.readOnly = readOnly;
+    }
+
+    public boolean isReadOnly()
+    {
+        return readOnly;
     }
 
     public boolean exists()
@@ -48,7 +57,16 @@ public class PageEditorInput implements IEditorInput
 
     public String getName()
     {
-        return page.getData().getTitle();
+        XWikiExtendedId extendedId = new XWikiExtendedId(page.getData().getId());
+
+        String name = null;
+        if (page.getData().getLanguage().equals("")) {
+            name = String.format("%s", extendedId.getBasePageId());
+        } else {
+            name = String.format("%s [%s]", extendedId.getBasePageId(), page.getData().getLanguage());
+        }
+
+        return name;
     }
 
     public IPersistableElement getPersistable()

@@ -76,7 +76,7 @@ public class NewPageWizard extends Wizard implements INewWizard
                                     public void run() throws Exception
                                     {
                                         PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
-                                            .openEditor(new PageEditorInput(page), PageEditor.ID);
+                                            .openEditor(new PageEditorInput(page, false), PageEditor.ID);
                                     }
                                 });
                             }

@@ -31,6 +31,7 @@ import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -121,6 +122,11 @@ public class PageEditor extends TextEditor implements ICoreEventListener
         GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, true).applyTo(editorComposite);
         super.createPartControl(editorComposite);
 
+        PageEditorInput pageEditorInput = (PageEditorInput) getEditorInput();
+        if (pageEditorInput.isReadOnly()) {
+            getSourceViewer().getTextWidget().setBackground(new Color(Display.getDefault(), 248, 248, 248));
+        }
+
         updateInfo();
     }
 
@@ -143,7 +149,6 @@ public class PageEditor extends TextEditor implements ICoreEventListener
 
             if (!conflictDialogDisplayed) {
                 handleConflict();
-
             }
         } else {
             super.doSetInput(pageEditorInput);
@@ -180,8 +185,9 @@ public class PageEditor extends TextEditor implements ICoreEventListener
                 }
 
                 XWikiExtendedId extendedId = new XWikiExtendedId(page.getData().getId());
-                form.setText(String.format("%s version %s.%s [Language: %s]", extendedId.getBasePageId(), version,
-                    minorVersion, !page.getData().getLanguage().equals("") ? page.getData().getLanguage() : "Default"));
+                form.setText(String.format("%s version %s.%s [Language: %s] %s", extendedId.getBasePageId(), version,
+                    minorVersion, !page.getData().getLanguage().equals("") ? page.getData().getLanguage() : "Default",
+                    input.isReadOnly() ? "[READONLY]" : ""));
             }
 
             if (input.getPage().getDataManager().isInConflict(input.getPage().getData().getId())) {
@@ -235,7 +241,7 @@ public class PageEditor extends TextEditor implements ICoreEventListener
                         XWikiPage newPage = new XWikiPage(conflictingPage.getData().toRawMap());
                         newPage.setContent(currentPage.getData().getContent());
                         dataManager.clearConflictingStatus(newPage.getId());
-                        setInput(new PageEditorInput(new XWikiEclipsePage(dataManager, newPage)));
+                        setInput(new PageEditorInput(new XWikiEclipsePage(dataManager, newPage), input.isReadOnly()));
 
                         /* Force the editor to be dirty */
                         getDocumentProvider().getDocument(getEditorInput()).set(
@@ -245,7 +251,7 @@ public class PageEditor extends TextEditor implements ICoreEventListener
                         break;
                     case PageConflictDialog.ID_USE_REMOTE:
                         dataManager.clearConflictingStatus(conflictingPage.getData().getId());
-                        setInput(new PageEditorInput(conflictingPage));
+                        setInput(new PageEditorInput(conflictingPage, input.isReadOnly()));
 
                         /* Force the editor to be dirty */
                         getDocumentProvider().getDocument(getEditorInput()).set(
@@ -258,7 +264,7 @@ public class PageEditor extends TextEditor implements ICoreEventListener
                         newPage.setContent(String.format(">>>>>>>LOCAL>>>>>>>>%s\n\n\n>>>>>>>REMOTE>>>>>>>>\n%s",
                             currentPage.getData().getContent(), conflictingPage.getData().getContent()));
                         dataManager.clearConflictingStatus(newPage.getId());
-                        setInput(new PageEditorInput(new XWikiEclipsePage(dataManager, newPage)));
+                        setInput(new PageEditorInput(new XWikiEclipsePage(dataManager, newPage), input.isReadOnly()));
 
                         /* Force the editor to be dirty */
                         getDocumentProvider().getDocument(getEditorInput()).set(
@@ -288,7 +294,7 @@ public class PageEditor extends TextEditor implements ICoreEventListener
 
     public void handleCoreEvent(CoreEvent event)
     {
-        PageEditorInput input = (PageEditorInput) getEditorInput();
+        final PageEditorInput input = (PageEditorInput) getEditorInput();
         XWikiEclipsePage page = input.getPage();
         String targetPageId = null;
         DataManager dataManager = (DataManager) event.getSource();
@@ -341,7 +347,7 @@ public class PageEditor extends TextEditor implements ICoreEventListener
                                     int caretOffset = sourceViewer.getTextWidget().getCaretOffset();
                                     int topPixel = sourceViewer.getTextWidget().getTopPixel();
                                     try {
-                                        doSetInput(new PageEditorInput(newPage));
+                                        doSetInput(new PageEditorInput(newPage, input.isReadOnly()));
                                     } catch (CoreException e) {
                                         CoreLog.logError("Error while handling XWiki Eclipse event", e);
                                     }

@@ -72,7 +72,7 @@ public class OpenPageHandler extends AbstractHandler
                 XWikiEclipsePage page = pageSummary.getDataManager().getPage(pageSummary.getData().getId());
 
                 PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().openEditor(
-                    new PageEditorInput(page), PageEditor.ID);
+                    new PageEditorInput(page, false), PageEditor.ID);
             } catch (XWikiEclipseException e) {
                 UIUtils
                     .showMessageDialog(

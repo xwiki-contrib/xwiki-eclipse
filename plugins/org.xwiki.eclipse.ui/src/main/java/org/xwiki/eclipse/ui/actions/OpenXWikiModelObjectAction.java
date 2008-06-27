@@ -77,7 +77,7 @@ public class OpenXWikiModelObjectAction extends Action
                     }
 
                     PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().openEditor(
-                        new PageEditorInput(page), PageEditor.ID);
+                        new PageEditorInput(page, false), PageEditor.ID);
                 } catch (XWikiEclipseException e) {
                     UIUtils
                         .showMessageDialog(
