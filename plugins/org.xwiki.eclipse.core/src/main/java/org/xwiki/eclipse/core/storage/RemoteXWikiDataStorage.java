@@ -33,6 +33,7 @@ import org.xwiki.xmlrpc.model.XWikiClassSummary;
 import org.xwiki.xmlrpc.model.XWikiObject;
 import org.xwiki.xmlrpc.model.XWikiObjectSummary;
 import org.xwiki.xmlrpc.model.XWikiPage;
+import org.xwiki.xmlrpc.model.XWikiPageHistorySummary;
 import org.xwiki.xmlrpc.model.XWikiPageSummary;
 
 /**
@@ -256,5 +257,16 @@ public class RemoteXWikiDataStorage implements IDataStorage
         }
 
         return null;
+    }
+
+    public List<XWikiPageHistorySummary> getPageHistory(String pageId) throws XWikiEclipseException
+    {
+        Assert.isTrue(!disposed);
+
+        try {
+            return rpc.getPageHistory(pageId);
+        } catch (XmlRpcException e) {
+            throw new XWikiEclipseException(e);
+        }
     }
 }

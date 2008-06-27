@@ -46,6 +46,7 @@ import org.xwiki.xmlrpc.model.XWikiClassSummary;
 import org.xwiki.xmlrpc.model.XWikiObject;
 import org.xwiki.xmlrpc.model.XWikiObjectSummary;
 import org.xwiki.xmlrpc.model.XWikiPage;
+import org.xwiki.xmlrpc.model.XWikiPageHistorySummary;
 import org.xwiki.xmlrpc.model.XWikiPageSummary;
 
 /**
@@ -544,5 +545,11 @@ public class LocalXWikiDataStorage implements IDataStorage
         }
 
         return null;
+    }
+
+    public List<XWikiPageHistorySummary> getPageHistory(String pageId) throws XWikiEclipseException
+    {
+        // Currently not supported in local storage.
+        return new ArrayList<XWikiPageHistorySummary>();
     }
 }

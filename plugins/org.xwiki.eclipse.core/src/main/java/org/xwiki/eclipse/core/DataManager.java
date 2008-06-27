@@ -39,6 +39,7 @@ import org.xwiki.eclipse.core.model.XWikiEclipseClassSummary;
 import org.xwiki.eclipse.core.model.XWikiEclipseObject;
 import org.xwiki.eclipse.core.model.XWikiEclipseObjectSummary;
 import org.xwiki.eclipse.core.model.XWikiEclipsePage;
+import org.xwiki.eclipse.core.model.XWikiEclipsePageHistorySummary;
 import org.xwiki.eclipse.core.model.XWikiEclipsePageSummary;
 import org.xwiki.eclipse.core.model.XWikiEclipseSpaceSummary;
 import org.xwiki.eclipse.core.notifications.CoreEvent;
@@ -52,6 +53,7 @@ import org.xwiki.xmlrpc.model.XWikiClassSummary;
 import org.xwiki.xmlrpc.model.XWikiObject;
 import org.xwiki.xmlrpc.model.XWikiObjectSummary;
 import org.xwiki.xmlrpc.model.XWikiPage;
+import org.xwiki.xmlrpc.model.XWikiPageHistorySummary;
 import org.xwiki.xmlrpc.model.XWikiPageSummary;
 
 /**
@@ -737,6 +739,25 @@ public class DataManager
         getPage(String.format("%s.%s", newSpace, newPageName));
 
         return true;
+    }
+
+    public List<XWikiEclipsePageHistorySummary> getPageHistory(String pageId) throws XWikiEclipseException
+    {
+        List<XWikiEclipsePageHistorySummary> result = new ArrayList<XWikiEclipsePageHistorySummary>();
+        List<XWikiPageHistorySummary> pageHistory = null;
+
+        if (isConnected()) {
+            pageHistory = remoteXWikiDataStorage.getPageHistory(pageId);
+
+        } else {
+            pageHistory = localXWikiDataStorage.getPageHistory(pageId);
+        }
+
+        for (XWikiPageHistorySummary pageHistorySummary : pageHistory) {
+            result.add(new XWikiEclipsePageHistorySummary(this, pageHistorySummary));
+        }
+
+        return result;
     }
 
     public String getXWikiEclipseId()

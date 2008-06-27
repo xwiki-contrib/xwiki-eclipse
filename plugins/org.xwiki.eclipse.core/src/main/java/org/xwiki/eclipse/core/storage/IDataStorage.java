@@ -29,6 +29,7 @@ import org.xwiki.xmlrpc.model.XWikiClassSummary;
 import org.xwiki.xmlrpc.model.XWikiObject;
 import org.xwiki.xmlrpc.model.XWikiObjectSummary;
 import org.xwiki.xmlrpc.model.XWikiPage;
+import org.xwiki.xmlrpc.model.XWikiPageHistorySummary;
 import org.xwiki.xmlrpc.model.XWikiPageSummary;
 
 /**
@@ -69,4 +70,6 @@ public interface IDataStorage
     public boolean exists(String pageId);
 
     public boolean exists(String pageId, String className, int objectId);
+
+    public List<XWikiPageHistorySummary> getPageHistory(String pageId) throws XWikiEclipseException;
 }
