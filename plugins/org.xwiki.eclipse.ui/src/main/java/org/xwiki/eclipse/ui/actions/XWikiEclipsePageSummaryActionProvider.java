@@ -27,9 +27,12 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.menus.CommandContributionItem;
 import org.eclipse.ui.navigator.CommonActionProvider;
@@ -38,9 +41,12 @@ import org.eclipse.ui.navigator.ICommonActionExtensionSite;
 import org.eclipse.ui.navigator.ICommonMenuConstants;
 import org.xwiki.eclipse.core.Functionality;
 import org.xwiki.eclipse.core.XWikiEclipseException;
+import org.xwiki.eclipse.core.model.XWikiEclipsePage;
 import org.xwiki.eclipse.core.model.XWikiEclipsePageHistorySummary;
 import org.xwiki.eclipse.core.model.XWikiEclipsePageSummary;
 import org.xwiki.eclipse.ui.UIConstants;
+import org.xwiki.eclipse.ui.editors.PageEditor;
+import org.xwiki.eclipse.ui.editors.PageEditorInput;
 import org.xwiki.eclipse.ui.utils.UIUtils;
 
 public class XWikiEclipsePageSummaryActionProvider extends CommonActionProvider
@@ -138,40 +144,39 @@ public class XWikiEclipsePageSummaryActionProvider extends CommonActionProvider
                 }
 
                 /* TODO: Checkout the server side. This gives non-deterministic results */
-                // menuManager.add(new Separator());
-                //                
-                // menuManager.add(new Action("New translation...")
-                // {
-                //
-                // @Override
-                // public void run()
-                // {
-                // InputDialog inputDialog =
-                // new InputDialog(Display.getDefault().getActiveShell(), "Translation", "Translation", "",
-                // null);
-                // inputDialog.open();
-                //
-                // if (inputDialog.getReturnCode() == InputDialog.OK) {
-                // if (!inputDialog.getValue().equals("")) {
-                // String[] components = pageSummary.getData().getId().split("\\.");
-                //
-                // try {
-                // XWikiEclipsePage page =
-                // pageSummary.getDataManager().createPage(components[0], components[1],
-                // pageSummary.getData().getTitle(), inputDialog.getValue(),
-                // "Write translation here");
-                // PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().openEditor(
-                // new PageEditorInput(page, false), PageEditor.ID);
-                // } catch (XWikiEclipseException e) {
-                // e.printStackTrace();
-                // } catch (PartInitException e) {
-                //
-                // e.printStackTrace();
-                // }
-                // }
-                // }
-                // }
-                // });
+                menuManager.add(new Separator());
+
+                menuManager.add(new Action("New translation...")
+                {
+                    @Override
+                    public void run()
+                    {
+                        InputDialog inputDialog =
+                            new InputDialog(Display.getDefault().getActiveShell(), "Translation", "Translation", "",
+                                null);
+                        inputDialog.open();
+
+                        if (inputDialog.getReturnCode() == InputDialog.OK) {
+                            if (!inputDialog.getValue().equals("")) {
+                                String[] components = pageSummary.getData().getId().split("\\.");
+
+                                try {
+                                    XWikiEclipsePage page =
+                                        pageSummary.getDataManager().createPage(components[0], components[1],
+                                            pageSummary.getData().getTitle(), inputDialog.getValue(),
+                                            "Write translation here");
+                                    PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().openEditor(
+                                        new PageEditorInput(page, false), PageEditor.ID);
+                                } catch (XWikiEclipseException e) {
+                                    e.printStackTrace();
+                                } catch (PartInitException e) {
+
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                    }
+                });
             }
         }
 
