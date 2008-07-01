@@ -35,21 +35,3 @@ In case of a Linux installation, the Web preview requires that XEclipse is launc
 * LD_LIBRARY_PATH pointing to the directory containing Firefox libraries (ex: /usr/lib/firefox-2.0.0.6/)
 
 Enjoy.
-
-
-
-
-
-------------------------------------------------------------------------------------------------------------------------
-* This refers to the previous version of XWiki Eclipse still available on the SVN but deprecated.
-------------------------------------------------------------------------------------------------------------------------
-There are 2 builds:
-
-* The plugin build which generates an Eclipse plugin for XEclipse. It's located in plugins/org.xwiki.eclipse
-
-* The RCP build which generates a standalone executable version of XEClipse. It's located in plugins/org.xwiki.xeclipse.rcp.old
-
-To build each one please refer to build instructions at the following URL:
-http://www.xwiki.org/xwiki/bin/Community/Building#HBuildingXEclipse
-and to the README files in project directories.
-
