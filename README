@@ -1,16 +1,18 @@
 The directory structure may appear strange but it's required by the Maven PDE plugin.
 See http://mojo.codehaus.org/pde-maven-plugin/usage.html for more details.
 
-A new, refactored and improved version of XWiki Eclipse is now available in the repository. 
-This version has a new architecture and a better integration with the Eclipse platform.
-
-This new version is made of the following plugins and features:
+XEclipse is made of the following plugins and features:
  * org.xwiki.eclipse.core
  * org.xwiki.eclipse.ui
  * org.xwiki.eclipse.xmlrpc
  * org.xwiki.eclipse.feature
 
-In order to build:
+To build XEclipse you have 2 options:
+ * Build the Eclipse plugin.
+ * Build a standalone RCP application.
+
+Building the Eclipse plugin
+===========================
 
 1) Checkout the trunk: "svn co http://svn.xwiki.org/svnroot/xwiki/xwiki-extensions/xwiki-eclipse/trunk/"
 2) cd to trunk/features/org.xwiki.eclipse.feature.
@@ -27,8 +29,14 @@ In order to install:
 You can start using XWiki Eclipse by creating a connection using the File->New->Other... menu command.
 XWiki connections will be accessible from the Project Explorer and XWiki Navigator.
 
-In order to build the RCP version, please refer to:
+Building the RCP application
+============================
+
+Please refer to:
 http://svn.xwiki.org/svnroot/xwiki/xwiki-extensions/xwiki-eclipse/trunk/plugins/org.xwiki.eclipse.rcp/README
+
+Troubleshooting
+===============
 
 In case of a Linux installation, the Web preview requires that XEclipse is launched with the following environment variables:
 * MOZILLA_FIVE_HOME pointing to the directory containing a Firefox executable (ex: /usr/lib/firefox-2.0.0.6/)
