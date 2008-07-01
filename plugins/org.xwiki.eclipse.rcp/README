@@ -2,11 +2,11 @@
    http://download.eclipse.org/eclipse/downloads/ an Eclipse SDK 3.4 and the corresponding RCP SDK and delta pack.
    
    You will need to download from
-   http://download.eclipse.org/eclipse/downloads/drops/S-3.4RC1-200805161333/index.php
+   http://download.eclipse.org/eclipse/downloads/drops/R-3.4-200806172000/index.php
    
-   - http://ganymede-mirror2.eclipse.org/eclipse/downloads/drops/R-3.4-200806172000/download.php?dropFile=eclipse-SDK-3.4-macosx-carbon.tar.gz (Choose the right one for your platform)
-   - http://ganymede-mirror2.eclipse.org/eclipse/downloads/drops/R-3.4-200806172000/download.php?dropFile=eclipse-RCP-SDK-3.4-macosx-carbon.tar.gz (Whatever platform is fine)
-   - http://ganymede-mirror2.eclipse.org/eclipse/downloads/drops/R-3.4-200806172000/download.php?dropFile=eclipse-3.4-delta-pack.zip
+   - SDK: http://download.eclipse.org/eclipse/downloads/drops/R-3.4-200806172000/download.php?dropFile=eclipse-SDK-3.4-macosx-carbon.tar.gz (Choose the right one for your platform)
+   - RCP SDK: http://download.eclipse.org/eclipse/downloads/drops/R-3.4-200806172000/download.php?dropFile=eclipse-RCP-SDK-3.4-macosx-carbon.tar.gz (Whatever platform is fine)
+   - Delta Pack: http://download.eclipse.org/eclipse/downloads/drops/R-3.4-200806172000/download.php?dropFile=eclipse-3.4-delta-pack.zip
 
    You might not need to download the SDK if you already have it installed on your system.
    
