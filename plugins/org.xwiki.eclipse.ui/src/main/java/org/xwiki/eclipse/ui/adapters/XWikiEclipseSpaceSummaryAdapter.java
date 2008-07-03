@@ -22,10 +22,14 @@ package org.xwiki.eclipse.ui.adapters;
 
 import java.util.List;
 
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.model.WorkbenchAdapter;
+import org.eclipse.ui.progress.IDeferredWorkbenchAdapter;
+import org.eclipse.ui.progress.IElementCollector;
 import org.xwiki.eclipse.core.CoreLog;
 import org.xwiki.eclipse.core.XWikiEclipseException;
 import org.xwiki.eclipse.core.model.XWikiEclipsePageSummary;
@@ -34,7 +38,7 @@ import org.xwiki.eclipse.ui.UIConstants;
 import org.xwiki.eclipse.ui.UIPlugin;
 import org.xwiki.eclipse.ui.utils.UIUtils;
 
-public class XWikiEclipseSpaceSummaryAdapter extends WorkbenchAdapter
+public class XWikiEclipseSpaceSummaryAdapter extends WorkbenchAdapter implements IDeferredWorkbenchAdapter
 {
     @Override
     public Object[] getChildren(Object object)
@@ -80,5 +84,22 @@ public class XWikiEclipseSpaceSummaryAdapter extends WorkbenchAdapter
     public ImageDescriptor getImageDescriptor(Object object)
     {
         return UIPlugin.getImageDescriptor(UIConstants.SPACE_ICON);
+    }
+
+    public void fetchDeferredChildren(Object object, IElementCollector collector, IProgressMonitor monitor)
+    {
+        collector.add(getChildren(object), monitor);
+        collector.done();
+    }
+
+    public ISchedulingRule getRule(Object object)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public boolean isContainer()
+    {
+        return true;
     }
 }

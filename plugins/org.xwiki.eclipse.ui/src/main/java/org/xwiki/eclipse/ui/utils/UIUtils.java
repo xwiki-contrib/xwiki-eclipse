@@ -32,6 +32,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkingSet;
+import org.xwiki.eclipse.core.DataManager;
+import org.xwiki.eclipse.core.model.ModelObject;
 import org.xwiki.eclipse.ui.workingsets.XWikiEclipseElementId;
 
 public class UIUtils
@@ -96,6 +98,41 @@ public class UIUtils
                 if (element.getXwikiEclipseId().equals(xwikiEclipseId)) {
                     return true;
                 }
+            }
+        }
+
+        return false;
+    }
+
+    public static Object[] filterByWorkingSet(Object[] objects, IWorkingSet workingSet)
+    {
+        if (workingSet == null) {
+            return objects;
+        }
+
+        Set result = new HashSet();
+        for (Object object : objects) {
+            if (isInWorkingSet(object, workingSet)) {
+                result.add(object);
+            }
+        }
+
+        return result.toArray();
+    }
+
+    public static boolean isInWorkingSet(Object object, IWorkingSet workingSet)
+    {
+        if (object instanceof DataManager) {
+            DataManager dataManager = (DataManager) object;
+            if (UIUtils.isXWikiEcipseIdInWorkingSet(dataManager.getXWikiEclipseId(), workingSet)) {
+                return true;
+            }
+        }
+
+        if (object instanceof ModelObject) {
+            ModelObject modelObject = (ModelObject) object;
+            if (UIUtils.isXWikiEcipseIdInWorkingSet(modelObject.getXWikiEclipseId(), workingSet)) {
+                return true;
             }
         }
 

@@ -120,9 +120,11 @@ public class XWikiEclipseWorkingSetPage extends WizardPage implements IWorkingSe
 
     public void finish()
     {
-        Set<XWikiEclipseElementId> elements = new HashSet<XWikiEclipseElementId>();
+        Set<Object> elements = new HashSet<Object>();
         for (Object object : treeViewer.getCheckedElements()) {
             if (object instanceof DataManager) {
+                DataManager dataManager = (DataManager) object;
+                elements.add(dataManager.getProject());
                 elements.add(new XWikiEclipseElementId(((DataManager) object).getXWikiEclipseId()));
             }
 

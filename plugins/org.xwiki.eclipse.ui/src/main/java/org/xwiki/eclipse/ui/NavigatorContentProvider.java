@@ -20,20 +20,15 @@
  */
 package org.xwiki.eclipse.ui;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.model.BaseWorkbenchContentProvider;
+import org.eclipse.ui.progress.DeferredTreeContentManager;
 import org.xwiki.eclipse.core.DataManager;
 import org.xwiki.eclipse.core.DataManagerRegistry;
-import org.xwiki.eclipse.core.model.ModelObject;
-import org.xwiki.eclipse.core.model.XWikiEclipsePageSummary;
-import org.xwiki.eclipse.core.model.XWikiEclipseSpaceSummary;
 import org.xwiki.eclipse.core.notifications.CoreEvent;
 import org.xwiki.eclipse.core.notifications.ICoreEventListener;
 import org.xwiki.eclipse.core.notifications.NotificationManager;
@@ -46,6 +41,8 @@ public class NavigatorContentProvider extends BaseWorkbenchContentProvider imple
     private AbstractTreeViewer viewer;
 
     private IWorkingSet workingSet;
+
+    private DeferredTreeContentManager deferredTreeContentManager;
 
     public NavigatorContentProvider()
     {
@@ -81,33 +78,20 @@ public class NavigatorContentProvider extends BaseWorkbenchContentProvider imple
             }
         }
 
-        Object[] result = super.getChildren(element);
-        return filterByWorkingSet(result, workingSet);
+        return deferredTreeContentManager.getChildren(element);
     }
 
     @Override
     public boolean hasChildren(Object element)
     {
-        if (element instanceof DataManager) {
-            return true;
-        }
-
-        if (element instanceof XWikiEclipseSpaceSummary) {
-            return true;
-        }
-
-        if (element instanceof XWikiEclipsePageSummary) {
-            return true;
-        }
-
-        return super.hasChildren(element);
+        return deferredTreeContentManager.mayHaveChildren(element);
     }
 
     @Override
     public Object[] getElements(Object element)
     {
         Object[] result = DataManagerRegistry.getDefault().getDataManagers().toArray();
-        return filterByWorkingSet(result, workingSet);
+        return UIUtils.filterByWorkingSet(result, workingSet);
     }
 
     @Override
@@ -121,33 +105,9 @@ public class NavigatorContentProvider extends BaseWorkbenchContentProvider imple
             workingSet = null;
         }
 
+        deferredTreeContentManager = new WorkingSetDeferredTreeContentManager(this.viewer, workingSet);
+
         super.inputChanged(viewer, oldInput, newInput);
-    }
-
-    private Object[] filterByWorkingSet(Object[] objects, IWorkingSet workingSet)
-    {
-        if (workingSet == null) {
-            return objects;
-        }
-
-        Set result = new HashSet();
-        for (Object object : objects) {
-            if (object instanceof DataManager) {
-                DataManager dataManager = (DataManager) object;
-                if (UIUtils.isXWikiEcipseIdInWorkingSet(dataManager.getXWikiEclipseId(), workingSet)) {
-                    result.add(object);
-                }
-            }
-
-            if (object instanceof ModelObject) {
-                ModelObject modelObject = (ModelObject) object;
-                if (UIUtils.isXWikiEcipseIdInWorkingSet(modelObject.getXWikiEclipseId(), workingSet)) {
-                    result.add(object);
-                }
-            }
-        }
-
-        return result.toArray();
     }
 
     public void handleCoreEvent(final CoreEvent event)

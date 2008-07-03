@@ -25,12 +25,33 @@
       <contentExtension
             pattern="org.xwiki.eclipse.ui.navigator.content.XWikiEclipseDataManagers">
       </contentExtension>
+      <contentExtension
+            pattern="org.xwiki.eclipse.ui.filters.XWikiEclipseIdFiter">
+      </contentExtension>
 			</includes>
 		</viewerContentBinding>
 		<viewerActionBinding viewerId="org.eclipse.ui.navigator.ProjectExplorer">
 			<includes>
       <actionExtension
-            pattern="org.xwiki.eclipse.ui.actions.*">
+            pattern="org.xwiki.eclipse.ui.actions.DataManagerActionProvider">
+      </actionExtension>
+      <actionExtension
+            pattern="org.xwiki.eclipse.ui.actions.PropertyActionProvider">
+      </actionExtension>
+      <actionExtension
+            pattern="org.xwiki.eclipse.ui.actions.XWikiEclipseSpaceSummaryActionProvider">
+      </actionExtension>
+      <actionExtension
+            pattern="org.xwiki.eclipse.ui.actions.XWikiEclipsePageSummaryActionProvider">
+      </actionExtension>
+      <actionExtension
+            pattern="org.xwiki.eclipse.ui.actions.XWikiEclipseObjectSummaryActionProvider">
+      </actionExtension>
+      <actionExtension
+            pattern="org.xwiki.eclipse.ui.actions.DeleteActionProvider">
+      </actionExtension>
+      <actionExtension
+            pattern="org.xwiki.eclipse.ui.actions.RefreshActionProvider">
       </actionExtension>
 			</includes>
 		</viewerActionBinding>
@@ -154,6 +175,13 @@
         id="org.xwiki.eclipse.ui.actions.WorkingSetActionProvider">
      <enablement></enablement>
   </actionProvider>
+  <commonFilter
+        activeByDefault="true"
+        class="org.xwiki.eclipse.ui.filters.XWikiEclipseIdFiter"
+        description="(This filter is only used to avoid IDs to be displayed as toplevel elements when a working set is active in the Project Explorer)"
+        id="org.xwiki.eclipse.ui.filters.XWikiEclipseIdFiter"
+        name="XWiki Eclipse ID filter">
+  </commonFilter>
 	</extension>
 	<extension point="org.eclipse.core.runtime.adapters">
 		<factory adaptableType="org.xwiki.eclipse.core.DataManager" class="org.xwiki.eclipse.ui.adapters.AdapterFactory">
@@ -161,14 +189,23 @@
          </adapter>
 			<adapter type="org.eclipse.ui.model.IWorkbenchAdapter2">
          </adapter>
+   <adapter
+         type="org.eclipse.ui.progress.IDeferredWorkbenchAdapter">
+   </adapter>
 		</factory>
 		<factory adaptableType="org.xwiki.eclipse.core.model.XWikiEclipseSpaceSummary" class="org.xwiki.eclipse.ui.adapters.AdapterFactory">
 			<adapter type="org.eclipse.ui.model.IWorkbenchAdapter">
          </adapter>
+   <adapter
+         type="org.eclipse.ui.progress.IDeferredWorkbenchAdapter">
+   </adapter>
 		</factory>
 		<factory adaptableType="org.xwiki.eclipse.core.model.XWikiEclipsePageSummary" class="org.xwiki.eclipse.ui.adapters.AdapterFactory">
 			<adapter type="org.eclipse.ui.model.IWorkbenchAdapter">
          </adapter>
+   <adapter
+         type="org.eclipse.ui.progress.IDeferredWorkbenchAdapter">
+   </adapter>
 		</factory>
   <factory
         adaptableType="org.xwiki.eclipse.core.model.XWikiEclipseObjectSummary"

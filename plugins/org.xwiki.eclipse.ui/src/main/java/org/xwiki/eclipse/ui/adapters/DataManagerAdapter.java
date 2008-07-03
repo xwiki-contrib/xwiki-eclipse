@@ -22,12 +22,16 @@ package org.xwiki.eclipse.ui.adapters;
 
 import java.util.List;
 
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.model.WorkbenchAdapter;
+import org.eclipse.ui.progress.IDeferredWorkbenchAdapter;
+import org.eclipse.ui.progress.IElementCollector;
 import org.xwiki.eclipse.core.CoreLog;
 import org.xwiki.eclipse.core.DataManager;
 import org.xwiki.eclipse.core.XWikiEclipseException;
@@ -36,7 +40,7 @@ import org.xwiki.eclipse.ui.UIConstants;
 import org.xwiki.eclipse.ui.UIPlugin;
 import org.xwiki.eclipse.ui.utils.UIUtils;
 
-public class DataManagerAdapter extends WorkbenchAdapter
+public class DataManagerAdapter extends WorkbenchAdapter implements IDeferredWorkbenchAdapter
 {
     @Override
     public Object[] getChildren(Object object)
@@ -94,5 +98,22 @@ public class DataManagerAdapter extends WorkbenchAdapter
         }
 
         return super.getFont(object);
+    }
+
+    public void fetchDeferredChildren(Object object, IElementCollector collector, IProgressMonitor monitor)
+    {
+        collector.add(getChildren(object), monitor);
+        collector.done();
+    }
+
+    public ISchedulingRule getRule(Object object)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public boolean isContainer()
+    {
+        return true;
     }
 }

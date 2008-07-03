@@ -23,6 +23,7 @@ package org.xwiki.eclipse.ui.adapters;
 import org.eclipse.core.runtime.IAdapterFactory;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.eclipse.ui.model.IWorkbenchAdapter2;
+import org.eclipse.ui.progress.IDeferredWorkbenchAdapter;
 import org.xwiki.eclipse.core.DataManager;
 import org.xwiki.eclipse.core.model.XWikiEclipseObjectSummary;
 import org.xwiki.eclipse.core.model.XWikiEclipsePageSummary;
@@ -30,7 +31,8 @@ import org.xwiki.eclipse.core.model.XWikiEclipseSpaceSummary;
 
 public class AdapterFactory implements IAdapterFactory
 {
-    private Class[] adapterList = new Class[] {IWorkbenchAdapter.class, IWorkbenchAdapter2.class};
+    private Class[] adapterList =
+        new Class[] {IWorkbenchAdapter.class, IWorkbenchAdapter2.class, IDeferredWorkbenchAdapter.class};
 
     private DataManagerAdapter xwikiEclipseDataManagerAdapter = new DataManagerAdapter();
 
@@ -53,10 +55,19 @@ public class AdapterFactory implements IAdapterFactory
             return xwikiEclipseDataManagerAdapter;
         }
 
+        if ((adaptableObject instanceof DataManager) && adapterType.equals(IDeferredWorkbenchAdapter.class)) {
+            return xwikiEclipseDataManagerAdapter;
+        }
+
         /*
          * Adapters for XWikiEclipseSpaceSummary
          */
         if ((adaptableObject instanceof XWikiEclipseSpaceSummary) && adapterType.equals(IWorkbenchAdapter.class)) {
+            return xwikiEclipseSpaceSummaryAdapter;
+        }
+
+        if ((adaptableObject instanceof XWikiEclipseSpaceSummary)
+            && adapterType.equals(IDeferredWorkbenchAdapter.class)) {
             return xwikiEclipseSpaceSummaryAdapter;
         }
 
@@ -67,6 +78,9 @@ public class AdapterFactory implements IAdapterFactory
             return xwikiEclipsePageSummaryAdapter;
         }
 
+        if ((adaptableObject instanceof XWikiEclipsePageSummary) && adapterType.equals(IDeferredWorkbenchAdapter.class)) {
+            return xwikiEclipsePageSummaryAdapter;
+        }
         /*
          * Adapters for XWikiEclipseObjectSummary
          */
