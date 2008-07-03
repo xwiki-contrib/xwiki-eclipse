@@ -20,12 +20,15 @@
  */
 package org.xwiki.eclipse.ui.handlers;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.xwiki.eclipse.core.CoreLog;
@@ -43,16 +46,46 @@ public class GrabSpaceHandler extends AbstractHandler
         Set selectedObjects = UIUtils.getSelectedObjectsFromSelection(selection);
         for (Object object : selectedObjects) {
             if (object instanceof XWikiEclipseSpaceSummary) {
-                XWikiEclipseSpaceSummary spaceSummary = (XWikiEclipseSpaceSummary) object;
+                final XWikiEclipseSpaceSummary spaceSummary = (XWikiEclipseSpaceSummary) object;
 
                 try {
-                    List<XWikiEclipsePageSummary> pageSummaries =
-                        spaceSummary.getDataManager().getPages(spaceSummary.getData().getKey());
+                    UIUtils.runWithProgress(new IRunnableWithProgress()
+                    {
 
-                    for (XWikiEclipsePageSummary pageSummary : pageSummaries) {
-                        pageSummary.getDataManager().getPage(pageSummary.getData().getId());
-                    }
-                } catch (XWikiEclipseException e) {
+                        public void run(IProgressMonitor monitor) throws InvocationTargetException,
+                            InterruptedException
+                        {
+                            try {
+                                List<XWikiEclipsePageSummary> pageSummaries =
+                                    spaceSummary.getDataManager().getPages(spaceSummary.getData().getKey());
+
+                                monitor.beginTask("Fetching pages", pageSummaries.size());
+
+                                if (monitor.isCanceled()) {
+                                    return;
+                                }
+
+                                for (XWikiEclipsePageSummary pageSummary : pageSummaries) {
+                                    monitor.setTaskName(String.format("Fetching %s", pageSummary.getData().getId()));
+
+                                    pageSummary.getDataManager().getPage(pageSummary.getData().getId());
+
+                                    if (monitor.isCanceled()) {
+                                        return;
+                                    }
+
+                                    monitor.worked(1);
+                                }
+                            } catch (XWikiEclipseException e) {
+                                throw new InvocationTargetException(e);
+                            } finally {
+                                monitor.done();
+                            }
+
+                        }
+
+                    }, HandlerUtil.getActiveShell(event), true);
+                } catch (Exception e) {
                     CoreLog.logError("Error during space grabbing", e);
                 }
             }

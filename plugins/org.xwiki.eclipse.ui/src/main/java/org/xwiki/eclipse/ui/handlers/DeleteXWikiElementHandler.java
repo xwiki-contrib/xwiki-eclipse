@@ -27,6 +27,8 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.xwiki.eclipse.core.model.XWikiEclipseObjectSummary;
 import org.xwiki.eclipse.core.model.XWikiEclipsePageSummary;
@@ -43,27 +45,43 @@ public class DeleteXWikiElementHandler extends AbstractHandler
         for (Object selectedObject : selectedObjects) {
             if (selectedObject instanceof XWikiEclipsePageSummary) {
                 final XWikiEclipsePageSummary pageSummary = (XWikiEclipsePageSummary) selectedObject;
-                SafeRunner.run(new XWikiEclipseSafeRunnable()
-                {
-                    public void run() throws Exception
+
+                MessageBox messageBox =
+                    new MessageBox(HandlerUtil.getActiveShell(event), SWT.YES | SWT.NO | SWT.ICON_QUESTION);
+                messageBox.setMessage(String.format("Do you really want to delete '%s'?", pageSummary.getData()
+                    .getTitle()));
+                int result = messageBox.open();
+                if (result == SWT.YES) {
+                    SafeRunner.run(new XWikiEclipseSafeRunnable()
                     {
-                        pageSummary.getDataManager().removePage(pageSummary.getData().getId());
-                    }
-                });
+                        public void run() throws Exception
+                        {
+                            pageSummary.getDataManager().removePage(pageSummary.getData().getId());
+                        }
+                    });
+                }
 
             }
 
             if (selectedObject instanceof XWikiEclipseObjectSummary) {
                 final XWikiEclipseObjectSummary objectSummary = (XWikiEclipseObjectSummary) selectedObject;
-                SafeRunner.run(new XWikiEclipseSafeRunnable()
-                {
-                    public void run() throws Exception
-                    {
-                        objectSummary.getDataManager().removeObject(objectSummary.getData().getPageId(),
-                            objectSummary.getData().getClassName(), objectSummary.getData().getId());
-                    }
-                });
 
+                MessageBox messageBox =
+                    new MessageBox(HandlerUtil.getActiveShell(event), SWT.YES | SWT.NO | SWT.ICON_QUESTION);
+                messageBox.setMessage(String.format("Do you really want to delete object '%s' from page '%s'?",
+                    objectSummary.getData().getPrettyName(), objectSummary.getPageSummary().getTitle()));
+                int result = messageBox.open();
+                if (result == SWT.YES) {
+                    SafeRunner.run(new XWikiEclipseSafeRunnable()
+                    {
+                        public void run() throws Exception
+                        {
+
+                            objectSummary.getDataManager().removeObject(objectSummary.getData().getPageId(),
+                                objectSummary.getData().getClassName(), objectSummary.getData().getId());
+                        }
+                    });
+                }
             }
 
         }

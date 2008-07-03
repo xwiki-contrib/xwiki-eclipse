@@ -29,6 +29,8 @@ import org.eclipse.ui.model.BaseWorkbenchContentProvider;
 import org.eclipse.ui.progress.DeferredTreeContentManager;
 import org.xwiki.eclipse.core.DataManager;
 import org.xwiki.eclipse.core.DataManagerRegistry;
+import org.xwiki.eclipse.core.model.XWikiEclipseObject;
+import org.xwiki.eclipse.core.model.XWikiEclipsePage;
 import org.xwiki.eclipse.core.notifications.CoreEvent;
 import org.xwiki.eclipse.core.notifications.ICoreEventListener;
 import org.xwiki.eclipse.core.notifications.NotificationManager;
@@ -123,12 +125,9 @@ public class NavigatorContentProvider extends BaseWorkbenchContentProvider imple
                     }
                 });
                 break;
+
             case DATA_MANAGER_CONNECTED:
             case DATA_MANAGER_DISCONNECTED:
-            case PAGE_STORED:
-            case OBJECT_STORED:
-            case PAGE_REMOVED:
-            case OBJECT_REMOVED:
                 Display.getDefault().asyncExec(new Runnable()
                 {
                     public void run()
@@ -138,6 +137,53 @@ public class NavigatorContentProvider extends BaseWorkbenchContentProvider imple
                     }
                 });
                 break;
+
+            case PAGE_STORED:
+                Display.getDefault().asyncExec(new Runnable()
+                {
+                    public void run()
+                    {
+                        XWikiEclipsePage page = (XWikiEclipsePage) event.getData();
+                        viewer.refresh(page.getSummary());
+                    }
+                });
+                break;
+
+            case OBJECT_STORED:
+                Display.getDefault().asyncExec(new Runnable()
+                {
+                    public void run()
+                    {
+                        XWikiEclipseObject object = (XWikiEclipseObject) event.getData();
+                        viewer.refresh(object.getSummary());
+                    }
+
+                });
+                break;
+
+            case PAGE_REMOVED:
+                Display.getDefault().asyncExec(new Runnable()
+                {
+                    public void run()
+                    {
+                        XWikiEclipsePage page = (XWikiEclipsePage) event.getData();
+                        viewer.remove(page.getSummary());
+                    }
+                });
+                break;
+
+            case OBJECT_REMOVED:
+                Display.getDefault().asyncExec(new Runnable()
+                {
+                    public void run()
+                    {
+                        XWikiEclipsePage page = (XWikiEclipsePage) event.getData();
+                        viewer.refresh(page.getSummary());
+                    }
+
+                });
+                break;
+
             case REFRESH:
                 Display.getDefault().asyncExec(new Runnable()
                 {
