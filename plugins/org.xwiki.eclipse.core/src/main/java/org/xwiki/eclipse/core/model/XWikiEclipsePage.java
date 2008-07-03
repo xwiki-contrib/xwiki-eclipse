@@ -23,6 +23,7 @@ package org.xwiki.eclipse.core.model;
 import org.eclipse.core.runtime.Assert;
 import org.xwiki.eclipse.core.DataManager;
 import org.xwiki.xmlrpc.model.XWikiPage;
+import org.xwiki.xmlrpc.model.XWikiPageSummary;
 
 /**
  * A class representing an XWiki page.
@@ -44,6 +45,12 @@ public class XWikiEclipsePage extends ModelObject
     public XWikiPage getData()
     {
         return data;
+    }
+
+    public XWikiEclipsePageSummary getSummary()
+    {
+        XWikiPageSummary summary = new XWikiPageSummary(data.toRawMap());
+        return new XWikiEclipsePageSummary(getDataManager(), summary);
     }
 
     @Override

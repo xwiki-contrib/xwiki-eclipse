@@ -487,6 +487,9 @@ public class DataManager
 
             XWikiEclipseObject result = new XWikiEclipseObject(this, xwikiObject, xwikiClass, xwikiPageSummary);
 
+            /* Fire the stored notification to communicate that the object has been stored in the local storage */
+            NotificationManager.getDefault().fireCoreEvent(CoreEvent.Type.OBJECT_STORED, this, result);
+
             return result;
         } else {
             XWikiClass xwikiClass = localXWikiDataStorage.getClass(className);
@@ -699,25 +702,37 @@ public class DataManager
 
     public void removePage(String pageId) throws XWikiEclipseException
     {
+        XWikiPage page = null;
+
         if (isConnected()) {
+            page = remoteXWikiDataStorage.getPage(pageId);
             remoteXWikiDataStorage.removePage(pageId);
+        } else {
+            page = localXWikiDataStorage.getPage(pageId);
         }
 
         localXWikiDataStorage.removePage(pageId);
 
-        NotificationManager.getDefault().fireCoreEvent(CoreEvent.Type.PAGE_REMOVED, this, null);
-
+        NotificationManager.getDefault().fireCoreEvent(CoreEvent.Type.PAGE_REMOVED, this,
+            new XWikiEclipsePage(this, page));
     }
 
     public void removeObject(String pageId, String className, int objectId) throws XWikiEclipseException
     {
+        XWikiPage page = null;
+
         if (isConnected()) {
+            page = remoteXWikiDataStorage.getPage(pageId);
             remoteXWikiDataStorage.removeObject(pageId, className, objectId);
+        } else {
+            page = localXWikiDataStorage.getPage(pageId);
         }
 
         localXWikiDataStorage.removeObject(pageId, className, objectId);
 
-        NotificationManager.getDefault().fireCoreEvent(CoreEvent.Type.OBJECT_REMOVED, this, pageId);
+        /* Put in the data the page the object belonged to */
+        NotificationManager.getDefault().fireCoreEvent(CoreEvent.Type.OBJECT_REMOVED, this,
+            new XWikiEclipsePage(this, page));
     }
 
     public boolean renamePage(String pageId, String newSpace, String newPageName) throws XWikiEclipseException

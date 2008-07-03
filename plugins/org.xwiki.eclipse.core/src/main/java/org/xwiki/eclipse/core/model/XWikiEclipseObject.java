@@ -27,6 +27,7 @@ import org.eclipse.core.runtime.Assert;
 import org.xwiki.eclipse.core.DataManager;
 import org.xwiki.xmlrpc.model.XWikiClass;
 import org.xwiki.xmlrpc.model.XWikiObject;
+import org.xwiki.xmlrpc.model.XWikiObjectSummary;
 import org.xwiki.xmlrpc.model.XWikiPageSummary;
 
 /**
@@ -116,6 +117,12 @@ public class XWikiEclipseObject extends ModelObject
         return pageSummary;
     }
 
+    public XWikiEclipseObjectSummary getSummary()
+    {
+        XWikiObjectSummary summary = new XWikiObjectSummary(data.toRawMap());
+        return new XWikiEclipseObjectSummary(getDataManager(), summary, pageSummary);
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -126,4 +133,5 @@ public class XWikiEclipseObject extends ModelObject
             .format(
                 "xwikieclipse://%s/%s/%s/%d", getDataManager().getName(), data.getPageId(), data.getClassName(), data.getId()); //$NON-NLS-1$
     }
+
 }
