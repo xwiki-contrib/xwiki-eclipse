@@ -379,6 +379,14 @@ public class DataManager
         XWikiPage remotePage = null;
         try {
             remotePage = remoteXWikiDataStorage.getPage(page.getId());
+
+            if (!remotePage.getLanguage().equals(page.getLanguage())) {
+                /*
+                 * The requested translation has not been found, so we are creating a new translation. We set the
+                 * remotePage to null in order to force the page creation
+                 */
+                remotePage = null;
+            }
         } catch (XWikiEclipseException e) {
             /*
              * This can fail if the remote page does not yet exist. So ignore the exception here and handle the
@@ -387,6 +395,7 @@ public class DataManager
         }
 
         if (remotePage == null) {
+            /* If we are here the page or its translation don't exist. Create it! */
             page = remoteXWikiDataStorage.storePage(page);
 
             localXWikiDataStorage.storePage(page);
