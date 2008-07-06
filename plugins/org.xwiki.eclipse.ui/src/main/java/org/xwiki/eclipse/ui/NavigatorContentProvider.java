@@ -20,6 +20,7 @@
  */
 package org.xwiki.eclipse.ui;
 
+import org.codehaus.swizzle.confluence.SpaceSummary;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.Viewer;
@@ -31,6 +32,7 @@ import org.xwiki.eclipse.core.DataManager;
 import org.xwiki.eclipse.core.DataManagerRegistry;
 import org.xwiki.eclipse.core.model.XWikiEclipseObject;
 import org.xwiki.eclipse.core.model.XWikiEclipsePage;
+import org.xwiki.eclipse.core.model.XWikiEclipseSpaceSummary;
 import org.xwiki.eclipse.core.notifications.CoreEvent;
 import org.xwiki.eclipse.core.notifications.ICoreEventListener;
 import org.xwiki.eclipse.core.notifications.NotificationManager;
@@ -54,7 +56,7 @@ public class NavigatorContentProvider extends BaseWorkbenchContentProvider imple
             new CoreEvent.Type[] {CoreEvent.Type.DATA_MANAGER_REGISTERED, CoreEvent.Type.DATA_MANAGER_UNREGISTERED,
             CoreEvent.Type.DATA_MANAGER_CONNECTED, CoreEvent.Type.DATA_MANAGER_DISCONNECTED,
             CoreEvent.Type.PAGE_STORED, CoreEvent.Type.OBJECT_STORED, CoreEvent.Type.PAGE_REMOVED,
-            CoreEvent.Type.OBJECT_REMOVED, CoreEvent.Type.REFRESH});
+            CoreEvent.Type.OBJECT_REMOVED, CoreEvent.Type.REFRESH, CoreEvent.Type.PAGE_RENAMED});
 
         workingSet = null;
     }
@@ -149,6 +151,25 @@ public class NavigatorContentProvider extends BaseWorkbenchContentProvider imple
                 });
                 break;
 
+            case PAGE_RENAMED:
+                Display.getDefault().asyncExec(new Runnable()
+                {
+                    public void run()
+                    {
+                        XWikiEclipsePage oldPage = ((XWikiEclipsePage[]) event.getData())[0];
+                        XWikiEclipsePage newPage = ((XWikiEclipsePage[]) event.getData())[1];
+
+                        SpaceSummary spaceSummary = new SpaceSummary();
+                        spaceSummary.setKey(newPage.getData().getSpace());
+                        XWikiEclipseSpaceSummary space =
+                            new XWikiEclipseSpaceSummary(newPage.getDataManager(), spaceSummary);
+
+                        viewer.add(newPage.getDataManager(), space);
+                        viewer.add(space, newPage.getSummary());
+                        viewer.remove(oldPage.getSummary());
+                    }
+                });
+                break;
             case OBJECT_STORED:
                 Display.getDefault().asyncExec(new Runnable()
                 {
