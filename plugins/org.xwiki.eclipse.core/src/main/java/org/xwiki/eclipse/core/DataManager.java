@@ -751,7 +751,10 @@ public class DataManager
         localXWikiDataStorage.removePage(pageId);
 
         /* Retrieve the new page for caching it */
-        getPage(String.format("%s.%s", newSpace, newPageName));
+        XWikiEclipsePage newPage = getPage(String.format("%s.%s", newSpace, newPageName));
+
+        XWikiEclipsePage pages[] = new XWikiEclipsePage[] {page, newPage};
+        NotificationManager.getDefault().fireCoreEvent(CoreEvent.Type.PAGE_RENAMED, this, pages);
 
         return true;
     }
