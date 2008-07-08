@@ -223,16 +223,20 @@ public class DataManager
         try {
             ServerInfo serverInfo = remoteXWikiDataStorage.getServerInfo();
 
-            // TODO: Check if the server is Confluence
+            if (serverInfo.getBaseUrl().contains("xwiki")) {
+                if (serverInfo.getMajorVersion() == 1) {
+                    if (serverInfo.getMinorVersion() < 5) {
+                        supportedFunctionalities.remove(Functionality.RENAME);
+                    }
 
-            if (serverInfo.getMajorVersion() == 1) {
-                if (serverInfo.getMinorVersion() < 5) {
-                    supportedFunctionalities.remove(Functionality.RENAME);
+                    if (serverInfo.getMinorVersion() < 4) {
+                        supportedFunctionalities.remove(Functionality.TRANSLATIONS);
+                    }
                 }
-
-                if (serverInfo.getMinorVersion() < 4) {
-                    supportedFunctionalities.remove(Functionality.TRANSLATIONS);
-                }
+            } else {
+                /* We are talking to a confluence server */
+                supportedFunctionalities.remove(Functionality.TRANSLATIONS);
+                supportedFunctionalities.remove(Functionality.OBJECTS);
             }
         } catch (Exception e) {
             /* Here we are talking to an XWiki < 1.4. In this case we only support basic functionalities. */
@@ -380,7 +384,7 @@ public class DataManager
         try {
             remotePage = remoteXWikiDataStorage.getPage(page.getId());
 
-            if (!remotePage.getLanguage().equals(page.getLanguage())) {
+            if (remotePage.getLanguage() != null && !remotePage.getLanguage().equals(page.getLanguage())) {
                 /*
                  * The requested translation has not been found, so we are creating a new translation. We set the
                  * remotePage to null in order to force the page creation
@@ -760,7 +764,12 @@ public class DataManager
         localXWikiDataStorage.removePage(pageId);
 
         /* Retrieve the new page for caching it */
-        XWikiEclipsePage newPage = getPage(String.format("%s.%s", newSpace, newPageName));
+        XWikiEclipsePage newPage;
+        if (pageId.indexOf('.') != -1) {
+            newPage = getPage(String.format("%s.%s", newSpace, newPageName));
+        } else {
+            newPage = getPage(pageId);
+        }
 
         XWikiEclipsePage pages[] = new XWikiEclipsePage[] {page, newPage};
         NotificationManager.getDefault().fireCoreEvent(CoreEvent.Type.PAGE_RENAMED, this, pages);
