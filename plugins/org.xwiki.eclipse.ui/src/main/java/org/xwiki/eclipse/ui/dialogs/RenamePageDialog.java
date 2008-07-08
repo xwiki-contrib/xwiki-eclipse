@@ -194,7 +194,16 @@ public class RenamePageDialog extends TitleAreaDialog
 
         final Text name = new Text(composite, SWT.BORDER);
         GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(name);
-        String[] components = pageSummary.getData().getId().split("\\.");
+
+        if (pageSummary.getData().getId().indexOf('.') != -1) {
+            String[] components = pageSummary.getData().getId().split("\\.");
+            
+            name.setText(components[1]);
+        }
+        else {
+            name.setText(pageSummary.getData().getTitle());
+        }
+        
         name.addModifyListener(new ModifyListener()
         {
             public void modifyText(ModifyEvent e)
@@ -203,7 +212,6 @@ public class RenamePageDialog extends TitleAreaDialog
             }
 
         });
-        name.setText(components[1]);
 
         return composite;
     }

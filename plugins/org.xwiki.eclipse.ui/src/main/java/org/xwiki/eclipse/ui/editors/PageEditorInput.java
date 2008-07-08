@@ -57,13 +57,24 @@ public class PageEditorInput implements IEditorInput
 
     public String getName()
     {
-        XWikiExtendedId extendedId = new XWikiExtendedId(page.getData().getId());
-
         String name = null;
-        if (page.getData().getLanguage().equals("")) {
-            name = String.format("%s", extendedId.getBasePageId());
+
+        /* If the page id does not have a '.' then we are dealing with confluence ids */
+        if (page.getData().getId().indexOf(".") != -1) {
+            XWikiExtendedId extendedId = new XWikiExtendedId(page.getData().getId());
+
+            if (page.getData().getLanguage() != null) {
+                if (page.getData().getLanguage().equals("")) {
+                    name = String.format("%s", extendedId.getBasePageId());
+                } else {
+                    name = String.format("%s [%s]", extendedId.getBasePageId(), page.getData().getLanguage());
+                }
+            } else {
+                name = String.format("%s", extendedId.getBasePageId());
+            }
         } else {
-            name = String.format("%s [%s]", extendedId.getBasePageId(), page.getData().getLanguage());
+            /* This is a confuence page */
+            name = page.getData().getTitle();
         }
 
         return name;

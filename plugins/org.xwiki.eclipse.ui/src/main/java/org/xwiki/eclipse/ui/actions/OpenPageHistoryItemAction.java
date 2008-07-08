@@ -39,8 +39,20 @@ public class OpenPageHistoryItemAction extends Action
 
     public OpenPageHistoryItemAction(XWikiEclipsePageHistorySummary pageHistorySummary)
     {
-        super(String.format("Version %d.%d", pageHistorySummary.getData().getVersion(), pageHistorySummary.getData()
-            .getMinorVersion()));
+        super();
+
+        int version = pageHistorySummary.getData().getVersion();
+        int minorVersion = pageHistorySummary.getData().getMinorVersion();
+
+        /* Compatibility with XWiki 1.3 */
+        if (version > 65536) {
+            int temp = version;
+            version = temp >> 16;
+            minorVersion = temp & 0xFFFF;
+        }
+        
+        setText(String.format("Version %d.%d", version, minorVersion));
+
         this.pageHistorySummary = pageHistorySummary;
     }
 

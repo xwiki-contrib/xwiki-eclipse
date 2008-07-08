@@ -32,6 +32,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
@@ -213,7 +214,7 @@ public class OpenPageDialog extends FilteredItemsSelectionDialog
     protected void fillContentProvider(AbstractContentProvider contentProvider, ItemsFilter itemsFilter,
         final IProgressMonitor progressMonitor) throws CoreException
     {
-        progressMonitor.beginTask("Searching...", IProgressMonitor.UNKNOWN);
+        progressMonitor.beginTask("Searching...", targetDataManagers.size());
 
         for (DataManager dataManager : targetDataManagers) {
             final DataManager currentDataManager = (DataManager) dataManager;
@@ -227,6 +228,10 @@ public class OpenPageDialog extends FilteredItemsSelectionDialog
                         Set<XWikiEclipsePageSummary> pageSummaries = new HashSet<XWikiEclipsePageSummary>();
 
                         List<XWikiEclipseSpaceSummary> spaces = currentDataManager.getSpaces();
+
+                        SubProgressMonitor spm = new SubProgressMonitor(progressMonitor, 1);
+                        spm.beginTask(String.format("Processing  %s", currentDataManager.getName()), spaces.size());
+
                         for (XWikiEclipseSpaceSummary space : spaces) {
                             if (progressMonitor.isCanceled()) {
                                 return;
@@ -236,9 +241,19 @@ public class OpenPageDialog extends FilteredItemsSelectionDialog
                             for (XWikiEclipsePageSummary pageSummary : pages) {
                                 pageSummaries.add(pageSummary);
                             }
+
+                            spm.worked(1);
+
+                            try {
+                                Thread.sleep(2000);
+                            } catch (Exception e) {
+
+                            }
                         }
 
                         dataManagerToPageSummariesMap.put(currentDataManager, pageSummaries);
+
+                        spm.done();
                     }
                 });
             }
@@ -253,7 +268,6 @@ public class OpenPageDialog extends FilteredItemsSelectionDialog
         }
 
         progressMonitor.done();
-
     }
 
     @Override

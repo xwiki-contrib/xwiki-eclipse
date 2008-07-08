@@ -184,10 +184,23 @@ public class PageEditor extends TextEditor implements ICoreEventListener
                     minorVersion = temp & 0xFFFF;
                 }
 
-                XWikiExtendedId extendedId = new XWikiExtendedId(page.getData().getId());
-                form.setText(String.format("%s version %s.%s [Language: %s] %s", extendedId.getBasePageId(), version,
-                    minorVersion, !page.getData().getLanguage().equals("") ? page.getData().getLanguage() : "Default",
-                    input.isReadOnly() ? "[READONLY]" : ""));
+                /* If the page id does not have a '.' then we are dealing with confluence ids */
+                if (page.getData().getId().indexOf('.') != -1) {
+                    XWikiExtendedId extendedId = new XWikiExtendedId(page.getData().getId());
+
+                    String language = "Default";
+                    if (page.getData().getLanguage() != null) {
+                        if (!page.getData().getLanguage().equals("")) {
+                            language = page.getData().getLanguage();
+                        }
+                    }
+
+                    form.setText(String.format("%s version %s.%s [Language: %s] %s", extendedId.getBasePageId(),
+                        version, minorVersion, language, input.isReadOnly() ? "[READONLY]" : ""));
+                } else {
+                    form.setText(String.format("%s version %s.%s %s", page.getData().getTitle(), version, minorVersion,
+                        input.isReadOnly() ? "[READONLY]" : ""));
+                }
             }
 
             if (input.getPage().getDataManager().isInConflict(input.getPage().getData().getId())) {

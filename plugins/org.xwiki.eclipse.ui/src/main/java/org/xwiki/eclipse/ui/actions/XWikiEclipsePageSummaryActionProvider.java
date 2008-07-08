@@ -39,6 +39,7 @@ import org.eclipse.ui.navigator.CommonActionProvider;
 import org.eclipse.ui.navigator.ICommonActionConstants;
 import org.eclipse.ui.navigator.ICommonActionExtensionSite;
 import org.eclipse.ui.navigator.ICommonMenuConstants;
+import org.xwiki.eclipse.core.DataManager;
 import org.xwiki.eclipse.core.Functionality;
 import org.xwiki.eclipse.core.XWikiEclipseException;
 import org.xwiki.eclipse.core.model.XWikiEclipsePage;
@@ -86,7 +87,7 @@ public class XWikiEclipsePageSummaryActionProvider extends CommonActionProvider
     {
         super.fillContextMenu(menu);
         menu.appendToGroup(ICommonMenuConstants.GROUP_OPEN, open);
-
+        
         menu.appendToGroup(ICommonMenuConstants.GROUP_OPEN, getTranslationMenu());
         menu.appendToGroup(ICommonMenuConstants.GROUP_OPEN, getHistoryMenu());
 
@@ -139,44 +140,46 @@ public class XWikiEclipsePageSummaryActionProvider extends CommonActionProvider
                     return menuManager;
                 }
 
-                for (String language : pageSummary.getData().getTranslations()) {
-                    menuManager.add(new OpenPageTranslationAction(pageSummary, language));
-                }
+                if (pageSummary.getData().getTranslations() != null) {
+                    for (String language : pageSummary.getData().getTranslations()) {
+                        menuManager.add(new OpenPageTranslationAction(pageSummary, language));
+                    }
 
-                /* TODO: Checkout the server side. This gives non-deterministic results */
-                menuManager.add(new Separator());
+                    /* TODO: Checkout the server side. This gives non-deterministic results */
+                    menuManager.add(new Separator());
 
-                menuManager.add(new Action("New translation...")
-                {
-                    @Override
-                    public void run()
+                    menuManager.add(new Action("New translation...")
                     {
-                        InputDialog inputDialog =
-                            new InputDialog(Display.getDefault().getActiveShell(), "Translation", "Translation", "",
-                                null);
-                        inputDialog.open();
+                        @Override
+                        public void run()
+                        {
+                            InputDialog inputDialog =
+                                new InputDialog(Display.getDefault().getActiveShell(), "Translation", "Translation",
+                                    "", null);
+                            inputDialog.open();
 
-                        if (inputDialog.getReturnCode() == InputDialog.OK) {
-                            if (!inputDialog.getValue().equals("")) {
-                                String[] components = pageSummary.getData().getId().split("\\.");
+                            if (inputDialog.getReturnCode() == InputDialog.OK) {
+                                if (!inputDialog.getValue().equals("")) {
+                                    String[] components = pageSummary.getData().getId().split("\\.");
 
-                                try {
-                                    XWikiEclipsePage page =
-                                        pageSummary.getDataManager().createPage(components[0], components[1],
-                                            pageSummary.getData().getTitle(), inputDialog.getValue(),
-                                            "Write translation here");
-                                    PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().openEditor(
-                                        new PageEditorInput(page, false), PageEditor.ID);
-                                } catch (XWikiEclipseException e) {
-                                    e.printStackTrace();
-                                } catch (PartInitException e) {
+                                    try {
+                                        XWikiEclipsePage page =
+                                            pageSummary.getDataManager().createPage(components[0], components[1],
+                                                pageSummary.getData().getTitle(), inputDialog.getValue(),
+                                                "Write translation here");
+                                        PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+                                            .openEditor(new PageEditorInput(page, false), PageEditor.ID);
+                                    } catch (XWikiEclipseException e) {
+                                        e.printStackTrace();
+                                    } catch (PartInitException e) {
 
-                                    e.printStackTrace();
+                                        e.printStackTrace();
+                                    }
                                 }
                             }
                         }
-                    }
-                });
+                    });
+                }
             }
         }
 
