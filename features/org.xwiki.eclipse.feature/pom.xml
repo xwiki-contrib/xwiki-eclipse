@@ -34,9 +34,9 @@
   <version>1.2-SNAPSHOT</version>
   <description>XWiki Eclipse Feature</description>
   <scm>
-    <connection>scm:svn:http://svn.xwiki.org/svnroot/xwiki/xwiki-extensions/xwiki-eclipse/trunk</connection>
-    <developerConnection>scm:svn:https://svn.xwiki.org/svnroot/xwiki/xwiki-extensions/xwiki-eclipse/trunk</developerConnection>
-    <url>http://svn.xwiki.org/svnroot/xwiki/xwiki-extensions/xwiki-eclipse/trunk</url>
+    <connection>scm:svn:http://svn.xwiki.org/svnroot/xwiki/xeclipse/trunk</connection>
+    <developerConnection>scm:svn:https://svn.xwiki.org/svnroot/xwiki/xeclipse/trunk</developerConnection>
+    <url>http://svn.xwiki.org/svnroot/xwiki/xeclipse/trunk</url>
   </scm>
   <build>
     <plugins>
