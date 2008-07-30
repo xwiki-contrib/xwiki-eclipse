@@ -72,4 +72,6 @@ public interface IDataStorage
     public boolean exists(String pageId, String className, int objectId);
 
     public List<XWikiPageHistorySummary> getPageHistory(String pageId) throws XWikiEclipseException;
+
+    public List<XWikiPageSummary> getAllPageIds() throws XWikiEclipseException;
 }

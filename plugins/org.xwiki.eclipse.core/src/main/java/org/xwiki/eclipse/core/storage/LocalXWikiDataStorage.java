@@ -40,6 +40,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.xwiki.eclipse.core.CorePlugin;
 import org.xwiki.eclipse.core.XWikiEclipseException;
+import org.xwiki.eclipse.core.model.XWikiEclipsePageSummary;
 import org.xwiki.eclipse.core.utils.CoreUtils;
 import org.xwiki.xmlrpc.model.XWikiClass;
 import org.xwiki.xmlrpc.model.XWikiClassSummary;
@@ -551,5 +552,20 @@ public class LocalXWikiDataStorage implements IDataStorage
     {
         // Currently not supported in local storage.
         return new ArrayList<XWikiPageHistorySummary>();
+    }
+
+    public List<XWikiPageSummary> getAllPageIds() throws XWikiEclipseException
+    {
+        List<XWikiPageSummary> result = new ArrayList<XWikiPageSummary>();
+
+        List<SpaceSummary> spaces = getSpaces();
+        for (SpaceSummary spaceSummary : spaces) {
+            List<XWikiPageSummary> pages = getPages(spaceSummary.getKey());
+            for (XWikiPageSummary pageSummary : pages) {
+                result.add(pageSummary);
+            }
+        }
+
+        return result;
     }
 }

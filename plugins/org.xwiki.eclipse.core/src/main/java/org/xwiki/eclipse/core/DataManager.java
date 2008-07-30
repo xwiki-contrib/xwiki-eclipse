@@ -145,6 +145,7 @@ public class DataManager
         supportedFunctionalities.add(Functionality.OBJECTS);
         supportedFunctionalities.add(Functionality.RENAME);
         supportedFunctionalities.add(Functionality.TRANSLATIONS);
+        supportedFunctionalities.add(Functionality.ALL_PAGES_RETRIEVAL);
     }
 
     /*
@@ -231,12 +232,14 @@ public class DataManager
 
                     if (serverInfo.getMinorVersion() < 4) {
                         supportedFunctionalities.remove(Functionality.TRANSLATIONS);
+                        supportedFunctionalities.remove(Functionality.ALL_PAGES_RETRIEVAL);
                     }
                 }
             } else {
                 /* We are talking to a confluence server */
                 supportedFunctionalities.remove(Functionality.TRANSLATIONS);
                 supportedFunctionalities.remove(Functionality.OBJECTS);
+                supportedFunctionalities.remove(Functionality.ALL_PAGES_RETRIEVAL);
             }
         } catch (Exception e) {
             /* Here we are talking to an XWiki < 1.4. In this case we only support basic functionalities. */
@@ -799,5 +802,34 @@ public class DataManager
     public String getXWikiEclipseId()
     {
         return String.format("xwikieclipse://%s", getName()); //$NON-NLS-1$
+    }
+
+    public List<XWikiEclipsePageSummary> getAllPageIds() throws XWikiEclipseException
+    {
+        List<XWikiEclipsePageSummary> result = new ArrayList<XWikiEclipsePageSummary>();
+
+        if (isConnected()) {
+            if (supportedFunctionalities.contains(Functionality.ALL_PAGES_RETRIEVAL)) {
+                List<XWikiPageSummary> pageSummaries = remoteXWikiDataStorage.getAllPageIds();
+                for (XWikiPageSummary pageSummary : pageSummaries) {
+                    result.add(new XWikiEclipsePageSummary(this, pageSummary));
+                }
+            } else {
+                List<SpaceSummary> spaces = remoteXWikiDataStorage.getSpaces();
+                for (SpaceSummary spaceSummary : spaces) {
+                    List<XWikiPageSummary> pages = remoteXWikiDataStorage.getPages(spaceSummary.getKey());
+                    for (XWikiPageSummary pageSummary : pages) {
+                        result.add(new XWikiEclipsePageSummary(this, pageSummary));
+                    }
+                }
+            }
+        } else {
+            List<XWikiPageSummary> pageSummaries = localXWikiDataStorage.getAllPageIds();
+            for (XWikiPageSummary pageSummary : pageSummaries) {
+                result.add(new XWikiEclipsePageSummary(this, pageSummary));
+            }
+        }
+
+        return result;
     }
 }

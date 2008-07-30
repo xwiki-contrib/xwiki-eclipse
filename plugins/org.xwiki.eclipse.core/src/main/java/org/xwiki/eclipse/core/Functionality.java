@@ -27,5 +27,5 @@ package org.xwiki.eclipse.core;
  */
 public enum Functionality
 {
-    OBJECTS, RENAME, TRANSLATIONS
+    OBJECTS, RENAME, TRANSLATIONS, ALL_PAGES_RETRIEVAL
 }

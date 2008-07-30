@@ -20,9 +20,11 @@
  */
 package org.xwiki.eclipse.core.storage;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.xmlrpc.XmlRpcException;
+import org.codehaus.swizzle.confluence.SearchResult;
 import org.codehaus.swizzle.confluence.ServerInfo;
 import org.codehaus.swizzle.confluence.SpaceSummary;
 import org.eclipse.core.runtime.Assert;
@@ -268,5 +270,26 @@ public class RemoteXWikiDataStorage implements IDataStorage
         } catch (XmlRpcException e) {
             throw new XWikiEclipseException(e);
         }
+    }
+
+    public List<XWikiPageSummary> getAllPageIds() throws XWikiEclipseException
+    {
+        Assert.isTrue(!disposed);
+
+        List<XWikiPageSummary> result = new ArrayList<XWikiPageSummary>();
+
+        try {
+            List<SearchResult> searchResults = rpc.searchAllPagesIds();
+            for (SearchResult searchResult : searchResults) {
+                XWikiPageSummary pageSummary = new XWikiPageSummary();
+                pageSummary.setId(searchResult.getId());
+                pageSummary.setTitle(searchResult.getTitle());
+                result.add(pageSummary);
+            }
+        } catch (XmlRpcException e) {
+            throw new XWikiEclipseException(e);
+        }
+
+        return result;
     }
 }
