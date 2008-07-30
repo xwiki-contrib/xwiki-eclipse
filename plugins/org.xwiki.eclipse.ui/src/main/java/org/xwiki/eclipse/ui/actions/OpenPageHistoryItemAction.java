@@ -50,7 +50,7 @@ public class OpenPageHistoryItemAction extends Action
             version = temp >> 16;
             minorVersion = temp & 0xFFFF;
         }
-        
+
         setText(String.format("Version %d.%d", version, minorVersion));
 
         this.pageHistorySummary = pageHistorySummary;

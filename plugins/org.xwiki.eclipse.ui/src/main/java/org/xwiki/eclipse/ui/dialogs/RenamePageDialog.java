@@ -197,13 +197,12 @@ public class RenamePageDialog extends TitleAreaDialog
 
         if (pageSummary.getData().getId().indexOf('.') != -1) {
             String[] components = pageSummary.getData().getId().split("\\.");
-            
+
             name.setText(components[1]);
-        }
-        else {
+        } else {
             name.setText(pageSummary.getData().getTitle());
         }
-        
+
         name.addModifyListener(new ModifyListener()
         {
             public void modifyText(ModifyEvent e)

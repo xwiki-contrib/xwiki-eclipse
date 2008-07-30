@@ -45,7 +45,7 @@ public class NewObjectHandler extends AbstractHandler
             Object selectedObject = selectedObjects.iterator().next();
             if (selectedObject instanceof XWikiEclipsePageSummary) {
                 XWikiEclipsePageSummary pageSummary = (XWikiEclipsePageSummary) selectedObject;
-                
+
                 if (!pageSummary.getDataManager().getSupportedFunctionalities().contains(Functionality.OBJECTS)) {
                     UIUtils.showMessageDialog(Display.getDefault().getActiveShell(), "Objects not supported",
                         "This data manager is connected to an XWiki that does not support object management.");

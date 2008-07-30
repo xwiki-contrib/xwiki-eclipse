@@ -32,7 +32,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
@@ -53,7 +52,6 @@ import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.xwiki.eclipse.core.DataManager;
 import org.xwiki.eclipse.core.DataManagerRegistry;
 import org.xwiki.eclipse.core.model.XWikiEclipsePageSummary;
-import org.xwiki.eclipse.core.model.XWikiEclipseSpaceSummary;
 import org.xwiki.eclipse.ui.UIPlugin;
 import org.xwiki.eclipse.ui.utils.XWikiEclipseSafeRunnable;
 
@@ -61,7 +59,7 @@ public class OpenPageDialog extends FilteredItemsSelectionDialog
 {
     private Set<DataManager> targetDataManagers;
 
-    private Map<DataManager, Set<XWikiEclipsePageSummary>> dataManagerToPageSummariesMap;
+    private Map<DataManager, List<XWikiEclipsePageSummary>> dataManagerToPageSummariesMap;
 
     private static class OpenPageLabelProvider extends LabelProvider
     {
@@ -99,7 +97,7 @@ public class OpenPageDialog extends FilteredItemsSelectionDialog
         setDetailsLabelProvider(labelProvider);
 
         targetDataManagers = new HashSet<DataManager>();
-        dataManagerToPageSummariesMap = new HashMap<DataManager, Set<XWikiEclipsePageSummary>>();
+        dataManagerToPageSummariesMap = new HashMap<DataManager, List<XWikiEclipsePageSummary>>();
 
         if (dataManager != null) {
             targetDataManagers.add(dataManager);
@@ -152,7 +150,6 @@ public class OpenPageDialog extends FilteredItemsSelectionDialog
             public void dispose()
             {
                 // TODO Auto-generated method stub
-
             }
 
             public void inputChanged(Viewer viewer, Object oldInput, Object newInput)
@@ -225,35 +222,8 @@ public class OpenPageDialog extends FilteredItemsSelectionDialog
                 {
                     public void run() throws Exception
                     {
-                        Set<XWikiEclipsePageSummary> pageSummaries = new HashSet<XWikiEclipsePageSummary>();
-
-                        List<XWikiEclipseSpaceSummary> spaces = currentDataManager.getSpaces();
-
-                        SubProgressMonitor spm = new SubProgressMonitor(progressMonitor, 1);
-                        spm.beginTask(String.format("Processing  %s", currentDataManager.getName()), spaces.size());
-
-                        for (XWikiEclipseSpaceSummary space : spaces) {
-                            if (progressMonitor.isCanceled()) {
-                                return;
-                            }
-
-                            List<XWikiEclipsePageSummary> pages = currentDataManager.getPages(space.getData().getKey());
-                            for (XWikiEclipsePageSummary pageSummary : pages) {
-                                pageSummaries.add(pageSummary);
-                            }
-
-                            spm.worked(1);
-
-                            try {
-                                Thread.sleep(2000);
-                            } catch (Exception e) {
-
-                            }
-                        }
-
+                        List<XWikiEclipsePageSummary> pageSummaries = currentDataManager.getAllPageIds();
                         dataManagerToPageSummariesMap.put(currentDataManager, pageSummaries);
-
-                        spm.done();
                     }
                 });
             }

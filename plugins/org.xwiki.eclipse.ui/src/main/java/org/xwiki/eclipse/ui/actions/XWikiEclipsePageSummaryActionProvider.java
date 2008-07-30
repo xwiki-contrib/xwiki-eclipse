@@ -87,7 +87,7 @@ public class XWikiEclipsePageSummaryActionProvider extends CommonActionProvider
     {
         super.fillContextMenu(menu);
         menu.appendToGroup(ICommonMenuConstants.GROUP_OPEN, open);
-        
+
         menu.appendToGroup(ICommonMenuConstants.GROUP_OPEN, getTranslationMenu());
         menu.appendToGroup(ICommonMenuConstants.GROUP_OPEN, getHistoryMenu());
 
