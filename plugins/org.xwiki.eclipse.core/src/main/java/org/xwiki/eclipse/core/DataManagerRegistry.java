@@ -49,7 +49,7 @@ public class DataManagerRegistry implements IResourceChangeListener
         dataManagers = new ArrayList<DataManager>();
     }
 
-    public static DataManagerRegistry getDefault()
+    public synchronized static DataManagerRegistry getDefault()
     {
         if (sharedInstance == null) {
             sharedInstance = new DataManagerRegistry();

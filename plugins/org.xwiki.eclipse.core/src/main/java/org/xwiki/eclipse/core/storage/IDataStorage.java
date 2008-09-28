@@ -43,6 +43,10 @@ public interface IDataStorage
 
     public List<SpaceSummary> getSpaces() throws XWikiEclipseException;
 
+    public SpaceSummary getSpaceSumary(String spaceKey) throws XWikiEclipseException;
+
+    public void removeSpace(String spaceKey) throws XWikiEclipseException;
+
     public List<XWikiPageSummary> getPages(String spaceKey) throws XWikiEclipseException;
 
     public XWikiPageSummary getPageSummary(String pageId) throws XWikiEclipseException;

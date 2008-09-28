@@ -115,6 +115,28 @@ public class RemoteXWikiDataStorage implements IDataStorage
         }
     }
 
+    public SpaceSummary getSpaceSumary(String spaceKey) throws XWikiEclipseException
+    {
+        List<SpaceSummary> spaces = getSpaces();
+        for (SpaceSummary space : spaces) {
+            if (space.getKey().equals(spaceKey))
+                return space;
+        }
+
+        return null;
+    }
+
+    public synchronized void removeSpace(String spaceKey) throws XWikiEclipseException
+    {
+        Assert.isTrue(!disposed);
+
+        try {
+            rpc.removeSpace(spaceKey);
+        } catch (XmlRpcException e) {
+            throw new XWikiEclipseException(e);
+        }
+    }
+
     public synchronized XWikiPage storePage(XWikiPage page) throws XWikiEclipseException
     {
         Assert.isTrue(!disposed);
@@ -211,13 +233,23 @@ public class RemoteXWikiDataStorage implements IDataStorage
 
     public synchronized boolean exists(String pageId)
     {
-        // TODO implement
+        try {
+            XWikiPage page = getPage(pageId);
+        } catch (XWikiEclipseException e) {
+            return false;
+        }
+
         return true;
     }
 
     public synchronized boolean exists(String pageId, String className, int objectId)
     {
-        // TODO implement
+        try {
+            XWikiObject object = getObject(pageId, className, objectId);
+        } catch (XWikiEclipseException e) {
+            return false;
+        }
+
         return true;
     }
 

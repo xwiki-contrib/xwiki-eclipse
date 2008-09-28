@@ -40,7 +40,6 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.xwiki.eclipse.core.CorePlugin;
 import org.xwiki.eclipse.core.XWikiEclipseException;
-import org.xwiki.eclipse.core.model.XWikiEclipsePageSummary;
 import org.xwiki.eclipse.core.utils.CoreUtils;
 import org.xwiki.xmlrpc.model.XWikiClass;
 import org.xwiki.xmlrpc.model.XWikiClassSummary;
@@ -230,6 +229,44 @@ public class LocalXWikiDataStorage implements IDataStorage
         return result;
     }
 
+    public SpaceSummary getSpaceSumary(String spaceKey) throws XWikiEclipseException
+    {
+        List<SpaceSummary> spaces = getSpaces();
+        for (SpaceSummary space : spaces) {
+            if (space.getKey().equals(spaceKey))
+                return space;
+        }
+
+        return null;
+    }
+
+    public void removeSpace(String spaceKey) throws XWikiEclipseException
+    {
+        // Delete pages
+        List<XWikiPageSummary> pages = getPages(spaceKey);
+        for (XWikiPageSummary page : pages) {
+            removePage(page.getId());
+        }
+
+        // Delete space directory
+        try {
+            final IFolder indexFolder = CoreUtils.createFolder(baseFolder.getFolder(INDEX_DIRECTORY));
+
+            List<IResource> indexFolderResources = getChildResources(indexFolder, IResource.DEPTH_ONE);
+            for (IResource indexFolderResource : indexFolderResources) {
+                if (indexFolderResource instanceof IFolder) {
+                    IFolder folder = (IFolder) indexFolderResource;
+                    if (folder.getName().equals(spaceKey)) {
+                        folder.delete(true, null);
+                        break;
+                    }
+                }
+            }
+        } catch (CoreException e) {
+            throw new XWikiEclipseException(e);
+        }
+    }
+
     public XWikiPage storePage(final XWikiPage page) throws XWikiEclipseException
     {
         try {
@@ -274,6 +311,12 @@ public class LocalXWikiDataStorage implements IDataStorage
                         XWikiPage page = getPage(pageId);
                         if (page == null) {
                             return;
+                        }
+
+                        /* Remove page objects */
+                        List<XWikiObjectSummary> objects = getObjects(pageId);
+                        for (XWikiObjectSummary object : objects) {
+                            removeObject(pageId, object.getClassName(), object.getId());
                         }
 
                         /*

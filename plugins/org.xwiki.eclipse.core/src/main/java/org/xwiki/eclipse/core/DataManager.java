@@ -269,6 +269,19 @@ public class DataManager
     /*
      * Space retrieval
      */
+    public XWikiEclipseSpaceSummary getSpaceSummary(String spaceKey) throws XWikiEclipseException
+    {
+        SpaceSummary space = null;
+
+        if (isConnected()) {
+            space = remoteXWikiDataStorage.getSpaceSumary(spaceKey);
+        } else {
+            space = localXWikiDataStorage.getSpaceSumary(spaceKey);
+        }
+
+        return new XWikiEclipseSpaceSummary(this, space);
+    }
+
     public List<XWikiEclipseSpaceSummary> getSpaces() throws XWikiEclipseException
     {
         List<SpaceSummary> spaceSummaries;
@@ -438,7 +451,7 @@ public class DataManager
         pageToStatusMap.put(pageId, DIRTY_STATUS);
     }
 
-    private void clearPageStatus(String pageId) throws XWikiEclipseException
+    public void clearPageStatus(String pageId) throws XWikiEclipseException
     {
         conflictingPagesDataStorage.removePage(pageId);
         pageToStatusMap.remove(pageId);
@@ -729,26 +742,54 @@ public class DataManager
 
         localXWikiDataStorage.removePage(pageId);
 
+        String spaceKey = page.getSpace();
+
+        List<XWikiEclipsePageSummary> pages = null;
+        try {
+            pages = getPages(spaceKey);
+        } catch (XWikiEclipseException e) {
+            CoreLog.logError("Unable to get space pages: " + e.getMessage());
+        }
+
+        if (pages != null && pages.size() == 0) {
+            // The space is left with no pages so it has to be removed.
+            localXWikiDataStorage.removeSpace(spaceKey);
+        }
+
         NotificationManager.getDefault().fireCoreEvent(CoreEvent.Type.PAGE_REMOVED, this,
             new XWikiEclipsePage(this, page));
     }
 
+    public void removeSpace(String spaceKey) throws XWikiEclipseException
+    {
+        XWikiEclipseSpaceSummary space = getSpaceSummary(spaceKey);
+
+        if (space != null) {
+            remoteXWikiDataStorage.removeSpace(spaceKey);
+            localXWikiDataStorage.removeSpace(spaceKey);
+
+            NotificationManager.getDefault().fireCoreEvent(CoreEvent.Type.SPACE_REMOVED, this, space);
+        }
+    }
+
     public void removeObject(String pageId, String className, int objectId) throws XWikiEclipseException
     {
-        XWikiPage page = null;
+        XWikiObject object = null;
 
         if (isConnected()) {
-            page = remoteXWikiDataStorage.getPage(pageId);
+            object = remoteXWikiDataStorage.getObject(pageId, className, objectId);
             remoteXWikiDataStorage.removeObject(pageId, className, objectId);
         } else {
-            page = localXWikiDataStorage.getPage(pageId);
+            object = localXWikiDataStorage.getObject(pageId, className, objectId);
         }
 
         localXWikiDataStorage.removeObject(pageId, className, objectId);
 
-        /* Put in the data the page the object belonged to */
-        NotificationManager.getDefault().fireCoreEvent(CoreEvent.Type.OBJECT_REMOVED, this,
-            new XWikiEclipsePage(this, page));
+        NotificationManager.getDefault().fireCoreEvent(
+            CoreEvent.Type.OBJECT_REMOVED,
+            this,
+            new XWikiEclipseObject(this, object, getClass(object.getClassName()).getData(), getPageSummary(
+                object.getPageId()).getData()));
     }
 
     public boolean renamePage(String pageId, String newSpace, String newPageName) throws XWikiEclipseException
@@ -831,5 +872,14 @@ public class DataManager
         }
 
         return result;
+    }
+
+    public boolean exists(String pageId)
+    {
+        if (isConnected()) {
+            return remoteXWikiDataStorage.exists(pageId);
+        }
+
+        return localXWikiDataStorage.exists(pageId);
     }
 }

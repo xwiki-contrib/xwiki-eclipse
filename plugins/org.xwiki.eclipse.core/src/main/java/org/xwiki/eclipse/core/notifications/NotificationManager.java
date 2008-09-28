@@ -79,7 +79,7 @@ public class NotificationManager
     /**
      * @return The shared instance.
      */
-    public static NotificationManager getDefault()
+    public synchronized static NotificationManager getDefault()
     {
         if (sharedInstance == null) {
             sharedInstance = new NotificationManager();
@@ -124,7 +124,7 @@ public class NotificationManager
      * @param source The object that generated the event.
      * @param data Additional data associated to the event.
      */
-    public void fireCoreEvent(CoreEvent.Type type, Object source, Object data)
+    public synchronized void fireCoreEvent(CoreEvent.Type type, Object source, Object data)
     {
         CoreEvent coreEvent = new CoreEvent(type, source, data);
         Object[] objects = listenerList.getListeners();
