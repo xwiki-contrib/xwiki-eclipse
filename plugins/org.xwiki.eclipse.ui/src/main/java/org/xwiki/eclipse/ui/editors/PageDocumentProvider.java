@@ -25,9 +25,12 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IDocumentPartitioner;
+import org.eclipse.jface.text.rules.FastPartitioner;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.editors.text.FileDocumentProvider;
 import org.xwiki.eclipse.core.model.XWikiEclipsePage;
+import org.xwiki.eclipse.ui.editors.scanners.XWikiPartitionScanner;
 import org.xwiki.eclipse.ui.utils.XWikiEclipseSafeRunnable;
 
 public class PageDocumentProvider extends FileDocumentProvider
@@ -46,7 +49,14 @@ public class PageDocumentProvider extends FileDocumentProvider
         if (element instanceof PageEditorInput) {
             PageEditorInput pageEditorInput = (PageEditorInput) element;
 
-            return new Document(pageEditorInput.getPage().getData().getContent());
+            IDocument document = new Document(pageEditorInput.getPage().getData().getContent());
+
+            IDocumentPartitioner partitioner =
+                new FastPartitioner(new XWikiPartitionScanner(), XWikiPartitionScanner.ALL_PARTITIONS);
+            partitioner.connect(document);
+            document.setDocumentPartitioner(partitioner);
+
+            return document;
         }
 
         return super.createDocument(element);
