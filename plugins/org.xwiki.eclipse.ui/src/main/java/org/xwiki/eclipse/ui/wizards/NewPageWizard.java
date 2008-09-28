@@ -135,4 +135,8 @@ public class NewPageWizard extends Wizard implements INewWizard
     {
         // Do nothing.
     }
+    
+    public DataManager getDataManager(){
+        return dataManager;
+    }
 }

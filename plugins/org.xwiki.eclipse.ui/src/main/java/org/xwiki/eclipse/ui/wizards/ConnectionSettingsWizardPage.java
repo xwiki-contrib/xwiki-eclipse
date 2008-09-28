@@ -20,6 +20,12 @@
  */
 package org.xwiki.eclipse.ui.wizards;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.wizard.WizardPage;
@@ -69,7 +75,7 @@ public class ConnectionSettingsWizardPage extends WizardPage
         {
             public void modifyText(ModifyEvent e)
             {
-                newConnectionWizardState.setConnectionName(connectionNameText.getText());
+                newConnectionWizardState.setConnectionName(connectionNameText.getText().trim());
                 getContainer().updateButtons();
             }
         });
@@ -90,7 +96,7 @@ public class ConnectionSettingsWizardPage extends WizardPage
         {
             public void modifyText(ModifyEvent e)
             {
-                newConnectionWizardState.setServerUrl(serverUrlText.getText());
+                newConnectionWizardState.setServerUrl(serverUrlText.getText().trim());
                 getContainer().updateButtons();
             }
         });
@@ -106,7 +112,7 @@ public class ConnectionSettingsWizardPage extends WizardPage
         {
             public void modifyText(ModifyEvent e)
             {
-                newConnectionWizardState.setUserName(userNameText.getText().replaceAll(" ", ""));
+                newConnectionWizardState.setUserName(userNameText.getText().trim());
                 getContainer().updateButtons();
             }
         });
@@ -132,18 +138,35 @@ public class ConnectionSettingsWizardPage extends WizardPage
     @Override
     public boolean isPageComplete()
     {
-        if (connectionNameText.getText() == null || connectionNameText.getText().length() == 0) {
+        String connectionName = connectionNameText.getText().trim();
+        
+        if (connectionName.length() == 0) {
             setErrorMessage("Connection name must be specified.");
             return false;
         }
-
-        if (serverUrlText.getText() == null
-            || !(serverUrlText.getText().startsWith("http://") || serverUrlText.getText().startsWith("https://"))) {
-            setErrorMessage("A server URL starting with 'http://' or 'https://' must be specified.");
+        
+        IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
+        final IProject project = workspaceRoot.getProject(connectionName);
+        if (project.exists()) {
+            setErrorMessage(String.format("Connection '%s' already exists. Please choose another name.",
+                connectionName));
             return false;
         }
 
-        if (userNameText.getText() == null || userNameText.getText().length() == 0) {
+        if (serverUrlText.getText() == null || serverUrlText.getText().trim().length() == 0) {
+            setErrorMessage("A server URL must be specified.");
+            return false;
+        }
+        
+        try{
+            if (new URL(serverUrlText.getText().trim()).getHost().equals(""))
+                throw new MalformedURLException("Invalid hostname.");
+        }catch(MalformedURLException me){
+            setErrorMessage("The specified address is not a valid URL.");
+            return false;
+        }
+
+        if (userNameText.getText() == null || userNameText.getText().trim().length() == 0) {
             setErrorMessage("User name must be specified.");
             return false;
         }

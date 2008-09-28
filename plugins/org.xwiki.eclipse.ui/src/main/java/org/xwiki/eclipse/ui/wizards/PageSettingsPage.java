@@ -116,13 +116,32 @@ public class PageSettingsPage extends WizardPage
     @Override
     public boolean isPageComplete()
     {
-        if (spaceText.getText() == null || spaceText.getText().length() == 0) {
-            setErrorMessage("Space must be specified");
+        String spaceTextString = spaceText.getText().trim();
+        if (spaceTextString.length() == 0) {
+            setErrorMessage("Space must be specified.");
+            return false;
+        }
+        
+        if (spaceTextString.contains(":") || spaceTextString.contains("?")){
+            setErrorMessage("Invalid characters in space name.");
             return false;
         }
 
-        if (nameText.getText() == null || nameText.getText().length() == 0) {
-            setErrorMessage("Name must be specified");
+        String nameTextString = nameText.getText().trim();
+        if (nameText.getText().length() == 0) {
+            setErrorMessage("Name must be specified.");
+            return false;
+        }
+        
+        if (nameTextString.contains(":") || nameTextString.contains("?") || nameTextString.contains(".")){
+            setErrorMessage("Invalid characters in page name.");
+            return false;
+        }
+        
+        String pageId = spaceTextString + "." + nameTextString;
+        boolean exists = ((NewPageWizard)getWizard()).getDataManager().exists(pageId);
+        if (exists){
+            setErrorMessage("That page already exists.");
             return false;
         }
 

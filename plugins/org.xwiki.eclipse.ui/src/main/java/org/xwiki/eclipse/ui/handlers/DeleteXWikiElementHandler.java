@@ -31,89 +31,107 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.xwiki.eclipse.core.DataManager;
+import org.xwiki.eclipse.core.DataManagerRegistry;
 import org.xwiki.eclipse.core.model.XWikiEclipseObjectSummary;
 import org.xwiki.eclipse.core.model.XWikiEclipsePageSummary;
+import org.xwiki.eclipse.core.model.XWikiEclipseSpaceSummary;
 import org.xwiki.eclipse.ui.utils.UIUtils;
 import org.xwiki.eclipse.ui.utils.XWikiEclipseSafeRunnable;
 
-public class DeleteXWikiElementHandler extends AbstractHandler {
-	public Object execute(ExecutionEvent event) throws ExecutionException {
-		ISelection selection = HandlerUtil.getCurrentSelection(event);
+public class DeleteXWikiElementHandler extends AbstractHandler
+{
+    public Object execute(ExecutionEvent event) throws ExecutionException
+    {
+        ISelection selection = HandlerUtil.getCurrentSelection(event);
 
-		Set selectedObjects = UIUtils
-				.getSelectedObjectsFromSelection(selection);
-		for (Object selectedObject : selectedObjects) {
-			if (selectedObject instanceof XWikiEclipsePageSummary) {
-				final XWikiEclipsePageSummary pageSummary = (XWikiEclipsePageSummary) selectedObject;
+        Set selectedObjects = UIUtils.getSelectedObjectsFromSelection(selection);
+        for (Object selectedObject : selectedObjects) {
+            if (selectedObject instanceof XWikiEclipsePageSummary) {
+                final XWikiEclipsePageSummary pageSummary = (XWikiEclipsePageSummary) selectedObject;
 
-				MessageBox messageBox = new MessageBox(HandlerUtil
-						.getActiveShell(event), SWT.YES | SWT.NO
-						| SWT.ICON_QUESTION);
-				messageBox.setMessage(String.format(
-						"Do you really want to delete '%s'?", pageSummary
-								.getData().getTitle()));
-				int result = messageBox.open();
-				if (result == SWT.YES) {
-					SafeRunner.run(new XWikiEclipseSafeRunnable() {
-						public void run() throws Exception {
-							pageSummary.getDataManager().removePage(
-									pageSummary.getData().getId());
-						}
-					});
-				}
+                MessageBox messageBox =
+                    new MessageBox(HandlerUtil.getActiveShell(event), SWT.YES | SWT.NO | SWT.ICON_QUESTION);
+                messageBox.setMessage(String.format("Do you really want to delete the page '%s'?", pageSummary
+                    .getData().getTitle()));
+                int result = messageBox.open();
+                if (result == SWT.YES) {
+                    SafeRunner.run(new XWikiEclipseSafeRunnable()
+                    {
+                        public void run() throws Exception
+                        {
+                            pageSummary.getDataManager().removePage(pageSummary.getData().getId());
+                        }
+                    });
+                }
 
-			}
+            }
 
-			if (selectedObject instanceof XWikiEclipseObjectSummary) {
-				final XWikiEclipseObjectSummary objectSummary = (XWikiEclipseObjectSummary) selectedObject;
+            if (selectedObject instanceof XWikiEclipseObjectSummary) {
+                final XWikiEclipseObjectSummary objectSummary = (XWikiEclipseObjectSummary) selectedObject;
 
-				MessageBox messageBox = new MessageBox(HandlerUtil
-						.getActiveShell(event), SWT.YES | SWT.NO
-						| SWT.ICON_QUESTION);
-				messageBox
-						.setMessage(String
-								.format(
-										"Do you really want to delete object '%s' from page '%s'?",
-										objectSummary.getData().getPrettyName(),
-										objectSummary.getPageSummary()
-												.getTitle()));
-				int result = messageBox.open();
-				if (result == SWT.YES) {
-					SafeRunner.run(new XWikiEclipseSafeRunnable() {
-						public void run() throws Exception {
-							objectSummary.getDataManager().removeObject(
-									objectSummary.getData().getPageId(),
-									objectSummary.getData().getClassName(),
-									objectSummary.getData().getId());
-						}
-					});
-				}
-			}
+                MessageBox messageBox =
+                    new MessageBox(HandlerUtil.getActiveShell(event), SWT.YES | SWT.NO | SWT.ICON_QUESTION);
+                messageBox.setMessage(String.format("Do you really want to delete object '%s' from page '%s'?",
+                    objectSummary.getData().getPrettyName(), objectSummary.getPageSummary().getTitle()));
+                int result = messageBox.open();
+                if (result == SWT.YES) {
+                    SafeRunner.run(new XWikiEclipseSafeRunnable()
+                    {
+                        public void run() throws Exception
+                        {
+                            objectSummary.getDataManager().removeObject(objectSummary.getData().getPageId(),
+                                objectSummary.getData().getClassName(), objectSummary.getData().getId());
+                        }
+                    });
+                }
+            }
 
-			if (selectedObject instanceof DataManager) {
-				final DataManager dataManager = (DataManager) selectedObject;
+            if (selectedObject instanceof DataManager) {
+                final DataManager dataManager = (DataManager) selectedObject;
 
-				MessageBox messageBox = new MessageBox(HandlerUtil
-						.getActiveShell(event), SWT.YES | SWT.NO
-						| SWT.ICON_QUESTION);
-				messageBox
-						.setMessage(String
-								.format(
-										"Do you really want to delete the connection '%s'?\n\nWarning: Any unsaved opperations will be lost.",
-										dataManager.getName()));
-				int result = messageBox.open();
-				if (result == SWT.YES) {
-					SafeRunner.run(new XWikiEclipseSafeRunnable() {
-						public void run() throws Exception {
-							dataManager.getProject().delete(true, null);
-						}
-					});
-				}
-			}
+                MessageBox messageBox =
+                    new MessageBox(HandlerUtil.getActiveShell(event), SWT.YES | SWT.NO | SWT.ICON_QUESTION);
+                messageBox
+                    .setMessage(String
+                        .format(
+                            "Do you really want to delete the connection '%s'?\n\nWarning: Any unsaved opperations will be lost.",
+                            dataManager.getName()));
+                int result = messageBox.open();
+                if (result == SWT.YES) {
+                    SafeRunner.run(new XWikiEclipseSafeRunnable()
+                    {
+                        public void run() throws Exception
+                        {
+                            DataManagerRegistry.getDefault().unregister(dataManager);
+                            dataManager.getProject().delete(true, null);
+                        }
+                    });
+                }
+            }
 
-		}
+            if (selectedObject instanceof XWikiEclipseSpaceSummary) {
+                final XWikiEclipseSpaceSummary spaceSummary = (XWikiEclipseSpaceSummary) selectedObject;
 
-		return null;
-	}
+                MessageBox messageBox =
+                    new MessageBox(HandlerUtil.getActiveShell(event), SWT.YES | SWT.NO | SWT.ICON_QUESTION);
+                messageBox.setMessage(String.format("Do you really want to delete ALL the pages under the space '%s'?",
+                    spaceSummary.getData().getName()));
+                int result = messageBox.open();
+                if (result == SWT.YES) {
+                    SafeRunner.run(new XWikiEclipseSafeRunnable()
+                    {
+                        public void run() throws Exception
+                        {
+                            spaceSummary.getDataManager().removeSpace(spaceSummary.getData().getKey());
+                        }
+                    });
+                }
+
+            }
+
+        }
+
+        return null;
+    }
 
 }

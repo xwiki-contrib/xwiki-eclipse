@@ -103,7 +103,7 @@ public class DataManagerPropertiesPage extends PropertyPage
                 String password = dataManager.getPassword();
                 passwordText.setText(password != null ? password : "");
 
-                label = new Label(composite, SWT.BORDER);
+                label = new Label(composite, SWT.NONE);
                 autoConnect = new Button(composite, SWT.CHECK);
                 autoConnect.setText("Auto connect");
                 GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, false).applyTo(autoConnect);

@@ -33,6 +33,7 @@ import org.xwiki.eclipse.core.model.XWikiEclipseObject;
 import org.xwiki.eclipse.core.model.XWikiEclipseObjectSummary;
 import org.xwiki.eclipse.core.model.XWikiEclipsePage;
 import org.xwiki.eclipse.core.model.XWikiEclipsePageSummary;
+import org.xwiki.eclipse.core.model.XWikiEclipseSpaceSummary;
 import org.xwiki.eclipse.core.notifications.CoreEvent;
 import org.xwiki.eclipse.core.notifications.ICoreEventListener;
 import org.xwiki.eclipse.core.notifications.NotificationManager;
@@ -93,7 +94,8 @@ public class PagePreview extends ViewPart implements ISelectionListener, ICoreEv
             new CoreEvent.Type[] {CoreEvent.Type.DATA_MANAGER_CONNECTED, CoreEvent.Type.DATA_MANAGER_DISCONNECTED,
             CoreEvent.Type.DATA_MANAGER_REGISTERED, CoreEvent.Type.DATA_MANAGER_UNREGISTERED,
             CoreEvent.Type.OBJECT_REMOVED, CoreEvent.Type.OBJECT_STORED, CoreEvent.Type.PAGE_REMOVED,
-            CoreEvent.Type.PAGE_STORED, CoreEvent.Type.PAGE_SELECTED, CoreEvent.Type.OBJECT_SELECTED});
+            CoreEvent.Type.PAGE_STORED, CoreEvent.Type.PAGE_SELECTED, CoreEvent.Type.OBJECT_SELECTED,
+            CoreEvent.Type.SPACE_REMOVED});
     }
 
     @Override
@@ -233,7 +235,7 @@ public class PagePreview extends ViewPart implements ISelectionListener, ICoreEv
 
             public void run()
             {
-                if (url != null) {
+                if (url != null && !url.equals("")) {
                     if (isConnected) {
 
                         stackLayout.topControl = browser;
@@ -272,11 +274,21 @@ public class PagePreview extends ViewPart implements ISelectionListener, ICoreEv
             update(page.getData().getUrl(), page.getDataManager().isConnected());
         }
 
+        else
+            
         if (object instanceof XWikiEclipseObject) {
             XWikiEclipseObject xwikiObject = (XWikiEclipseObject) object;
 
             update(xwikiObject.getPageSummary() != null ? xwikiObject.getPageSummary().getUrl() : null, xwikiObject
                 .getDataManager().isConnected());
+        }
+        
+        else
+        
+        if (object instanceof XWikiEclipseSpaceSummary) {
+            XWikiEclipseSpaceSummary xwikiSpaceSummary = (XWikiEclipseSpaceSummary) object;
+
+            update(xwikiSpaceSummary.getData().getUrl(), xwikiSpaceSummary.getDataManager().isConnected());
         }
     }
 

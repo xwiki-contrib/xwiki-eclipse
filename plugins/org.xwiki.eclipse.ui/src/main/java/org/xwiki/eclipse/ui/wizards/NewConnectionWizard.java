@@ -64,8 +64,7 @@ public class NewConnectionWizard extends Wizard implements INewWizard
         }
 
         if (newConnectionWizardState.getServerUrl() == null
-            || !(newConnectionWizardState.getServerUrl().startsWith("http://") || newConnectionWizardState
-                .getServerUrl().startsWith("https://"))) {
+            || newConnectionWizardState.getServerUrl().length() == 0) {
             return false;
         }
 
@@ -76,23 +75,14 @@ public class NewConnectionWizard extends Wizard implements INewWizard
         if (newConnectionWizardState.getPassword() == null || newConnectionWizardState.getPassword().length() == 0) {
             return false;
         }
-
+        
         return super.canFinish();
     }
-
+    
     @Override
     public boolean performFinish()
     {
         WizardPage currentPage = (WizardPage) getContainer().getCurrentPage();
-
-        IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
-
-        final IProject project = workspaceRoot.getProject(newConnectionWizardState.getConnectionName());
-        if (project.exists()) {
-            currentPage.setErrorMessage(String.format("Connection '%s' already exist. Please choose another name.",
-                newConnectionWizardState.getConnectionName()));
-            return false;
-        }
 
         try {
             getContainer().run(true, false, new IRunnableWithProgress()

@@ -20,6 +20,8 @@
  */
 package org.xwiki.eclipse.ui;
 
+import java.util.List;
+
 import org.codehaus.swizzle.confluence.SpaceSummary;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.viewers.AbstractTreeViewer;
@@ -28,10 +30,13 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.model.BaseWorkbenchContentProvider;
 import org.eclipse.ui.progress.DeferredTreeContentManager;
+import org.xwiki.eclipse.core.CoreLog;
 import org.xwiki.eclipse.core.DataManager;
 import org.xwiki.eclipse.core.DataManagerRegistry;
+import org.xwiki.eclipse.core.XWikiEclipseException;
 import org.xwiki.eclipse.core.model.XWikiEclipseObject;
 import org.xwiki.eclipse.core.model.XWikiEclipsePage;
+import org.xwiki.eclipse.core.model.XWikiEclipsePageSummary;
 import org.xwiki.eclipse.core.model.XWikiEclipseSpaceSummary;
 import org.xwiki.eclipse.core.notifications.CoreEvent;
 import org.xwiki.eclipse.core.notifications.ICoreEventListener;
@@ -56,7 +61,8 @@ public class NavigatorContentProvider extends BaseWorkbenchContentProvider imple
             new CoreEvent.Type[] {CoreEvent.Type.DATA_MANAGER_REGISTERED, CoreEvent.Type.DATA_MANAGER_UNREGISTERED,
             CoreEvent.Type.DATA_MANAGER_CONNECTED, CoreEvent.Type.DATA_MANAGER_DISCONNECTED,
             CoreEvent.Type.PAGE_STORED, CoreEvent.Type.OBJECT_STORED, CoreEvent.Type.PAGE_REMOVED,
-            CoreEvent.Type.OBJECT_REMOVED, CoreEvent.Type.REFRESH, CoreEvent.Type.PAGE_RENAMED});
+            CoreEvent.Type.OBJECT_REMOVED, CoreEvent.Type.REFRESH, CoreEvent.Type.PAGE_RENAMED,
+            CoreEvent.Type.SPACE_REMOVED});
 
         workingSet = null;
     }
@@ -118,12 +124,31 @@ public class NavigatorContentProvider extends BaseWorkbenchContentProvider imple
     {
         switch (event.getType()) {
             case DATA_MANAGER_REGISTERED:
+                Display.getDefault().asyncExec(new Runnable()
+                {
+                    public void run()
+                    {
+                        /*
+                         *  FIXME: Find a way to add new DataManagers to the viewer to avoid flicker
+                         *  and loss of expanded state caused by refresh().
+                         *  Tried: viewer.add(dataManager.getProject().getParent(), dataManager) but
+                         *  the data manager that was added could not be expanded. No arrow appeared
+                         *  next to it and isExpandable(dataManager) returns false. The arrow would
+                         *  appear only after issuing refresh(), but that destroys the expanded state
+                         *  of the viewer.
+                         */
+                        viewer.refresh();
+                    }
+                });
+                break;
+                
             case DATA_MANAGER_UNREGISTERED:
                 Display.getDefault().asyncExec(new Runnable()
                 {
                     public void run()
                     {
-                        viewer.refresh();
+                        DataManager dataManager = (DataManager) event.getData();
+                        viewer.remove(dataManager);
                     }
                 });
                 break;
@@ -146,7 +171,26 @@ public class NavigatorContentProvider extends BaseWorkbenchContentProvider imple
                     public void run()
                     {
                         XWikiEclipsePage page = (XWikiEclipsePage) event.getData();
-                        viewer.refresh(page.getSummary());
+                        
+                        // Check if this is a newly created page.
+                        if (page.getData().getVersion() == 1){
+                            // Make sure the new page/space get drawn.
+                            SpaceSummary spaceSummary = new SpaceSummary();
+                            spaceSummary.setKey(page.getData().getSpace());
+                            spaceSummary.setName(page.getData().getSpace());
+                            XWikiEclipseSpaceSummary space =
+                                new XWikiEclipseSpaceSummary(page.getDataManager(), spaceSummary); 
+                            
+                            // If the space did not previously exist, draw it.
+                            if (viewer.testFindItem(space) == null)
+                                viewer.add(page.getDataManager(), space);
+                            
+                            viewer.add(space, page.getSummary());
+                            viewer.expandToLevel(page.getSummary(), 0);
+                        }
+                        else{
+                            viewer.refresh(page.getSummary());
+                        }
                     }
                 });
                 break;
@@ -161,6 +205,7 @@ public class NavigatorContentProvider extends BaseWorkbenchContentProvider imple
 
                         SpaceSummary spaceSummary = new SpaceSummary();
                         spaceSummary.setKey(newPage.getData().getSpace());
+                        spaceSummary.setName(newPage.getData().getSpace());
                         XWikiEclipseSpaceSummary space =
                             new XWikiEclipseSpaceSummary(newPage.getDataManager(), spaceSummary);
 
@@ -170,26 +215,55 @@ public class NavigatorContentProvider extends BaseWorkbenchContentProvider imple
                     }
                 });
                 break;
-            case OBJECT_STORED:
-                Display.getDefault().asyncExec(new Runnable()
-                {
-                    public void run()
-                    {
-                        XWikiEclipseObject object = (XWikiEclipseObject) event.getData();
-                        viewer.refresh(object.getSummary());
-                    }
-
-                });
-                break;
-
+           
             case PAGE_REMOVED:
                 Display.getDefault().asyncExec(new Runnable()
                 {
                     public void run()
                     {
                         XWikiEclipsePage page = (XWikiEclipsePage) event.getData();
-                        viewer.remove(page.getSummary());
+                        String spaceKey = page.getData().getSpace();
+                        
+                        List<XWikiEclipsePageSummary> pages = null;
+                        try{
+                            pages = page.getDataManager().getPages(spaceKey);
+                        } catch (XWikiEclipseException e){
+                            CoreLog.logError("Unable to get space pages: " + e.getMessage());
+                        }
+                        
+                        if (pages != null && pages.size() == 0){
+                            // The space is left with no pages so it has to be removed.
+                            SpaceSummary spaceSummary = new SpaceSummary();
+                            spaceSummary.setKey(spaceKey);
+                            spaceSummary.setName(spaceKey);
+                            
+                            XWikiEclipseSpaceSummary space = new XWikiEclipseSpaceSummary(page.getDataManager(), spaceSummary);
+                            viewer.remove(space);
+                        } else {
+                            viewer.remove(page.getSummary());
+                        }
                     }
+                });
+                break;
+                
+            case OBJECT_STORED:
+                Display.getDefault().asyncExec(new Runnable()
+                {
+                    public void run()
+                    {
+                        XWikiEclipseObject object = (XWikiEclipseObject) event.getData();
+                        XWikiEclipsePageSummary pageSumary = new XWikiEclipsePageSummary(object.getDataManager(), object.getPageSummary());
+                        /*
+                         * FIXME: For lack of a way of knowing whether the object has just been created
+                         * or modified, I chose to refresh all the objects in the page.
+                         * Best way: like the PAGE_STORED event handling, only that, in that case,
+                         * there was a way of knowing if the page was just created and that there were
+                         * visual inconsistencies. Maybe a new OBJECT_CREATED event? This could be an
+                         * elegant solution for the PAGE_STORED too, by introducing a PAGE_CREATED event.
+                         */ 
+                        viewer.refresh(pageSumary);
+                    }
+
                 });
                 break;
 
@@ -198,8 +272,20 @@ public class NavigatorContentProvider extends BaseWorkbenchContentProvider imple
                 {
                     public void run()
                     {
-                        XWikiEclipsePage page = (XWikiEclipsePage) event.getData();
-                        viewer.refresh(page.getSummary());
+                        XWikiEclipseObject object = (XWikiEclipseObject) event.getData();
+                        viewer.remove(object);
+                    }
+
+                });
+                break;
+                
+            case SPACE_REMOVED:
+                Display.getDefault().asyncExec(new Runnable()
+                {
+                    public void run()
+                    {
+                        XWikiEclipseSpaceSummary space = (XWikiEclipseSpaceSummary) event.getData();
+                        viewer.remove(space);
                     }
 
                 });
@@ -209,8 +295,19 @@ public class NavigatorContentProvider extends BaseWorkbenchContentProvider imple
                 Display.getDefault().asyncExec(new Runnable()
                 {
                     public void run()
-                    {
+                    {   
+                        /*
+                         *  FIXME: This should work but it doesn't.
+                         *  
+                         *  Can't get the viewer's expanded elements to restore after a refresh.
+                         *  
+                         *  Tried many things, none seem to work. Any attempt at restoring the expanded
+                         *  state fails, although the viewer's data classes all have equals and hashCode
+                         *  methods overridden in their superclass.
+                         */
+                        Object[] expandedElements = viewer.getVisibleExpandedElements();
                         viewer.refresh(event.getData());
+                        viewer.setExpandedElements(expandedElements);
                     }
                 });
                 break;

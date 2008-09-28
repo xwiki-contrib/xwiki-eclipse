@@ -150,6 +150,9 @@
            <instanceof
                  value="org.xwiki.eclipse.core.model.XWikiEclipseObjectSummary">
            </instanceof>
+           <instanceof
+                 value="org.xwiki.eclipse.core.model.XWikiEclipseSpaceSummary">
+           </instanceof>
         </or>
      </enablement>
   </actionProvider>

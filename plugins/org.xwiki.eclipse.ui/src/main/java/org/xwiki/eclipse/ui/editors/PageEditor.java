@@ -35,6 +35,7 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
@@ -47,6 +48,8 @@ import org.xwiki.eclipse.core.DataManager;
 import org.xwiki.eclipse.core.XWikiEclipseException;
 import org.xwiki.eclipse.core.model.XWikiEclipseObject;
 import org.xwiki.eclipse.core.model.XWikiEclipsePage;
+import org.xwiki.eclipse.core.model.XWikiEclipsePageSummary;
+import org.xwiki.eclipse.core.model.XWikiEclipseSpaceSummary;
 import org.xwiki.eclipse.core.notifications.CoreEvent;
 import org.xwiki.eclipse.core.notifications.ICoreEventListener;
 import org.xwiki.eclipse.core.notifications.NotificationManager;
@@ -103,7 +106,8 @@ public class PageEditor extends TextEditor implements ICoreEventListener
         NotificationManager.getDefault().addListener(
             this,
             new CoreEvent.Type[] {CoreEvent.Type.DATA_MANAGER_CONNECTED, CoreEvent.Type.OBJECT_STORED,
-            CoreEvent.Type.OBJECT_REMOVED});
+            CoreEvent.Type.OBJECT_REMOVED, CoreEvent.Type.REFRESH,
+            CoreEvent.Type.PAGE_REMOVED, CoreEvent.Type.SPACE_REMOVED, CoreEvent.Type.DATA_MANAGER_UNREGISTERED});
     }
 
     @Override
@@ -310,7 +314,11 @@ public class PageEditor extends TextEditor implements ICoreEventListener
         final PageEditorInput input = (PageEditorInput) getEditorInput();
         XWikiEclipsePage page = input.getPage();
         String targetPageId = null;
-        DataManager dataManager = (DataManager) event.getSource();
+        DataManager dataManager = null;
+        if (event.getSource() instanceof DataManager){
+            dataManager = (DataManager) event.getSource();
+        }
+        
         boolean updatePage = false;
 
         switch (event.getType()) {
@@ -327,16 +335,107 @@ public class PageEditor extends TextEditor implements ICoreEventListener
                 updatePage = page.getDataManager().equals(dataManager) && page.getData().getId().equals(targetPageId);
 
                 break;
+                
             case OBJECT_REMOVED:
-                targetPageId = (String) event.getData();
+                targetPageId = ((XWikiEclipseObject)event.getData()).getPageSummary().getId();
 
                 updatePage = page.getDataManager().equals(dataManager) && page.getData().getId().equals(targetPageId);
 
                 break;
+                
             case DATA_MANAGER_CONNECTED:
 
                 updatePage = page.getDataManager().equals(dataManager);
 
+                break;
+                
+            case REFRESH:
+                Object data = event.getData();
+                if (data instanceof DataManager || data instanceof XWikiEclipsePageSummary || 
+                    data instanceof XWikiEclipseSpaceSummary){
+                    
+                    // Check if this refresh event was triggered for the page managed by this editor
+                    if (data instanceof XWikiEclipsePageSummary){
+                        XWikiEclipsePageSummary refreshedPageSummary = (XWikiEclipsePageSummary) data;
+                        if (!refreshedPageSummary.getXWikiEclipseId().equals(page.getSummary().getXWikiEclipseId()))
+                            return;
+                    } else  
+                        
+                    if (data instanceof DataManager){
+                        DataManager aDataManager = (DataManager) data;
+                        
+                        if (!aDataManager.equals(page.getDataManager()))
+                            return;
+                    } else
+                        
+                    if (data instanceof XWikiEclipseSpaceSummary){
+                        XWikiEclipseSpaceSummary space = (XWikiEclipseSpaceSummary) data;
+                        
+                        if (!space.getDataManager().equals(page.getDataManager()) ||
+                            !space.getData().getKey().equals(page.getData().getSpace()))
+                            return;
+                    }
+                    
+                    // Check if the user was in the middle of something.
+                    if (isDirty()){
+                        MessageBox messageBox = new MessageBox(Display.getCurrent().getShells()[0], SWT.YES | SWT.NO | SWT.CANCEL | SWT.ICON_QUESTION);
+                        messageBox.setMessage(String.format("Refreshing the page %s will overwrite your current work on it. Do you wish to save it?", page.getData().getId()));
+                        messageBox.setText("Save work");
+                        this.setFocus();
+                        
+                        int result = messageBox.open();
+                        if (result == SWT.YES) {
+                            this.doSave(null);
+                            
+                            // let the conflict resolution solve any conflict if it is the case.
+                            return;
+                        }else if(result == SWT.CANCEL){
+                            return;
+                        }
+                        
+                        try{
+                            page.getDataManager().clearPageStatus(page.getData().getId());
+                        }catch(Exception ex){
+                            // ignore
+                        }
+                        
+                        // we are here if the user said no
+                    }
+                    
+                    doRevertToSaved();
+                    updatePage = true;
+                }
+                break;
+                
+            case PAGE_REMOVED:
+                XWikiEclipsePage aPage = (XWikiEclipsePage) event.getData();
+                
+                if (aPage.getXWikiEclipseId().equals(page.getXWikiEclipseId())){
+                    // The page being edited has been deleted.
+                    this.close(false);
+                }
+                
+                break;
+                
+            case SPACE_REMOVED:
+                XWikiEclipseSpaceSummary aSpace = (XWikiEclipseSpaceSummary) event.getData();
+                
+                if (aSpace.getDataManager().equals(page.getDataManager()) && 
+                    aSpace.getData().getKey().equals(page.getData().getSpace())){
+                    // The space that the page being edited belonged to has been deleted.
+                    this.close(false);
+                }
+                
+                break;
+                
+            case DATA_MANAGER_UNREGISTERED:
+
+                DataManager aDataManager = (DataManager) event.getData();
+                if (aDataManager.equals(page.getDataManager())){
+                    // The connection that the page being edited belonged to has been deleted.
+                    this.close(false);
+                }
+                
                 break;
         }
 
