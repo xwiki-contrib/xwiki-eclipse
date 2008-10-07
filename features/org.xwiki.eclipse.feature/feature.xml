@@ -2,7 +2,7 @@
 <feature
       id="org.xwiki.eclipse.feature"
       label="XWiki Eclipse Feature"
-      version="1.2.0.20080624"
+      version="1.2.0.20081007"
       provider-name="XWiki">
 
    <description url="http://code.xwiki.org/xwiki/bin/view/Extensions/XEclipseExtension">
