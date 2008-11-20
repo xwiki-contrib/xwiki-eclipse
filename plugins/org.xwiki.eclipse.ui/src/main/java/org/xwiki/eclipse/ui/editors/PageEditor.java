@@ -45,6 +45,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.forms.widgets.Form;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
 import org.eclipse.ui.texteditor.TextOperationAction;
 import org.xwiki.eclipse.core.CoreLog;
 import org.xwiki.eclipse.core.CorePlugin;
@@ -105,8 +106,12 @@ public class PageEditor extends TextEditor implements ICoreEventListener
 
         ResourceBundle bundle = ResourceBundle.getBundle("org.xwiki.eclipse.ui.editors.Editor");
 
-        setAction("ContentAssistProposal", new TextOperationAction(bundle, "ContentAssistProposal.", this,
-            ISourceViewer.CONTENTASSIST_PROPOSALS));
+        Action action =
+            new TextOperationAction(bundle, "ContentAssistProposal.", this, ISourceViewer.CONTENTASSIST_PROPOSALS);
+        String id = ITextEditorActionDefinitionIds.CONTENT_ASSIST_PROPOSALS;
+        action.setActionDefinitionId(id);
+        setAction("ContentAssistProposal", action);
+        markAsStateDependentAction("ContentAssistProposal", true);
     }
 
     @Override
@@ -205,7 +210,9 @@ public class PageEditor extends TextEditor implements ICoreEventListener
                     minorVersion = temp & 0xFFFF;
                 }
 
-                /* If the page id does not have a '.' then we are dealing with confluence ids */
+                /*
+                 * If the page id does not have a '.' then we are dealing with confluence ids
+                 */
                 if (page.getData().getId().indexOf('.') != -1) {
                     XWikiExtendedId extendedId = new XWikiExtendedId(page.getData().getId());
 
@@ -371,7 +378,8 @@ public class PageEditor extends TextEditor implements ICoreEventListener
                 if (data instanceof DataManager || data instanceof XWikiEclipsePageSummary
                     || data instanceof XWikiEclipseSpaceSummary) {
 
-                    // Check if this refresh event was triggered for the page managed by this editor
+                    // Check if this refresh event was triggered for the page
+                    // managed by this editor
                     if (data instanceof XWikiEclipsePageSummary) {
                         XWikiEclipsePageSummary refreshedPageSummary = (XWikiEclipsePageSummary) data;
                         if (!refreshedPageSummary.getXWikiEclipseId().equals(page.getSummary().getXWikiEclipseId()))
@@ -408,7 +416,8 @@ public class PageEditor extends TextEditor implements ICoreEventListener
                         if (result == SWT.YES) {
                             this.doSave(null);
 
-                            // let the conflict resolution solve any conflict if it is the case.
+                            // let the conflict resolution solve any conflict if it
+                            // is the case.
                             return;
                         } else if (result == SWT.CANCEL) {
                             return;
@@ -443,7 +452,8 @@ public class PageEditor extends TextEditor implements ICoreEventListener
 
                 if (aSpace.getDataManager().equals(page.getDataManager())
                     && aSpace.getData().getKey().equals(page.getData().getSpace())) {
-                    // The space that the page being edited belonged to has been deleted.
+                    // The space that the page being edited belonged to has been
+                    // deleted.
                     this.close(false);
                 }
 
@@ -453,7 +463,8 @@ public class PageEditor extends TextEditor implements ICoreEventListener
 
                 DataManager aDataManager = (DataManager) event.getData();
                 if (aDataManager.equals(page.getDataManager())) {
-                    // The connection that the page being edited belonged to has been deleted.
+                    // The connection that the page being edited belonged to has
+                    // been deleted.
                     this.close(false);
                 }
 
