@@ -49,6 +49,7 @@ import org.eclipse.ui.forms.widgets.Form;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
 import org.eclipse.ui.texteditor.TextOperationAction;
+import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.xwiki.eclipse.core.CoreLog;
 import org.xwiki.eclipse.core.CorePlugin;
 import org.xwiki.eclipse.core.DataManager;
@@ -76,6 +77,8 @@ public class PageEditor extends TextEditor implements ICoreEventListener
     private boolean conflictDialogDisplayed;
 
     private EditConflictAction editConflictAction;
+
+    private Object outlinePage;
 
     private class EditConflictAction extends Action
     {
@@ -560,4 +563,18 @@ public class PageEditor extends TextEditor implements ICoreEventListener
     {
         getSourceViewer().getTextWidget().setSelectionRange(start, length);
     }
+
+    @Override
+    public Object getAdapter(Class adapter)
+    {
+        if(IContentOutlinePage.class.equals(adapter)) {
+            if(outlinePage == null) {
+                outlinePage = new XWikiContentOutlinePage(getDocument());
+            }
+            
+            return outlinePage;
+        }
+        return super.getAdapter(adapter);
+    }
+        
 }
