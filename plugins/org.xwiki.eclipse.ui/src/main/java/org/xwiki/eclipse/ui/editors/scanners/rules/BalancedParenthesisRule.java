@@ -62,6 +62,14 @@ public class BalancedParenthesisRule implements IPredicateRule
                     if (parenthesis == 0) {
                         return token;
                     }
+                    /*
+                     * If we find some closing parenthesis that leads to an unbalanced situation, then this parenthesis
+                     * is part of the enclosing #directive. Unread it
+                     */
+                    else if (parenthesis < 0) {
+                        scanner.unread();
+                        return token;
+                    }
                 }
             }
 
