@@ -569,7 +569,7 @@ public class PageEditor extends TextEditor implements ICoreEventListener
     {
         if(IContentOutlinePage.class.equals(adapter)) {
             if(outlinePage == null) {
-                outlinePage = new XWikiContentOutlinePage(getDocument());
+                outlinePage = new XWikiContentOutlinePage(this);
             }
             
             return outlinePage;

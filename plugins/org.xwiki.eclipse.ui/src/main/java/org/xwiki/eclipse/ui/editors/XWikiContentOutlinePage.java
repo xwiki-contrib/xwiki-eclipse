@@ -27,8 +27,10 @@ import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.DocumentEvent;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Composite;
@@ -36,20 +38,27 @@ import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
 
 public class XWikiContentOutlinePage extends ContentOutlinePage implements IDocumentListener
 {
-    private IDocument document;
+    private PageEditor pageEditor;
 
     private static class HeadingInfo {
         private int offset;
-        private String title;
+        private int length;
+        private String title;   
 
-        public HeadingInfo(int offset, String title) {
+        public HeadingInfo(int offset, int length, String title) {
             this.offset = offset;
+            this.length = length;
             this.title = title;
         }
 
         public int getOffset()
         {
-            return offset;
+            return offset; 
+        }
+        
+        public int getLength()
+        {
+            return length;
         }
 
         public String getTitle()
@@ -112,7 +121,7 @@ public class XWikiContentOutlinePage extends ContentOutlinePage implements IDocu
                     }
                     
                     if(isHeading(line)) {
-                        headings.add(new HeadingInfo(start, line));
+                        headings.add(new HeadingInfo(start, length, line));
                     }
                 } catch (BadLocationException e) {
                     /* Should never happen */
@@ -145,9 +154,9 @@ public class XWikiContentOutlinePage extends ContentOutlinePage implements IDocu
 
     }
 
-    public XWikiContentOutlinePage(IDocument document)
+    public XWikiContentOutlinePage(PageEditor pageEditor)
     {
-        this.document = document;
+        this.pageEditor = pageEditor;
     }
 
     @Override
@@ -160,8 +169,8 @@ public class XWikiContentOutlinePage extends ContentOutlinePage implements IDocu
         viewer.setContentProvider(new HeadingInfoContentProvider());
         viewer.setLabelProvider(new HeadingInfoLabelProvider());
         viewer.addSelectionChangedListener(this);
-        viewer.setInput(document);  
-        document.addDocumentListener(this);
+        viewer.setInput(pageEditor.getDocument());  
+        pageEditor.getDocument().addDocumentListener(this);
     }
 
     public void documentAboutToBeChanged(DocumentEvent event)
@@ -178,8 +187,22 @@ public class XWikiContentOutlinePage extends ContentOutlinePage implements IDocu
     @Override
     public void dispose()
     {
-        document.removeDocumentListener(this);
+        pageEditor.getDocument().removeDocumentListener(this);
+        getTreeViewer().removeSelectionChangedListener(this);
         super.dispose();
+    }
+
+    @Override
+    public void selectionChanged(SelectionChangedEvent event)
+    {
+        IStructuredSelection selection = (IStructuredSelection) event.getSelection();
+        Object object = selection.getFirstElement();
+        if(object instanceof HeadingInfo) {
+            HeadingInfo headingInfo = (HeadingInfo) object;
+            pageEditor.setSelectionRange(headingInfo.getOffset(), headingInfo.getLength());
+        }
+        
+        super.selectionChanged(event);
     }
     
 }
