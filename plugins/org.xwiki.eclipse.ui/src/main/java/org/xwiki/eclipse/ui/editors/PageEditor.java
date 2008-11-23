@@ -23,8 +23,10 @@ package org.xwiki.eclipse.ui.editors;
 import java.util.ResourceBundle;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.IContributionItem;
@@ -155,7 +157,7 @@ public class PageEditor extends TextEditor implements ICoreEventListener
 
         updateInfo();
     }
-
+    
     @Override
     protected void doSetInput(IEditorInput input) throws CoreException
     {
@@ -163,23 +165,34 @@ public class PageEditor extends TextEditor implements ICoreEventListener
             throw new CoreException(new Status(IStatus.ERROR, CorePlugin.PLUGIN_ID, "Invalid input for editor"));
         }
 
-        PageEditorInput pageEditorInput = (PageEditorInput) input;
+        PageEditorInput currentPageEditorInput = (PageEditorInput) getEditorInput();
+        PageEditorInput newPageEditorInput = (PageEditorInput) input;
 
         ISourceViewer sourceViewer = getSourceViewer();
         if (sourceViewer != null) {
+            // Remember caret position and selection in the text.
             int caretOffset = sourceViewer.getTextWidget().getCaretOffset();
             int topPixel = sourceViewer.getTextWidget().getTopPixel();
-            super.doSetInput(pageEditorInput);
+            rememberSelection();
+            
+            // Replace the XWikiEclipsePage associated to our PageEditorInput instead of replacing the input itself.
+            currentPageEditorInput.setPage(newPageEditorInput.getPage(), newPageEditorInput.isReadOnly());
+            
+            IDocument currentDocument = getDocumentProvider().getDocument(currentPageEditorInput);
+            String newContent = newPageEditorInput.getPage().getData().getContent();
+            
+            // Display the new content in the current document.
+            currentDocument.set(newContent);
+            
+            // Restore caret position and selection in the text
+            restoreSelection();
             sourceViewer.getTextWidget().setCaretOffset(caretOffset);
             sourceViewer.getTextWidget().setTopPixel(topPixel);
-
-            if (!conflictDialogDisplayed) {
-                handleConflict();
-            }
         } else {
-            super.doSetInput(pageEditorInput);
+            // Editor has just been created.
+            super.doSetInput(newPageEditorInput);
 
-            if (pageEditorInput.getPage().getDataManager().isInConflict(pageEditorInput.getPage().getData().getId())) {
+            if (newPageEditorInput.getPage().getDataManager().isInConflict(newPageEditorInput.getPage().getData().getId())) {
                 UIUtils
                     .showMessageDialog(
                         getSite().getShell(),
@@ -191,6 +204,34 @@ public class PageEditor extends TextEditor implements ICoreEventListener
         }
 
         updateInfo();
+        
+        if (sourceViewer != null && !conflictDialogDisplayed) {
+            /*
+             * Check for and handle conflicts related to this page.
+             */
+            Job handleConflictJob = new Job("Handle Conflict Job"){
+                /*
+                 * This needs to be run after the doSetInput() returns or the editor
+                 * will not be dirty and the user will not be able to save changes.
+                 */
+                protected IStatus run(IProgressMonitor monitor) {
+                    while(isDirty()){
+                        // wait for setInput() to finish properly.
+                        try {
+                            Thread.sleep(100);
+                        } catch (InterruptedException e) {}
+                    }
+                    
+                    Display.getDefault().asyncExec(new Runnable(){
+                        public void run(){
+                            handleConflict();
+                        }
+                    });
+                    return Status.OK_STATUS;
+                }
+            };
+            handleConflictJob.schedule();
+        }
     }
 
     private void updateInfo()
@@ -263,7 +304,7 @@ public class PageEditor extends TextEditor implements ICoreEventListener
         XWikiEclipsePage currentPage = input.getPage();
         DataManager dataManager = currentPage.getDataManager();
 
-        if (dataManager.isInConflict(currentPage.getData().getId())) {
+        if (dataManager.isInConflict(currentPage.getData().getId())) {            
             try {
                 XWikiEclipsePage conflictingPage = dataManager.getConflictingPage(currentPage.getData().getId());
 
@@ -283,22 +324,12 @@ public class PageEditor extends TextEditor implements ICoreEventListener
                         newPage.setContent(currentPage.getData().getContent());
                         dataManager.clearConflictingStatus(newPage.getId());
                         setInput(new PageEditorInput(new XWikiEclipsePage(dataManager, newPage), input.isReadOnly()));
-
-                        /* Force the editor to be dirty */
-                        getDocumentProvider().getDocument(getEditorInput()).set(
-                            getDocumentProvider().getDocument(getEditorInput()).get());
-
-                        conflictDialogDisplayed = false;
+                        
                         break;
                     case PageConflictDialog.ID_USE_REMOTE:
                         dataManager.clearConflictingStatus(conflictingPage.getData().getId());
                         setInput(new PageEditorInput(conflictingPage, input.isReadOnly()));
 
-                        /* Force the editor to be dirty */
-                        getDocumentProvider().getDocument(getEditorInput()).set(
-                            getDocumentProvider().getDocument(getEditorInput()).get());
-
-                        conflictDialogDisplayed = false;
                         break;
                     case PageConflictDialog.ID_MERGE:
                         newPage = new XWikiPage(conflictingPage.getData().toRawMap());
@@ -307,15 +338,13 @@ public class PageEditor extends TextEditor implements ICoreEventListener
                         dataManager.clearConflictingStatus(newPage.getId());
                         setInput(new PageEditorInput(new XWikiEclipsePage(dataManager, newPage), input.isReadOnly()));
 
-                        /* Force the editor to be dirty */
-                        getDocumentProvider().getDocument(getEditorInput()).set(
-                            getDocumentProvider().getDocument(getEditorInput()).get());
-
-                        conflictDialogDisplayed = false;
                         break;
                     default:
-                        break;
+                        return;
                 }
+                
+                conflictDialogDisplayed = false;
+                
             } catch (XWikiEclipseException e) {
                 CoreLog.logError("Error while handling conflict", e);
             }

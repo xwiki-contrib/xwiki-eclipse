@@ -35,9 +35,7 @@ public class PageEditorInput implements IEditorInput
 
     public PageEditorInput(XWikiEclipsePage page, boolean readOnly)
     {
-        Assert.isNotNull(page);
-        this.page = page;
-        this.readOnly = readOnly;
+        setPage(page, readOnly);
     }
 
     public boolean isReadOnly()
@@ -98,6 +96,13 @@ public class PageEditorInput implements IEditorInput
     public XWikiEclipsePage getPage()
     {
         return page;
+    }
+    
+    public void setPage(XWikiEclipsePage page, boolean readOnly)
+    {
+        Assert.isNotNull(page);
+        this.page = page;
+        this.readOnly = readOnly;
     }
 
     @Override
