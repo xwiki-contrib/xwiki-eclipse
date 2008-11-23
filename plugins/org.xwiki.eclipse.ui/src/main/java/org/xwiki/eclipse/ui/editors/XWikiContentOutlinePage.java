@@ -1,3 +1,23 @@
+/*
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ *
+ */
 package org.xwiki.eclipse.ui.editors;
 
 import java.util.ArrayList;
@@ -97,8 +117,7 @@ public class XWikiContentOutlinePage extends ContentOutlinePage implements IDocu
                 } catch (BadLocationException e) {
                     /* Should never happen */
                     e.printStackTrace();
-                }
-                
+                }                
             }
             
             return headings.toArray();
@@ -117,13 +136,11 @@ public class XWikiContentOutlinePage extends ContentOutlinePage implements IDocu
         public void dispose()
         {
             // TODO Auto-generated method stub
-
         }
 
         public void inputChanged(Viewer viewer, Object oldInput, Object newInput)
         {
             // TODO Auto-generated method stub
-
         }
 
     }
@@ -164,4 +181,5 @@ public class XWikiContentOutlinePage extends ContentOutlinePage implements IDocu
         document.removeDocumentListener(this);
         super.dispose();
     }
+    
 }
