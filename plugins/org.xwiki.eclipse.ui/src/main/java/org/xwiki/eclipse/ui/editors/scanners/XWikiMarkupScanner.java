@@ -67,24 +67,48 @@ public class XWikiMarkupScanner extends RuleBasedScanner
         RegExRule regExRule = new RegExRule("1 .*\n?", heading1Token);
         regExRule.setColumnConstraint(0);
         rules.add(regExRule);
+        
+        regExRule = new RegExRule("= .*\n?", heading1Token);
+        regExRule.setColumnConstraint(0);
+        rules.add(regExRule);
 
         regExRule = new RegExRule("1.1 .*\n?", heading2Token);
+        regExRule.setColumnConstraint(0);
+        rules.add(regExRule);
+        
+        regExRule = new RegExRule("== .*\n?", heading1Token);
         regExRule.setColumnConstraint(0);
         rules.add(regExRule);
 
         regExRule = new RegExRule("1.1.1 .*\n?", heading3Token);
         regExRule.setColumnConstraint(0);
         rules.add(regExRule);
+        
+        regExRule = new RegExRule("=== .*\n?", heading1Token);
+        regExRule.setColumnConstraint(0);
+        rules.add(regExRule);
 
         regExRule = new RegExRule("1.1.1.1 .*\n?", heading4Token);
+        regExRule.setColumnConstraint(0);
+        rules.add(regExRule);
+        
+        regExRule = new RegExRule("==== .*\n?", heading1Token);
         regExRule.setColumnConstraint(0);
         rules.add(regExRule);
 
         regExRule = new RegExRule("1.1.1.1.1 .*\n?", heading5Token);
         regExRule.setColumnConstraint(0);
         rules.add(regExRule);
+        
+        regExRule = new RegExRule("===== .*\n?", heading1Token);
+        regExRule.setColumnConstraint(0);
+        rules.add(regExRule);
 
         regExRule = new RegExRule("1.1.1.1.1.1 .*\n?", heading6Token);
+        regExRule.setColumnConstraint(0);
+        rules.add(regExRule);
+        
+        regExRule = new RegExRule("====== .*\n?", heading1Token);
         regExRule.setColumnConstraint(0);
         rules.add(regExRule);
 
@@ -92,15 +116,20 @@ public class XWikiMarkupScanner extends RuleBasedScanner
         regExRule.setColumnConstraint(0);
         rules.add(regExRule);
 
+        rules.add(new SingleLineRule("**", "**", boldToken, '\\'));        
         rules.add(new SingleLineRule("*", "*", boldToken, '\\'));
         rules.add(new SingleLineRule("~~", "~~", italicToken, '\\'));
+        rules.add(new SingleLineRule("//", "//", italicToken, '\\'));
         rules.add(new SingleLineRule("[", "]", linkToken, '\\'));
         rules.add(new SingleLineRule("__", "__", otherStyleToken, '\\'));
         rules.add(new SingleLineRule("--", "--", otherStyleToken, '\\'));
         rules.add(new SingleLineRule("<tt>", "</tt>", otherStyleToken, '\\'));
+        rules.add(new SingleLineRule("##", "##", otherStyleToken, '\\'));        
         rules.add(new SingleLineRule("<sub>", "</sub>", otherStyleToken, '\\'));
+        rules.add(new SingleLineRule(",,", ",,", otherStyleToken, '\\'));
         rules.add(new SingleLineRule("<sup>", "</sup>", otherStyleToken, '\\'));
-
+        rules.add(new SingleLineRule("^^", "^^", otherStyleToken, '\\'));
+        rules.add(new SingleLineRule("(% style", "%)", otherStyleToken, '\\'));
         rules.add(new SingleLineRule("{image:", "}", imageToken, '\\'));
 
         rules.add(new BalancedParenthesisRule('$', identifierToken));

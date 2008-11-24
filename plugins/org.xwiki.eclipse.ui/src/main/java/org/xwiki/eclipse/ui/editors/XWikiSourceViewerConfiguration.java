@@ -73,8 +73,15 @@ public class XWikiSourceViewerConfiguration extends TextSourceViewerConfiguratio
         reconciler.setDamager(dr, XWikiPartitionScanner.XWIKI_TABLE);
         reconciler.setRepairer(dr, XWikiPartitionScanner.XWIKI_TABLE);
 
-        /* Use a uniform style for code blocks. */
+        /* Use a uniform style for html blocks. */
         RuleBasedScanner codeScanner = new RuleBasedScanner();
+        codeScanner.setDefaultReturnToken(new Token(Preferences.getDefault().getTextAttribute(Preferences.Style.HTML)));
+        dr = new DefaultDamagerRepairer(codeScanner);
+        reconciler.setDamager(dr, XWikiPartitionScanner.XWIKI_HTML);
+        reconciler.setRepairer(dr, XWikiPartitionScanner.XWIKI_HTML);
+        
+        /* Use a uniform style for code blocks. */
+        codeScanner = new RuleBasedScanner();
         codeScanner.setDefaultReturnToken(new Token(Preferences.getDefault().getTextAttribute(Preferences.Style.CODE)));
         dr = new DefaultDamagerRepairer(codeScanner);
         reconciler.setDamager(dr, XWikiPartitionScanner.XWIKI_CODE);

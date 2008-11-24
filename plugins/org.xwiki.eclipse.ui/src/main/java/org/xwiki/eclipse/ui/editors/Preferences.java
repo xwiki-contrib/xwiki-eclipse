@@ -36,7 +36,7 @@ public class Preferences
 {
     public enum Style
     {
-        HEADING1, HEADING2, HEADING3, HEADING4, HEADING5, HEADING6, BOLD, ITALIC, UNDERLINE, STRIKEOUT, LINK, LIST_BULLET, TT, MACRO, IMAGE, SUPERSCRIPT, SUBSCRIPT, IDENTIFIER, CODE
+        HEADING1, HEADING2, HEADING3, HEADING4, HEADING5, HEADING6, BOLD, ITALIC, UNDERLINE, STRIKEOUT, LINK, LIST_BULLET, TT, MACRO, IMAGE, SUPERSCRIPT, SUBSCRIPT, IDENTIFIER, CODE, HTML
     }
 
     private static Preferences sharedInstance;
@@ -103,6 +103,9 @@ public class Preferences
         stylesToTextAttributeMap.put(Style.CODE, new TextAttribute(Display.getDefault().getSystemColor(
             SWT.COLOR_DARK_GRAY), null, SWT.BOLD, ttFont));
 
+        stylesToTextAttributeMap.put(Style.HTML, new TextAttribute(Display.getDefault().getSystemColor(
+            SWT.COLOR_DARK_YELLOW), null, SWT.NONE));
+        
         defaultTextAttribute = new TextAttribute(Display.getDefault().getSystemColor(SWT.COLOR_BLUE), null, SWT.NONE);
     }
 
