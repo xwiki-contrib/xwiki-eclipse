@@ -25,6 +25,8 @@ import java.util.Set;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.SWT;
@@ -104,6 +106,7 @@ public class DeleteXWikiElementHandler extends AbstractHandler
                         {
                             DataManagerRegistry.getDefault().unregister(dataManager);
                             dataManager.getProject().delete(true, null);
+                            ResourcesPlugin.getWorkspace().save(true, new NullProgressMonitor());
                         }
                     });
                 }

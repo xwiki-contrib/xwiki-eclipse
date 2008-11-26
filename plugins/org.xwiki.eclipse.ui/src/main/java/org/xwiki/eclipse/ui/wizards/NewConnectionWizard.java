@@ -28,6 +28,7 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
@@ -134,6 +135,8 @@ public class NewConnectionWizard extends Wizard implements INewWizard
                         IProjectDescription description = project.getDescription();
                         description.setNatureIds(new String[] {XWikiEclipseNature.ID});
                         project.setDescription(description, null);
+                        
+                        ResourcesPlugin.getWorkspace().save(true, new NullProgressMonitor());
                     } catch (CoreException e) {
                         throw new InvocationTargetException(e, e.getMessage());
                     }
