@@ -36,7 +36,7 @@ public class Preferences
 {
     public enum Style
     {
-        HEADING1, HEADING2, HEADING3, HEADING4, HEADING5, HEADING6, BOLD, ITALIC, UNDERLINE, STRIKEOUT, LINK, LIST_BULLET, TT, MACRO, IMAGE, SUPERSCRIPT, SUBSCRIPT, IDENTIFIER, CODE, HTML
+        HEADING1, HEADING2, HEADING3, HEADING4, HEADING5, HEADING6, BOLD, ITALIC, UNDERLINE, STRIKEOUT, LINK, LIST_BULLET, TT, MACRO, IMAGE, SUPERSCRIPT, SUBSCRIPT, IDENTIFIER, CODE, HTML, DEFINITION_TERM
     }
 
     private static Preferences sharedInstance;
@@ -81,9 +81,15 @@ public class Preferences
         stylesToTextAttributeMap.put(Style.SUPERSCRIPT, attribute);
         stylesToTextAttributeMap.put(Style.SUBSCRIPT, attribute);
 
-        stylesToTextAttributeMap.put(Style.LINK, new TextAttribute(Display.getDefault().getSystemColor(
-            SWT.COLOR_DARK_RED), null, SWT.BOLD));
-
+        attribute = new TextAttribute(Display.getDefault().getSystemColor(
+            SWT.COLOR_DARK_RED), null, SWT.BOLD);
+        stylesToTextAttributeMap.put(Style.LINK, attribute);
+        stylesToTextAttributeMap.put(Style.IMAGE, attribute);
+        
+        stylesToTextAttributeMap.put(Style.DEFINITION_TERM, new TextAttribute(Display.getDefault().getSystemColor(
+            SWT.COLOR_DARK_YELLOW), null, SWT.NONE));
+        
+        
         stylesToTextAttributeMap.put(Style.IDENTIFIER, new TextAttribute(Display.getDefault().getSystemColor(
             SWT.COLOR_DARK_CYAN), null, SWT.BOLD));
 
@@ -92,7 +98,6 @@ public class Preferences
 
         attribute = new TextAttribute(Display.getDefault().getSystemColor(SWT.COLOR_DARK_MAGENTA), null, SWT.BOLD);
         stylesToTextAttributeMap.put(Style.MACRO, attribute);
-        stylesToTextAttributeMap.put(Style.IMAGE, attribute);
 
         Font ttFont =
             new Font(Display.getDefault(), "Courier", JFaceResources.getDefaultFont().getFontData()[0].getHeight(),

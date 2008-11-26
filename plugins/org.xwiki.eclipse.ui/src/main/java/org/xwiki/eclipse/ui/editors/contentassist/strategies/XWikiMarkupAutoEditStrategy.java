@@ -70,7 +70,19 @@ public class XWikiMarkupAutoEditStrategy implements IAutoEditStrategy
                 if (bullet != null) {
                     configureCommand(command, bullet, bullet.length());
                 }
-            }
+            } else if (command.text.equals("/")) {
+                if (document.getChar(command.offset - 1) == '/') {
+                    configureCommand(command, "///", 1);
+                }
+            } else if (command.text.equals(",")) {
+                if (document.getChar(command.offset - 1) == ',') {
+                    configureCommand(command, ",,,", 1);
+                }
+            } else if (command.text.equals("^")) {
+                if(document.getChar(command.offset - 1) == '^') {
+                    configureCommand(command, "^^^", 1);
+                }                
+             }
         } catch (BadLocationException e) {
         }
     }

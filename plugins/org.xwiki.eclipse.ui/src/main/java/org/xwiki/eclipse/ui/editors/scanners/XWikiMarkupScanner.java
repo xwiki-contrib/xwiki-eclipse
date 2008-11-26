@@ -48,6 +48,8 @@ public class XWikiMarkupScanner extends RuleBasedScanner
 
         IToken listBulletToken = new Token(Preferences.getDefault().getTextAttribute(Preferences.Style.LIST_BULLET));
 
+        IToken definitionTermToken = new Token(Preferences.getDefault().getTextAttribute(Preferences.Style.DEFINITION_TERM));
+        
         IToken heading1Token = new Token(Preferences.getDefault().getTextAttribute(Preferences.Style.HEADING1));
         IToken heading2Token = new Token(Preferences.getDefault().getTextAttribute(Preferences.Style.HEADING2));
         IToken heading3Token = new Token(Preferences.getDefault().getTextAttribute(Preferences.Style.HEADING3));
@@ -116,6 +118,10 @@ public class XWikiMarkupScanner extends RuleBasedScanner
         regExRule.setColumnConstraint(0);
         rules.add(regExRule);
 
+        regExRule = new RegExRule(Constants.DEFINITION_TERM_PATTERN, definitionTermToken);
+        regExRule.setColumnConstraint(0);
+        rules.add(regExRule);
+        
         rules.add(new SingleLineRule("**", "**", boldToken, '\\'));        
         rules.add(new SingleLineRule("*", "*", boldToken, '\\'));
         rules.add(new SingleLineRule("~~", "~~", italicToken, '\\'));
@@ -131,7 +137,8 @@ public class XWikiMarkupScanner extends RuleBasedScanner
         rules.add(new SingleLineRule("^^", "^^", otherStyleToken, '\\'));
         rules.add(new SingleLineRule("(% style", "%)", otherStyleToken, '\\'));
         rules.add(new SingleLineRule("{image:", "}", imageToken, '\\'));
-
+        rules.add(new SingleLineRule("image:", " ", imageToken, '\\'));
+        
         rules.add(new BalancedParenthesisRule('$', identifierToken));
 
         setRules(rules.toArray(new IRule[rules.size()]));
