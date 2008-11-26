@@ -39,9 +39,6 @@ import org.xwiki.eclipse.ui.editors.PageEditor;
 import org.xwiki.eclipse.ui.editors.VelocityDirectiveType;
 import org.xwiki.eclipse.ui.editors.utils.Utils;
 
-/**
- * @author fmancinelli, venkatesh, malaka
- */
 public class MacroContentAssistProcessor implements IContentAssistProcessor
 {
     private static Pattern MACRO_DECLARATION_PATTERN = Pattern.compile("#macro *\\( *([\\p{Alnum}_]+)");

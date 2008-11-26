@@ -32,9 +32,6 @@ import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.jface.text.contentassist.IContextInformationValidator;
 import org.xwiki.eclipse.ui.editors.utils.Utils;
 
-/**
- * @author fmancinelli, venkatesh, malaka
- */
 public class XWikiStyleContentAssistProcessor implements IContentAssistProcessor
 {
     public ICompletionProposal[] computeCompletionProposals(ITextViewer viewer, int offset)

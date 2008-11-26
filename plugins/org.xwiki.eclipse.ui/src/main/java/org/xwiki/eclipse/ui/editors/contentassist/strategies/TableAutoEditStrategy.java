@@ -23,9 +23,6 @@ import org.eclipse.jface.text.DocumentCommand;
 import org.eclipse.jface.text.IAutoEditStrategy;
 import org.eclipse.jface.text.IDocument;
 
-/**
- * @author fmancinelli, venkatesh, malaka
- */
 public class TableAutoEditStrategy implements IAutoEditStrategy
 {
     public void customizeDocumentCommand(IDocument document, DocumentCommand command)

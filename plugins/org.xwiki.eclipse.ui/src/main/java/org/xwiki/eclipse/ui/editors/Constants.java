@@ -20,9 +20,6 @@
  */
 package org.xwiki.eclipse.ui.editors;
 
-/**
- * @author fmancinelli, venkatesh, malaka
- */
 public class Constants
 {
     public static final String LIST_BULLET_PATTERN =

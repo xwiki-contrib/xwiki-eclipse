@@ -34,9 +34,6 @@ import org.eclipse.ui.editors.text.TextEditorActionContributor;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.RetargetTextEditorAction;
 
-/**
- * @author fmancinelli, venkatesh, malaka
- */
 public class XWikiEditorActionContributor extends TextEditorActionContributor
 {
     private RetargetTextEditorAction contentAssistProposal;

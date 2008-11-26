@@ -31,8 +31,6 @@ import org.eclipse.jface.text.contentassist.IContextInformationValidator;
 
 /**
  * A content assist processor that re-groups other assist processor and queries them for getting proposals.
- * 
- * @author fmancinelli (based on work of malaka, venkatesh)
  */
 public class CompoundContentAssistProcessor implements IContentAssistProcessor
 {

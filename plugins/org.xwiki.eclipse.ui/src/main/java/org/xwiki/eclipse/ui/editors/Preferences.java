@@ -29,9 +29,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.widgets.Display;
 
-/**
- * @author fmancinelli, venkatesh, malaka
- */
 public class Preferences
 {
     public enum Style

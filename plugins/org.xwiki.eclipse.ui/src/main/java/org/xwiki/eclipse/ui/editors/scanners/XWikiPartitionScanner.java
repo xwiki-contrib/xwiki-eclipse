@@ -30,9 +30,6 @@ import org.eclipse.jface.text.rules.RuleBasedPartitionScanner;
 import org.eclipse.jface.text.rules.Token;
 import org.xwiki.eclipse.ui.editors.scanners.rules.BalancedParenthesisRule;
 
-/**
- * @author fmancinelli, venkatesh, malaka
- */
 public class XWikiPartitionScanner extends RuleBasedPartitionScanner
 {
     public static final String XWIKI_HTML = "__xwiki_html";

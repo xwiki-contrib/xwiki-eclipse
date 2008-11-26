@@ -31,9 +31,6 @@ import org.eclipse.jface.text.rules.Token;
 import org.xwiki.eclipse.ui.editors.Preferences;
 import org.xwiki.eclipse.ui.editors.scanners.rules.BalancedParenthesisRule;
 
-/**
- * @author fmancinelli, venkatesh, malaka
- */
 public class VelocityScanner extends RuleBasedScanner
 {
     public VelocityScanner()

@@ -30,9 +30,6 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
 import org.xwiki.eclipse.ui.editors.Constants;
 
-/**
- * @author fmancinelli, venkatesh, malaka
- */
 public class XWikiMarkupAutoEditStrategy implements IAutoEditStrategy
 {
     private Pattern listBulletPattern = Pattern.compile(String.format("^(?:%s)", Constants.LIST_BULLET_PATTERN));

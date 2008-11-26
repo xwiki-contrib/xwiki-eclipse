@@ -46,9 +46,6 @@ import org.xwiki.eclipse.ui.editors.scanners.VelocityScanner;
 import org.xwiki.eclipse.ui.editors.scanners.XWikiMarkupScanner;
 import org.xwiki.eclipse.ui.editors.scanners.XWikiPartitionScanner;
 
-/**
- * @author fmancinelli, venkatesh, malaka
- */
 public class XWikiSourceViewerConfiguration extends TextSourceViewerConfiguration
 {
     private PageEditor pageEditor = null;

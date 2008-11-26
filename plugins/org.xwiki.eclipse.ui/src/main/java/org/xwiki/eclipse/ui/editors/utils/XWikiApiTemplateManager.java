@@ -38,9 +38,6 @@ import org.xwiki.eclipse.ui.UIPlugin;
 import org.xwiki.eclipse.ui.editors.Constants;
 import org.xwiki.eclipse.ui.editors.XWikiApiType;
 
-/**
- * @author fmancinelli, malaka
- */
 public class XWikiApiTemplateManager
 {
     private static XWikiApiTemplateManager sharedInstance;

@@ -35,9 +35,6 @@ import org.xwiki.eclipse.core.model.XWikiEclipsePageSummary;
 import org.xwiki.eclipse.ui.UIPlugin;
 import org.xwiki.eclipse.ui.editors.utils.Utils;
 
-/**
- * @author fmancinelli, venkatesh, malaka
- */
 public class XWikiLinkContentAssistProcessor implements IContentAssistProcessor
 {
     private DataManager dataManager;
