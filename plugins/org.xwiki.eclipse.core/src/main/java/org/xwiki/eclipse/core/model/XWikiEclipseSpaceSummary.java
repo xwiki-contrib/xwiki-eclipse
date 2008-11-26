@@ -26,8 +26,6 @@ import org.xwiki.eclipse.core.DataManager;
 
 /**
  * A class representing a space summary.
- * 
- * @author fmancinelli
  */
 public class XWikiEclipseSpaceSummary extends ModelObject
 {

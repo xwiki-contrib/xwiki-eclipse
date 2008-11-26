@@ -26,8 +26,6 @@ import org.xwiki.xmlrpc.model.XWikiPageHistorySummary;
 
 /**
  * A class representing a space summary.
- * 
- * @author fmancinelli
  */
 public class XWikiEclipsePageHistorySummary extends ModelObject
 {

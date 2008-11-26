@@ -34,8 +34,6 @@ import org.xwiki.xmlrpc.model.XWikiPageSummary;
 
 /**
  * An interface for an abstract XWiki data storage component.
- * 
- * @author fmancinelli
  */
 public interface IDataStorage
 {

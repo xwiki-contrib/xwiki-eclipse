@@ -26,8 +26,6 @@ import org.xwiki.xmlrpc.model.XWikiClassSummary;
 
 /**
  * A class representing an XWiki class.
- * 
- * @author fmancinelli
  */
 public class XWikiEclipseClassSummary extends ModelObject
 {

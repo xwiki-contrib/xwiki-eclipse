@@ -30,8 +30,6 @@ import org.xwiki.eclipse.core.CoreLog;
 
 /**
  * A class that implements a Map from strings to strings, that saves its content to the disk.
- * 
- * @author fmancinelli
  */
 public class PersistentMap
 {

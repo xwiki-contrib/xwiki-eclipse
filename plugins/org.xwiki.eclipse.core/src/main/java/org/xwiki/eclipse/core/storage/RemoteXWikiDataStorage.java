@@ -40,8 +40,6 @@ import org.xwiki.xmlrpc.model.XWikiPageSummary;
 
 /**
  * This class implements a remote XWiki data storage. Basically it wraps the XWiki XMLRPC interface.
- * 
- * @author fmancinelli
  */
 public class RemoteXWikiDataStorage implements IDataStorage
 {

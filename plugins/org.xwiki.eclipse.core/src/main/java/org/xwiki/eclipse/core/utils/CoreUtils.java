@@ -37,8 +37,6 @@ import com.thoughtworks.xstream.io.xml.DomDriver;
 
 /**
  * A class containing utility methods.
- * 
- * @author fmancinelli
  */
 public class CoreUtils
 {

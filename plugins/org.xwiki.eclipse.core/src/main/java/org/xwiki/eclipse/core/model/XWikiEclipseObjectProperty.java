@@ -25,8 +25,6 @@ import org.eclipse.core.runtime.Assert;
 /**
  * This class is an utility class used for encapsulating and accessing the information concerning a property in a more
  * usable way (in this way properties can be compactly passed around using a single reference)
- * 
- * @author fmancinelli
  */
 public class XWikiEclipseObjectProperty extends ModelObject
 {

@@ -59,8 +59,6 @@ import org.xwiki.xmlrpc.model.XWikiPageSummary;
 /**
  * A class that implements a controller for handling data and the connection towards an XWiki server. It takes care of
  * synchronizing pages, objects, handling local copies, conflicts, etc.
- * 
- * @author fmancinelli
  */
 public class DataManager
 {

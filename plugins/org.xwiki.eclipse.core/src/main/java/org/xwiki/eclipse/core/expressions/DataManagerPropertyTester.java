@@ -27,8 +27,6 @@ import org.xwiki.eclipse.core.DataManager;
 /**
  * This is a property tester for the Eclipse Core Expression framework for building expression containing conditions
  * about data managers. It is used in declarative handler definitions for activating/de-activating handlers.
- * 
- * @author fmancinelli
  */
 public class DataManagerPropertyTester extends PropertyTester
 {

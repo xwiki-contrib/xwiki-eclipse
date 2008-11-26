@@ -28,7 +28,6 @@ import org.xwiki.eclipse.core.DataManager;
  * to associate the elements returned by XWiki to the data manager that retrieved them.
  * 
  * @see DataManager
- * @author fmancinelli
  */
 public abstract class ModelObject
 {

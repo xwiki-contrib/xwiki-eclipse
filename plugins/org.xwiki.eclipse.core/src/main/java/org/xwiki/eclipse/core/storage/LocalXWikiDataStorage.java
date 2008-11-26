@@ -80,8 +80,6 @@ import org.xwiki.xmlrpc.model.XWikiPageSummary;
  * </pre>
  * 
  * All xe* files contains an XML serialization of the corresponding XWiki Eclipse elements.
- * 
- * @author fmancinelli
  */
 public class LocalXWikiDataStorage implements IDataStorage
 {

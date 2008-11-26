@@ -27,8 +27,6 @@ import org.xwiki.xmlrpc.model.XWikiPageSummary;
 
 /**
  * A class representing an XWiki page.
- * 
- * @author fmancinelli
  */
 public class XWikiEclipsePage extends ModelObject
 {
