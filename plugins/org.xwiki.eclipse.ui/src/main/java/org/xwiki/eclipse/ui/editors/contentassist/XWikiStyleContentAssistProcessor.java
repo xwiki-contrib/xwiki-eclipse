@@ -41,9 +41,9 @@ public class XWikiStyleContentAssistProcessor implements IContentAssistProcessor
         IDocument document = viewer.getDocument();
 
         /* Check if we are in the middle of something where markup is not allowed */
-        String linkPrefix = Utils.getPrefix(document, offset, '[', "]");
-        String variablePrefix = Utils.getPrefix(document, offset, '$', " (\n");
-        String macroPrefix = Utils.getPrefix(document, offset, '#', "$(\n");
+        String linkPrefix = Utils.getPrefix(document, offset, "[>", "]");
+        String variablePrefix = Utils.getPrefix(document, offset, "$", " (\n");
+        String macroPrefix = Utils.getPrefix(document, offset, "#", "$(\n");
 
         if (linkPrefix == null && variablePrefix == null && macroPrefix == null) {
             result.add(new CompletionProposal("**", offset, 0, 1, null, "* Bold", null, null));

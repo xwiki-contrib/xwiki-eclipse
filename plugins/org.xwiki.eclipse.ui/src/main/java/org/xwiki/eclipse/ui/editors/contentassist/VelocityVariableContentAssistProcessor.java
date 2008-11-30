@@ -53,7 +53,7 @@ public class VelocityVariableContentAssistProcessor implements IContentAssistPro
     public ICompletionProposal[] computeCompletionProposals(ITextViewer viewer, int offset)
     {
         IDocument document = viewer.getDocument();
-        String variablePrefix = Utils.getPrefix(document, offset, '$', " (\n");
+        String variablePrefix = Utils.getPrefix(document, offset, "$", " (\n");
 
         if (variablePrefix != null) {
             if (!variablePrefix.contains(".")) { // Normal variable proposal

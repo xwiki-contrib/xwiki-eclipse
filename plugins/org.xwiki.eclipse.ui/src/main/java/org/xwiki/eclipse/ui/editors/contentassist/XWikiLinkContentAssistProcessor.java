@@ -50,7 +50,7 @@ public class XWikiLinkContentAssistProcessor implements IContentAssistProcessor
 
         IDocument document = viewer.getDocument();
 
-        String linkPrefix = Utils.getPrefix(document, offset, '[', "]");
+        String linkPrefix = Utils.getPrefix(document, offset, "[>", "]");
 
         if (linkPrefix != null) {
             List<XWikiEclipsePageSummary> pageSummaries =

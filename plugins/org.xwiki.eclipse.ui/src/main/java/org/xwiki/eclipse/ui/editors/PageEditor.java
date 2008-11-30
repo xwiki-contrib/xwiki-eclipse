@@ -562,6 +562,7 @@ public class PageEditor extends TextEditor implements ICoreEventListener
     public void setSelectionRange(int start, int length)
     {
         getSourceViewer().getTextWidget().setSelectionRange(start, length);
+        getSourceViewer().getTextWidget().showSelection();
     }
 
     @Override

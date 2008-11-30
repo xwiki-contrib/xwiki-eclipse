@@ -53,7 +53,7 @@ public class MacroContentAssistProcessor implements IContentAssistProcessor
         List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
 
         IDocument document = viewer.getDocument();
-        String macroPrefix = Utils.getPrefix(document, offset, '#', "$(\n");
+        String macroPrefix = Utils.getPrefix(document, offset, "#", "$(\n");
         if (macroPrefix != null) {
             for (String directive : getMacros(document, offset)) {
                 if (directive.startsWith(macroPrefix)) {

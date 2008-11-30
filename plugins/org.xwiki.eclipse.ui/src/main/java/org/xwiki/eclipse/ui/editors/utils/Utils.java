@@ -39,7 +39,7 @@ public class Utils
      * @param blockingCharacters A string containing all the blocking characters that will make the scanning fail.
      * @return The found prefix or null if a blocking character is encountered or if the starCharacter is not found.
      */
-    public static String getPrefix(IDocument document, int offset, char startCharacter, String blockingCharacters)
+    public static String getPrefix(IDocument document, int offset, String startCharacters, String blockingCharacters)
     {
         String result = null;
 
@@ -56,7 +56,7 @@ public class Utils
                     break;
                 }
 
-                if (document.getChar(currentOffset) == startCharacter) {
+                if (startCharacters.indexOf(document.getChar(currentOffset)) != -1) {
                     result = document.get(currentOffset + 1, offset - currentOffset - 1);
                     break;
                 }
