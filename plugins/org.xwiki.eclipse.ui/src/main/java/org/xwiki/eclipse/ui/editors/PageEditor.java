@@ -35,6 +35,7 @@ import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.source.ISourceViewer;
+import org.eclipse.jface.text.source.IVerticalRuler;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.FillLayout;
@@ -120,6 +121,15 @@ public class PageEditor extends TextEditor implements ICoreEventListener
     }
 
     @Override
+    protected ISourceViewer createSourceViewer(Composite parent, IVerticalRuler ruler, int styles)
+    {
+        ISourceViewer viewer = super.createSourceViewer(parent, ruler, styles);
+        viewer.getTextWidget().setWordWrap(true);
+        
+        return viewer;
+    }
+
+    @Override
     public void dispose()
     {
         NotificationManager.getDefault().removeListener(this);
@@ -160,7 +170,7 @@ public class PageEditor extends TextEditor implements ICoreEventListener
 
         updateInfo();
     }
-    
+
     @Override
     protected void doSetInput(IEditorInput input) throws CoreException
     {
@@ -177,16 +187,16 @@ public class PageEditor extends TextEditor implements ICoreEventListener
             int caretOffset = sourceViewer.getTextWidget().getCaretOffset();
             int topPixel = sourceViewer.getTextWidget().getTopPixel();
             rememberSelection();
-            
+
             // Replace the XWikiEclipsePage associated to our PageEditorInput instead of replacing the input itself.
             currentPageEditorInput.setPage(newPageEditorInput.getPage(), newPageEditorInput.isReadOnly());
-            
+
             IDocument currentDocument = getDocumentProvider().getDocument(currentPageEditorInput);
             String newContent = newPageEditorInput.getPage().getData().getContent();
-            
+
             // Display the new content in the current document.
             currentDocument.set(newContent);
-            
+
             // Restore caret position and selection in the text
             restoreSelection();
             sourceViewer.getTextWidget().setCaretOffset(caretOffset);
@@ -195,7 +205,8 @@ public class PageEditor extends TextEditor implements ICoreEventListener
             // Editor has just been created.
             super.doSetInput(newPageEditorInput);
 
-            if (newPageEditorInput.getPage().getDataManager().isInConflict(newPageEditorInput.getPage().getData().getId())) {
+            if (newPageEditorInput.getPage().getDataManager().isInConflict(
+                newPageEditorInput.getPage().getData().getId())) {
                 UIUtils
                     .showMessageDialog(
                         getSite().getShell(),
@@ -207,26 +218,31 @@ public class PageEditor extends TextEditor implements ICoreEventListener
         }
 
         updateInfo();
-        
+
         if (sourceViewer != null && !conflictDialogDisplayed) {
             /*
              * Check for and handle conflicts related to this page.
              */
-            Job handleConflictJob = new Job("Handle Conflict Job"){
+            Job handleConflictJob = new Job("Handle Conflict Job")
+            {
                 /*
-                 * This needs to be run after the doSetInput() returns or the editor
-                 * will not be dirty and the user will not be able to save changes.
+                 * This needs to be run after the doSetInput() returns or the editor will not be dirty and the user will
+                 * not be able to save changes.
                  */
-                protected IStatus run(IProgressMonitor monitor) {
-                    while(isDirty()){
+                protected IStatus run(IProgressMonitor monitor)
+                {
+                    while (isDirty()) {
                         // wait for setInput() to finish properly.
                         try {
                             Thread.sleep(100);
-                        } catch (InterruptedException e) {}
+                        } catch (InterruptedException e) {
+                        }
                     }
-                    
-                    Display.getDefault().asyncExec(new Runnable(){
-                        public void run(){
+
+                    Display.getDefault().asyncExec(new Runnable()
+                    {
+                        public void run()
+                        {
                             handleConflict();
                         }
                     });
@@ -307,7 +323,7 @@ public class PageEditor extends TextEditor implements ICoreEventListener
         XWikiEclipsePage currentPage = input.getPage();
         DataManager dataManager = currentPage.getDataManager();
 
-        if (dataManager.isInConflict(currentPage.getData().getId())) {            
+        if (dataManager.isInConflict(currentPage.getData().getId())) {
             try {
                 XWikiEclipsePage conflictingPage = dataManager.getConflictingPage(currentPage.getData().getId());
 
@@ -327,7 +343,7 @@ public class PageEditor extends TextEditor implements ICoreEventListener
                         newPage.setContent(currentPage.getData().getContent());
                         dataManager.clearConflictingStatus(newPage.getId());
                         setInput(new PageEditorInput(new XWikiEclipsePage(dataManager, newPage), input.isReadOnly()));
-                        
+
                         break;
                     case PageConflictDialog.ID_USE_REMOTE:
                         dataManager.clearConflictingStatus(conflictingPage.getData().getId());
@@ -345,9 +361,9 @@ public class PageEditor extends TextEditor implements ICoreEventListener
                     default:
                         return;
                 }
-                
+
                 conflictDialogDisplayed = false;
-                
+
             } catch (XWikiEclipseException e) {
                 CoreLog.logError("Error while handling conflict", e);
             }
@@ -568,14 +584,14 @@ public class PageEditor extends TextEditor implements ICoreEventListener
     @Override
     public Object getAdapter(Class adapter)
     {
-        if(IContentOutlinePage.class.equals(adapter)) {
-            if(outlinePage == null) {
+        if (IContentOutlinePage.class.equals(adapter)) {
+            if (outlinePage == null) {
                 outlinePage = new XWikiContentOutlinePage(this);
             }
-            
+
             return outlinePage;
         }
         return super.getAdapter(adapter);
     }
-        
+
 }
