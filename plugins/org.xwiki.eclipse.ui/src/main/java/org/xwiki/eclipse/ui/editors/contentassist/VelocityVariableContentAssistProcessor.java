@@ -83,10 +83,14 @@ public class VelocityVariableContentAssistProcessor implements IContentAssistPro
             } else { // API proposal
                 int index = variablePrefix.indexOf('.');
 
-                XWikiApiType xwikiApiType = XWikiApiType.valueOf(variablePrefix.substring(0, index).toUpperCase());
-                XWikiApiCompletionProcessor xwikiAPIProcessor = new XWikiApiCompletionProcessor(xwikiApiType);
+                try {
+                    XWikiApiType xwikiApiType = XWikiApiType.valueOf(variablePrefix.substring(0, index).toUpperCase());
+                    XWikiApiCompletionProcessor xwikiAPIProcessor = new XWikiApiCompletionProcessor(xwikiApiType);
 
-                return xwikiAPIProcessor.computeCompletionProposals(viewer, offset);
+                    return xwikiAPIProcessor.computeCompletionProposals(viewer, offset);
+                } catch (Exception e) {
+                    return null;
+                }
             }
         }
 
