@@ -25,6 +25,7 @@ import java.util.ResourceBundle;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.Action;
@@ -343,11 +344,15 @@ public class PageEditor extends TextEditor implements ICoreEventListener
                         newPage.setContent(currentPage.getData().getContent());
                         dataManager.clearConflictingStatus(newPage.getId());
                         setInput(new PageEditorInput(new XWikiEclipsePage(dataManager, newPage), input.isReadOnly()));
+                        
+                        doSave(new NullProgressMonitor());
 
                         break;
                     case PageConflictDialog.ID_USE_REMOTE:
                         dataManager.clearConflictingStatus(conflictingPage.getData().getId());
                         setInput(new PageEditorInput(conflictingPage, input.isReadOnly()));
+                        
+                        doSave(new NullProgressMonitor());
 
                         break;
                     case PageConflictDialog.ID_MERGE:
