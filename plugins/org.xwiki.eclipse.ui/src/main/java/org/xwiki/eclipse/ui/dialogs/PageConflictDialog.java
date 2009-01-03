@@ -25,17 +25,20 @@ import java.io.InputStream;
 
 import org.eclipse.compare.CompareConfiguration;
 import org.eclipse.compare.CompareViewerPane;
+import org.eclipse.compare.IEditableContent;
 import org.eclipse.compare.IStreamContentAccessor;
 import org.eclipse.compare.ITypedElement;
 import org.eclipse.compare.contentmergeviewer.TextMergeViewer;
 import org.eclipse.compare.structuremergeviewer.DiffNode;
 import org.eclipse.compare.structuremergeviewer.Differencer;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
+import org.eclipse.jface.text.Document;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -55,21 +58,25 @@ public class PageConflictDialog extends TitleAreaDialog
 
     public static final int ID_USE_REMOTE = 1002;
 
-    public static final int ID_MERGE = 1003;
-
     private XWikiEclipsePage page;
 
     private XWikiEclipsePage conflictingPage;
 
     private XWikiEclipsePage ancestorPage;
 
-    static class CompareElement implements ITypedElement, IStreamContentAccessor
+    private TextMergeViewer viewer;
+
+    static class CompareElement extends Document implements IEditableContent, ITypedElement, IStreamContentAccessor
     {
         private XWikiEclipsePage page;
 
-        public CompareElement(XWikiEclipsePage page)
+        private Boolean editable;
+
+        public CompareElement(XWikiEclipsePage page, Boolean editable)
         {
             this.page = page;
+            this.editable = editable;
+            set(page.getData().getContent());
         }
 
         public Image getImage()
@@ -90,6 +97,21 @@ public class PageConflictDialog extends TitleAreaDialog
         public InputStream getContents() throws CoreException
         {
             return new ByteArrayInputStream(page.getData().getContent().getBytes()); //$NON-NLS-1$
+        }
+
+        public boolean isEditable()
+        {
+            return editable;
+        }
+
+        public ITypedElement replace(ITypedElement dest, ITypedElement src)
+        {
+            return null;
+        }
+
+        public void setContent(byte[] newContent)
+        {
+            page.getData().setContent(new String(newContent));
         }
 
     }
@@ -120,7 +142,7 @@ public class PageConflictDialog extends TitleAreaDialog
     @Override
     protected void createButtonsForButtonBar(Composite parent)
     {
-        Button button = createButton(parent, ID_USE_REMOTE, "Use remote", true);
+        Button button = createButton(parent, ID_USE_LOCAL, "Use local", false);
         button.addSelectionListener(new SelectionListener()
         {
 
@@ -131,31 +153,16 @@ public class PageConflictDialog extends TitleAreaDialog
 
             public void widgetSelected(SelectionEvent e)
             {
-                PageConflictDialog.this.setReturnCode(ID_USE_REMOTE);
-                PageConflictDialog.this.close();
-            }
-        });
-
-        createButton(parent, IDialogConstants.CANCEL_ID, "Solve later", false);
-
-        button = createButton(parent, ID_USE_LOCAL, "Use local", false);
-        button.addSelectionListener(new SelectionListener()
-        {
-
-            public void widgetDefaultSelected(SelectionEvent e)
-            {
-                // Do nothing.
-            }
-
-            public void widgetSelected(SelectionEvent e)
-            {
+                viewer.flush(new NullProgressMonitor());
                 PageConflictDialog.this.setReturnCode(ID_USE_LOCAL);
                 PageConflictDialog.this.close();
             }
 
         });
 
-        button = createButton(parent, ID_MERGE, "Merge", false);
+        createButton(parent, IDialogConstants.CANCEL_ID, "Solve later", false);
+
+        button = createButton(parent, ID_USE_REMOTE, "Use remote", true);
         button.addSelectionListener(new SelectionListener()
         {
 
@@ -166,7 +173,8 @@ public class PageConflictDialog extends TitleAreaDialog
 
             public void widgetSelected(SelectionEvent e)
             {
-                PageConflictDialog.this.setReturnCode(ID_MERGE);
+                viewer.flush(new NullProgressMonitor());
+                PageConflictDialog.this.setReturnCode(ID_USE_REMOTE);
                 PageConflictDialog.this.close();
             }
         });
@@ -203,14 +211,14 @@ public class PageConflictDialog extends TitleAreaDialog
 
         cc.setLeftLabel(String.format("%s (Local)", page.getData().getId()));
         cc.setRightLabel(String.format("%s (Conflicting)", conflictingPage.getData().getId()));
-        TextMergeViewer viewer = new TextMergeViewer(pane, cc);
+        viewer = new TextMergeViewer(pane, cc);
         pane.setContent(viewer.getControl());
         GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, true).applyTo(viewer.getControl());
 
-        CompareElement left = new CompareElement(page);
-        CompareElement right = new CompareElement(conflictingPage);
+        CompareElement left = new CompareElement(page, true);
+        CompareElement right = new CompareElement(conflictingPage, false);
         if (ancestorPage != null) {
-            CompareElement ancestor = new CompareElement(ancestorPage);
+            CompareElement ancestor = new CompareElement(ancestorPage, false);
 
             viewer.setInput(new DiffNode(null, Differencer.CONFLICTING, ancestor, left, right));
         } else {

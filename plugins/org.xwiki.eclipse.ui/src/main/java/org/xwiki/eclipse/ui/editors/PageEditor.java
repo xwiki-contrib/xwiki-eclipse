@@ -355,14 +355,7 @@ public class PageEditor extends TextEditor implements ICoreEventListener
                         doSave(new NullProgressMonitor());
 
                         break;
-                    case PageConflictDialog.ID_MERGE:
-                        newPage = new XWikiPage(conflictingPage.getData().toRawMap());
-                        newPage.setContent(String.format(">>>>>>>LOCAL>>>>>>>>%s\n\n\n>>>>>>>REMOTE>>>>>>>>\n%s",
-                            currentPage.getData().getContent(), conflictingPage.getData().getContent()));
-                        dataManager.clearConflictingStatus(newPage.getId());
-                        setInput(new PageEditorInput(new XWikiEclipsePage(dataManager, newPage), input.isReadOnly()));
-
-                        break;
+                    
                     default:
                         return;
                 }
