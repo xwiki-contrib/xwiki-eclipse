@@ -132,7 +132,6 @@ public class PagePreview extends ViewPart implements ISelectionListener, ICoreEv
 
             public void widgetSelected(SelectionEvent e)
             {
-
             }
 
         });
@@ -143,11 +142,9 @@ public class PagePreview extends ViewPart implements ISelectionListener, ICoreEv
         button.setText("Open in external browser");
         button.addSelectionListener(new SelectionListener()
         {
-
             public void widgetDefaultSelected(SelectionEvent e)
             {
                 // TODO Auto-generated method stub
-
             }
 
             public void widgetSelected(SelectionEvent e)
@@ -162,9 +159,7 @@ public class PagePreview extends ViewPart implements ISelectionListener, ICoreEv
                     MessageDialog.openWarning(Display.getDefault().getActiveShell(), "Warning", String.format(
                         "Unable to open external browser\n%s", e1));
                 }
-
             }
-
         });
 
         browserComposite = new Composite(mainComposite, SWT.NONE);
@@ -207,7 +202,6 @@ public class PagePreview extends ViewPart implements ISelectionListener, ICoreEv
     public void setFocus()
     {
         // TODO Auto-generated method stub
-
     }
 
     public void selectionChanged(IWorkbenchPart part, ISelection selection)
@@ -230,9 +224,8 @@ public class PagePreview extends ViewPart implements ISelectionListener, ICoreEv
 
     private void update(final String url, final boolean isConnected)
     {
-        Display.getDefault().asyncExec(new Runnable()
+        Display.getDefault().syncExec(new Runnable()
         {
-
             public void run()
             {
                 if (url != null && !url.equals("")) {
@@ -275,16 +268,16 @@ public class PagePreview extends ViewPart implements ISelectionListener, ICoreEv
         }
 
         else
-            
+
         if (object instanceof XWikiEclipseObject) {
             XWikiEclipseObject xwikiObject = (XWikiEclipseObject) object;
 
             update(xwikiObject.getPageSummary() != null ? xwikiObject.getPageSummary().getUrl() : null, xwikiObject
                 .getDataManager().isConnected());
         }
-        
+
         else
-        
+
         if (object instanceof XWikiEclipseSpaceSummary) {
             XWikiEclipseSpaceSummary xwikiSpaceSummary = (XWikiEclipseSpaceSummary) object;
 

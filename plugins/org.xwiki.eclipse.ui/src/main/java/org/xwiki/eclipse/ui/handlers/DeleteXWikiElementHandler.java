@@ -20,6 +20,7 @@
  */
 package org.xwiki.eclipse.ui.handlers;
 
+import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.commands.AbstractHandler;
@@ -27,16 +28,21 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.SafeRunner;
+import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.handlers.HandlerUtil;
+import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.xwiki.eclipse.core.DataManager;
 import org.xwiki.eclipse.core.DataManagerRegistry;
 import org.xwiki.eclipse.core.model.XWikiEclipseObjectSummary;
 import org.xwiki.eclipse.core.model.XWikiEclipsePageSummary;
 import org.xwiki.eclipse.core.model.XWikiEclipseSpaceSummary;
+import org.xwiki.eclipse.ui.dialogs.SelectionDialog;
 import org.xwiki.eclipse.ui.utils.UIUtils;
 import org.xwiki.eclipse.ui.utils.XWikiEclipseSafeRunnable;
 
@@ -47,16 +53,22 @@ public class DeleteXWikiElementHandler extends AbstractHandler
         ISelection selection = HandlerUtil.getCurrentSelection(event);
 
         Set selectedObjects = UIUtils.getSelectedObjectsFromSelection(selection);
-        for (Object selectedObject : selectedObjects) {
-            if (selectedObject instanceof XWikiEclipsePageSummary) {
-                final XWikiEclipsePageSummary pageSummary = (XWikiEclipsePageSummary) selectedObject;
 
-                MessageBox messageBox =
-                    new MessageBox(HandlerUtil.getActiveShell(event), SWT.YES | SWT.NO | SWT.ICON_QUESTION);
-                messageBox.setMessage(String.format("Do you really want to delete the page '%s'?", pageSummary
-                    .getData().getTitle()));
-                int result = messageBox.open();
-                if (result == SWT.YES) {
+        SelectionDialog selectionDialog =
+            new SelectionDialog(HandlerUtil.getActiveShell(event), "Delete objects",
+                "Review the objects to be deleted", selectedObjects);
+        int result = selectionDialog.open();
+        if (result == IDialogConstants.CANCEL_ID) {            
+            return null;
+        }
+
+        Set<Object> objectsToBeRemoved = selectionDialog.getSelectedObjects();
+
+        for (Object selectedObject : selectedObjects) {
+            if (objectsToBeRemoved.contains(selectedObject)) {
+                if (selectedObject instanceof XWikiEclipsePageSummary) {
+                    final XWikiEclipsePageSummary pageSummary = (XWikiEclipsePageSummary) selectedObject;
+
                     SafeRunner.run(new XWikiEclipseSafeRunnable()
                     {
                         public void run() throws Exception
@@ -64,19 +76,12 @@ public class DeleteXWikiElementHandler extends AbstractHandler
                             pageSummary.getDataManager().removePage(pageSummary.getData().getId());
                         }
                     });
+
                 }
 
-            }
+                if (selectedObject instanceof XWikiEclipseObjectSummary) {
+                    final XWikiEclipseObjectSummary objectSummary = (XWikiEclipseObjectSummary) selectedObject;
 
-            if (selectedObject instanceof XWikiEclipseObjectSummary) {
-                final XWikiEclipseObjectSummary objectSummary = (XWikiEclipseObjectSummary) selectedObject;
-
-                MessageBox messageBox =
-                    new MessageBox(HandlerUtil.getActiveShell(event), SWT.YES | SWT.NO | SWT.ICON_QUESTION);
-                messageBox.setMessage(String.format("Do you really want to delete object '%s' from page '%s'?",
-                    objectSummary.getData().getPrettyName(), objectSummary.getPageSummary().getTitle()));
-                int result = messageBox.open();
-                if (result == SWT.YES) {
                     SafeRunner.run(new XWikiEclipseSafeRunnable()
                     {
                         public void run() throws Exception
@@ -85,21 +90,12 @@ public class DeleteXWikiElementHandler extends AbstractHandler
                                 objectSummary.getData().getClassName(), objectSummary.getData().getId());
                         }
                     });
+
                 }
-            }
 
-            if (selectedObject instanceof DataManager) {
-                final DataManager dataManager = (DataManager) selectedObject;
+                if (selectedObject instanceof DataManager) {
+                    final DataManager dataManager = (DataManager) selectedObject;
 
-                MessageBox messageBox =
-                    new MessageBox(HandlerUtil.getActiveShell(event), SWT.YES | SWT.NO | SWT.ICON_QUESTION);
-                messageBox
-                    .setMessage(String
-                        .format(
-                            "Do you really want to delete the connection '%s'?\n\nWarning: Any unsaved opperations will be lost.",
-                            dataManager.getName()));
-                int result = messageBox.open();
-                if (result == SWT.YES) {
                     SafeRunner.run(new XWikiEclipseSafeRunnable()
                     {
                         public void run() throws Exception
@@ -109,18 +105,12 @@ public class DeleteXWikiElementHandler extends AbstractHandler
                             ResourcesPlugin.getWorkspace().save(true, new NullProgressMonitor());
                         }
                     });
+
                 }
-            }
 
-            if (selectedObject instanceof XWikiEclipseSpaceSummary) {
-                final XWikiEclipseSpaceSummary spaceSummary = (XWikiEclipseSpaceSummary) selectedObject;
+                if (selectedObject instanceof XWikiEclipseSpaceSummary) {
+                    final XWikiEclipseSpaceSummary spaceSummary = (XWikiEclipseSpaceSummary) selectedObject;
 
-                MessageBox messageBox =
-                    new MessageBox(HandlerUtil.getActiveShell(event), SWT.YES | SWT.NO | SWT.ICON_QUESTION);
-                messageBox.setMessage(String.format("Do you really want to delete ALL the pages under the space '%s'?",
-                    spaceSummary.getData().getName()));
-                int result = messageBox.open();
-                if (result == SWT.YES) {
                     SafeRunner.run(new XWikiEclipseSafeRunnable()
                     {
                         public void run() throws Exception
@@ -129,9 +119,7 @@ public class DeleteXWikiElementHandler extends AbstractHandler
                         }
                     });
                 }
-
             }
-
         }
 
         return null;

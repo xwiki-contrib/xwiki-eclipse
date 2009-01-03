@@ -67,7 +67,7 @@ public class NewPageWizard extends Wizard implements INewWizard
                             dataManager.createPage(newPageWizardState.getSpace(), newPageWizardState.getName(),
                                 newPageWizardState.getTitle(), "Write here content");
 
-                        Display.getDefault().asyncExec(new Runnable()
+                        Display.getDefault().syncExec(new Runnable()
                         {
                             public void run()
                             {

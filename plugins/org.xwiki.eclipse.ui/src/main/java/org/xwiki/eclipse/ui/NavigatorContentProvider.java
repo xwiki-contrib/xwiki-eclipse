@@ -124,26 +124,24 @@ public class NavigatorContentProvider extends BaseWorkbenchContentProvider imple
     {
         switch (event.getType()) {
             case DATA_MANAGER_REGISTERED:
-                Display.getDefault().asyncExec(new Runnable()
+                Display.getDefault().syncExec(new Runnable()
                 {
                     public void run()
                     {
                         /*
-                         *  FIXME: Find a way to add new DataManagers to the viewer to avoid flicker
-                         *  and loss of expanded state caused by refresh().
-                         *  Tried: viewer.add(dataManager.getProject().getParent(), dataManager) but
-                         *  the data manager that was added could not be expanded. No arrow appeared
-                         *  next to it and isExpandable(dataManager) returns false. The arrow would
-                         *  appear only after issuing refresh(), but that destroys the expanded state
-                         *  of the viewer.
+                         * FIXME: Find a way to add new DataManagers to the viewer to avoid flicker and loss of expanded
+                         * state caused by refresh(). Tried: viewer.add(dataManager.getProject().getParent(),
+                         * dataManager) but the data manager that was added could not be expanded. No arrow appeared
+                         * next to it and isExpandable(dataManager) returns false. The arrow would appear only after
+                         * issuing refresh(), but that destroys the expanded state of the viewer.
                          */
                         viewer.refresh();
                     }
                 });
                 break;
-                
+
             case DATA_MANAGER_UNREGISTERED:
-                Display.getDefault().asyncExec(new Runnable()
+                Display.getDefault().syncExec(new Runnable()
                 {
                     public void run()
                     {
@@ -155,7 +153,7 @@ public class NavigatorContentProvider extends BaseWorkbenchContentProvider imple
 
             case DATA_MANAGER_CONNECTED:
             case DATA_MANAGER_DISCONNECTED:
-                Display.getDefault().asyncExec(new Runnable()
+                Display.getDefault().syncExec(new Runnable()
                 {
                     public void run()
                     {
@@ -166,29 +164,28 @@ public class NavigatorContentProvider extends BaseWorkbenchContentProvider imple
                 break;
 
             case PAGE_STORED:
-                Display.getDefault().asyncExec(new Runnable()
+                Display.getDefault().syncExec(new Runnable()
                 {
                     public void run()
                     {
                         XWikiEclipsePage page = (XWikiEclipsePage) event.getData();
-                        
+
                         // Check if this is a newly created page.
-                        if (page.getData().getVersion() == 1){
+                        if (page.getData().getVersion() == 1) {
                             // Make sure the new page/space get drawn.
                             SpaceSummary spaceSummary = new SpaceSummary();
                             spaceSummary.setKey(page.getData().getSpace());
                             spaceSummary.setName(page.getData().getSpace());
                             XWikiEclipseSpaceSummary space =
-                                new XWikiEclipseSpaceSummary(page.getDataManager(), spaceSummary); 
-                            
+                                new XWikiEclipseSpaceSummary(page.getDataManager(), spaceSummary);
+
                             // If the space did not previously exist, draw it.
                             if (viewer.testFindItem(space) == null)
                                 viewer.add(page.getDataManager(), space);
-                            
+
                             viewer.add(space, page.getSummary());
                             viewer.expandToLevel(page.getSummary(), 0);
-                        }
-                        else{
+                        } else {
                             viewer.refresh(page.getSummary());
                         }
                     }
@@ -196,7 +193,7 @@ public class NavigatorContentProvider extends BaseWorkbenchContentProvider imple
                 break;
 
             case PAGE_RENAMED:
-                Display.getDefault().asyncExec(new Runnable()
+                Display.getDefault().syncExec(new Runnable()
                 {
                     public void run()
                     {
@@ -215,29 +212,30 @@ public class NavigatorContentProvider extends BaseWorkbenchContentProvider imple
                     }
                 });
                 break;
-           
+
             case PAGE_REMOVED:
-                Display.getDefault().asyncExec(new Runnable()
+                Display.getDefault().syncExec(new Runnable()
                 {
                     public void run()
                     {
                         XWikiEclipsePage page = (XWikiEclipsePage) event.getData();
                         String spaceKey = page.getData().getSpace();
-                        
+
                         List<XWikiEclipsePageSummary> pages = null;
-                        try{
+                        try {
                             pages = page.getDataManager().getPages(spaceKey);
-                        } catch (XWikiEclipseException e){
+                        } catch (XWikiEclipseException e) {
                             CoreLog.logError("Unable to get space pages: " + e.getMessage());
                         }
-                        
-                        if (pages != null && pages.size() == 0){
+
+                        if (pages != null && pages.size() == 0) {
                             // The space is left with no pages so it has to be removed.
                             SpaceSummary spaceSummary = new SpaceSummary();
                             spaceSummary.setKey(spaceKey);
                             spaceSummary.setName(spaceKey);
-                            
-                            XWikiEclipseSpaceSummary space = new XWikiEclipseSpaceSummary(page.getDataManager(), spaceSummary);
+
+                            XWikiEclipseSpaceSummary space =
+                                new XWikiEclipseSpaceSummary(page.getDataManager(), spaceSummary);
                             viewer.remove(space);
                         } else {
                             viewer.remove(page.getSummary());
@@ -245,22 +243,22 @@ public class NavigatorContentProvider extends BaseWorkbenchContentProvider imple
                     }
                 });
                 break;
-                
+
             case OBJECT_STORED:
-                Display.getDefault().asyncExec(new Runnable()
+                Display.getDefault().syncExec(new Runnable()
                 {
                     public void run()
                     {
                         XWikiEclipseObject object = (XWikiEclipseObject) event.getData();
-                        XWikiEclipsePageSummary pageSumary = new XWikiEclipsePageSummary(object.getDataManager(), object.getPageSummary());
+                        XWikiEclipsePageSummary pageSumary =
+                            new XWikiEclipsePageSummary(object.getDataManager(), object.getPageSummary());
                         /*
-                         * FIXME: For lack of a way of knowing whether the object has just been created
-                         * or modified, I chose to refresh all the objects in the page.
-                         * Best way: like the PAGE_STORED event handling, only that, in that case,
-                         * there was a way of knowing if the page was just created and that there were
-                         * visual inconsistencies. Maybe a new OBJECT_CREATED event? This could be an
-                         * elegant solution for the PAGE_STORED too, by introducing a PAGE_CREATED event.
-                         */ 
+                         * FIXME: For lack of a way of knowing whether the object has just been created or modified, I
+                         * chose to refresh all the objects in the page. Best way: like the PAGE_STORED event handling,
+                         * only that, in that case, there was a way of knowing if the page was just created and that
+                         * there were visual inconsistencies. Maybe a new OBJECT_CREATED event? This could be an elegant
+                         * solution for the PAGE_STORED too, by introducing a PAGE_CREATED event.
+                         */
                         viewer.refresh(pageSumary);
                     }
 
@@ -268,7 +266,7 @@ public class NavigatorContentProvider extends BaseWorkbenchContentProvider imple
                 break;
 
             case OBJECT_REMOVED:
-                Display.getDefault().asyncExec(new Runnable()
+                Display.getDefault().syncExec(new Runnable()
                 {
                     public void run()
                     {
@@ -278,9 +276,9 @@ public class NavigatorContentProvider extends BaseWorkbenchContentProvider imple
 
                 });
                 break;
-                
+
             case SPACE_REMOVED:
-                Display.getDefault().asyncExec(new Runnable()
+                Display.getDefault().syncExec(new Runnable()
                 {
                     public void run()
                     {
@@ -292,18 +290,15 @@ public class NavigatorContentProvider extends BaseWorkbenchContentProvider imple
                 break;
 
             case REFRESH:
-                Display.getDefault().asyncExec(new Runnable()
+                Display.getDefault().syncExec(new Runnable()
                 {
                     public void run()
-                    {   
+                    {
                         /*
-                         *  FIXME: This should work but it doesn't.
-                         *  
-                         *  Can't get the viewer's expanded elements to restore after a refresh.
-                         *  
-                         *  Tried many things, none seem to work. Any attempt at restoring the expanded
-                         *  state fails, although the viewer's data classes all have equals and hashCode
-                         *  methods overridden in their superclass.
+                         * FIXME: This should work but it doesn't. Can't get the viewer's expanded elements to restore
+                         * after a refresh. Tried many things, none seem to work. Any attempt at restoring the expanded
+                         * state fails, although the viewer's data classes all have equals and hashCode methods
+                         * overridden in their superclass.
                          */
                         Object[] expandedElements = viewer.getVisibleExpandedElements();
                         viewer.refresh(event.getData());

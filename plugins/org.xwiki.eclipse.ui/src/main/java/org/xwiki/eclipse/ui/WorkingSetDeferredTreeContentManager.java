@@ -79,7 +79,7 @@ public class WorkingSetDeferredTreeContentManager extends DeferredTreeContentMan
     public WorkingSetDeferredTreeContentManager(AbstractTreeViewer viewer, IWorkingSet workingSet)
     {
         // Eclipse 3.3.2 has no DeferredTreeContentManager(AbstractTreeViewer viewer) constructor.
-        // only DeferredTreeContentManager(ITreeContentProvider provider, AbstractTreeViewer viewer)     
+        // only DeferredTreeContentManager(ITreeContentProvider provider, AbstractTreeViewer viewer)
         super(null, viewer);
         this.workingSet = workingSet;
     }

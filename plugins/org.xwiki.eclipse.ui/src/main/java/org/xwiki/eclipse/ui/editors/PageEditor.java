@@ -240,7 +240,7 @@ public class PageEditor extends TextEditor implements ICoreEventListener
                         }
                     }
 
-                    Display.getDefault().asyncExec(new Runnable()
+                    Display.getDefault().syncExec(new Runnable()
                     {
                         public void run()
                         {

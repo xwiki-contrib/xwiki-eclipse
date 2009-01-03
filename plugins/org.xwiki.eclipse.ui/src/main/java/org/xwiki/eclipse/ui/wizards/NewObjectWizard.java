@@ -67,7 +67,7 @@ public class NewObjectWizard extends Wizard implements INewWizard
                             dataManager.createObject(newObjectWizardState.getPageId(), newObjectWizardState
                                 .getClassName());
 
-                        Display.getDefault().asyncExec(new Runnable()
+                        Display.getDefault().syncExec(new Runnable()
                         {
                             public void run()
                             {
