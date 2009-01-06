@@ -139,17 +139,17 @@ public class ConnectionSettingsWizardPage extends WizardPage
     public boolean isPageComplete()
     {
         String connectionName = connectionNameText.getText().trim();
-        
+
         if (connectionName.length() == 0) {
             setErrorMessage("Connection name must be specified.");
             return false;
         }
-        
+
         IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
         final IProject project = workspaceRoot.getProject(connectionName);
         if (project.exists()) {
-            setErrorMessage(String.format("Connection '%s' already exists. Please choose another name.",
-                connectionName));
+            setErrorMessage(String
+                .format("Connection '%s' already exists. Please choose another name.", connectionName));
             return false;
         }
 
@@ -157,11 +157,11 @@ public class ConnectionSettingsWizardPage extends WizardPage
             setErrorMessage("A server URL must be specified.");
             return false;
         }
-        
-        try{
+
+        try {
             if (new URL(serverUrlText.getText().trim()).getHost().equals(""))
                 throw new MalformedURLException("Invalid hostname.");
-        }catch(MalformedURLException me){
+        } catch (MalformedURLException me) {
             setErrorMessage("The specified address is not a valid URL.");
             return false;
         }

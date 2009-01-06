@@ -27,6 +27,8 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExecutableExtension;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.operation.IRunnableWithProgress;
@@ -35,12 +37,24 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.wizards.newresource.BasicNewProjectResourceWizard;
 import org.xwiki.eclipse.core.DataManager;
 import org.xwiki.eclipse.core.XWikiEclipseNature;
 import org.xwiki.xmlrpc.XWikiXmlRpcClient;
 
-public class NewConnectionWizard extends Wizard implements INewWizard
+public class NewConnectionWizard extends Wizard implements INewWizard, IExecutableExtension
 {
+    /*
+     * The Wizard's ID
+     */
+    public final static String WIZARD_ID = "org.xwiki.eclipse.ui.wizards.NewConnection";
+
+    /*
+     * The ConfigurationElement required to activate the XWiki Eclipse perspective after finishing creating the new
+     * connection.
+     */
+    private IConfigurationElement config;
+
     private NewConnectionWizardState newConnectionWizardState;
 
     public NewConnectionWizard()
@@ -64,8 +78,7 @@ public class NewConnectionWizard extends Wizard implements INewWizard
             return false;
         }
 
-        if (newConnectionWizardState.getServerUrl() == null
-            || newConnectionWizardState.getServerUrl().length() == 0) {
+        if (newConnectionWizardState.getServerUrl() == null || newConnectionWizardState.getServerUrl().length() == 0) {
             return false;
         }
 
@@ -76,10 +89,10 @@ public class NewConnectionWizard extends Wizard implements INewWizard
         if (newConnectionWizardState.getPassword() == null || newConnectionWizardState.getPassword().length() == 0) {
             return false;
         }
-        
+
         return super.canFinish();
     }
-    
+
     @Override
     public boolean performFinish()
     {
@@ -135,7 +148,7 @@ public class NewConnectionWizard extends Wizard implements INewWizard
                         IProjectDescription description = project.getDescription();
                         description.setNatureIds(new String[] {XWikiEclipseNature.ID});
                         project.setDescription(description, null);
-                        
+
                         ResourcesPlugin.getWorkspace().save(true, new NullProgressMonitor());
                     } catch (CoreException e) {
                         throw new InvocationTargetException(e, e.getMessage());
@@ -148,6 +161,9 @@ public class NewConnectionWizard extends Wizard implements INewWizard
 
         }
 
+        // Ask the user to switch to XWiki Eclipse perspective.
+        BasicNewProjectResourceWizard.updatePerspective(config);
+
         return true;
     }
 
@@ -159,6 +175,13 @@ public class NewConnectionWizard extends Wizard implements INewWizard
     public NewConnectionWizardState getNewConnectionWizardState()
     {
         return newConnectionWizardState;
+    }
+
+    public void setInitializationData(IConfigurationElement config, String propertyName, Object data)
+        throws CoreException
+    {
+        // Store the ConfigurationElement to use later when calling updatePerspective().
+        this.config = config;
     }
 
 }

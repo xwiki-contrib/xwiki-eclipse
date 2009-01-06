@@ -78,15 +78,13 @@ public class Preferences
         stylesToTextAttributeMap.put(Style.SUPERSCRIPT, attribute);
         stylesToTextAttributeMap.put(Style.SUBSCRIPT, attribute);
 
-        attribute = new TextAttribute(Display.getDefault().getSystemColor(
-            SWT.COLOR_DARK_RED), null, SWT.BOLD);
+        attribute = new TextAttribute(Display.getDefault().getSystemColor(SWT.COLOR_DARK_RED), null, SWT.BOLD);
         stylesToTextAttributeMap.put(Style.LINK, attribute);
         stylesToTextAttributeMap.put(Style.IMAGE, attribute);
-        
+
         stylesToTextAttributeMap.put(Style.DEFINITION_TERM, new TextAttribute(Display.getDefault().getSystemColor(
             SWT.COLOR_DARK_YELLOW), null, SWT.NONE));
-        
-        
+
         stylesToTextAttributeMap.put(Style.IDENTIFIER, new TextAttribute(Display.getDefault().getSystemColor(
             SWT.COLOR_DARK_CYAN), null, SWT.BOLD));
 
@@ -107,7 +105,7 @@ public class Preferences
 
         stylesToTextAttributeMap.put(Style.HTML, new TextAttribute(Display.getDefault().getSystemColor(
             SWT.COLOR_DARK_YELLOW), null, SWT.NONE));
-        
+
         defaultTextAttribute = new TextAttribute(Display.getDefault().getSystemColor(SWT.COLOR_BLUE), null, SWT.NONE);
     }
 

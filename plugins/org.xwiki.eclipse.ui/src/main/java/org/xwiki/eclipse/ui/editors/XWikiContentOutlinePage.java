@@ -40,12 +40,16 @@ public class XWikiContentOutlinePage extends ContentOutlinePage implements IDocu
 {
     private PageEditor pageEditor;
 
-    private static class HeadingInfo {
+    private static class HeadingInfo
+    {
         private int offset;
-        private int length;
-        private String title;   
 
-        public HeadingInfo(int offset, int length, String title) {
+        private int length;
+
+        private String title;
+
+        public HeadingInfo(int offset, int length, String title)
+        {
             this.offset = offset;
             this.length = length;
             this.title = title;
@@ -53,9 +57,9 @@ public class XWikiContentOutlinePage extends ContentOutlinePage implements IDocu
 
         public int getOffset()
         {
-            return offset; 
+            return offset;
         }
-        
+
         public int getLength()
         {
             return length;
@@ -66,25 +70,27 @@ public class XWikiContentOutlinePage extends ContentOutlinePage implements IDocu
             return title;
         }
     }
-    
-    private static class HeadingInfoLabelProvider extends LabelProvider {
+
+    private static class HeadingInfoLabelProvider extends LabelProvider
+    {
 
         @Override
         public String getText(Object element)
         {
-            if(element instanceof HeadingInfo) {
+            if (element instanceof HeadingInfo) {
                 HeadingInfo headingInfo = (HeadingInfo) element;
                 return headingInfo.getTitle();
             }
-            
+
             return super.getText(element);
         }
-        
+
     }
-    
+
     private static class HeadingInfoContentProvider implements ITreeContentProvider
     {
-        private String[] headingsStart = {"1 ", "1.1 ", "1.1.1 ", "1.1.1.1 ", "1.1.1.1.1 ", "1.1.1.1.1.1 " };
+        private String[] headingsStart = {"1 ", "1.1 ", "1.1.1 ", "1.1.1.1 ", "1.1.1.1.1 ", "1.1.1.1.1.1 "};
+
         private Object[] NO_OBJECTS = new Object[0];
 
         public Object[] getChildren(Object parentElement)
@@ -98,47 +104,48 @@ public class XWikiContentOutlinePage extends ContentOutlinePage implements IDocu
         }
 
         public boolean hasChildren(Object element)
-        {         
+        {
             return false;
         }
 
         public Object[] getElements(Object inputElement)
         {
-            if(!(inputElement instanceof IDocument)) {
+            if (!(inputElement instanceof IDocument)) {
                 return NO_OBJECTS;
             }
-            
+
             IDocument document = (IDocument) inputElement;
             List<HeadingInfo> headings = new ArrayList<HeadingInfo>();
-            
-            for(int i = 0; i < document.getNumberOfLines(); i++) {
+
+            for (int i = 0; i < document.getNumberOfLines(); i++) {
                 try {
                     int start = document.getLineOffset(i);
                     int length = document.getLineLength(i);
                     String line = document.get(start, length);
-                    if(line.endsWith("\n")) {
+                    if (line.endsWith("\n")) {
                         line = line.substring(0, line.length() - 1);
                     }
-                    
-                    if(isHeading(line)) {
+
+                    if (isHeading(line)) {
                         headings.add(new HeadingInfo(start, length, line));
                     }
                 } catch (BadLocationException e) {
                     /* Should never happen */
                     e.printStackTrace();
-                }                
+                }
             }
-            
+
             return headings.toArray();
         }
-        
-        private boolean isHeading(String line) {
-            for(int i = 0; i < headingsStart.length; i++) {
-                if(line.startsWith(headingsStart[i])) {
+
+        private boolean isHeading(String line)
+        {
+            for (int i = 0; i < headingsStart.length; i++) {
+                if (line.startsWith(headingsStart[i])) {
                     return true;
                 }
             }
-            
+
             return false;
         }
 
@@ -169,19 +176,19 @@ public class XWikiContentOutlinePage extends ContentOutlinePage implements IDocu
         viewer.setContentProvider(new HeadingInfoContentProvider());
         viewer.setLabelProvider(new HeadingInfoLabelProvider());
         viewer.addSelectionChangedListener(this);
-        viewer.setInput(pageEditor.getDocument());  
+        viewer.setInput(pageEditor.getDocument());
         pageEditor.getDocument().addDocumentListener(this);
     }
 
     public void documentAboutToBeChanged(DocumentEvent event)
     {
         // TODO Auto-generated method stub
-        
+
     }
 
     public void documentChanged(DocumentEvent event)
     {
-        getTreeViewer().refresh();        
+        getTreeViewer().refresh();
     }
 
     @Override
@@ -197,12 +204,12 @@ public class XWikiContentOutlinePage extends ContentOutlinePage implements IDocu
     {
         IStructuredSelection selection = (IStructuredSelection) event.getSelection();
         Object object = selection.getFirstElement();
-        if(object instanceof HeadingInfo) {
+        if (object instanceof HeadingInfo) {
             HeadingInfo headingInfo = (HeadingInfo) object;
             pageEditor.setSelectionRange(headingInfo.getOffset(), headingInfo.getLength());
         }
-        
+
         super.selectionChanged(event);
     }
-    
+
 }

@@ -33,7 +33,7 @@ import org.xwiki.eclipse.ui.editors.scanners.rules.BalancedParenthesisRule;
 public class XWikiPartitionScanner extends RuleBasedPartitionScanner
 {
     public static final String XWIKI_HTML = "__xwiki_html";
-    
+
     public static final String XWIKI_CODE = "__xwiki_code";
 
     public static final String XWIKI_PRE = "__xwiki_pre";
@@ -43,7 +43,7 @@ public class XWikiPartitionScanner extends RuleBasedPartitionScanner
     public static final String XWIKI_TABLE = "__xwiki_table";
 
     public static final String XWIKI_STYLE = "__xwiki_style";
-    
+
     public static final String VELOCITY = "__velocity";
 
     public static final String[] ALL_PARTITIONS =

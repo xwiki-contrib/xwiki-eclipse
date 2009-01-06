@@ -1,9 +1,6 @@
 package org.xwiki.eclipse.ui.dialogs;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.eclipse.jface.dialogs.IMessageProvider;
@@ -25,7 +22,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.xwiki.eclipse.core.DataManager;
-import org.xwiki.eclipse.core.model.ModelObject;
 import org.xwiki.eclipse.core.model.XWikiEclipseSpaceSummary;
 
 public class SelectionDialog extends TitleAreaDialog

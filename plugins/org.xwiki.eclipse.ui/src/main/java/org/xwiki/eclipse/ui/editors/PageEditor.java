@@ -126,7 +126,7 @@ public class PageEditor extends TextEditor implements ICoreEventListener
     {
         ISourceViewer viewer = super.createSourceViewer(parent, ruler, styles);
         viewer.getTextWidget().setWordWrap(true);
-        
+
         return viewer;
     }
 
@@ -344,18 +344,18 @@ public class PageEditor extends TextEditor implements ICoreEventListener
                         newPage.setContent(currentPage.getData().getContent());
                         dataManager.clearConflictingStatus(newPage.getId());
                         setInput(new PageEditorInput(new XWikiEclipsePage(dataManager, newPage), input.isReadOnly()));
-                        
+
                         doSave(new NullProgressMonitor());
 
                         break;
                     case PageConflictDialog.ID_USE_REMOTE:
                         dataManager.clearConflictingStatus(conflictingPage.getData().getId());
                         setInput(new PageEditorInput(conflictingPage, input.isReadOnly()));
-                        
+
                         doSave(new NullProgressMonitor());
 
                         break;
-                    
+
                     default:
                         return;
                 }

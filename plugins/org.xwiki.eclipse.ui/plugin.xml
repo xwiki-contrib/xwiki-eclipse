@@ -231,7 +231,15 @@
 	<extension point="org.eclipse.ui.newWizards">
 		<category id="org.xwiki.eclipse" name="XWiki Eclipse">
       </category>
-		<wizard category="org.xwiki.eclipse" class="org.xwiki.eclipse.ui.wizards.NewConnectionWizard" icon="icons/xwiki.png" id="org.xwiki.eclipse.ui.wizards.NewConnection" name="New connection">
+		<wizard
+        category="org.xwiki.eclipse"
+        class="org.xwiki.eclipse.ui.wizards.NewConnectionWizard"
+        finalPerspective="org.xwiki.eclipse.ui.perspectives.XWikiPerspective"
+        hasPages="true"
+        icon="icons/xwiki.png"
+        id="org.xwiki.eclipse.ui.wizards.NewConnection"
+        name="New connection"
+        project="true">
       </wizard>
 	</extension>
 	<extension point="org.eclipse.ui.propertyPages">
@@ -428,5 +436,14 @@
           class="org.xwiki.eclipse.ui.workingsets.XWikiEclipseElementIdFactory"
           id="org.xwiki.eclipse.ui.workingsets.XWikiEclipseElementFactory">
     </factory>
+ </extension>
+ <extension
+       point="org.eclipse.ui.perspectives">
+    <perspective
+          class="org.xwiki.eclipse.ui.perspectives.XWikiPerspectiveFactory"
+          icon="icons/xwiki.png"
+          id="org.xwiki.eclipse.ui.perspectives.XWikiPerspective"
+          name="XWiki Eclipse">
+    </perspective>
  </extension>
 </plugin>

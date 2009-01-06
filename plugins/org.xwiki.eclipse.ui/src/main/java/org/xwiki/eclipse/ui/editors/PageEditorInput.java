@@ -97,7 +97,7 @@ public class PageEditorInput implements IEditorInput
     {
         return page;
     }
-    
+
     public void setPage(XWikiEclipsePage page, boolean readOnly)
     {
         Assert.isNotNull(page);

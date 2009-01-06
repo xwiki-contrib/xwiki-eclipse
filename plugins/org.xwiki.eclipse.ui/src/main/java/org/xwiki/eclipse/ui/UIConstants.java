@@ -62,4 +62,6 @@ public class UIConstants
 
     public static final String GRAB_SPACE_COMMAND = "org.xwiki.eclipse.ui.commands.GrabSpace";
 
+    public static final String NAVIGATOR_VIEW_ID = "org.xwiki.eclipse.ui.views.Navigator";
+
 }

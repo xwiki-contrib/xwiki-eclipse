@@ -121,8 +121,8 @@ public class PageSettingsPage extends WizardPage
             setErrorMessage("Space must be specified.");
             return false;
         }
-        
-        if (spaceTextString.contains(":") || spaceTextString.contains("?")){
+
+        if (spaceTextString.contains(":") || spaceTextString.contains("?")) {
             setErrorMessage("Invalid characters in space name.");
             return false;
         }
@@ -132,15 +132,15 @@ public class PageSettingsPage extends WizardPage
             setErrorMessage("Name must be specified.");
             return false;
         }
-        
-        if (nameTextString.contains(":") || nameTextString.contains("?") || nameTextString.contains(".")){
+
+        if (nameTextString.contains(":") || nameTextString.contains("?") || nameTextString.contains(".")) {
             setErrorMessage("Invalid characters in page name.");
             return false;
         }
-        
+
         String pageId = spaceTextString + "." + nameTextString;
-        boolean exists = ((NewPageWizard)getWizard()).getDataManager().exists(pageId);
-        if (exists){
+        boolean exists = ((NewPageWizard) getWizard()).getDataManager().exists(pageId);
+        if (exists) {
             setErrorMessage("That page already exists.");
             return false;
         }

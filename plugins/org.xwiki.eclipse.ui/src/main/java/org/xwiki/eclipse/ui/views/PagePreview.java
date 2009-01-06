@@ -41,6 +41,11 @@ import org.xwiki.eclipse.ui.utils.UIUtils;
 
 public class PagePreview extends ViewPart implements ISelectionListener, ICoreEventListener
 {
+    /*
+     * The View's ID
+     */
+    public final static String VIEW_ID = "org.xwiki.eclipse.ui.views.PagePreview";
+
     private Composite mainComposite;
 
     private Composite browserComposite;

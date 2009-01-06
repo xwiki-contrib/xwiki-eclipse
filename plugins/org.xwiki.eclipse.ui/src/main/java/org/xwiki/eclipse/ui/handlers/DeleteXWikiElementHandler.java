@@ -20,7 +20,6 @@
  */
 package org.xwiki.eclipse.ui.handlers;
 
-import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.commands.AbstractHandler;
@@ -28,15 +27,10 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.SafeRunner;
-import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.handlers.HandlerUtil;
-import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.xwiki.eclipse.core.DataManager;
 import org.xwiki.eclipse.core.DataManagerRegistry;
 import org.xwiki.eclipse.core.model.XWikiEclipseObjectSummary;
@@ -58,7 +52,7 @@ public class DeleteXWikiElementHandler extends AbstractHandler
             new SelectionDialog(HandlerUtil.getActiveShell(event), "Delete objects",
                 "Review the objects to be deleted", selectedObjects);
         int result = selectionDialog.open();
-        if (result == IDialogConstants.CANCEL_ID) {            
+        if (result == IDialogConstants.CANCEL_ID) {
             return null;
         }
 
