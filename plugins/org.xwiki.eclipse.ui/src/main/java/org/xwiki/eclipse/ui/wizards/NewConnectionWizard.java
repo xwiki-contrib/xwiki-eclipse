@@ -37,9 +37,11 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.wizards.newresource.BasicNewProjectResourceWizard;
 import org.xwiki.eclipse.core.DataManager;
 import org.xwiki.eclipse.core.XWikiEclipseNature;
+import org.xwiki.eclipse.ui.perspectives.XWikiPerspectiveFactory;
 import org.xwiki.xmlrpc.XWikiXmlRpcClient;
 
 public class NewConnectionWizard extends Wizard implements INewWizard, IExecutableExtension
@@ -161,8 +163,11 @@ public class NewConnectionWizard extends Wizard implements INewWizard, IExecutab
 
         }
 
-        // Ask the user to switch to XWiki Eclipse perspective.
-        BasicNewProjectResourceWizard.updatePerspective(config);
+        if (!PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getPerspective().getId().equals(
+            XWikiPerspectiveFactory.PERSPECTIVE_ID)) {
+            // Ask the user to switch to XWiki Eclipse perspective.
+            BasicNewProjectResourceWizard.updatePerspective(config);
+        }
 
         return true;
     }

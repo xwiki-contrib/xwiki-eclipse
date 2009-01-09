@@ -78,17 +78,16 @@ public class XWikiPerspectiveFactory implements IPerspectiveFactory
      */
     private void defineLayout(IPageLayout layout)
     {
-        // Editors are placed for free.
-        String editorArea = layout.getEditorArea();
+        IFolderLayout leftFolder = layout.createFolder("leftFolder", IPageLayout.LEFT, 0.20f, layout.getEditorArea());
 
-        // Place navigator and outline to left of editor area.
-        IFolderLayout left = layout.createFolder("Left", IPageLayout.LEFT, (float) 0.25, editorArea);
-        left.addView(UIConstants.NAVIGATOR_VIEW_ID);
-        left.addView(IPageLayout.ID_OUTLINE);
+        leftFolder.addView(UIConstants.NAVIGATOR_VIEW_ID);
 
-        // Place page preview to bottom of editor area.
-        IFolderLayout bottom = layout.createFolder("Bottom", IPageLayout.BOTTOM, (float) 0.6, editorArea);
-        bottom.addView(PagePreview.VIEW_ID);
+        IFolderLayout bottomFolder =
+            layout.createFolder("bottomFolder", IPageLayout.BOTTOM, 0.60f, layout.getEditorArea());
+        bottomFolder.addView(PagePreview.VIEW_ID);
+        bottomFolder.addView("org.eclipse.pde.runtime.LogView");
+
+        layout.addView(IPageLayout.ID_OUTLINE, IPageLayout.RIGHT, 0.80f, layout.getEditorArea());
     }
 
 }
