@@ -544,6 +544,7 @@ public class PageEditor extends TextEditor implements ICoreEventListener
                                     sourceViewer.getTextWidget().setCaretOffset(caretOffset);
                                     sourceViewer.getTextWidget().setTopPixel(topPixel);
                                     updateInfo();
+                                    doSave(new NullProgressMonitor());
                                 }
 
                             });
