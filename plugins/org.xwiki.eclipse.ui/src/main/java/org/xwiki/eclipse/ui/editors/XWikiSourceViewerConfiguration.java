@@ -50,6 +50,11 @@ public class XWikiSourceViewerConfiguration extends TextSourceViewerConfiguratio
 {
     private PageEditor pageEditor = null;
 
+    public XWikiSourceViewerConfiguration()
+    {
+        super();
+    }
+
     public XWikiSourceViewerConfiguration(PageEditor pageEditor)
     {
         super();
@@ -105,6 +110,10 @@ public class XWikiSourceViewerConfiguration extends TextSourceViewerConfiguratio
         ContentAssistant contentAssistant = new ContentAssistant();
 
         CompoundContentAssistProcessor compoundContentAssistProcessor;
+
+        if (pageEditor == null) {
+            return contentAssistant;
+        }
 
         PageEditorInput input = (PageEditorInput) pageEditor.getEditorInput();
         XWikiEclipsePage currentPage = input.getPage();

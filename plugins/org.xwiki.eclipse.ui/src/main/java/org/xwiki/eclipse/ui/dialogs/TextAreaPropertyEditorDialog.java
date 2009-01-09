@@ -24,8 +24,13 @@ import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
+import org.eclipse.jface.text.Document;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IDocumentPartitioner;
+import org.eclipse.jface.text.rules.FastPartitioner;
+import org.eclipse.jface.text.source.SourceViewer;
+import org.eclipse.jface.text.source.VerticalRuler;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionEvent;
@@ -39,6 +44,8 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.forms.widgets.Form;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.xwiki.eclipse.core.model.XWikiEclipseObjectProperty;
+import org.xwiki.eclipse.ui.editors.XWikiSourceViewerConfiguration;
+import org.xwiki.eclipse.ui.editors.scanners.XWikiPartitionScanner;
 
 public class TextAreaPropertyEditorDialog extends Dialog
 {
@@ -81,17 +88,25 @@ public class TextAreaPropertyEditorDialog extends Dialog
         GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, true).applyTo(form);
         GridLayoutFactory.fillDefaults().applyTo(form.getBody());
 
-        final StyledText styledText = new StyledText(form.getBody(), SWT.BORDER);
-        styledText.setText(property.getValue() != null ? (String) property.getValue() : "");
-        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, true).applyTo(styledText);
-        styledText.addModifyListener(new ModifyListener()
+        IDocument document = new Document(property.getValue() != null ? (String) property.getValue() : "");
+        IDocumentPartitioner partitioner =
+            new FastPartitioner(new XWikiPartitionScanner(), XWikiPartitionScanner.ALL_PARTITIONS);
+        partitioner.connect(document);
+        document.setDocumentPartitioner(partitioner);
+
+        final SourceViewer sourceViewer =
+            new SourceViewer(form.getBody(), new VerticalRuler(10), SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
+        sourceViewer.configure(new XWikiSourceViewerConfiguration());
+        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, true).applyTo(sourceViewer.getControl());
+        sourceViewer.setDocument(document);
+        sourceViewer.getTextWidget().addModifyListener(new ModifyListener()
         {
             public void modifyText(ModifyEvent e)
             {
-                text = styledText.getText();
+                text = sourceViewer.getTextWidget().getText();
             }
-
         });
+        sourceViewer.getTextWidget().setWordWrap(true);
 
         Composite buttonBar = toolkit.createComposite(form.getBody());
         GridLayoutFactory.fillDefaults().numColumns(3).extendedMargins(0, 0, 0, 10).applyTo(buttonBar);
