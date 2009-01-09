@@ -37,6 +37,7 @@ import org.eclipse.ui.views.IViewDescriptor;
 public class ApplicationActionBarAdvisor extends ActionBarAdvisor
 {
     private List<Action> showViewActions;
+
     private IWorkbenchAction preferencesAction;
 
     class ShowViewAction extends Action
@@ -92,14 +93,14 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
         register(pasteAction);
 
         IWorkbenchAction exitAction = ActionFactory.QUIT.create(window);
-        register(exitAction);             
+        register(exitAction);
 
         IWorkbenchAction showViewMenuAction = ActionFactory.SHOW_VIEW_MENU.create(window);
         register(showViewMenuAction);
-        
+
         preferencesAction = ActionFactory.PREFERENCES.create(window);
         register(preferencesAction);
-        
+
         showViewActions = new ArrayList<Action>();
 
         for (IViewDescriptor v : window.getWorkbench().getViewRegistry().getViews()) {
@@ -122,7 +123,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
             if (v.getId().equals("org.eclipse.ui.views.ContentOutline")) {
                 addView = true;
             }
-           
+
             if (addView) {
                 ShowViewAction action = new ShowViewAction(window, v);
                 showViewActions.add(action);
@@ -149,10 +150,10 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
         for (Action action : showViewActions) {
             showViewMenu.add(action);
         }
-        
+
         windowMenu.add(showViewMenu);
-        windowMenu.add(preferencesAction);      
-        
+        windowMenu.add(preferencesAction);
+
         menuBar.add(windowMenu);
 
         MenuManager helpMenu = new MenuManager("Help", "org.xwiki.xeclipse.menu.Help");

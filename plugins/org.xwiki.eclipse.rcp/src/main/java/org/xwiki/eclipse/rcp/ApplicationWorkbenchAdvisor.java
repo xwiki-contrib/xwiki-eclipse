@@ -34,6 +34,7 @@ import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.internal.ide.IDEWorkbenchPlugin;
 import org.eclipse.ui.internal.ide.model.WorkbenchAdapterBuilder;
 import org.osgi.framework.Bundle;
+import org.xwiki.eclipse.ui.perspectives.XWikiPerspectiveFactory;
 
 public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor
 {
@@ -47,7 +48,7 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor
 
     public String getInitialWindowPerspectiveId()
     {
-        return PERSPECTIVE_ID;
+        return XWikiPerspectiveFactory.PERSPECTIVE_ID;
     }
 
     @Override
