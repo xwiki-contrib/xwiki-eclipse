@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: XWiki Eclipse UI Plug-in
 Bundle-SymbolicName: org.xwiki.eclipse.ui;singleton:=true
-Bundle-Version: 1.2.0.SNAPSHOT
+Bundle-Version: 1.2.0.RC1
 Bundle-Activator: org.xwiki.eclipse.ui.UIPlugin
 Bundle-Vendor: XWiki
 Require-Bundle: org.eclipse.ui;bundle-version="3.4.0",
