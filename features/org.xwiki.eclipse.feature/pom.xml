@@ -35,7 +35,7 @@
   <artifactId>xwiki-eclipse-feature</artifactId>
   <packaging>zip</packaging>
   <name>XWiki Eclipse Feature</name>
-  <version>1.2-SNAPSHOT</version>
+  <version>1.2-rc-1</version>
   <description>XWiki Eclipse Feature</description>
   <scm>
     <connection>scm:svn:http://svn.xwiki.org/svnroot/xwiki/xeclipse/trunk</connection>
