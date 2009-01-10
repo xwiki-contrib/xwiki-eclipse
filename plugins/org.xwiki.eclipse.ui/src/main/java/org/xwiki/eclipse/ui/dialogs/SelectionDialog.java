@@ -11,6 +11,7 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
@@ -170,6 +171,10 @@ public class SelectionDialog extends TitleAreaDialog
     @Override
     public boolean close()
     {
+        if (getReturnCode() == Window.CANCEL) {
+            return super.close();
+        }
+
         boolean warn = false;
         for (Object o : selectedObjects) {
             if ((o instanceof DataManager) || (o instanceof XWikiEclipseSpaceSummary)) {
@@ -181,8 +186,7 @@ public class SelectionDialog extends TitleAreaDialog
         if (warn) {
             MessageBox messageBox = new MessageBox(getShell(), SWT.YES | SWT.NO | SWT.ICON_QUESTION);
             messageBox
-                .setMessage(String
-                    .format("Your selection contains spaces or data managers. Are you really sure that you want to delete them?"));
+                .setMessage("Your selection contains spaces or data managers. Are you really sure that you want to delete them?");
             int result = messageBox.open();
             if (result == SWT.YES) {
                 return super.close();
