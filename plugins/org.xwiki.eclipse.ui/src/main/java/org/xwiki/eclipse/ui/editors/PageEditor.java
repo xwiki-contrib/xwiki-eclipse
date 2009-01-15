@@ -416,6 +416,14 @@ public class PageEditor extends TextEditor implements ICoreEventListener
             case DATA_MANAGER_CONNECTED:
 
                 updatePage = page.getDataManager().equals(dataManager);
+                
+                Display.getDefault().syncExec(new Runnable()
+                {
+                    public void run()
+                    {
+                       PageEditor.this.updateInfo();
+                    }
+                });
 
                 break;
 
@@ -518,7 +526,7 @@ public class PageEditor extends TextEditor implements ICoreEventListener
         }
 
         try {
-            if (updatePage) {
+            if (updatePage) {            	
                 if (!isDirty()) {
                     final XWikiEclipsePage newPage = page.getDataManager().getPage(page.getData().getId());
 
@@ -552,7 +560,7 @@ public class PageEditor extends TextEditor implements ICoreEventListener
                         }
 
                     }
-                }
+                }                
             }
         } catch (XWikiEclipseException e) {
             CoreLog.logError("Error while handling XWiki Eclipse event", e);
