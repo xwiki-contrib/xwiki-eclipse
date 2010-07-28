@@ -23,6 +23,7 @@ package org.xwiki.eclipse.core.utils;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -91,7 +92,16 @@ public class CoreUtils
             createFolder(parentFolder);
         }
 
-        InputStream is = new ByteArrayInputStream(xstream.toXML(data).getBytes());
+        byte[] bytes = null;
+
+        try {
+            // We must use UTF-8 since the reader always assumes UTF-8, but getBytes uses the JVM encoding by default
+            bytes = xstream.toXML(data).getBytes("UTF-8");
+        } catch (UnsupportedEncodingException e1) {
+            // ignore, UTF-8 is always available
+        }
+
+        InputStream is = new ByteArrayInputStream(bytes);
         if (!file.exists()) {
             file.create(is, true, null);
         } else {
