@@ -78,10 +78,25 @@
 	<extension point="org.eclipse.ui.navigator.navigatorContent">
 		<navigatorContent contentProvider="org.xwiki.eclipse.ui.NavigatorContentProvider" icon="icons/xwiki.png" id="org.xwiki.eclipse.ui.navigator.content.XWikiEclipseDataManagers" labelProvider="org.eclipse.ui.model.WorkbenchLabelProvider" name="XWiki Eclipse Navigator Content" priority="highest">
 			<triggerPoints>
-				<adapt type="org.eclipse.core.resources.IProject">
-					<test forcePluginActivation="true" property="org.eclipse.core.resources.projectNature" value="org.xwiki.eclipse.XWikiEclipseNature">
-               </test>
-				</adapt>
+    <or>
+       <adapt
+             type="org.eclipse.core.resources.IProject">
+          <test
+                forcePluginActivation="true"
+                property="org.eclipse.core.resources.projectNature"
+                value="org.xwiki.eclipse.XWikiEclipseNature">
+          </test>
+       </adapt>
+       <instanceof
+             value="org.xwiki.eclipse.core.model.XWikiEclipseSpaceSummary">
+       </instanceof>
+       <instanceof
+             value="org.xwiki.eclipse.core.model.XWikiEclipsePageSummary">
+       </instanceof>
+       <instanceof
+             value="org.xwiki.eclipse.core.model.XWikiEclipseObjectSummary">
+       </instanceof>
+    </or>
 			</triggerPoints>
 			<possibleChildren>
 				<or>
