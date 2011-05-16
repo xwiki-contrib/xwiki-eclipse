@@ -1,0 +1,1246 @@
+From 657e194b458ab7d9c0cd28a971f36ac74002868a Mon Sep 17 00:00:00 2001
+From: junhan <jun.han37@gmail.com>
+Date: Mon, 16 May 2011 00:04:53 -0400
+Subject: [PATCH 01/13] [xeclipse_150] modify plugin dependency in the product
+ configuration
+
+---
+ .../org.xwiki.eclipse.product                      |   57 +++++++------------
+ plugins/org.xwiki.eclipse.rcp/plugin.xml           |    2 +-
+ 2 files changed, 22 insertions(+), 37 deletions(-)
+
+diff --git a/plugins/org.xwiki.eclipse.rcp/org.xwiki.eclipse.product b/plugins/org.xwiki.eclipse.rcp/org.xwiki.eclipse.product
+index 4da4637..4d7a0a7 100644
+--- a/plugins/org.xwiki.eclipse.rcp/org.xwiki.eclipse.product
++++ b/plugins/org.xwiki.eclipse.rcp/org.xwiki.eclipse.product
+@@ -1,7 +1,7 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+-<?pde version="3.4"?>
++<?pde version="3.5"?>
+ 
+-<product name="XWiki Eclipse" id="org.xwiki.eclipse.rcp.product" application="org.xwiki.eclipse.rcp.application" useFeatures="false">
++<product name="XWiki Eclipse" uid="org.xwiki.eclipse.rcp.product" id="org.xwiki.eclipse.rcp.product" application="org.xwiki.eclipse.rcp.application" version="1.2.0.RC1" useFeatures="false" includeLaunchers="true">
+ 
+    <aboutInfo>
+       <image path="/org.xwiki.eclipse.rcp/icons/about.png"/>
+@@ -29,66 +29,56 @@
+       </win>
+    </launcher>
+ 
+-
+    <vm>
+    </vm>
+ 
+    <plugins>
+       <plugin id="com.ibm.icu"/>
+-      <plugin id="javax.servlet"/>
+-      <plugin id="org.eclipse.ant.core"/>
+       <plugin id="org.eclipse.compare"/>
++      <plugin id="org.eclipse.compare.core"/>
+       <plugin id="org.eclipse.core.commands"/>
+       <plugin id="org.eclipse.core.contenttype"/>
+       <plugin id="org.eclipse.core.databinding"/>
++      <plugin id="org.eclipse.core.databinding.observable"/>
++      <plugin id="org.eclipse.core.databinding.property"/>
+       <plugin id="org.eclipse.core.expressions"/>
+       <plugin id="org.eclipse.core.filebuffers"/>
+       <plugin id="org.eclipse.core.filesystem"/>
+-      <plugin id="org.eclipse.core.filesystem.hpux.ia64_32"/>
+-      <plugin id="org.eclipse.core.filesystem.linux.ppc"/>
+       <plugin id="org.eclipse.core.filesystem.linux.x86" fragment="true"/>
+-      <plugin id="org.eclipse.core.filesystem.linux.x86_64"/>
+-      <plugin id="org.eclipse.core.filesystem.macosx"/>
+-      <plugin id="org.eclipse.core.filesystem.solaris.sparc"/>
+-      <plugin id="org.eclipse.core.filesystem.win32.x86"/>
+       <plugin id="org.eclipse.core.jobs"/>
+-      <plugin id="org.eclipse.core.net"/>
+-      <plugin id="org.eclipse.core.net.linux.x86" fragment="true"/>
+-      <plugin id="org.eclipse.core.net.win32.x86"/>
+       <plugin id="org.eclipse.core.resources"/>
+-      <plugin id="org.eclipse.core.resources.compatibility" fragment="true"/>
+-      <plugin id="org.eclipse.core.resources.win32.x86"/>
+       <plugin id="org.eclipse.core.runtime"/>
+-      <plugin id="org.eclipse.core.runtime.compatibility.auth"/>
+       <plugin id="org.eclipse.core.runtime.compatibility.registry" fragment="true"/>
+-      <plugin id="org.eclipse.core.variables"/>
++      <plugin id="org.eclipse.ecf"/>
++      <plugin id="org.eclipse.ecf.filetransfer"/>
++      <plugin id="org.eclipse.ecf.identity"/>
++      <plugin id="org.eclipse.ecf.provider.filetransfer"/>
++      <plugin id="org.eclipse.ecf.provider.filetransfer.ssl" fragment="true"/>
++      <plugin id="org.eclipse.ecf.ssl" fragment="true"/>
+       <plugin id="org.eclipse.equinox.app"/>
+       <plugin id="org.eclipse.equinox.common"/>
++      <plugin id="org.eclipse.equinox.p2.core"/>
++      <plugin id="org.eclipse.equinox.p2.engine"/>
++      <plugin id="org.eclipse.equinox.p2.metadata"/>
++      <plugin id="org.eclipse.equinox.p2.metadata.repository"/>
++      <plugin id="org.eclipse.equinox.p2.repository"/>
+       <plugin id="org.eclipse.equinox.preferences"/>
+       <plugin id="org.eclipse.equinox.registry"/>
+       <plugin id="org.eclipse.equinox.security"/>
+-      <plugin id="org.eclipse.equinox.security.macosx"/>
+-      <plugin id="org.eclipse.equinox.security.win32.x86"/>
+       <plugin id="org.eclipse.help"/>
+       <plugin id="org.eclipse.jface"/>
+       <plugin id="org.eclipse.jface.databinding"/>
+       <plugin id="org.eclipse.jface.text"/>
++      <plugin id="org.eclipse.ltk.core.refactoring"/>
++      <plugin id="org.eclipse.ltk.ui.refactoring"/>
+       <plugin id="org.eclipse.osgi"/>
+       <plugin id="org.eclipse.osgi.services"/>
+       <plugin id="org.eclipse.swt"/>
+-      <plugin id="org.eclipse.swt.carbon.macosx"/>
+-      <plugin id="org.eclipse.swt.gtk.linux.ppc"/>
+       <plugin id="org.eclipse.swt.gtk.linux.x86" fragment="true"/>
+-      <plugin id="org.eclipse.swt.gtk.linux.x86_64"/>
+-      <plugin id="org.eclipse.swt.gtk.solaris.sparc"/>
+-      <plugin id="org.eclipse.swt.motif.aix.ppc"/>
+-      <plugin id="org.eclipse.swt.motif.hpux.ia64_32"/>
+-      <plugin id="org.eclipse.swt.win32.win32.x86"/>
+-      <plugin id="org.eclipse.swt.win32.win32.x86_64"/>
+-      <plugin id="org.eclipse.swt.wpf.win32.x86"/>
++      <plugin id="org.eclipse.team.core"/>
++      <plugin id="org.eclipse.team.ui"/>
+       <plugin id="org.eclipse.text"/>
+       <plugin id="org.eclipse.ui"/>
+-      <plugin id="org.eclipse.ui.carbon"/>
+       <plugin id="org.eclipse.ui.editors"/>
+       <plugin id="org.eclipse.ui.forms"/>
+       <plugin id="org.eclipse.ui.ide"/>
+@@ -97,18 +87,13 @@
+       <plugin id="org.eclipse.ui.views"/>
+       <plugin id="org.eclipse.ui.views.log"/>
+       <plugin id="org.eclipse.ui.views.properties.tabbed"/>
+-      <plugin id="org.eclipse.ui.win32"/>
+       <plugin id="org.eclipse.ui.workbench"/>
+       <plugin id="org.eclipse.ui.workbench.texteditor"/>
+-      <plugin id="org.eclipse.update.configurator"/>
+-      <plugin id="org.eclipse.update.core"/>
+-      <plugin id="org.eclipse.update.core.linux" fragment="true"/>
+-      <plugin id="org.eclipse.update.core.win32"/>
+-      <plugin id="org.eclipse.update.ui"/>
+       <plugin id="org.xwiki.eclipse.core"/>
+       <plugin id="org.xwiki.eclipse.rcp"/>
+       <plugin id="org.xwiki.eclipse.ui"/>
+       <plugin id="org.xwiki.eclipse.xmlrpc"/>
+    </plugins>
+ 
++
+ </product>
+diff --git a/plugins/org.xwiki.eclipse.rcp/plugin.xml b/plugins/org.xwiki.eclipse.rcp/plugin.xml
+index b31d423..3f4f032 100644
+--- a/plugins/org.xwiki.eclipse.rcp/plugin.xml
++++ b/plugins/org.xwiki.eclipse.rcp/plugin.xml
+@@ -27,7 +27,7 @@
+          </property>
+          <property
+                name="aboutText"
+-               value="XWiki Eclipse&#x0A;&#x0A;(C) 2007-2009 XWiki.com">
++               value="XWiki Eclipse&#x0A;&#x0A;(C) 2007-2008 XWiki.com">
+          </property>
+          <property
+                name="windowImages"
+-- 
+1.7.4.4
+
+
+From 11161c895a21e37130d1cad77eac04f263ddb99d Mon Sep 17 00:00:00 2001
+From: junhan <jun.han37@gmail.com>
+Date: Mon, 16 May 2011 00:20:59 -0400
+Subject: [PATCH 02/13] [xeclipse_150] add parent folder and a pom.xml file to
+ contain the specific platform configuration
+
+---
+ parent/pom.xml                              |   68 +++++++++++++++++++++++++++
+ plugins/org.xwiki.eclipse.xmlrpc/no-pom.xml |    7 ---
+ 2 files changed, 68 insertions(+), 7 deletions(-)
+ create mode 100644 parent/pom.xml
+ delete mode 100644 plugins/org.xwiki.eclipse.xmlrpc/no-pom.xml
+
+diff --git a/parent/pom.xml b/parent/pom.xml
+new file mode 100644
+index 0000000..de77acb
+--- /dev/null
++++ b/parent/pom.xml
+@@ -0,0 +1,68 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project
++  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
++  xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
++  <modelVersion>4.0.0</modelVersion>
++  <groupId>org.xwiki.eclipse</groupId>
++  <artifactId>parent</artifactId>
++  <version>1.2.0.RC1</version>
++  <packaging>pom</packaging>
++
++  <!-- tycho requires maven >= 3.0 -->
++  <prerequisites>
++    <maven>3.0</maven>
++  </prerequisites>
++
++  <properties>
++    <tycho-version>0.11.1</tycho-version>
++  </properties>
++  <repositories>
++    <!-- configure p2 repository to resolve against -->
++    <repository>
++      <id>helios</id>
++      <layout>p2</layout>
++      <url>http://download.eclipse.org/releases/helios</url>
++            <!-- file URL for faster and offline builds -->
++      <!-- <url>file:/${basedir}/../../helios-rcp/</url> -->
++    </repository>
++    <!-- SWTbot is not part of the helios update site -->
++    <repository>
++      <id>swtbot</id>
++      <layout>p2</layout>
++      <url>http://download.eclipse.org/technology/swtbot/helios/dev-build/update-site/</url>
++    </repository>
++  </repositories>
++  <build>
++    <plugins>
++      <plugin>
++        <!-- enable tycho build extension -->
++        <groupId>org.sonatype.tycho</groupId>
++        <artifactId>tycho-maven-plugin</artifactId>
++        <version>${tycho-version}</version>
++        <extensions>true</extensions>
++      </plugin>
++      <plugin>
++        <groupId>org.sonatype.tycho</groupId>
++        <artifactId>target-platform-configuration</artifactId>
++        <version>${tycho-version}</version>
++        <configuration>
++          <!-- recommended: use p2-based target platform resolver -->
++          <resolver>p2</resolver>
++          <!-- configure the p2 target environments for multi-platform build -->
++          <environments>
++            <environment>
++              <os>linux</os>
++              <ws>gtk</ws>
++              <arch>x86</arch>
++            </environment>
++            <environment>
++              <os>win32</os>
++              <ws>win32</ws>
++              <arch>x86</arch>
++            </environment>
++          </environments>
++        </configuration>
++      </plugin>
++    </plugins>
++  </build>
++</project>
+\ No newline at end of file
+diff --git a/plugins/org.xwiki.eclipse.xmlrpc/no-pom.xml b/plugins/org.xwiki.eclipse.xmlrpc/no-pom.xml
+deleted file mode 100644
+index 09f88d4..0000000
+--- a/plugins/org.xwiki.eclipse.xmlrpc/no-pom.xml
++++ /dev/null
+@@ -1,7 +0,0 @@
+-<?xml version="1.0" encoding="UTF-8"?>
+-
+-<!--
+-	This plugin is part of a larger feature.
+-	Please refer to ../../features/org.xwiki.eclipse.feature for the pom.xml to be used when building XEclipse. 
+--->
+-
+-- 
+1.7.4.4
+
+
+From d4dcc4bd2c19430cca0d497dd62f6938ab7bbc1e Mon Sep 17 00:00:00 2001
+From: junhan <jun.han37@gmail.com>
+Date: Mon, 16 May 2011 00:24:23 -0400
+Subject: [PATCH 03/13] [xeclipse_150] add a pom.xml file to xmlrpc plugin
+
+---
+ plugins/org.xwiki.eclipse.xmlrpc/pom.xml |   16 ++++++++++++++++
+ 1 files changed, 16 insertions(+), 0 deletions(-)
+ create mode 100644 plugins/org.xwiki.eclipse.xmlrpc/pom.xml
+
+diff --git a/plugins/org.xwiki.eclipse.xmlrpc/pom.xml b/plugins/org.xwiki.eclipse.xmlrpc/pom.xml
+new file mode 100644
+index 0000000..7f6c1cf
+--- /dev/null
++++ b/plugins/org.xwiki.eclipse.xmlrpc/pom.xml
+@@ -0,0 +1,16 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project
++  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
++  xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
++  <modelVersion>4.0.0</modelVersion>
++  <parent>
++    <artifactId>parent</artifactId>
++    <groupId>org.xwiki.eclipse</groupId>
++    <version>1.2.0.RC1</version>
++    <relativePath>../../parent/pom.xml</relativePath>
++  </parent>
++  <groupId>org.xwiki.eclipse</groupId>
++  <artifactId>org.xwiki.eclipse.xmlrpc</artifactId>
++  <version>1.4.0</version>
++  <packaging>eclipse-plugin</packaging>
++</project>
+\ No newline at end of file
+-- 
+1.7.4.4
+
+
+From c11b9dac4135eaca6fbf389c5f07f588d6930cc3 Mon Sep 17 00:00:00 2001
+From: junhan <jun.han37@gmail.com>
+Date: Mon, 16 May 2011 00:28:54 -0400
+Subject: [PATCH 04/13] [xeclipse_150] add a pom.xml file to core plugin
+
+---
+ plugins/org.xwiki.eclipse.core/no-pom.xml |    7 -------
+ plugins/org.xwiki.eclipse.core/pom.xml    |   16 ++++++++++++++++
+ 2 files changed, 16 insertions(+), 7 deletions(-)
+ delete mode 100644 plugins/org.xwiki.eclipse.core/no-pom.xml
+ create mode 100644 plugins/org.xwiki.eclipse.core/pom.xml
+
+diff --git a/plugins/org.xwiki.eclipse.core/no-pom.xml b/plugins/org.xwiki.eclipse.core/no-pom.xml
+deleted file mode 100644
+index 09f88d4..0000000
+--- a/plugins/org.xwiki.eclipse.core/no-pom.xml
++++ /dev/null
+@@ -1,7 +0,0 @@
+-<?xml version="1.0" encoding="UTF-8"?>
+-
+-<!--
+-	This plugin is part of a larger feature.
+-	Please refer to ../../features/org.xwiki.eclipse.feature for the pom.xml to be used when building XEclipse. 
+--->
+-
+diff --git a/plugins/org.xwiki.eclipse.core/pom.xml b/plugins/org.xwiki.eclipse.core/pom.xml
+new file mode 100644
+index 0000000..843d884
+--- /dev/null
++++ b/plugins/org.xwiki.eclipse.core/pom.xml
+@@ -0,0 +1,16 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project
++  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
++  xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
++  <modelVersion>4.0.0</modelVersion>
++  <parent>
++    <artifactId>parent</artifactId>
++    <groupId>org.xwiki.eclipse</groupId>
++    <version>1.2.0.RC1</version>
++    <relativePath>../../parent/pom.xml</relativePath>
++  </parent>
++  <groupId>org.xwiki.eclipse</groupId>
++  <artifactId>org.xwiki.eclipse.core</artifactId>
++  <version>1.2.0.RC1</version>
++  <packaging>eclipse-plugin</packaging>
++</project>
+\ No newline at end of file
+-- 
+1.7.4.4
+
+
+From 222e91c1471493d7f143582926c8d91b956777bd Mon Sep 17 00:00:00 2001
+From: junhan <jun.han37@gmail.com>
+Date: Mon, 16 May 2011 00:32:23 -0400
+Subject: [PATCH 05/13] [xeclipse_150] add a pom.xml file to ui plugin
+
+---
+ plugins/org.xwiki.eclipse.ui/no-pom.xml |    7 -------
+ plugins/org.xwiki.eclipse.ui/pom.xml    |   16 ++++++++++++++++
+ 2 files changed, 16 insertions(+), 7 deletions(-)
+ delete mode 100644 plugins/org.xwiki.eclipse.ui/no-pom.xml
+ create mode 100644 plugins/org.xwiki.eclipse.ui/pom.xml
+
+diff --git a/plugins/org.xwiki.eclipse.ui/no-pom.xml b/plugins/org.xwiki.eclipse.ui/no-pom.xml
+deleted file mode 100644
+index 09f88d4..0000000
+--- a/plugins/org.xwiki.eclipse.ui/no-pom.xml
++++ /dev/null
+@@ -1,7 +0,0 @@
+-<?xml version="1.0" encoding="UTF-8"?>
+-
+-<!--
+-	This plugin is part of a larger feature.
+-	Please refer to ../../features/org.xwiki.eclipse.feature for the pom.xml to be used when building XEclipse. 
+--->
+-
+diff --git a/plugins/org.xwiki.eclipse.ui/pom.xml b/plugins/org.xwiki.eclipse.ui/pom.xml
+new file mode 100644
+index 0000000..03f3ec9
+--- /dev/null
++++ b/plugins/org.xwiki.eclipse.ui/pom.xml
+@@ -0,0 +1,16 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project
++  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
++  xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
++  <modelVersion>4.0.0</modelVersion>
++  <parent>
++    <artifactId>parent</artifactId>
++    <groupId>org.xwiki.eclipse</groupId>
++    <version>1.2.0.RC1</version>
++    <relativePath>../../parent/pom.xml</relativePath>
++  </parent>
++  <groupId>org.xwiki.eclipse</groupId>
++  <artifactId>org.xwiki.eclipse.ui</artifactId>
++  <version>1.2.0.RC1</version>
++  <packaging>eclipse-plugin</packaging>
++</project>
+-- 
+1.7.4.4
+
+
+From 366c2784c889b6f4c159fc7c6ed9faefd8f2e044 Mon Sep 17 00:00:00 2001
+From: junhan <jun.han37@gmail.com>
+Date: Mon, 16 May 2011 00:35:25 -0400
+Subject: [PATCH 06/13] [xeclipse_150] update the pom.xml file to use tycho
+ build function in rcp plugin
+
+---
+ plugins/org.xwiki.eclipse.rcp/pom.xml |  150 +++------------------------------
+ 1 files changed, 11 insertions(+), 139 deletions(-)
+
+diff --git a/plugins/org.xwiki.eclipse.rcp/pom.xml b/plugins/org.xwiki.eclipse.rcp/pom.xml
+index 6a36639..1bfba11 100644
+--- a/plugins/org.xwiki.eclipse.rcp/pom.xml
++++ b/plugins/org.xwiki.eclipse.rcp/pom.xml
+@@ -1,144 +1,16 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+-
+-<!--
+- *
+- * See the NOTICE file distributed with this work for additional
+- * information regarding copyright ownership.
+- *
+- * This is free software; you can redistribute it and/or modify it
+- * under the terms of the GNU Lesser General Public License as
+- * published by the Free Software Foundation; either version 2.1 of
+- * the License, or (at your option) any later version.
+- *
+- * This software is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+- * Lesser General Public License for more details.
+- *
+- * You should have received a copy of the GNU Lesser General Public
+- * License along with this software; if not, write to the Free
+- * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+- * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+- *
+--->
+-
+-<project xmlns="http://maven.apache.org/POM/4.0.0"
+-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
++<project
++  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
++  xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+   <modelVersion>4.0.0</modelVersion>
+   <parent>
+-    <groupId>com.xpn.xwiki.platform</groupId>
+-    <artifactId>xwiki</artifactId>
+-    <version>14-SNAPSHOT</version>
++    <artifactId>parent</artifactId>
++    <groupId>org.xwiki.eclipse</groupId>
++    <version>1.2.0.RC1</version>
++    <relativePath>../../parent/pom.xml</relativePath>
+   </parent>
+   <groupId>org.xwiki.eclipse</groupId>
+-  <artifactId>xwiki-eclipse-rcp-${pdePlatform}-${pdeToolkit}-${pdeArch}</artifactId>
+-  <packaging>zip</packaging>
+-  <name>XEclipse</name>
+-  <version>1.2-rc-1</version>
+-  <description>XWiki Eclipse Client</description>
+-  <scm>
+-    <connection>scm:svn:http://svn.xwiki.org/svnroot/xwiki/xeclipse/trunk</connection>
+-    <developerConnection>scm:svn:https://svn.xwiki.org/svnroot/xwiki/xeclipse/trunk</developerConnection>
+-    <url>http://svn.xwiki.org/svnroot/xwiki/xeclipse/trunk</url>
+-  </scm>
+-  <build>
+-    <plugins>      
+-      <plugin>
+-        <groupId>org.apache.maven.plugins</groupId>
+-        <artifactId>maven-resources-plugin</artifactId>
+-        <configuration>
+-          <outputDirectory>${basedir}/buildConfiguration</outputDirectory>
+-        </configuration>
+-        <executions>
+-          <execution>
+-            <phase>process-resources</phase>
+-            <goals>
+-              <goal>resources</goal>
+-            </goals>
+-          </execution>
+-        </executions>
+-      </plugin>
+-      <plugin>
+-        <groupId>org.codehaus.mojo</groupId>
+-        <artifactId>pde-maven-plugin</artifactId>
+-        <extensions>true</extensions>
+-        <configuration>
+-          <buildProperties>
+-            <javacSource>1.5</javacSource>
+-            <javacTarget>1.5</javacTarget>
+-            <allElementsFile>${basedir}/buildConfiguration/allElements.xml</allElementsFile>
+-          </buildProperties>
+-          <!-- See the README file next to this pom.xml file -->
+-          <eclipseInstall>${eclipseInstall}</eclipseInstall>
+-          <pdeProductFilename>org.xwiki.eclipse.product</pdeProductFilename>
+-          <pdeBuildVersion>${pdeBuildVersion}</pdeBuildVersion>
+-        </configuration>
+-        <executions>
+-          <execution>
+-            <id>clean-pde</id>
+-            <!-- Note: We need to execute the PDE plugin clean goal before the maven clean plugin executes since the PDE
+-                 plugin requires the buildConfiguration/ directory which is cleaned by the clean plugin... -->
+-            <phase>pre-clean</phase>
+-            <goals>
+-              <goal>clean</goal>
+-            </goals>
+-          </execution>
+-        </executions>
+-      </plugin>
+-      <plugin>
+-        <artifactId>maven-clean-plugin</artifactId>
+-        <configuration>
+-          <filesets>
+-            <fileset>
+-              <directory>buildConfiguration</directory>
+-            </fileset>
+-            <fileset>
+-              <directory>../../features</directory>
+-            </fileset>
+-          </filesets>
+-        </configuration>
+-      </plugin>
+-    </plugins>
+-    <resources>
+-      <resource>
+-        <directory>${basedir}/src/main/resources</directory>
+-        <filtering>true</filtering>
+-      </resource>
+-    </resources>
+-  </build>
+-  <profiles>
+-    <profile>
+-      <id>linux</id>
+-      <properties>
+-        <pdePlatform>linux</pdePlatform>
+-        <pdeToolkit>gtk</pdeToolkit>
+-        <pdeArch>x86</pdeArch>
+-      </properties>
+-    </profile>
+-    <profile>
+-      <id>macx86</id>
+-      <properties>
+-        <pdePlatform>macosx</pdePlatform>
+-        <pdeToolkit>carbon</pdeToolkit>
+-        <pdeArch>x86</pdeArch>
+-      </properties>
+-    </profile>
+-    <profile>
+-      <id>macppc</id>
+-      <properties>
+-        <pdePlatform>macosx</pdePlatform>
+-        <pdeToolkit>carbon</pdeToolkit>
+-        <pdeArch>ppc</pdeArch>
+-      </properties>
+-    </profile>
+-    <profile>
+-      <id>windows</id>
+-      <properties>
+-        <pdePlatform>win32</pdePlatform>
+-        <pdeToolkit>win32</pdeToolkit>
+-        <pdeArch>x86</pdeArch>
+-      </properties>
+-    </profile>
+-  </profiles>
+-</project>
++  <artifactId>org.xwiki.eclipse.rcp</artifactId>
++  <version>1.2.0.RC1</version>
++  <packaging>eclipse-plugin</packaging>
++</project>
+\ No newline at end of file
+-- 
+1.7.4.4
+
+
+From 65ba08ac3a56009171da3252b10009401b26e55e Mon Sep 17 00:00:00 2001
+From: junhan <jun.han37@gmail.com>
+Date: Mon, 16 May 2011 00:40:30 -0400
+Subject: [PATCH 07/13] [xeclipse_150] (1) update the feature.xml to add rcp
+ plugin and (2) update pom.xml file to use tycho build
+ function
+
+---
+ features/org.xwiki.eclipse.feature/feature.xml |   40 +++++++++-
+ features/org.xwiki.eclipse.feature/pom.xml     |  100 +++---------------------
+ 2 files changed, 46 insertions(+), 94 deletions(-)
+
+diff --git a/features/org.xwiki.eclipse.feature/feature.xml b/features/org.xwiki.eclipse.feature/feature.xml
+index 210acb1..f8a5844 100644
+--- a/features/org.xwiki.eclipse.feature/feature.xml
++++ b/features/org.xwiki.eclipse.feature/feature.xml
+@@ -2,7 +2,7 @@
+ <feature
+       id="org.xwiki.eclipse.feature"
+       label="XWiki Eclipse Feature"
+-      version="1.2.0.20090109"
++      version="1.2.0.RC1"
+       provider-name="XWiki">
+ 
+    <description url="http://code.xwiki.org/xwiki/bin/view/Extensions/XEclipseExtension">
+@@ -48,11 +48,10 @@
+    </license>
+ 
+    <requires>
+-      <import plugin="org.eclipse.core.runtime" version="3.2.0" match="compatible"/>
+-      <import plugin="org.eclipse.core.resources" version="3.4.0" match="greaterOrEqual"/>
++      <import plugin="org.eclipse.core.runtime" version="3.4.0" match="greaterOrEqual"/>
+       <import plugin="org.xwiki.eclipse.xmlrpc" version="1.4.0" match="greaterOrEqual"/>
+       <import plugin="org.eclipse.core.expressions" version="3.4.0" match="greaterOrEqual"/>
+-      <import plugin="org.eclipse.ui" version="3.3.0" match="compatible"/>
++      <import plugin="org.eclipse.ui" version="3.4.0" match="greaterOrEqual"/>
+       <import plugin="org.xwiki.eclipse.core" version="1.2.0" match="greaterOrEqual"/>
+       <import plugin="org.eclipse.ui.navigator" version="3.3.100" match="greaterOrEqual"/>
+       <import plugin="org.eclipse.ui.editors" version="3.4.0" match="greaterOrEqual"/>
+@@ -60,6 +59,11 @@
+       <import plugin="org.eclipse.ui.forms" version="3.3.100" match="greaterOrEqual"/>
+       <import plugin="org.eclipse.compare" version="3.4.0" match="greaterOrEqual"/>
+       <import plugin="org.eclipse.ui.views" version="3.3.0" match="greaterOrEqual"/>
++      <import plugin="org.eclipse.core.resources" version="3.3.1" match="greaterOrEqual"/>
++      <import plugin="org.eclipse.ui.ide" version="3.3.2" match="greaterOrEqual"/>
++      <import plugin="org.eclipse.ui.navigator.resources" version="3.3.1" match="greaterOrEqual"/>
++      <import plugin="org.eclipse.ui.views.log" version="1.0.0" match="greaterOrEqual"/>
++      <import plugin="org.xwiki.eclipse.ui" version="1.2.0" match="greaterOrEqual"/>
+    </requires>
+ 
+    <plugin
+@@ -82,4 +86,32 @@
+          install-size="0"
+          version="0.0.0"/>
+ 
++   <plugin
++         id="org.xwiki.eclipse.rcp"
++         download-size="0"
++         install-size="0"
++         version="0.0.0"
++         unpack="false"/>
++         
++	<plugin
++         id="org.eclipse.swt.win32.win32.x86"
++         os="win32"
++         ws="win32"
++         arch="x86"
++         download-size="0"
++         install-size="0"
++         version="0.0.0"
++         fragment="true"
++         unpack="false"/>
++
++   <plugin
++         id="org.eclipse.swt.gtk.linux.x86"
++         os="linux"
++         ws="gtk"
++         arch="x86"
++         download-size="0"
++         install-size="0"
++         version="0.0.0"
++         fragment="true"
++         unpack="false"/>
+ </feature>
+diff --git a/features/org.xwiki.eclipse.feature/pom.xml b/features/org.xwiki.eclipse.feature/pom.xml
+index 96ad02b..6a7512e 100644
+--- a/features/org.xwiki.eclipse.feature/pom.xml
++++ b/features/org.xwiki.eclipse.feature/pom.xml
+@@ -1,96 +1,16 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+-
+-<!--
+- *
+- * See the NOTICE file distributed with this work for additional
+- * information regarding copyright ownership.
+- *
+- * This is free software; you can redistribute it and/or modify it
+- * under the terms of the GNU Lesser General Public License as
+- * published by the Free Software Foundation; either version 2.1 of
+- * the License, or (at your option) any later version.
+- *
+- * This software is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+- * Lesser General Public License for more details.
+- *
+- * You should have received a copy of the GNU Lesser General Public
+- * License along with this software; if not, write to the Free
+- * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+- * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+- *
+--->
+-
+-<project xmlns="http://maven.apache.org/POM/4.0.0"
+-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
++<project
++  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
++  xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+   <modelVersion>4.0.0</modelVersion>
+   <parent>
+-    <groupId>com.xpn.xwiki.platform</groupId>
+-    <artifactId>xwiki</artifactId>
+-    <version>14-SNAPSHOT</version>
++    <artifactId>parent</artifactId>
++    <groupId>org.xwiki.eclipse</groupId>
++    <version>1.2.0.RC1</version>
++    <relativePath>../../parent/pom.xml</relativePath>
+   </parent>
+   <groupId>org.xwiki.eclipse</groupId>
+-  <artifactId>xwiki-eclipse-feature</artifactId>
+-  <packaging>zip</packaging>
+-  <name>XWiki Eclipse Feature</name>
+-  <version>1.2-rc-1</version>
+-  <description>XWiki Eclipse Feature</description>
+-  <scm>
+-    <connection>scm:svn:http://svn.xwiki.org/svnroot/xwiki/xeclipse/trunk</connection>
+-    <developerConnection>scm:svn:https://svn.xwiki.org/svnroot/xwiki/xeclipse/trunk</developerConnection>
+-    <url>http://svn.xwiki.org/svnroot/xwiki/xeclipse/trunk</url>
+-  </scm>
+-  <build>
+-    <plugins>
+-      <plugin>
+-        <groupId>org.apache.maven.plugins</groupId>
+-        <artifactId>maven-compiler-plugin</artifactId>
+-        <configuration>
+-          <source>1.5</source>
+-          <target>1.5</target>
+-        </configuration>        
+-      </plugin>
+-      <plugin>
+-        <groupId>org.codehaus.mojo</groupId>
+-        <artifactId>pde-maven-plugin</artifactId>
+-        <extensions>true</extensions>
+-        <configuration>
+-          <!-- You must provide a profiles.xml file containing the value of eclipseInstall, or set it up in your
+-               settings.xml or pass it on the command line.
+-               For example, create the following profiles.xml file next to this pom.xml file:
+-               
+-               <profilesXml>
+-                 <profiles>
+-                   <profile>
+-                     <id>vmassol</id>
+-                     <properties>
+-                       <eclipseInstall>/Applications/eclipse-europa-pde/</eclipseInstall>
+-                     </properties>
+-                   </profile>
+-                 </profiles>
+-                 <activeProfiles>
+-                   <activeProfile>vmassol</activeProfile>
+-                 </activeProfiles>
+-               </profilesXml>
+-           -->
+-          <eclipseInstall>${eclipseInstall}</eclipseInstall>
+-          <buildProperties>
+-      		<javacSource>1.5</javacSource>
+-      		<javacTarget>1.5</javacTarget>
+-    	  </buildProperties>  
+-        </configuration>
+-        <executions>
+-          <execution>
+-            <id>clean-pde</id>
+-            <phase>clean</phase>
+-            <goals>
+-              <goal>clean</goal>
+-            </goals>
+-          </execution>
+-        </executions>
+-      </plugin>
+-    </plugins>
+-  </build>
++  <artifactId>org.xwiki.eclipse.feature</artifactId>
++  <version>1.2.0.RC1</version>
++  <packaging>eclipse-feature</packaging>
+ </project>
+\ No newline at end of file
+-- 
+1.7.4.4
+
+
+From 245c5415583928eccfe4bd45fc8efcda689120a1 Mon Sep 17 00:00:00 2001
+From: junhan <jun.han37@gmail.com>
+Date: Mon, 16 May 2011 00:58:28 -0400
+Subject: [PATCH 08/13] [xeclipse_150] (1) modify xwiki.eclipse.product
+ configuration and (2) add pom.xml file to product
+ folder
+
+---
+ plugins/org.xwiki.eclipse.rcp/META-INF/MANIFEST.MF |    1 +
+ .../org.xwiki.eclipse.product                      |   68 ++------------------
+ product/org.xwiki.eclipse.product                  |   51 +++++++++++++++
+ product/pom.xml                                    |   43 ++++++++++++
+ 4 files changed, 102 insertions(+), 61 deletions(-)
+ create mode 100644 product/org.xwiki.eclipse.product
+ create mode 100644 product/pom.xml
+
+diff --git a/plugins/org.xwiki.eclipse.rcp/META-INF/MANIFEST.MF b/plugins/org.xwiki.eclipse.rcp/META-INF/MANIFEST.MF
+index 96217ce..3f9953c 100644
+--- a/plugins/org.xwiki.eclipse.rcp/META-INF/MANIFEST.MF
++++ b/plugins/org.xwiki.eclipse.rcp/META-INF/MANIFEST.MF
+@@ -14,3 +14,4 @@ Require-Bundle: org.eclipse.ui,
+  org.xwiki.eclipse.ui;bundle-version="1.2.0"
+ Eclipse-LazyStart: true
+ Bundle-Vendor: XWiki
++Export-Package: org.xwiki.eclipse.rcp
+diff --git a/plugins/org.xwiki.eclipse.rcp/org.xwiki.eclipse.product b/plugins/org.xwiki.eclipse.rcp/org.xwiki.eclipse.product
+index 4d7a0a7..fb2500d 100644
+--- a/plugins/org.xwiki.eclipse.rcp/org.xwiki.eclipse.product
++++ b/plugins/org.xwiki.eclipse.rcp/org.xwiki.eclipse.product
+@@ -1,7 +1,7 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <?pde version="3.5"?>
+ 
+-<product name="XWiki Eclipse" uid="org.xwiki.eclipse.rcp.product" id="org.xwiki.eclipse.rcp.product" application="org.xwiki.eclipse.rcp.application" version="1.2.0.RC1" useFeatures="false" includeLaunchers="true">
++<product name="XWiki Eclipse" uid="org.xwiki.eclipse.rcp.product" id="org.xwiki.eclipse.rcp.product" application="org.xwiki.eclipse.rcp.application" version="1.2.0.RC1" useFeatures="true" includeLaunchers="true">
+ 
+    <aboutInfo>
+       <image path="/org.xwiki.eclipse.rcp/icons/about.png"/>
+@@ -21,6 +21,8 @@
+ 
+    <windowImages i16="/org.xwiki.eclipse.rcp/icons/xwiki16.png" i32="/org.xwiki.eclipse.rcp/icons/xwiki32.png" i48="/org.xwiki.eclipse.rcp/icons/xwiki48.png" i64="/org.xwiki.eclipse.rcp/icons/xwiki64.png" i128="/org.xwiki.eclipse.rcp/icons/xwiki128.png"/>
+ 
++   <splash
++      location="org.xwiki.eclipse.rcp" />
+    <launcher name="XEclipse">
+       <macosx icon="/org.xwiki.eclipse.rcp/icons/xwiki.icns"/>
+       <solaris/>
+@@ -33,67 +35,11 @@
+    </vm>
+ 
+    <plugins>
+-      <plugin id="com.ibm.icu"/>
+-      <plugin id="org.eclipse.compare"/>
+-      <plugin id="org.eclipse.compare.core"/>
+-      <plugin id="org.eclipse.core.commands"/>
+-      <plugin id="org.eclipse.core.contenttype"/>
+-      <plugin id="org.eclipse.core.databinding"/>
+-      <plugin id="org.eclipse.core.databinding.observable"/>
+-      <plugin id="org.eclipse.core.databinding.property"/>
+-      <plugin id="org.eclipse.core.expressions"/>
+-      <plugin id="org.eclipse.core.filebuffers"/>
+-      <plugin id="org.eclipse.core.filesystem"/>
+-      <plugin id="org.eclipse.core.filesystem.linux.x86" fragment="true"/>
+-      <plugin id="org.eclipse.core.jobs"/>
+-      <plugin id="org.eclipse.core.resources"/>
+-      <plugin id="org.eclipse.core.runtime"/>
+-      <plugin id="org.eclipse.core.runtime.compatibility.registry" fragment="true"/>
+-      <plugin id="org.eclipse.ecf"/>
+-      <plugin id="org.eclipse.ecf.filetransfer"/>
+-      <plugin id="org.eclipse.ecf.identity"/>
+-      <plugin id="org.eclipse.ecf.provider.filetransfer"/>
+-      <plugin id="org.eclipse.ecf.provider.filetransfer.ssl" fragment="true"/>
+-      <plugin id="org.eclipse.ecf.ssl" fragment="true"/>
+-      <plugin id="org.eclipse.equinox.app"/>
+-      <plugin id="org.eclipse.equinox.common"/>
+-      <plugin id="org.eclipse.equinox.p2.core"/>
+-      <plugin id="org.eclipse.equinox.p2.engine"/>
+-      <plugin id="org.eclipse.equinox.p2.metadata"/>
+-      <plugin id="org.eclipse.equinox.p2.metadata.repository"/>
+-      <plugin id="org.eclipse.equinox.p2.repository"/>
+-      <plugin id="org.eclipse.equinox.preferences"/>
+-      <plugin id="org.eclipse.equinox.registry"/>
+-      <plugin id="org.eclipse.equinox.security"/>
+-      <plugin id="org.eclipse.help"/>
+-      <plugin id="org.eclipse.jface"/>
+-      <plugin id="org.eclipse.jface.databinding"/>
+-      <plugin id="org.eclipse.jface.text"/>
+-      <plugin id="org.eclipse.ltk.core.refactoring"/>
+-      <plugin id="org.eclipse.ltk.ui.refactoring"/>
+-      <plugin id="org.eclipse.osgi"/>
+-      <plugin id="org.eclipse.osgi.services"/>
+-      <plugin id="org.eclipse.swt"/>
+-      <plugin id="org.eclipse.swt.gtk.linux.x86" fragment="true"/>
+-      <plugin id="org.eclipse.team.core"/>
+-      <plugin id="org.eclipse.team.ui"/>
+-      <plugin id="org.eclipse.text"/>
+-      <plugin id="org.eclipse.ui"/>
+-      <plugin id="org.eclipse.ui.editors"/>
+-      <plugin id="org.eclipse.ui.forms"/>
+-      <plugin id="org.eclipse.ui.ide"/>
+-      <plugin id="org.eclipse.ui.navigator"/>
+-      <plugin id="org.eclipse.ui.navigator.resources"/>
+-      <plugin id="org.eclipse.ui.views"/>
+-      <plugin id="org.eclipse.ui.views.log"/>
+-      <plugin id="org.eclipse.ui.views.properties.tabbed"/>
+-      <plugin id="org.eclipse.ui.workbench"/>
+-      <plugin id="org.eclipse.ui.workbench.texteditor"/>
+-      <plugin id="org.xwiki.eclipse.core"/>
+-      <plugin id="org.xwiki.eclipse.rcp"/>
+-      <plugin id="org.xwiki.eclipse.ui"/>
+-      <plugin id="org.xwiki.eclipse.xmlrpc"/>
+    </plugins>
+ 
++   <features>
++      <feature id="org.xwiki.eclipse.feature" version="1.2.0.RC1"/>
++   </features>
++
+ 
+ </product>
+diff --git a/product/org.xwiki.eclipse.product b/product/org.xwiki.eclipse.product
+new file mode 100644
+index 0000000..ef4bc64
+--- /dev/null
++++ b/product/org.xwiki.eclipse.product
+@@ -0,0 +1,51 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<?pde version="3.5"?>
++
++<product name="XWiki Eclipse" uid="org.xwiki.eclipse.rcp.product" id="org.xwiki.eclipse.rcp.product" application="org.xwiki.eclipse.rcp.application" version="1.2.0.RC1" useFeatures="true" includeLaunchers="true">
++
++   <aboutInfo>
++      <image path="/org.xwiki.eclipse.rcp/icons/about.png"/>
++      <text>
++         XWiki Eclipse
++
++(C) 2007-2008 XWiki.com
++      </text>
++   </aboutInfo>
++
++   <configIni use="default">
++   </configIni>
++
++   <launcherArgs>
++      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
++   </launcherArgs>
++
++
++   <splash
++      location="org.xwiki.eclipse.rcp" />
++
++   <windowImages i16="/org.xwiki.eclipse.rcp/icons/xwiki16.png" i32="/org.xwiki.eclipse.rcp/icons/xwiki32.png" i48="/org.xwiki.eclipse.rcp/icons/xwiki48.png" i64="/org.xwiki.eclipse.rcp/icons/xwiki64.png" i128="/org.xwiki.eclipse.rcp/icons/xwiki128.png"/>
++
++   <launcher name="XEclipse">
++      <macosx icon="/org.xwiki.eclipse.rcp/icons/xwiki.icns"/>
++      <solaris/>
++      <win useIco="false">
++         <bmp/>
++      </win>
++   </launcher>
++
++   <vm>
++   </vm>
++
++   <plugins>
++   </plugins>
++
++   <features>
++      <feature id="org.xwiki.eclipse.feature" version="1.2.0.RC1"/>
++   </features>
++
++   <configurations>
++      <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="4" />
++      <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />
++      <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="2" />
++   </configurations>
++</product>
+diff --git a/product/pom.xml b/product/pom.xml
+new file mode 100644
+index 0000000..286b296
+--- /dev/null
++++ b/product/pom.xml
+@@ -0,0 +1,43 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project
++	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
++	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
++	<modelVersion>4.0.0</modelVersion>
++	<parent>
++		<artifactId>parent</artifactId>
++		<groupId>org.xwiki.eclipse</groupId>
++		<version>1.2.0.RC1</version>
++		<relativePath>../parent/pom.xml</relativePath>
++	</parent>
++	<groupId>org.xwiki.eclipse</groupId>
++	<artifactId>org.xwiki.eclipse.product</artifactId>
++	<version>1.2.0.RC1</version>
++	<packaging>eclipse-repository</packaging>
++	<build>
++		<plugins>
++			<plugin>
++				<groupId>org.sonatype.tycho</groupId>
++				<artifactId>tycho-p2-director-plugin</artifactId>
++				<version>${tycho-version}</version>
++				<executions>
++					<execution>
++						<!-- install the product for all configured os/ws/arch environments 
++							using p2 director -->
++						<id>materialize-products</id>
++						<goals>
++							<goal>materialize-products</goal>
++						</goals>
++					</execution>
++					</executions>
++				<configuration>
++					<products>
++						<product>
++							<id>org.xwiki.eclipse.rcp.product</id>
++							<rootFolder>xeclipse</rootFolder>
++						</product>
++					</products>
++				</configuration>
++			</plugin>
++		</plugins>
++	</build>
++</project>
+\ No newline at end of file
+-- 
+1.7.4.4
+
+
+From d0988a8c9dd59914965a31fa220129e04cdd77ac Mon Sep 17 00:00:00 2001
+From: junhan <jun.han37@gmail.com>
+Date: Mon, 16 May 2011 00:59:25 -0400
+Subject: [PATCH 09/13] [xeclipse_150] add pom.xml file to plugins folder
+
+---
+ plugins/pom.xml |   25 +++++++++++++++++++++++++
+ 1 files changed, 25 insertions(+), 0 deletions(-)
+ create mode 100644 plugins/pom.xml
+
+diff --git a/plugins/pom.xml b/plugins/pom.xml
+new file mode 100644
+index 0000000..408fa8c
+--- /dev/null
++++ b/plugins/pom.xml
+@@ -0,0 +1,25 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project
++  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
++  xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
++  <modelVersion>4.0.0</modelVersion>
++  <groupId>org.xwiki.eclipse.plugins</groupId>
++  <artifactId>org.xwiki.eclipse.plugins</artifactId>
++  <version>1.2.0.RC1</version>
++  <packaging>pom</packaging>
++
++  <parent>
++    <artifactId>parent</artifactId>
++    <groupId>org.xwiki.eclipse</groupId>
++    <version>1.2.0.RC1</version>
++    <relativePath>../parent/pom.xml</relativePath>
++  </parent>
++
++  <modules>
++    <module>org.xwiki.eclipse.core</module>
++    <module>org.xwiki.eclipse.xmlrpc</module>
++    <module>org.xwiki.eclipse.ui</module>
++    <module>org.xwiki.eclipse.rcp</module>
++  </modules>
++
++</project>
+\ No newline at end of file
+-- 
+1.7.4.4
+
+
+From 9112f94d4abf19f035a0a513d42c6fe91a8164a0 Mon Sep 17 00:00:00 2001
+From: junhan <jun.han37@gmail.com>
+Date: Mon, 16 May 2011 00:59:57 -0400
+Subject: [PATCH 10/13] [xeclipse_150] add pom.xml file to features folder
+
+---
+ features/pom.xml |   22 ++++++++++++++++++++++
+ 1 files changed, 22 insertions(+), 0 deletions(-)
+ create mode 100644 features/pom.xml
+
+diff --git a/features/pom.xml b/features/pom.xml
+new file mode 100644
+index 0000000..3d6c0e8
+--- /dev/null
++++ b/features/pom.xml
+@@ -0,0 +1,22 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project
++  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
++  xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
++  <modelVersion>4.0.0</modelVersion>
++  <groupId>org.xwiki.eclipse.features</groupId>
++  <artifactId>org.xwiki.eclipse.features</artifactId>
++  <version>1.2.0.RC1</version>
++  <packaging>pom</packaging>
++
++  <parent>
++    <artifactId>parent</artifactId>
++    <groupId>org.xwiki.eclipse</groupId>
++    <version>1.2.0.RC1</version>
++    <relativePath>../parent/pom.xml</relativePath>
++  </parent>
++
++  <modules>
++    <module>org.xwiki.eclipse.feature</module>    
++  </modules>
++
++</project>
+\ No newline at end of file
+-- 
+1.7.4.4
+
+
+From 8f4ec445f8e598a8953157ea08618c595a8aeca3 Mon Sep 17 00:00:00 2001
+From: junhan <jun.han37@gmail.com>
+Date: Mon, 16 May 2011 01:00:13 -0400
+Subject: [PATCH 11/13] [xeclipse_150] add pom.xml file to site folder
+
+---
+ site/pom.xml  |   17 +++++++++++++++++
+ site/site.xml |   11 +++++++++++
+ 2 files changed, 28 insertions(+), 0 deletions(-)
+ create mode 100644 site/pom.xml
+ create mode 100644 site/site.xml
+
+diff --git a/site/pom.xml b/site/pom.xml
+new file mode 100644
+index 0000000..30a8c8b
+--- /dev/null
++++ b/site/pom.xml
+@@ -0,0 +1,17 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project
++  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
++  xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
++  <modelVersion>4.0.0</modelVersion>
++  <parent>
++    <artifactId>parent</artifactId>
++    <groupId>org.xwiki.eclipse</groupId>
++    <version>1.2.0.RC1</version>
++    <relativePath>../parent/pom.xml</relativePath>
++  </parent>
++  <groupId>org.xwiki.eclipse</groupId>
++  <artifactId>org.xwiki.eclipse.site</artifactId>
++  <version>1.2.0.RC1</version>
++  <packaging>eclipse-update-site</packaging>
++
++</project>
+diff --git a/site/site.xml b/site/site.xml
+new file mode 100644
+index 0000000..79402b0
+--- /dev/null
++++ b/site/site.xml
+@@ -0,0 +1,11 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<site>
++   <feature url="features/org.xwiki.eclipse.feature_1.2.0.RC1.jar" id="org.xwiki.eclipse.feature" version="1.2.0.RC1">
++      <category name="org.xwiki.eclipse.category"/>
++   </feature>
++   <category-def name="org.xwiki.eclipse.category" label="org.xwiki.eclipse.category">
++      <description>
++         Category for XWiki Eclipse
++      </description>
++   </category-def>
++</site>
+-- 
+1.7.4.4
+
+
+From d2ad87f0f1a3dfcddf0dd3ff9cd0b7848cec0ad5 Mon Sep 17 00:00:00 2001
+From: junhan <jun.han37@gmail.com>
+Date: Mon, 16 May 2011 01:00:28 -0400
+Subject: [PATCH 12/13] [xeclipse_150] add pom.xml file to repository folder
+
+---
+ repository/category.xml |   12 ++++++++++++
+ repository/pom.xml      |   17 +++++++++++++++++
+ 2 files changed, 29 insertions(+), 0 deletions(-)
+ create mode 100644 repository/category.xml
+ create mode 100644 repository/pom.xml
+
+diff --git a/repository/category.xml b/repository/category.xml
+new file mode 100644
+index 0000000..0f8b626
+--- /dev/null
++++ b/repository/category.xml
+@@ -0,0 +1,12 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<site>
++	<feature url="features/org.xwiki.eclipse.feature_1.2.0.RC1.jar"
++		id="org.xwiki.eclipse.feature" version="1.2.0.RC1">
++		<category name="org.xwiki.eclipse.repository" />
++	</feature>
++	<category-def name="org.xwiki.eclipse.repository" label="org.xwiki.eclipse.repository">
++		<description>
++			Category for XWiki Eclipse
++      </description>
++	</category-def>
++</site>
+diff --git a/repository/pom.xml b/repository/pom.xml
+new file mode 100644
+index 0000000..8d1ec50
+--- /dev/null
++++ b/repository/pom.xml
+@@ -0,0 +1,17 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project
++  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
++  xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
++  <modelVersion>4.0.0</modelVersion>
++  <parent>
++    <artifactId>parent</artifactId>
++    <groupId>org.xwiki.eclipse</groupId>
++    <version>1.2.0.RC1</version>
++    <relativePath>../parent/pom.xml</relativePath>
++  </parent>
++  <groupId>org.xwiki.eclipse</groupId>
++  <artifactId>org.xwiki.eclipse.repository</artifactId>
++  <version>1.2.0.RC1</version>
++  <packaging>eclipse-repository</packaging>
++
++</project>
+-- 
+1.7.4.4
+
+
+From f315141a6c64dfce5b6fd17f855b2d388f0a9580 Mon Sep 17 00:00:00 2001
+From: junhan <jun.han37@gmail.com>
+Date: Mon, 16 May 2011 01:01:10 -0400
+Subject: [PATCH 13/13] [xeclipse_150] add pom.xml file to base folder
+
+---
+ pom.xml |   27 +++++++++++++++++++++++++++
+ 1 files changed, 27 insertions(+), 0 deletions(-)
+ create mode 100644 pom.xml
+
+diff --git a/pom.xml b/pom.xml
+new file mode 100644
+index 0000000..16b8d4f
+--- /dev/null
++++ b/pom.xml
+@@ -0,0 +1,27 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project
++  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
++  xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
++  <modelVersion>4.0.0</modelVersion>
++  <groupId>org.xwiki.eclipse</groupId>
++  <artifactId>org.xwiki.eclipse.base</artifactId>
++  <version>1.2.0.RC1</version>
++  <packaging>pom</packaging>
++
++  <parent>
++    <artifactId>parent</artifactId>
++    <groupId>org.xwiki.eclipse</groupId>
++    <version>1.2.0.RC1</version>
++    <relativePath>parent/pom.xml</relativePath>
++  </parent>
++
++  <modules>
++    <module>features</module>    
++    <module>plugins</module>
++    <module>product</module>
++    <module>site</module>
++    <module>repository</module>
++    <module>parent</module>
++  </modules>
++
++</project>
+\ No newline at end of file
+-- 
+1.7.4.4
+
