@@ -2,7 +2,7 @@
 <feature
       id="org.xwiki.eclipse.feature"
       label="XWiki Eclipse Feature"
-      version="1.2.0.20090109"
+      version="1.2.0.RC1"
       provider-name="XWiki">
 
    <description url="http://code.xwiki.org/xwiki/bin/view/Extensions/XEclipseExtension">
@@ -48,11 +48,10 @@ if not, write to the Free Software Foundation, Inc.,
    </license>
 
    <requires>
-      <import plugin="org.eclipse.core.runtime" version="3.2.0" match="compatible"/>
-      <import plugin="org.eclipse.core.resources" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.runtime" version="3.4.0" match="greaterOrEqual"/>
       <import plugin="org.xwiki.eclipse.xmlrpc" version="1.4.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.expressions" version="3.4.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.ui" version="3.3.0" match="compatible"/>
+      <import plugin="org.eclipse.ui" version="3.4.0" match="greaterOrEqual"/>
       <import plugin="org.xwiki.eclipse.core" version="1.2.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.navigator" version="3.3.100" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.editors" version="3.4.0" match="greaterOrEqual"/>
@@ -60,6 +59,11 @@ if not, write to the Free Software Foundation, Inc.,
       <import plugin="org.eclipse.ui.forms" version="3.3.100" match="greaterOrEqual"/>
       <import plugin="org.eclipse.compare" version="3.4.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.views" version="3.3.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.resources" version="3.3.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.ide" version="3.3.2" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.navigator.resources" version="3.3.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.views.log" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.xwiki.eclipse.ui" version="1.2.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin
@@ -82,4 +86,32 @@ if not, write to the Free Software Foundation, Inc.,
          install-size="0"
          version="0.0.0"/>
 
+   <plugin
+         id="org.xwiki.eclipse.rcp"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+         
+	<plugin
+         id="org.eclipse.swt.win32.win32.x86"
+         os="win32"
+         ws="win32"
+         arch="x86"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.swt.gtk.linux.x86"
+         os="linux"
+         ws="gtk"
+         arch="x86"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"
+         unpack="false"/>
 </feature>
