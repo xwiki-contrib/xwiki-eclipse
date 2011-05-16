@@ -14,3 +14,4 @@ Require-Bundle: org.eclipse.ui,
  org.xwiki.eclipse.ui;bundle-version="1.2.0"
 Eclipse-LazyStart: true
 Bundle-Vendor: XWiki
+Export-Package: org.xwiki.eclipse.rcp

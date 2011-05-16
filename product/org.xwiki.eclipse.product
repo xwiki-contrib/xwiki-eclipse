@@ -19,10 +19,12 @@
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
 
-   <windowImages i16="/org.xwiki.eclipse.rcp/icons/xwiki16.png" i32="/org.xwiki.eclipse.rcp/icons/xwiki32.png" i48="/org.xwiki.eclipse.rcp/icons/xwiki48.png" i64="/org.xwiki.eclipse.rcp/icons/xwiki64.png" i128="/org.xwiki.eclipse.rcp/icons/xwiki128.png"/>
 
    <splash
       location="org.xwiki.eclipse.rcp" />
+
+   <windowImages i16="/org.xwiki.eclipse.rcp/icons/xwiki16.png" i32="/org.xwiki.eclipse.rcp/icons/xwiki32.png" i48="/org.xwiki.eclipse.rcp/icons/xwiki48.png" i64="/org.xwiki.eclipse.rcp/icons/xwiki64.png" i128="/org.xwiki.eclipse.rcp/icons/xwiki128.png"/>
+
    <launcher name="XEclipse">
       <macosx icon="/org.xwiki.eclipse.rcp/icons/xwiki.icns"/>
       <solaris/>
@@ -41,5 +43,9 @@
       <feature id="org.xwiki.eclipse.feature" version="1.2.0.RC1"/>
    </features>
 
-
+   <configurations>
+      <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="4" />
+      <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />
+      <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="2" />
+   </configurations>
 </product>
