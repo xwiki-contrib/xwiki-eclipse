@@ -27,10 +27,9 @@
   xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <artifactId>org.xwiki.eclipse.base</artifactId>
+    <artifactId>org.xwiki.eclipse</artifactId>
     <groupId>org.xwiki.eclipse</groupId>
     <version>1.2.0.RC1</version>
-    <relativePath>../pom.xml</relativePath>
   </parent>
   <groupId>org.xwiki.eclipse</groupId>
   <artifactId>org.xwiki.eclipse.site</artifactId>
