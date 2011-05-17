@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="XWiki Eclipse" uid="org.xwiki.eclipse.rcp.product" id="org.xwiki.eclipse.rcp.product" application="org.xwiki.eclipse.rcp.application" version="1.2.0.RC1" useFeatures="true" includeLaunchers="true">
+<product name="XWiki Eclipse" uid="org.xwiki.eclipse.rcp.product" id="org.xwiki.eclipse.rcp.product" application="org.xwiki.eclipse.rcp.application" version="1.2.0.RC1" useFeatures="true" includeLaunchers="false">
 
    <aboutInfo>
       <image path="/org.xwiki.eclipse.rcp/icons/about.png"/>
@@ -19,14 +19,12 @@
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
 
+   <windowImages i16="/org.xwiki.eclipse.rcp/icons/xwiki16.png" i32="/org.xwiki.eclipse.rcp/icons/xwiki32.png" i48="/org.xwiki.eclipse.rcp/icons/xwiki48.png" i64="/org.xwiki.eclipse.rcp/icons/xwiki64.png" i128="/org.xwiki.eclipse.rcp/icons/xwiki128.png"/>
 
    <splash
       location="org.xwiki.eclipse.rcp" />
-
-   <windowImages i16="/org.xwiki.eclipse.rcp/icons/xwiki16.png" i32="/org.xwiki.eclipse.rcp/icons/xwiki32.png" i48="/org.xwiki.eclipse.rcp/icons/xwiki48.png" i64="/org.xwiki.eclipse.rcp/icons/xwiki64.png" i128="/org.xwiki.eclipse.rcp/icons/xwiki128.png"/>
-
    <launcher name="XEclipse">
-      <macosx icon="/org.xwiki.eclipse.rcp/icons/xwiki.icns"/>
+      <macosx icon="icons/xwiki.icns"/>
       <solaris/>
       <win useIco="false">
          <bmp/>
@@ -36,11 +34,13 @@
    <vm>
    </vm>
 
+
    <plugins>
    </plugins>
 
    <features>
       <feature id="org.xwiki.eclipse.feature" version="1.2.0.RC1"/>
+      <feature id="org.eclipse.rcp" version="3.6.2.r362_v20101104-9SAxFMKFkSAqi8axkv1ZjegmiBLY"/>
    </features>
 
    <configurations>
@@ -48,4 +48,5 @@
       <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />
       <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="2" />
    </configurations>
+
 </product>

@@ -46,7 +46,7 @@
       <layout>p2</layout>
       <url>http://download.eclipse.org/releases/helios</url>
             <!-- file URL for faster and offline builds -->
-      <!-- <url>file:/${basedir}/../../helios-rcp/</url> -->
+      <!--<url>file://home/junhan/java/eclipse</url>-->
     </repository>
     <!-- SWTbot is not part of the helios update site -->
     <repository>
@@ -79,10 +79,31 @@
               <arch>x86</arch>
             </environment>
             <environment>
+              <os>linux</os>
+              <ws>gtk</ws>
+              <arch>x86_64</arch>
+            </environment>
+            <environment>
               <os>win32</os>
               <ws>win32</ws>
               <arch>x86</arch>
             </environment>
+            <environment>
+              <os>win32</os>
+              <ws>win32</ws>
+              <arch>x86_64</arch>
+            </environment>
+<!--            <environment>
+              <os>macosx</os>
+              <ws>cocoa</ws>
+              <arch>x86_64</arch>
+            </environment>
+	    <environment>
+              <os>macosx</os>
+              <ws>cocoa</ws>
+              <arch>x86</arch>
+            </environment>
+-->
           </environments>
         </configuration>
       </plugin>
