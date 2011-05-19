@@ -19,6 +19,6 @@ Require-Bundle: org.eclipse.ui;bundle-version="3.6.2",
  org.eclipse.core.expressions;bundle-version="3.4.200",
  org.eclipse.ui.ide;bundle-version="3.6.2",
  org.eclipse.ui.navigator.resources;bundle-version="3.4.202"
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Export-Package: org.xwiki.eclipse.ui.perspectives
