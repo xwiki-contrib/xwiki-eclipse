@@ -6,9 +6,7 @@
    <aboutInfo>
       <image path="/org.xwiki.eclipse.rcp/icons/about.png"/>
       <text>
-         XWiki Eclipse
-
-(C) 2007-2011 XWiki
+         XWiki Eclipse (C) 2007-2011 XWiki
       </text>
    </aboutInfo>
 
