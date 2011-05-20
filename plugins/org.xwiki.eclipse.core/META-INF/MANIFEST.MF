@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: XWiki Eclipse Core Plug-in
 Bundle-SymbolicName: org.xwiki.eclipse.core;singleton:=true
-Bundle-Version: 1.2.0.RC1
+Bundle-Version: 1.2.0.qualifier
 Bundle-Activator: org.xwiki.eclipse.core.CorePlugin
 Bundle-Vendor: XWiki
 Require-Bundle: org.xwiki.eclipse.xmlrpc;bundle-version="1.4.0",
