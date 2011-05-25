@@ -18,4 +18,4 @@ Export-Package: org.apache.xmlrpc,
  org.xwiki.xmlrpc,
  org.xwiki.xmlrpc.model
 Require-Bundle: org.eclipse.core.runtime
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
