@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="XWiki Eclipse" uid="org.xwiki.eclipse.rcp.product" id="org.xwiki.eclipse.rcp.product" application="org.xwiki.eclipse.rcp.application" version="1.2.0.qualifier" useFeatures="true" includeLaunchers="true">
+<product name="XWiki Eclipse" uid="org.xwiki.eclipse.rcp.product" id="org.xwiki.eclipse.rcp.product" application="org.xwiki.eclipse.rcp.application" version="1.2.0.qualifier" useFeatures="true" includeLaunchers="false">
 
    <aboutInfo>
       <image path="/org.xwiki.eclipse.rcp/icons/about.png"/>
       <text>
-         XWiki Eclipse (C) 2007-2011 XWiki.com
+         XWiki Eclipse (C) 2007-2011 XWiki
       </text>
    </aboutInfo>
 
@@ -22,7 +22,7 @@
    <splash
       location="org.xwiki.eclipse.rcp" />
    <launcher name="XEclipse">
-      <macosx icon="/org.xwiki.eclipse.rcp/icons/xwiki.icns"/>
+      <macosx icon="icons/xwiki.icns"/>
       <solaris/>
       <win useIco="false">
          <bmp/>
