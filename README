@@ -5,41 +5,29 @@ XEclipse is made of the following plugins and features:
  * org.xwiki.eclipse.core
  * org.xwiki.eclipse.ui
  * org.xwiki.eclipse.xmlrpc
+ * org.xwiki.eclipse.rcp
  * org.xwiki.eclipse.feature
 
-To build XEclipse you have 2 options:
+To build XEclipse you have 4 options:
  * Build the Eclipse plugin.
  * Build a standalone RCP application.
+ * Build a update site
+ * Build a p2 repository
 
-Building the Eclipse plugin
+Building XEclipse
 ===========================
 
-1) Checkout the trunk: "svn co http://svn.xwiki.org/svnroot/xwiki/xwiki-extensions/xwiki-eclipse/trunk/"
-2) cd to trunk/features/org.xwiki.eclipse.feature.
-3) Do a "mvn -DeclipseInstall=/AbsolutePath/To/Your/Eclipse/Installation" compile.
-4) You should now have a org.xwiki.eclipse.feature_1.2.0.SNAPSHOT.bin.dist.zip file in this directory.
-
-In order to install:
-
-1) Unzip org.xwiki.eclipse.feature_1.2.0.SNAPSHOT.bin.dist.zip into your Eclipse directory.
-2) Run Eclipse.
-2.1) If XWiki Eclipse doesn't show up anywhere (for example when you open the Window->Show view->Other... dialog)
-     then you might need to re-run Eclipse by specifying the -clean switch on the command line.
-
-You can start using XWiki Eclipse by creating a connection using the File->New->Other... menu command.
-XWiki connections will be accessible from the Project Explorer and XWiki Navigator.
-
-Building the RCP application
-============================
-
-Please refer to:
-http://svn.xwiki.org/svnroot/xwiki/xwiki-extensions/xwiki-eclipse/trunk/plugins/org.xwiki.eclipse.rcp/README
+0) Install Maven 3.0.3+ and JDK 6.0.
+1) Checkout the master branch: "http://github.com/xwiki/xwiki-eclipse.git".
+2) cd to xwiki-eclipse/.
+3) Do a "mvn install".
+4) A standalone RCP application is in product/target.
+5) An update site is in site/target.
+6) A P2 repository is in repository/target.
+7) A feature is in features/org.xwiki.eclipse.feature/target.
 
 Troubleshooting
 ===============
-
-In case of a Linux installation, the Web preview requires that XEclipse is launched with the following environment variables:
-* MOZILLA_FIVE_HOME pointing to the directory containing a Firefox executable (ex: /usr/lib/firefox-2.0.0.6/)
-* LD_LIBRARY_PATH pointing to the directory containing Firefox libraries (ex: /usr/lib/firefox-2.0.0.6/)
+Generation of MAC OS X product is currently problematic in Tycho 0.11.1, and is not supported. This may be fixed in the future version.
 
 Enjoy.
