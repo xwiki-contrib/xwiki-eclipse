@@ -31,13 +31,17 @@ import org.eclipse.ui.model.WorkbenchAdapter;
 import org.eclipse.ui.progress.IDeferredWorkbenchAdapter;
 import org.eclipse.ui.progress.IElementCollector;
 import org.xwiki.eclipse.core.CoreLog;
-import org.xwiki.eclipse.core.XWikiEclipseException;
-import org.xwiki.eclipse.core.model.XWikiEclipseObjectSummary;
-import org.xwiki.eclipse.core.model.XWikiEclipsePageSummary;
+import org.xwiki.eclipse.model.XWikiEclipseObjectSummary;
+import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
+import org.xwiki.eclipse.storage.XWikiEclipseStorageException;
 import org.xwiki.eclipse.ui.UIConstants;
 import org.xwiki.eclipse.ui.UIPlugin;
 import org.xwiki.eclipse.ui.utils.UIUtils;
 
+/**
+ * 
+ * @version $Id$
+ */
 public class XWikiEclipsePageSummaryAdapter extends WorkbenchAdapter implements IDeferredWorkbenchAdapter
 {
     @Override
@@ -48,9 +52,9 @@ public class XWikiEclipsePageSummaryAdapter extends WorkbenchAdapter implements 
 
             try {
                 List<XWikiEclipseObjectSummary> result =
-                    pageSummary.getDataManager().getObjects(pageSummary.getData().getId());
+                    pageSummary.getDataManager().getObjects(pageSummary.getId());
                 return result.toArray();
-            } catch (XWikiEclipseException e) {
+            } catch (XWikiEclipseStorageException e) {
                 UIUtils
                     .showMessageDialog(
                         Display.getDefault().getActiveShell(),
@@ -74,9 +78,9 @@ public class XWikiEclipsePageSummaryAdapter extends WorkbenchAdapter implements 
         if (object instanceof XWikiEclipsePageSummary) {
             XWikiEclipsePageSummary pageSummary = (XWikiEclipsePageSummary) object;
 
-            String title = pageSummary.getData().getTitle();
+            String title = pageSummary.getTitle();
             if (title == null) {
-                title = pageSummary.getData().getId();
+                title = pageSummary.getId();
             }
 
             return title;
@@ -91,7 +95,7 @@ public class XWikiEclipsePageSummaryAdapter extends WorkbenchAdapter implements 
         if (object instanceof XWikiEclipsePageSummary) {
             XWikiEclipsePageSummary pageSummary = (XWikiEclipsePageSummary) object;
 
-            if (pageSummary.getDataManager().isInConflict(pageSummary.getData().getId())) {
+            if (pageSummary.getDataManager().isInConflict(pageSummary.getId())) {
                 return UIPlugin.getImageDescriptor(UIConstants.PAGE_CONFLICT_ICON);
             }
 

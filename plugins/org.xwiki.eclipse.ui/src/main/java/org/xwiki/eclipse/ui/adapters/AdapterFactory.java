@@ -24,11 +24,15 @@ import org.eclipse.core.runtime.IAdapterFactory;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.eclipse.ui.model.IWorkbenchAdapter2;
 import org.eclipse.ui.progress.IDeferredWorkbenchAdapter;
-import org.xwiki.eclipse.core.DataManager;
-import org.xwiki.eclipse.core.model.XWikiEclipseObjectSummary;
-import org.xwiki.eclipse.core.model.XWikiEclipsePageSummary;
-import org.xwiki.eclipse.core.model.XWikiEclipseSpaceSummary;
+import org.xwiki.eclipse.model.XWikiEclipseObjectSummary;
+import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
+import org.xwiki.eclipse.model.XWikiEclipseSpaceSummary;
+import org.xwiki.eclipse.storage.AbstractDataManager;
 
+/**
+ * 
+ * @version $Id$
+ */
 public class AdapterFactory implements IAdapterFactory
 {
     private Class[] adapterList =
@@ -47,15 +51,15 @@ public class AdapterFactory implements IAdapterFactory
         /*
          * Adapters for DataManager
          */
-        if ((adaptableObject instanceof DataManager) && adapterType.equals(IWorkbenchAdapter.class)) {
+        if ((adaptableObject instanceof AbstractDataManager) && adapterType.equals(IWorkbenchAdapter.class)) {
             return xwikiEclipseDataManagerAdapter;
         }
 
-        if ((adaptableObject instanceof DataManager) && adapterType.equals(IWorkbenchAdapter2.class)) {
+        if ((adaptableObject instanceof AbstractDataManager) && adapterType.equals(IWorkbenchAdapter2.class)) {
             return xwikiEclipseDataManagerAdapter;
         }
 
-        if ((adaptableObject instanceof DataManager) && adapterType.equals(IDeferredWorkbenchAdapter.class)) {
+        if ((adaptableObject instanceof AbstractDataManager) && adapterType.equals(IDeferredWorkbenchAdapter.class)) {
             return xwikiEclipseDataManagerAdapter;
         }
 

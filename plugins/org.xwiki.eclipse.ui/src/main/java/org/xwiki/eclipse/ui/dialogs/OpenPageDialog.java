@@ -49,17 +49,21 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.FilteredItemsSelectionDialog;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
-import org.xwiki.eclipse.core.DataManager;
 import org.xwiki.eclipse.core.DataManagerRegistry;
-import org.xwiki.eclipse.core.model.XWikiEclipsePageSummary;
+import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
+import org.xwiki.eclipse.storage.AbstractDataManager;
 import org.xwiki.eclipse.ui.UIPlugin;
 import org.xwiki.eclipse.ui.utils.XWikiEclipseSafeRunnable;
 
+/**
+ * 
+ * @version $Id$
+ */
 public class OpenPageDialog extends FilteredItemsSelectionDialog
 {
-    private Set<DataManager> targetDataManagers;
+    private Set<AbstractDataManager> targetDataManagers;
 
-    private Map<DataManager, List<XWikiEclipsePageSummary>> dataManagerToPageSummariesMap;
+    private Map<AbstractDataManager, List<XWikiEclipsePageSummary>> dataManagerToPageSummariesMap;
 
     private static class OpenPageLabelProvider extends LabelProvider
     {
@@ -75,7 +79,7 @@ public class OpenPageDialog extends FilteredItemsSelectionDialog
         {
             if (element instanceof XWikiEclipsePageSummary) {
                 XWikiEclipsePageSummary xwikiPage = (XWikiEclipsePageSummary) element;
-                return String.format("%s (%s)", xwikiPage.getData().getId(), xwikiPage.getDataManager().getName());
+                return String.format("%s (%s)", xwikiPage.getId(), xwikiPage.getDataManager().getName());
             }
 
             return super.getText(element);
@@ -88,7 +92,7 @@ public class OpenPageDialog extends FilteredItemsSelectionDialog
         }
     }
 
-    public OpenPageDialog(Shell shell, DataManager dataManager)
+    public OpenPageDialog(Shell shell, AbstractDataManager dataManager)
     {
         super(shell);
         setTitle("Open XWiki page");
@@ -96,13 +100,13 @@ public class OpenPageDialog extends FilteredItemsSelectionDialog
         setListLabelProvider(labelProvider);
         setDetailsLabelProvider(labelProvider);
 
-        targetDataManagers = new HashSet<DataManager>();
-        dataManagerToPageSummariesMap = new HashMap<DataManager, List<XWikiEclipsePageSummary>>();
+        targetDataManagers = new HashSet<AbstractDataManager>();
+        dataManagerToPageSummariesMap = new HashMap<AbstractDataManager, List<XWikiEclipsePageSummary>>();
 
         if (dataManager != null) {
             targetDataManagers.add(dataManager);
         } else {
-            for (DataManager dm : DataManagerRegistry.getDefault().getDataManagers()) {
+            for (AbstractDataManager dm : DataManagerRegistry.getDefault().getDataManagers()) {
                 targetDataManagers.add(dm);
             }
         }
@@ -162,7 +166,7 @@ public class OpenPageDialog extends FilteredItemsSelectionDialog
         dataManagerTreeViewers.setLabelProvider(new WorkbenchLabelProvider());
         dataManagerTreeViewers.setInput(this);
 
-        for (DataManager dataManager : targetDataManagers) {
+        for (AbstractDataManager dataManager : targetDataManagers) {
             dataManagerTreeViewers.setChecked(dataManager, true);
         }
 
@@ -171,7 +175,7 @@ public class OpenPageDialog extends FilteredItemsSelectionDialog
             public void checkStateChanged(CheckStateChangedEvent event)
             {
                 if (event.getChecked()) {
-                    targetDataManagers.add((DataManager) event.getElement());
+                    targetDataManagers.add((AbstractDataManager) event.getElement());
                 } else {
                     targetDataManagers.remove(event.getElement());
                 }
@@ -198,7 +202,7 @@ public class OpenPageDialog extends FilteredItemsSelectionDialog
             {
                 if (item instanceof XWikiEclipsePageSummary) {
                     XWikiEclipsePageSummary pageSummary = (XWikiEclipsePageSummary) item;
-                    return matches(pageSummary.getData().getTitle());
+                    return matches(pageSummary.getTitle());
                 }
 
                 return false;
@@ -213,8 +217,8 @@ public class OpenPageDialog extends FilteredItemsSelectionDialog
     {
         progressMonitor.beginTask("Searching...", targetDataManagers.size());
 
-        for (DataManager dataManager : targetDataManagers) {
-            final DataManager currentDataManager = (DataManager) dataManager;
+        for (AbstractDataManager dataManager : targetDataManagers) {
+            final AbstractDataManager currentDataManager = (AbstractDataManager) dataManager;
 
             /* If we don't already have summaries, then fetch them from the data manager */
             if (dataManagerToPageSummariesMap.get(currentDataManager) == null) {
@@ -269,7 +273,7 @@ public class OpenPageDialog extends FilteredItemsSelectionDialog
                 XWikiEclipsePageSummary page1 = (XWikiEclipsePageSummary) o1;
                 XWikiEclipsePageSummary page2 = (XWikiEclipsePageSummary) o2;
 
-                return page1.getData().getTitle().compareTo(page2.getData().getTitle());
+                return page1.getTitle().compareTo(page2.getTitle());
             }
         };
     }

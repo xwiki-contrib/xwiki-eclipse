@@ -31,15 +31,19 @@ import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.handlers.HandlerUtil;
-import org.xwiki.eclipse.core.DataManager;
 import org.xwiki.eclipse.core.DataManagerRegistry;
-import org.xwiki.eclipse.core.model.XWikiEclipseObjectSummary;
-import org.xwiki.eclipse.core.model.XWikiEclipsePageSummary;
-import org.xwiki.eclipse.core.model.XWikiEclipseSpaceSummary;
+import org.xwiki.eclipse.model.XWikiEclipseObjectSummary;
+import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
+import org.xwiki.eclipse.model.XWikiEclipseSpaceSummary;
+import org.xwiki.eclipse.storage.AbstractDataManager;
 import org.xwiki.eclipse.ui.dialogs.SelectionDialog;
 import org.xwiki.eclipse.ui.utils.UIUtils;
 import org.xwiki.eclipse.ui.utils.XWikiEclipseSafeRunnable;
 
+/**
+ * 
+ * @version $Id$
+ */
 public class DeleteXWikiElementHandler extends AbstractHandler
 {
     public Object execute(ExecutionEvent event) throws ExecutionException
@@ -67,7 +71,7 @@ public class DeleteXWikiElementHandler extends AbstractHandler
                     {
                         public void run() throws Exception
                         {
-                            pageSummary.getDataManager().removePage(pageSummary.getData().getId());
+                            pageSummary.getDataManager().removePage(pageSummary.getId());
                         }
                     });
 
@@ -80,15 +84,15 @@ public class DeleteXWikiElementHandler extends AbstractHandler
                     {
                         public void run() throws Exception
                         {
-                            objectSummary.getDataManager().removeObject(objectSummary.getData().getPageId(),
-                                objectSummary.getData().getClassName(), objectSummary.getData().getId());
+                            objectSummary.getDataManager().removeObject(objectSummary.getPageId(),
+                                objectSummary.getClassName(), objectSummary.getId());
                         }
                     });
 
                 }
 
-                if (selectedObject instanceof DataManager) {
-                    final DataManager dataManager = (DataManager) selectedObject;
+                if (selectedObject instanceof AbstractDataManager) {
+                    final AbstractDataManager dataManager = (AbstractDataManager) selectedObject;
 
                     SafeRunner.run(new XWikiEclipseSafeRunnable()
                     {
@@ -109,7 +113,7 @@ public class DeleteXWikiElementHandler extends AbstractHandler
                     {
                         public void run() throws Exception
                         {
-                            spaceSummary.getDataManager().removeSpace(spaceSummary.getData().getKey());
+                            spaceSummary.getDataManager().removeSpace(spaceSummary.getKey());
                         }
                     });
                 }

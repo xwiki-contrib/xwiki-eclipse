@@ -20,6 +20,10 @@
  */
 package org.xwiki.eclipse.ui.editors;
 
+/**
+ * 
+ * @version $Id$
+ */
 public enum VelocityDirectiveType
 {
     SET, IF, ELSE, ELSEIF, END, FOREACH, INCLUDE, PARSE, MACRO, STOP;

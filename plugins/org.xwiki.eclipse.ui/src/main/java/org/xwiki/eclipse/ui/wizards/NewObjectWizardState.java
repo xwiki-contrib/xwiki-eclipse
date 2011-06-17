@@ -20,6 +20,10 @@
  */
 package org.xwiki.eclipse.ui.wizards;
 
+/**
+ * 
+ * @version $Id$
+ */
 public class NewObjectWizardState
 {
     private String className;

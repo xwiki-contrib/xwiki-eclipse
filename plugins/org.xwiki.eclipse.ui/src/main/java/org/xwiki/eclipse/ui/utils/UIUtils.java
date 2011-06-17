@@ -32,10 +32,14 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkingSet;
-import org.xwiki.eclipse.core.DataManager;
-import org.xwiki.eclipse.core.model.ModelObject;
+import org.xwiki.eclipse.model.ModelObject;
+import org.xwiki.eclipse.storage.AbstractDataManager;
 import org.xwiki.eclipse.ui.workingsets.XWikiEclipseElementId;
 
+/**
+ * 
+ * @version $Id$
+ */
 public class UIUtils
 {
     public static Set getSelectedObjectsFromSelection(Object selection)
@@ -129,8 +133,8 @@ public class UIUtils
 
     public static boolean isInWorkingSet(Object object, IWorkingSet workingSet)
     {
-        if (object instanceof DataManager) {
-            DataManager dataManager = (DataManager) object;
+        if (object instanceof AbstractDataManager) {
+            AbstractDataManager dataManager = (AbstractDataManager) object;
             if (UIUtils.isXWikiEcipseIdInWorkingSet(dataManager.getXWikiEclipseId(), workingSet)) {
                 return true;
             }

@@ -39,11 +39,15 @@ import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.wizards.newresource.BasicNewProjectResourceWizard;
-import org.xwiki.eclipse.core.DataManager;
+import org.xwiki.eclipse.core.XWikiClient;
 import org.xwiki.eclipse.core.XWikiEclipseNature;
+import org.xwiki.eclipse.storage.AbstractDataManager;
 import org.xwiki.eclipse.ui.perspectives.XWikiPerspectiveFactory;
-import org.xwiki.xmlrpc.XWikiXmlRpcClient;
 
+/**
+ * 
+ * @version $Id$
+ */
 public class NewConnectionWizard extends Wizard implements INewWizard, IExecutableExtension
 {
     /*
@@ -109,7 +113,8 @@ public class NewConnectionWizard extends Wizard implements INewWizard, IExecutab
                         monitor.beginTask("Setting up connection", IProgressMonitor.UNKNOWN);
 
                         /* Try to login with the specified username + password */
-                        XWikiXmlRpcClient client = new XWikiXmlRpcClient(newConnectionWizardState.getServerUrl());
+                        XWikiClient client = new XWikiClient(newConnectionWizardState.getServerUrl(), 
+                            newConnectionWizardState.getBackend());
                         client.login(newConnectionWizardState.getUserName(), newConnectionWizardState.getPassword());
                         client.logout();
 
@@ -142,10 +147,12 @@ public class NewConnectionWizard extends Wizard implements INewWizard, IExecutab
                         project.create(null);
                         project.open(null);
 
-                        project.setPersistentProperty(DataManager.ENDPOINT, newConnectionWizardState.getServerUrl());
-                        project.setPersistentProperty(DataManager.USERNAME, newConnectionWizardState.getUserName());
-                        project.setPersistentProperty(DataManager.PASSWORD, newConnectionWizardState.getPassword());
-                        project.setPersistentProperty(DataManager.AUTO_CONNECT, "true");
+                        //FIXME: add backend property and add backend type drop down list in the wizard page
+                        project.setPersistentProperty(AbstractDataManager.BACKEND, newConnectionWizardState.getBackend());
+                        project.setPersistentProperty(AbstractDataManager.ENDPOINT, newConnectionWizardState.getServerUrl());
+                        project.setPersistentProperty(AbstractDataManager.USERNAME, newConnectionWizardState.getUserName());
+                        project.setPersistentProperty(AbstractDataManager.PASSWORD, newConnectionWizardState.getPassword());
+                        project.setPersistentProperty(AbstractDataManager.AUTO_CONNECT, "true");
 
                         IProjectDescription description = project.getDescription();
                         description.setNatureIds(new String[] {XWikiEclipseNature.ID});

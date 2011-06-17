@@ -47,10 +47,10 @@ import org.eclipse.ui.forms.widgets.TableWrapLayout;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
-import org.xwiki.eclipse.core.model.XWikiEclipseObject;
-import org.xwiki.eclipse.core.model.XWikiEclipseObjectProperty;
 import org.xwiki.eclipse.core.notifications.CoreEvent;
 import org.xwiki.eclipse.core.notifications.NotificationManager;
+import org.xwiki.eclipse.model.XWikiEclipseObject;
+import org.xwiki.eclipse.model.XWikiEclipseObjectProperty;
 import org.xwiki.eclipse.ui.UIConstants;
 import org.xwiki.eclipse.ui.UIPlugin;
 import org.xwiki.eclipse.ui.editors.propertyeditors.BasePropertyEditor;
@@ -63,7 +63,6 @@ import org.xwiki.eclipse.ui.editors.propertyeditors.PasswordPropertyEditor;
 import org.xwiki.eclipse.ui.editors.propertyeditors.StringPropertyEditor;
 import org.xwiki.eclipse.ui.editors.propertyeditors.TextAreaPropertyEditor;
 import org.xwiki.eclipse.ui.utils.XWikiEclipseSafeRunnable;
-import org.xwiki.xmlrpc.model.XWikiClass;
 
 class ListContentProvider implements IStructuredContentProvider
 {
@@ -95,6 +94,10 @@ class ListContentProvider implements IStructuredContentProvider
     }
 }
 
+/**
+ * 
+ * @version $Id$
+ */
 public class ObjectEditor extends EditorPart
 {
     public static final String ID = "org.xwiki.eclipse.ui.editors.Object";
@@ -254,7 +257,7 @@ public class ObjectEditor extends EditorPart
             if (input != null) {
                 XWikiEclipseObject object = input.getObject();
                 scrolledForm.setText(String.format("%s (Class %s) on page %s", object.getName(), object.getXWikiClass()
-                    .getId(), object.getData().getPageId()));
+                    .getId(), object.getPageId()));
 
                 scrolledForm.getForm().setMessage(object.getDataManager().getName());
             }

@@ -22,6 +22,8 @@ package org.xwiki.eclipse.core.notifications;
 
 /**
  * The interface for objects interested in listening XWiki Eclipse Core events.
+ * 
+ * @version $Id$
  */
 public interface ICoreEventListener
 {

@@ -47,10 +47,14 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.xwiki.eclipse.core.model.XWikiEclipsePageSummary;
-import org.xwiki.eclipse.core.model.XWikiEclipseSpaceSummary;
+import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
+import org.xwiki.eclipse.model.XWikiEclipseSpaceSummary;
 import org.xwiki.eclipse.ui.utils.XWikiEclipseSafeRunnableWithResult;
 
+/**
+ * 
+ * @version $Id$
+ */
 public class RenamePageDialog extends TitleAreaDialog
 {
     private XWikiEclipsePageSummary pageSummary;
@@ -144,7 +148,7 @@ public class RenamePageDialog extends TitleAreaDialog
                     String[] elements = new String[runnable.getResult().size()];
                     int i = 0;
                     for (XWikiEclipseSpaceSummary spaceSummary : runnable.getResult()) {
-                        elements[i] = spaceSummary.getData().getKey();
+                        elements[i] = spaceSummary.getKey();
                         i++;
                     }
 
@@ -187,7 +191,7 @@ public class RenamePageDialog extends TitleAreaDialog
         });
 
         comboViewer.setInput(new Object());
-        comboViewer.setSelection(new StructuredSelection(pageSummary.getData().getSpace()));
+        comboViewer.setSelection(new StructuredSelection(pageSummary.getSpace()));
 
         label = new Label(composite, SWT.NONE);
         label.setText("New name:");
@@ -195,12 +199,12 @@ public class RenamePageDialog extends TitleAreaDialog
         final Text name = new Text(composite, SWT.BORDER);
         GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(name);
 
-        if (pageSummary.getData().getId().indexOf('.') != -1) {
-            String[] components = pageSummary.getData().getId().split("\\.");
+        if (pageSummary.getId().indexOf('.') != -1) {
+            String[] components = pageSummary.getId().split("\\.");
 
             name.setText(components[1]);
         } else {
-            name.setText(pageSummary.getData().getTitle());
+            name.setText(pageSummary.getTitle());
         }
 
         name.addModifyListener(new ModifyListener()

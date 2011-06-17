@@ -37,16 +37,21 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.xwiki.eclipse.core.notifications.CoreEvent;
 import org.xwiki.eclipse.core.notifications.NotificationManager;
+import org.xwiki.eclipse.storage.AbstractDataManager;
 
+/**
+ * 
+ * @version $Id$
+ */
 public class DataManagerRegistry implements IResourceChangeListener
 {
     private static DataManagerRegistry sharedInstance;
 
-    private List<DataManager> dataManagers;
+    private List<AbstractDataManager> dataManagers;
 
     private DataManagerRegistry()
     {
-        dataManagers = new ArrayList<DataManager>();
+        dataManagers = new ArrayList<AbstractDataManager>();
     }
 
     public synchronized static DataManagerRegistry getDefault()
@@ -90,7 +95,7 @@ public class DataManagerRegistry implements IResourceChangeListener
         ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
     }
 
-    public synchronized void register(DataManager dataManager)
+    public synchronized void register(AbstractDataManager dataManager)
     {
         dataManagers.add(dataManager);
 
@@ -106,7 +111,7 @@ public class DataManagerRegistry implements IResourceChangeListener
         NotificationManager.getDefault().fireCoreEvent(CoreEvent.Type.DATA_MANAGER_REGISTERED, this, dataManager);
     }
 
-    public synchronized void unregister(DataManager dataManager)
+    public synchronized void unregister(AbstractDataManager dataManager)
     {
         dataManagers.remove(dataManager);
         NotificationManager.getDefault().fireCoreEvent(CoreEvent.Type.DATA_MANAGER_UNREGISTERED, this, dataManager);
@@ -124,7 +129,7 @@ public class DataManagerRegistry implements IResourceChangeListener
                         if (delta.getFlags() == IResourceDelta.OPEN) {
                             IProject project = delta.getResource().getProject();
 
-                            DataManager dataManager = findDataManagerByProject(project);
+                            AbstractDataManager dataManager = findDataManagerByProject(project);
 
                             if (project.isOpen()) {
                                 if (hasXWikiEclipseNature(project)) {
@@ -143,7 +148,7 @@ public class DataManagerRegistry implements IResourceChangeListener
 
                         if (delta.getKind() == IResourceDelta.REMOVED && (delta.getResource() instanceof IProject)) {
                             IProject project = (IProject) delta.getResource();
-                            DataManager dataManager = findDataManagerByProject(project);
+                            AbstractDataManager dataManager = findDataManagerByProject(project);
                             if (dataManager != null) {
                                 unregister(dataManager);
                             }
@@ -161,9 +166,9 @@ public class DataManagerRegistry implements IResourceChangeListener
         }
     }
 
-    public DataManager findDataManagerByProject(IProject project)
+    public AbstractDataManager findDataManagerByProject(IProject project)
     {
-        for (DataManager dataManager : dataManagers) {
+        for (AbstractDataManager dataManager : dataManagers) {
             if (dataManager.getProject().equals(project)) {
                 return dataManager;
             }
@@ -172,9 +177,9 @@ public class DataManagerRegistry implements IResourceChangeListener
         return null;
     }
 
-    public List<DataManager> getDataManagers()
+    public List<AbstractDataManager> getDataManagers()
     {
-        return new ArrayList<DataManager>(dataManagers);
+        return new ArrayList<AbstractDataManager>(dataManagers);
     }
 
     private static boolean hasXWikiEclipseNature(IProject project) throws CoreException

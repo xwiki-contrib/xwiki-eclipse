@@ -44,7 +44,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
-import org.xwiki.eclipse.core.model.XWikiEclipseObjectProperty;
+import org.xwiki.eclipse.model.XWikiEclipseObjectProperty;
 
 class ListContentProvider implements IStructuredContentProvider
 {
@@ -76,6 +76,10 @@ class ListContentProvider implements IStructuredContentProvider
     }
 }
 
+/**
+ * 
+ * @version $Id$
+ */
 public class ListPropertyEditor extends BasePropertyEditor
 {
     ListViewer listViewer;

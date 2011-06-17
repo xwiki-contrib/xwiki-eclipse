@@ -32,19 +32,23 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
-import org.xwiki.eclipse.core.DataManager;
-import org.xwiki.eclipse.core.model.XWikiEclipseObject;
+import org.xwiki.eclipse.model.XWikiEclipseObject;
+import org.xwiki.eclipse.storage.AbstractDataManager;
 import org.xwiki.eclipse.ui.editors.ObjectEditor;
 import org.xwiki.eclipse.ui.editors.ObjectEditorInput;
 import org.xwiki.eclipse.ui.utils.XWikiEclipseSafeRunnable;
 
+/**
+ * 
+ * @version $Id$
+ */
 public class NewObjectWizard extends Wizard implements INewWizard
 {
     private NewObjectWizardState newObjectWizardState;
 
-    private DataManager dataManager;
+    private AbstractDataManager dataManager;
 
-    public NewObjectWizard(DataManager dataManager, String pageId)
+    public NewObjectWizard(AbstractDataManager dataManager, String pageId)
     {
         super();
         newObjectWizardState = new NewObjectWizardState();

@@ -29,16 +29,20 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.browser.IWebBrowser;
 import org.eclipse.ui.browser.IWorkbenchBrowserSupport;
 import org.eclipse.ui.part.ViewPart;
-import org.xwiki.eclipse.core.model.XWikiEclipseObject;
-import org.xwiki.eclipse.core.model.XWikiEclipseObjectSummary;
-import org.xwiki.eclipse.core.model.XWikiEclipsePage;
-import org.xwiki.eclipse.core.model.XWikiEclipsePageSummary;
-import org.xwiki.eclipse.core.model.XWikiEclipseSpaceSummary;
 import org.xwiki.eclipse.core.notifications.CoreEvent;
 import org.xwiki.eclipse.core.notifications.ICoreEventListener;
 import org.xwiki.eclipse.core.notifications.NotificationManager;
+import org.xwiki.eclipse.model.XWikiEclipseObject;
+import org.xwiki.eclipse.model.XWikiEclipseObjectSummary;
+import org.xwiki.eclipse.model.XWikiEclipsePage;
+import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
+import org.xwiki.eclipse.model.XWikiEclipseSpaceSummary;
 import org.xwiki.eclipse.ui.utils.UIUtils;
 
+/**
+ * 
+ * @version $Id$
+ */
 public class PagePreview extends ViewPart implements ISelectionListener, ICoreEventListener
 {
     /*
@@ -215,7 +219,7 @@ public class PagePreview extends ViewPart implements ISelectionListener, ICoreEv
         if (selectedObject instanceof XWikiEclipsePageSummary) {
             XWikiEclipsePageSummary pageSummary = (XWikiEclipsePageSummary) selectedObject;
 
-            update(pageSummary.getData().getUrl(), pageSummary.getDataManager().isConnected());
+            update(pageSummary.getUrl(), pageSummary.getDataManager().isConnected());
         }
 
         if (selectedObject instanceof XWikiEclipseObjectSummary) {
@@ -269,7 +273,7 @@ public class PagePreview extends ViewPart implements ISelectionListener, ICoreEv
         if (object instanceof XWikiEclipsePage) {
             XWikiEclipsePage page = (XWikiEclipsePage) object;
 
-            update(page.getData().getUrl(), page.getDataManager().isConnected());
+            update(page.getUrl(), page.getDataManager().isConnected());
         }
 
         else
@@ -286,7 +290,7 @@ public class PagePreview extends ViewPart implements ISelectionListener, ICoreEv
         if (object instanceof XWikiEclipseSpaceSummary) {
             XWikiEclipseSpaceSummary xwikiSpaceSummary = (XWikiEclipseSpaceSummary) object;
 
-            update(xwikiSpaceSummary.getData().getUrl(), xwikiSpaceSummary.getDataManager().isConnected());
+            update(xwikiSpaceSummary.getUrl(), xwikiSpaceSummary.getDataManager().isConnected());
         }
     }
 

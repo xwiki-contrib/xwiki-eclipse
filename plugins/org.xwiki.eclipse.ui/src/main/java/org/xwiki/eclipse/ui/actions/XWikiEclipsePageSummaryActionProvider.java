@@ -39,16 +39,20 @@ import org.eclipse.ui.navigator.CommonActionProvider;
 import org.eclipse.ui.navigator.ICommonActionConstants;
 import org.eclipse.ui.navigator.ICommonActionExtensionSite;
 import org.eclipse.ui.navigator.ICommonMenuConstants;
-import org.xwiki.eclipse.core.Functionality;
-import org.xwiki.eclipse.core.XWikiEclipseException;
-import org.xwiki.eclipse.core.model.XWikiEclipsePage;
-import org.xwiki.eclipse.core.model.XWikiEclipsePageHistorySummary;
-import org.xwiki.eclipse.core.model.XWikiEclipsePageSummary;
+import org.xwiki.eclipse.model.XWikiEclipsePage;
+import org.xwiki.eclipse.model.XWikiEclipsePageHistorySummary;
+import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
+import org.xwiki.eclipse.storage.Functionality;
+import org.xwiki.eclipse.storage.XWikiEclipseStorageException;
 import org.xwiki.eclipse.ui.UIConstants;
 import org.xwiki.eclipse.ui.editors.PageEditor;
 import org.xwiki.eclipse.ui.editors.PageEditorInput;
 import org.xwiki.eclipse.ui.utils.UIUtils;
 
+/**
+ * 
+ * @version $Id$
+ */
 public class XWikiEclipsePageSummaryActionProvider extends CommonActionProvider
 {
     private Action open;
@@ -110,11 +114,11 @@ public class XWikiEclipsePageSummaryActionProvider extends CommonActionProvider
 
                 try {
                     List<XWikiEclipsePageHistorySummary> pageHistory =
-                        pageSummary.getDataManager().getPageHistory(pageSummary.getData().getId());
+                        pageSummary.getDataManager().getPageHistory(pageSummary.getId());
                     for (XWikiEclipsePageHistorySummary pageHistorySummary : pageHistory) {
                         menuManager.add(new OpenPageHistoryItemAction(pageHistorySummary));
                     }
-                } catch (XWikiEclipseException e) {
+                } catch (XWikiEclipseStorageException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
@@ -139,8 +143,8 @@ public class XWikiEclipsePageSummaryActionProvider extends CommonActionProvider
                     return menuManager;
                 }
 
-                if (pageSummary.getData().getTranslations() != null) {
-                    for (String language : pageSummary.getData().getTranslations()) {
+                if (pageSummary.getTranslations() != null) {
+                    for (String language : pageSummary.getTranslations()) {
                         menuManager.add(new OpenPageTranslationAction(pageSummary, language));
                     }
 
@@ -159,16 +163,16 @@ public class XWikiEclipsePageSummaryActionProvider extends CommonActionProvider
 
                             if (inputDialog.getReturnCode() == InputDialog.OK) {
                                 if (!inputDialog.getValue().equals("")) {
-                                    String[] components = pageSummary.getData().getId().split("\\.");
+                                    String[] components = pageSummary.getId().split("\\.");
 
                                     try {
                                         XWikiEclipsePage page =
                                             pageSummary.getDataManager().createPage(components[0], components[1],
-                                                pageSummary.getData().getTitle(), inputDialog.getValue(),
+                                                pageSummary.getTitle(), inputDialog.getValue(),
                                                 "Write translation here");
                                         PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
                                             .openEditor(new PageEditorInput(page, false), PageEditor.ID);
-                                    } catch (XWikiEclipseException e) {
+                                    } catch (XWikiEclipseStorageException e) {
                                         e.printStackTrace();
                                     } catch (PartInitException e) {
 

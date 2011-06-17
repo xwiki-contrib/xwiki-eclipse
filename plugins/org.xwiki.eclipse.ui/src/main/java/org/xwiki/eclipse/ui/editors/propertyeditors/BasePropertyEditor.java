@@ -26,8 +26,12 @@ import java.util.Set;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.xwiki.eclipse.core.model.XWikiEclipseObjectProperty;
+import org.xwiki.eclipse.model.XWikiEclipseObjectProperty;
 
+/**
+ * 
+ * @version $Id$
+ */
 public abstract class BasePropertyEditor
 {
     private Set<IPropertyModifyListener> listeners;

@@ -48,10 +48,14 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
-import org.xwiki.eclipse.core.model.XWikiEclipsePage;
+import org.xwiki.eclipse.model.XWikiEclipsePage;
 import org.xwiki.eclipse.ui.UIConstants;
 import org.xwiki.eclipse.ui.UIPlugin;
 
+/**
+ * 
+ * @version $Id$
+ */
 public class PageConflictDialog extends TitleAreaDialog
 {
     public static final int ID_USE_LOCAL = 1001;
@@ -76,7 +80,7 @@ public class PageConflictDialog extends TitleAreaDialog
         {
             this.page = page;
             this.editable = editable;
-            set(page.getData().getContent());
+            set(page.getContent());
         }
 
         public Image getImage()
@@ -86,7 +90,7 @@ public class PageConflictDialog extends TitleAreaDialog
 
         public String getName()
         {
-            return page.getData().getId();
+            return page.getId();
         }
 
         public String getType()
@@ -96,7 +100,7 @@ public class PageConflictDialog extends TitleAreaDialog
 
         public InputStream getContents() throws CoreException
         {
-            return new ByteArrayInputStream(page.getData().getContent().getBytes()); //$NON-NLS-1$
+            return new ByteArrayInputStream(page.getContent().getBytes()); //$NON-NLS-1$
         }
 
         public boolean isEditable()
@@ -111,7 +115,7 @@ public class PageConflictDialog extends TitleAreaDialog
 
         public void setContent(byte[] newContent)
         {
-            page.getData().setContent(new String(newContent));
+            page.setContent(new String(newContent));
         }
 
     }
@@ -206,11 +210,11 @@ public class PageConflictDialog extends TitleAreaDialog
         CompareConfiguration cc = new CompareConfiguration();
 
         if (ancestorPage != null) {
-            cc.setAncestorLabel(String.format("%s (Original)", ancestorPage.getData().getId()));
+            cc.setAncestorLabel(String.format("%s (Original)", ancestorPage.getId()));
         }
 
-        cc.setLeftLabel(String.format("%s (Local)", page.getData().getId()));
-        cc.setRightLabel(String.format("%s (Conflicting)", conflictingPage.getData().getId()));
+        cc.setLeftLabel(String.format("%s (Local)", page.getId()));
+        cc.setRightLabel(String.format("%s (Conflicting)", conflictingPage.getId()));
         viewer = new TextMergeViewer(pane, cc);
         pane.setContent(viewer.getControl());
         GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, true).applyTo(viewer.getControl());

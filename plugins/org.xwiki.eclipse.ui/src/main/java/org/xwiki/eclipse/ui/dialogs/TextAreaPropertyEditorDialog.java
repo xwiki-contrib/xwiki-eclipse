@@ -43,10 +43,14 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.forms.widgets.Form;
 import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.xwiki.eclipse.core.model.XWikiEclipseObjectProperty;
+import org.xwiki.eclipse.model.XWikiEclipseObjectProperty;
 import org.xwiki.eclipse.ui.editors.XWikiSourceViewerConfiguration;
 import org.xwiki.eclipse.ui.editors.scanners.XWikiPartitionScanner;
 
+/**
+ * 
+ * @version $Id$
+ */
 public class TextAreaPropertyEditorDialog extends Dialog
 {
 
@@ -84,7 +88,7 @@ public class TextAreaPropertyEditorDialog extends Dialog
         Form form = toolkit.createForm(composite);
         toolkit.decorateFormHeading(form);
         form.setText(String.format("Property %s of object %s on page %s", property.getPrettyName(), property
-            .getObject().getName(), property.getObject().getData().getPageId()));
+            .getObject().getName(), property.getObject().getPageId()));
         GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, true).applyTo(form);
         GridLayoutFactory.fillDefaults().applyTo(form.getBody());
 

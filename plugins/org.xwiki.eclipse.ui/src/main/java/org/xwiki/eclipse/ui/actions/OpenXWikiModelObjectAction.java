@@ -29,21 +29,23 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.xwiki.eclipse.core.CoreLog;
-import org.xwiki.eclipse.core.XWikiEclipseException;
-import org.xwiki.eclipse.core.model.XWikiEclipseObject;
-import org.xwiki.eclipse.core.model.XWikiEclipseObjectSummary;
-import org.xwiki.eclipse.core.model.XWikiEclipsePage;
-import org.xwiki.eclipse.core.model.XWikiEclipsePageSummary;
+import org.xwiki.eclipse.model.XWikiEclipseObject;
+import org.xwiki.eclipse.model.XWikiEclipseObjectSummary;
+import org.xwiki.eclipse.model.XWikiEclipsePage;
+import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
+import org.xwiki.eclipse.storage.XWikiEclipseStorageException;
 import org.xwiki.eclipse.ui.editors.ObjectEditor;
 import org.xwiki.eclipse.ui.editors.ObjectEditorInput;
 import org.xwiki.eclipse.ui.editors.PageEditor;
 import org.xwiki.eclipse.ui.editors.PageEditorInput;
 import org.xwiki.eclipse.ui.utils.UIUtils;
 
-/*
+/**
  * This is defined as a standard action and not with the command framework because the common
  * navigator does not export a command with the ICommonActionConstants.OPEN id. So in order to make
  * double click work we need to do things in this way.
+ * 
+ * @version $Id$
  */
 public class OpenXWikiModelObjectAction extends Action
 {
@@ -64,7 +66,7 @@ public class OpenXWikiModelObjectAction extends Action
                 final XWikiEclipsePageSummary pageSummary = (XWikiEclipsePageSummary) object;
 
                 try {
-                    XWikiEclipsePage page = pageSummary.getDataManager().getPage(pageSummary.getData().getId());
+                    XWikiEclipsePage page = pageSummary.getDataManager().getPage(pageSummary.getId());
 
                     if (page == null) {
                         UIUtils
@@ -78,7 +80,7 @@ public class OpenXWikiModelObjectAction extends Action
 
                     PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().openEditor(
                         new PageEditorInput(page, false), PageEditor.ID);
-                } catch (XWikiEclipseException e) {
+                } catch (XWikiEclipseStorageException e) {
                     UIUtils
                         .showMessageDialog(
                             Display.getDefault().getActiveShell(),
@@ -100,12 +102,12 @@ public class OpenXWikiModelObjectAction extends Action
 
                 try {
                     XWikiEclipseObject xwikiObject =
-                        objectSummary.getDataManager().getObject(objectSummary.getData().getPageId(),
-                            objectSummary.getData().getClassName(), objectSummary.getData().getId());
+                        objectSummary.getDataManager().getObject(objectSummary.getPageId(),
+                            objectSummary.getClassName(), objectSummary.getId());
 
                     PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().openEditor(
                         new ObjectEditorInput(xwikiObject), ObjectEditor.ID);
-                } catch (XWikiEclipseException e) {
+                } catch (XWikiEclipseStorageException e) {
                     UIUtils
                         .showMessageDialog(
                             Display.getDefault().getActiveShell(),

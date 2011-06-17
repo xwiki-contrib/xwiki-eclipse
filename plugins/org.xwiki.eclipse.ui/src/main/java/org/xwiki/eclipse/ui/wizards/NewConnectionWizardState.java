@@ -20,15 +20,21 @@
  */
 package org.xwiki.eclipse.ui.wizards;
 
+/**
+ * 
+ * @version $Id$
+ */
 public class NewConnectionWizardState
 {
-    private String connectionName;
+	private String connectionName;
 
     private String serverUrl;
 
     private String userName;
 
     private String password;
+    
+    private String backend;
 
     public String getServerUrl()
     {
@@ -69,4 +75,12 @@ public class NewConnectionWizardState
     {
         this.connectionName = connectionName;
     }
+    
+    public String getBackend() {
+		return backend;
+	}
+
+	public void setBackend(String backend) {
+		this.backend = backend;
+	}
 }

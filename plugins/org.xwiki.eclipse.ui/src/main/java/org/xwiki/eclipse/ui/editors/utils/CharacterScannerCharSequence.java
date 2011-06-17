@@ -25,6 +25,8 @@ import org.eclipse.jface.text.rules.ICharacterScanner;
 /**
  * This class implements a CharSequence that is backed by an ICharacterScanner. It is used as a bridge for using Java
  * regex pattern matching with IRules that use ICharacterScanners for the evaluation.
+ * 
+ * @version $Id$
  */
 public class CharacterScannerCharSequence implements CharSequence
 {

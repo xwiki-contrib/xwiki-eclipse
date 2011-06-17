@@ -32,19 +32,23 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
-import org.xwiki.eclipse.core.DataManager;
-import org.xwiki.eclipse.core.model.XWikiEclipsePage;
+import org.xwiki.eclipse.model.XWikiEclipsePage;
+import org.xwiki.eclipse.storage.AbstractDataManager;
 import org.xwiki.eclipse.ui.editors.PageEditor;
 import org.xwiki.eclipse.ui.editors.PageEditorInput;
 import org.xwiki.eclipse.ui.utils.XWikiEclipseSafeRunnable;
 
+/**
+ * 
+ * @version $Id$
+ */
 public class NewPageWizard extends Wizard implements INewWizard
 {
     private NewPageWizardState newPageWizardState;
 
-    private DataManager dataManager;
+    private AbstractDataManager dataManager;
 
-    public NewPageWizard(DataManager dataManager, String spaceKey)
+    public NewPageWizard(AbstractDataManager dataManager, String spaceKey)
     {
         super();
         newPageWizardState = new NewPageWizardState();
@@ -136,7 +140,7 @@ public class NewPageWizard extends Wizard implements INewWizard
         // Do nothing.
     }
 
-    public DataManager getDataManager()
+    public AbstractDataManager getDataManager()
     {
         return dataManager;
     }

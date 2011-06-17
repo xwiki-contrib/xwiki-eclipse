@@ -34,6 +34,10 @@ import org.eclipse.ui.application.ActionBarAdvisor;
 import org.eclipse.ui.application.IActionBarConfigurer;
 import org.eclipse.ui.views.IViewDescriptor;
 
+/**
+ * 
+ * @version $Id$
+ */
 public class ApplicationActionBarAdvisor extends ActionBarAdvisor
 {
     private List<Action> showViewActions;

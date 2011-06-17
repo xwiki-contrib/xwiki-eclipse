@@ -23,8 +23,12 @@ package org.xwiki.eclipse.ui.editors;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;
-import org.xwiki.eclipse.core.model.XWikiEclipseObject;
+import org.xwiki.eclipse.model.XWikiEclipseObject;
 
+/**
+ * 
+ * @version $Id$
+ */
 public class ObjectEditorInput implements IEditorInput
 {
     private XWikiEclipseObject object;

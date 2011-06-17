@@ -24,6 +24,10 @@ import org.eclipse.jface.text.DocumentCommand;
 import org.eclipse.jface.text.IAutoEditStrategy;
 import org.eclipse.jface.text.IDocument;
 
+/**
+ * 
+ * @version $Id$
+ */
 public class VelocityAutoEditStrategy implements IAutoEditStrategy
 {
     public void customizeDocumentCommand(IDocument document, DocumentCommand command)

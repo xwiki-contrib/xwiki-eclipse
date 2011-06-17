@@ -54,22 +54,25 @@ import org.eclipse.ui.texteditor.TextOperationAction;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.xwiki.eclipse.core.CoreLog;
 import org.xwiki.eclipse.core.CorePlugin;
-import org.xwiki.eclipse.core.DataManager;
 import org.xwiki.eclipse.core.XWikiEclipseException;
-import org.xwiki.eclipse.core.model.XWikiEclipseObject;
-import org.xwiki.eclipse.core.model.XWikiEclipsePage;
-import org.xwiki.eclipse.core.model.XWikiEclipsePageSummary;
-import org.xwiki.eclipse.core.model.XWikiEclipseSpaceSummary;
 import org.xwiki.eclipse.core.notifications.CoreEvent;
 import org.xwiki.eclipse.core.notifications.ICoreEventListener;
 import org.xwiki.eclipse.core.notifications.NotificationManager;
+import org.xwiki.eclipse.model.XWikiEclipseObject;
+import org.xwiki.eclipse.model.XWikiEclipsePage;
+import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
+import org.xwiki.eclipse.model.XWikiEclipseSpaceSummary;
+import org.xwiki.eclipse.storage.AbstractDataManager;
+import org.xwiki.eclipse.storage.XWikiEclipseStorageException;
 import org.xwiki.eclipse.ui.UIConstants;
 import org.xwiki.eclipse.ui.UIPlugin;
 import org.xwiki.eclipse.ui.dialogs.PageConflictDialog;
 import org.xwiki.eclipse.ui.utils.UIUtils;
-import org.xwiki.xmlrpc.model.XWikiExtendedId;
-import org.xwiki.xmlrpc.model.XWikiPage;
 
+/**
+ * 
+ * @version $Id$
+ */
 public class PageEditor extends TextEditor implements ICoreEventListener
 {
     public static final String ID = "org.xwiki.eclipse.ui.editors.PageEditor";
@@ -193,7 +196,7 @@ public class PageEditor extends TextEditor implements ICoreEventListener
             currentPageEditorInput.setPage(newPageEditorInput.getPage(), newPageEditorInput.isReadOnly());
 
             IDocument currentDocument = getDocumentProvider().getDocument(currentPageEditorInput);
-            String newContent = newPageEditorInput.getPage().getData().getContent();
+            String newContent = newPageEditorInput.getPage().getContent();
 
             // Display the new content in the current document.
             currentDocument.set(newContent);
@@ -207,7 +210,7 @@ public class PageEditor extends TextEditor implements ICoreEventListener
             super.doSetInput(newPageEditorInput);
 
             if (newPageEditorInput.getPage().getDataManager().isInConflict(
-                newPageEditorInput.getPage().getData().getId())) {
+                newPageEditorInput.getPage().getId())) {
                 UIUtils
                     .showMessageDialog(
                         getSite().getShell(),
@@ -261,8 +264,8 @@ public class PageEditor extends TextEditor implements ICoreEventListener
             if (input != null) {
                 XWikiEclipsePage page = input.getPage();
 
-                int version = page.getData().getVersion();
-                int minorVersion = page.getData().getMinorVersion();
+                int version = page.getVersion();
+                int minorVersion = page.getMinorVersion();
 
                 /* Compatibility with XWiki 1.3 */
                 if (version > 65536) {
@@ -274,7 +277,7 @@ public class PageEditor extends TextEditor implements ICoreEventListener
                 /*
                  * If the page id does not have a '.' then we are dealing with confluence ids
                  */
-                if (page.getData().getId().indexOf('.') != -1) {
+                if (page.getId().indexOf('.') != -1) {
                     XWikiExtendedId extendedId = new XWikiExtendedId(page.getData().getId());
 
                     String language = "Default";
@@ -292,7 +295,7 @@ public class PageEditor extends TextEditor implements ICoreEventListener
                 }
             }
 
-            if (input.getPage().getDataManager().isInConflict(input.getPage().getData().getId())) {
+            if (input.getPage().getDataManager().isInConflict(input.getPage().getId())) {
                 boolean editConlictActionFound = false;
                 for (IContributionItem contributionItem : form.getToolBarManager().getItems()) {
                     if (contributionItem instanceof ActionContributionItem) {
@@ -322,14 +325,14 @@ public class PageEditor extends TextEditor implements ICoreEventListener
     {
         PageEditorInput input = (PageEditorInput) getEditorInput();
         XWikiEclipsePage currentPage = input.getPage();
-        DataManager dataManager = currentPage.getDataManager();
+        AbstractDataManager dataManager = currentPage.getDataManager();
 
-        if (dataManager.isInConflict(currentPage.getData().getId())) {
+        if (dataManager.isInConflict(currentPage.getId())) {
             try {
-                XWikiEclipsePage conflictingPage = dataManager.getConflictingPage(currentPage.getData().getId());
+                XWikiEclipsePage conflictingPage = dataManager.getConflictingPage(currentPage.getId());
 
                 XWikiEclipsePage conflictAncestorPage =
-                    dataManager.getConflictAncestorPage(currentPage.getData().getId());
+                    dataManager.getConflictAncestorPage(currentPage.getId());
 
                 PageConflictDialog compareDialog =
                     new PageConflictDialog(Display.getDefault().getActiveShell(), currentPage, conflictingPage,
@@ -384,9 +387,9 @@ public class PageEditor extends TextEditor implements ICoreEventListener
         final PageEditorInput input = (PageEditorInput) getEditorInput();
         XWikiEclipsePage page = input.getPage();
         String targetPageId = null;
-        DataManager dataManager = null;
-        if (event.getSource() instanceof DataManager) {
-            dataManager = (DataManager) event.getSource();
+        AbstractDataManager dataManager = null;
+        if (event.getSource() instanceof AbstractDataManager) {
+            dataManager = (AbstractDataManager) event.getSource();
         }
 
         boolean updatePage = false;
@@ -400,16 +403,16 @@ public class PageEditor extends TextEditor implements ICoreEventListener
                  * content. If the editor is dirty then we do not do nothing.
                  */
                 XWikiEclipseObject object = (XWikiEclipseObject) event.getData();
-                targetPageId = object.getData().getPageId();
+                targetPageId = object.getPageId();
 
-                updatePage = page.getDataManager().equals(dataManager) && page.getData().getId().equals(targetPageId);
+                updatePage = page.getDataManager().equals(dataManager) && page.getId().equals(targetPageId);
 
                 break;
 
             case OBJECT_REMOVED:
                 targetPageId = ((XWikiEclipseObject) event.getData()).getPageSummary().getId();
 
-                updatePage = page.getDataManager().equals(dataManager) && page.getData().getId().equals(targetPageId);
+                updatePage = page.getDataManager().equals(dataManager) && page.getId().equals(targetPageId);
 
                 break;
 
@@ -429,7 +432,7 @@ public class PageEditor extends TextEditor implements ICoreEventListener
 
             case REFRESH:
                 Object data = event.getData();
-                if (data instanceof DataManager || data instanceof XWikiEclipsePageSummary
+                if (data instanceof AbstractDataManager || data instanceof XWikiEclipsePageSummary
                     || data instanceof XWikiEclipseSpaceSummary) {
 
                     // Check if this refresh event was triggered for the page
@@ -440,8 +443,8 @@ public class PageEditor extends TextEditor implements ICoreEventListener
                             return;
                     } else
 
-                    if (data instanceof DataManager) {
-                        DataManager aDataManager = (DataManager) data;
+                    if (data instanceof AbstractDataManager) {
+                        AbstractDataManager aDataManager = (AbstractDataManager) data;
 
                         if (!aDataManager.equals(page.getDataManager()))
                             return;
@@ -451,7 +454,7 @@ public class PageEditor extends TextEditor implements ICoreEventListener
                         XWikiEclipseSpaceSummary space = (XWikiEclipseSpaceSummary) data;
 
                         if (!space.getDataManager().equals(page.getDataManager())
-                            || !space.getData().getKey().equals(page.getData().getSpace()))
+                            || !space.getKey().equals(page.getSpace()))
                             return;
                     }
 
@@ -462,7 +465,7 @@ public class PageEditor extends TextEditor implements ICoreEventListener
                                 | SWT.ICON_QUESTION);
                         messageBox.setMessage(String.format(
                             "Refreshing the page %s will overwrite your current work on it. Do you wish to save it?",
-                            page.getData().getId()));
+                            page.getId()));
                         messageBox.setText("Save work");
                         this.setFocus();
 
@@ -478,7 +481,7 @@ public class PageEditor extends TextEditor implements ICoreEventListener
                         }
 
                         try {
-                            page.getDataManager().clearPageStatus(page.getData().getId());
+                            page.getDataManager().clearPageStatus(page.getId());
                         } catch (Exception ex) {
                             // ignore
                         }
@@ -505,7 +508,7 @@ public class PageEditor extends TextEditor implements ICoreEventListener
                 XWikiEclipseSpaceSummary aSpace = (XWikiEclipseSpaceSummary) event.getData();
 
                 if (aSpace.getDataManager().equals(page.getDataManager())
-                    && aSpace.getData().getKey().equals(page.getData().getSpace())) {
+                    && aSpace.getKey().equals(page.getSpace())) {
                     // The space that the page being edited belonged to has been
                     // deleted.
                     this.close(false);
@@ -515,7 +518,7 @@ public class PageEditor extends TextEditor implements ICoreEventListener
 
             case DATA_MANAGER_UNREGISTERED:
 
-                DataManager aDataManager = (DataManager) event.getData();
+                AbstractDataManager aDataManager = (AbstractDataManager) event.getData();
                 if (aDataManager.equals(page.getDataManager())) {
                     // The connection that the page being edited belonged to has
                     // been deleted.
@@ -528,9 +531,9 @@ public class PageEditor extends TextEditor implements ICoreEventListener
         try {
             if (updatePage) {            	
                 if (!isDirty()) {
-                    final XWikiEclipsePage newPage = page.getDataManager().getPage(page.getData().getId());
+                    final XWikiEclipsePage newPage = page.getDataManager().getPage(page.getId());
 
-                    if (page.getData().getVersion() != newPage.getData().getVersion()) {
+                    if (page.getVersion() != newPage.getVersion()) {
                         /*
                          * If we are here then the editor is not dirty and the page versions differ. So we update the
                          * page being edited. This may happen when an object associated to a page is stored or when
@@ -562,7 +565,7 @@ public class PageEditor extends TextEditor implements ICoreEventListener
                     }
                 }                
             }
-        } catch (XWikiEclipseException e) {
+        } catch (XWikiEclipseStorageException e) {
             CoreLog.logError("Error while handling XWiki Eclipse event", e);
         }
 

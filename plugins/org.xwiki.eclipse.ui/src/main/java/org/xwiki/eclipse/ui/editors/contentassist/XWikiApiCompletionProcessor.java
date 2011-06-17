@@ -29,6 +29,10 @@ import org.eclipse.swt.graphics.Image;
 import org.xwiki.eclipse.ui.editors.XWikiApiType;
 import org.xwiki.eclipse.ui.editors.utils.XWikiApiTemplateManager;
 
+/**
+ * 
+ * @version $Id$
+ */
 public class XWikiApiCompletionProcessor extends TemplateCompletionProcessor
 {
     XWikiApiType xwikiApiType;

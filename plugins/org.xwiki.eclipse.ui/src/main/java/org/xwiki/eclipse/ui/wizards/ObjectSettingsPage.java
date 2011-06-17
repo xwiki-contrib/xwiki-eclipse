@@ -33,21 +33,25 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-import org.xwiki.eclipse.core.DataManager;
-import org.xwiki.eclipse.core.model.XWikiEclipseClassSummary;
+import org.xwiki.eclipse.model.XWikiEclipseClassSummary;
+import org.xwiki.eclipse.storage.AbstractDataManager;
 import org.xwiki.eclipse.ui.UIConstants;
 import org.xwiki.eclipse.ui.UIPlugin;
 import org.xwiki.eclipse.ui.utils.XWikiEclipseSafeRunnableWithResult;
 
+/**
+ * 
+ * @version $Id$
+ */
 public class ObjectSettingsPage extends WizardPage
 {
     private NewObjectWizardState newObjectWizardState;
 
-    private DataManager dataManager;
+    private AbstractDataManager dataManager;
 
     private Combo combo;
 
-    public ObjectSettingsPage(String pageName, DataManager dataManager)
+    public ObjectSettingsPage(String pageName, AbstractDataManager dataManager)
     {
         super(pageName);
         setTitle("New object");
@@ -90,7 +94,7 @@ public class ObjectSettingsPage extends WizardPage
 
         combo = new Combo(group, SWT.READ_ONLY);
         for (XWikiEclipseClassSummary classSummary : runnable.getResult()) {
-            combo.add(classSummary.getData().getId());
+            combo.add(classSummary.getId());
         }
         combo.addSelectionListener(new SelectionListener()
         {

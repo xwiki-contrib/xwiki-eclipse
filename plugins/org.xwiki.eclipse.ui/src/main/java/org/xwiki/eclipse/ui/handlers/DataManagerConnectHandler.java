@@ -31,10 +31,14 @@ import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.handlers.HandlerUtil;
-import org.xwiki.eclipse.core.DataManager;
+import org.xwiki.eclipse.storage.AbstractDataManager;
 import org.xwiki.eclipse.ui.utils.UIUtils;
 import org.xwiki.eclipse.ui.utils.XWikiEclipseSafeRunnable;
 
+/**
+ * 
+ * @version $Id$
+ */
 public class DataManagerConnectHandler extends AbstractHandler
 {
     public Object execute(ExecutionEvent event) throws ExecutionException
@@ -43,8 +47,8 @@ public class DataManagerConnectHandler extends AbstractHandler
 
         Set selectedObjects = UIUtils.getSelectedObjectsFromSelection(selection);
         for (Object selectedObject : selectedObjects) {
-            if (selectedObject instanceof DataManager) {
-                final DataManager dataManager = (DataManager) selectedObject;
+            if (selectedObject instanceof AbstractDataManager) {
+                final AbstractDataManager dataManager = (AbstractDataManager) selectedObject;
 
                 try {
                     UIUtils.runWithProgress(new IRunnableWithProgress()

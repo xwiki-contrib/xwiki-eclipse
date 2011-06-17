@@ -28,17 +28,21 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.ui.handlers.HandlerUtil;
-import org.xwiki.eclipse.core.DataManager;
-import org.xwiki.eclipse.core.model.XWikiEclipseSpaceSummary;
+import org.xwiki.eclipse.model.XWikiEclipseSpaceSummary;
+import org.xwiki.eclipse.storage.AbstractDataManager;
 import org.xwiki.eclipse.ui.utils.UIUtils;
 import org.xwiki.eclipse.ui.wizards.NewPageWizard;
 
+/**
+ * 
+ * @version $Id$
+ */
 public class NewPageHandler extends AbstractHandler
 {
     public Object execute(ExecutionEvent event) throws ExecutionException
     {
         String spaceKey = null;
-        DataManager dataManager = null;
+        AbstractDataManager dataManager = null;
         ISelection selection = HandlerUtil.getCurrentSelection(event);
 
         Set selectedObjects = UIUtils.getSelectedObjectsFromSelection(selection);
@@ -47,11 +51,11 @@ public class NewPageHandler extends AbstractHandler
             if (selectedObject instanceof XWikiEclipseSpaceSummary) {
                 XWikiEclipseSpaceSummary spaceSummary = (XWikiEclipseSpaceSummary) selectedObject;
                 dataManager = spaceSummary.getDataManager();
-                spaceKey = spaceSummary.getData().getKey();
+                spaceKey = spaceSummary.getKey();
             }
 
-            if (selectedObject instanceof DataManager) {
-                dataManager = (DataManager) selectedObject;
+            if (selectedObject instanceof AbstractDataManager) {
+                dataManager = (AbstractDataManager) selectedObject;
             }
         }
 

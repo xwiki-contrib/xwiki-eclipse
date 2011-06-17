@@ -20,6 +20,10 @@
  */
 package org.xwiki.eclipse.core;
 
+/**
+ * 
+ * @version $Id$
+ */
 public class XWikiEclipseException extends Exception
 {
     private static final long serialVersionUID = 4211668994077440936L;

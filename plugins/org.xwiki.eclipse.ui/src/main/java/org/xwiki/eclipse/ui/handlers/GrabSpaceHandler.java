@@ -33,10 +33,15 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.xwiki.eclipse.core.CoreLog;
 import org.xwiki.eclipse.core.XWikiEclipseException;
-import org.xwiki.eclipse.core.model.XWikiEclipsePageSummary;
-import org.xwiki.eclipse.core.model.XWikiEclipseSpaceSummary;
+import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
+import org.xwiki.eclipse.model.XWikiEclipseSpaceSummary;
+import org.xwiki.eclipse.storage.XWikiEclipseStorageException;
 import org.xwiki.eclipse.ui.utils.UIUtils;
 
+/**
+ * 
+ * @version $Id$
+ */
 public class GrabSpaceHandler extends AbstractHandler
 {
     public Object execute(ExecutionEvent event) throws ExecutionException
@@ -57,7 +62,7 @@ public class GrabSpaceHandler extends AbstractHandler
                         {
                             try {
                                 List<XWikiEclipsePageSummary> pageSummaries =
-                                    spaceSummary.getDataManager().getPages(spaceSummary.getData().getKey());
+                                    spaceSummary.getDataManager().getPages(spaceSummary.getKey());
 
                                 monitor.beginTask("Fetching pages", pageSummaries.size());
 
@@ -66,9 +71,9 @@ public class GrabSpaceHandler extends AbstractHandler
                                 }
 
                                 for (XWikiEclipsePageSummary pageSummary : pageSummaries) {
-                                    monitor.setTaskName(String.format("Fetching %s", pageSummary.getData().getId()));
+                                    monitor.setTaskName(String.format("Fetching %s", pageSummary.getId()));
 
-                                    pageSummary.getDataManager().getPage(pageSummary.getData().getId());
+                                    pageSummary.getDataManager().getPage(pageSummary.getId());
 
                                     if (monitor.isCanceled()) {
                                         return;
@@ -76,7 +81,7 @@ public class GrabSpaceHandler extends AbstractHandler
 
                                     monitor.worked(1);
                                 }
-                            } catch (XWikiEclipseException e) {
+                            } catch (XWikiEclipseStorageException e) {
                                 throw new InvocationTargetException(e);
                             } finally {
                                 monitor.done();

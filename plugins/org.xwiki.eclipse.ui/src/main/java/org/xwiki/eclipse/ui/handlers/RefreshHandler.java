@@ -31,6 +31,10 @@ import org.xwiki.eclipse.core.notifications.CoreEvent;
 import org.xwiki.eclipse.core.notifications.NotificationManager;
 import org.xwiki.eclipse.ui.utils.UIUtils;
 
+/**
+ * 
+ * @version $Id$
+ */
 public class RefreshHandler extends AbstractHandler
 {
     public Object execute(ExecutionEvent event) throws ExecutionException

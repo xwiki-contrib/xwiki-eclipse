@@ -26,6 +26,10 @@ import org.eclipse.ui.application.IActionBarConfigurer;
 import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.application.WorkbenchWindowAdvisor;
 
+/**
+ * 
+ * @version $Id$
+ */
 public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor
 {
 

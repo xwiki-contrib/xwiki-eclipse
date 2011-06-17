@@ -30,6 +30,10 @@ import org.eclipse.ui.navigator.ICommonActionExtensionSite;
 import org.eclipse.ui.navigator.ICommonMenuConstants;
 import org.xwiki.eclipse.ui.UIConstants;
 
+/**
+ * 
+ * @version $Id$
+ */
 public class XWikiEclipseSpaceSummaryActionProvider extends CommonActionProvider
 {
     private CommandContributionItem newPage;

@@ -29,11 +29,15 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.handlers.HandlerUtil;
-import org.xwiki.eclipse.core.Functionality;
-import org.xwiki.eclipse.core.model.XWikiEclipsePageSummary;
+import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
+import org.xwiki.eclipse.storage.Functionality;
 import org.xwiki.eclipse.ui.utils.UIUtils;
 import org.xwiki.eclipse.ui.wizards.NewObjectWizard;
 
+/**
+ * 
+ * @version $Id$
+ */
 public class NewObjectHandler extends AbstractHandler
 {
     public Object execute(ExecutionEvent event) throws ExecutionException
@@ -54,7 +58,7 @@ public class NewObjectHandler extends AbstractHandler
                 }
 
                 NewObjectWizard wizard =
-                    new NewObjectWizard(pageSummary.getDataManager(), pageSummary.getData().getId());
+                    new NewObjectWizard(pageSummary.getDataManager(), pageSummary.getId());
 
                 WizardDialog dialog = new WizardDialog(HandlerUtil.getActiveWorkbenchWindow(event).getShell(), wizard);
                 dialog.create();

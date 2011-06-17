@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: XWiki Eclipse XmlRpc Plug-in
 Bundle-SymbolicName: org.xwiki.eclipse.xmlrpc;singleton:=true
-Bundle-Version: 1.4.0
+Bundle-Version: 1.2.0.qualifier
 Bundle-ClassPath: junit-3.8.1.jar,
  swizzle-confluence-1.2-20080419-xwiki.jar,
  ws-commons-util-1.0.2.jar,
@@ -13,9 +13,51 @@ Bundle-ClassPath: junit-3.8.1.jar,
  xwiki-core-xmlrpc-client-1.4.jar,
  xwiki-core-xmlrpc-model-1.4.jar
 Bundle-Vendor: XWiki
-Export-Package: org.apache.xmlrpc,
+Export-Package: javax.xml.parsers,
+ javax.xml.transform,
+ javax.xml.transform.dom,
+ javax.xml.transform.sax,
+ javax.xml.transform.stream,
+ junit.awtui,
+ junit.extensions,
+ junit.framework,
+ junit.runner,
+ junit.swingui,
+ junit.textui,
+ org.apache.ws.commons.serialize,
+ org.apache.ws.commons.util,
+ org.apache.xmlcommons,
+ org.apache.xmlrpc;uses:="org.apache.xmlrpc.common",
+ org.apache.xmlrpc.client,
+ org.apache.xmlrpc.client.util,
+ org.apache.xmlrpc.common,
+ org.apache.xmlrpc.jaxb,
+ org.apache.xmlrpc.parser,
+ org.apache.xmlrpc.serializer,
+ org.apache.xmlrpc.util,
  org.codehaus.swizzle.confluence,
- org.xwiki.xmlrpc,
- org.xwiki.xmlrpc.model
-Require-Bundle: org.eclipse.core.runtime
+ org.w3c.dom,
+ org.w3c.dom.css,
+ org.w3c.dom.events,
+ org.w3c.dom.html,
+ org.w3c.dom.ranges,
+ org.w3c.dom.stylesheets,
+ org.w3c.dom.traversal,
+ org.w3c.dom.views,
+ org.xml.sax,
+ org.xml.sax.ext,
+ org.xml.sax.helpers,
+ org.xwiki.eclipse.xmlrpc,
+ org.xwiki.eclipse.xmlrpc.model,
+ org.xwiki.eclipse.xmlrpc.storage;
+  uses:="org.xwiki.eclipse.model,
+   org.codehaus.swizzle.confluence,
+   org.xwiki.eclipse.storage,
+   org.eclipse.core.resources,
+   org.xwiki.xmlrpc.model",
+ org.xwiki.xmlrpc;uses:="org.codehaus.swizzle.confluence,org.xwiki.xmlrpc.model",
+ org.xwiki.xmlrpc.model;uses:="org.codehaus.swizzle.confluence"
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.core.resources;bundle-version="3.7.100",
+ org.xwiki.eclipse.storage;bundle-version="1.2.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

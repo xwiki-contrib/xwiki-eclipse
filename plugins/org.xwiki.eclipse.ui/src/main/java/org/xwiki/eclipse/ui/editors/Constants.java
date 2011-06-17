@@ -20,6 +20,10 @@
  */
 package org.xwiki.eclipse.ui.editors;
 
+/**
+ * 
+ * @version $Id$
+ */
 public class Constants
 {
     public static final String LIST_BULLET_PATTERN =

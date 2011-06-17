@@ -32,8 +32,12 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.DateTime;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
-import org.xwiki.eclipse.core.model.XWikiEclipseObjectProperty;
+import org.xwiki.eclipse.model.XWikiEclipseObjectProperty;
 
+/**
+ * 
+ * @version $Id$
+ */
 public class DatePropertyEditor extends BasePropertyEditor
 {
     DateTime date;

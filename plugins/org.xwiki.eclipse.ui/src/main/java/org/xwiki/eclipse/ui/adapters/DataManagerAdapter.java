@@ -33,25 +33,29 @@ import org.eclipse.ui.model.WorkbenchAdapter;
 import org.eclipse.ui.progress.IDeferredWorkbenchAdapter;
 import org.eclipse.ui.progress.IElementCollector;
 import org.xwiki.eclipse.core.CoreLog;
-import org.xwiki.eclipse.core.DataManager;
-import org.xwiki.eclipse.core.XWikiEclipseException;
-import org.xwiki.eclipse.core.model.XWikiEclipseSpaceSummary;
+import org.xwiki.eclipse.model.XWikiEclipseSpaceSummary;
+import org.xwiki.eclipse.storage.AbstractDataManager;
+import org.xwiki.eclipse.storage.XWikiEclipseStorageException;
 import org.xwiki.eclipse.ui.UIConstants;
 import org.xwiki.eclipse.ui.UIPlugin;
 import org.xwiki.eclipse.ui.utils.UIUtils;
 
+/**
+ * 
+ * @version $Id$
+ */
 public class DataManagerAdapter extends WorkbenchAdapter implements IDeferredWorkbenchAdapter
 {
     @Override
     public Object[] getChildren(Object object)
     {
-        if (object instanceof DataManager) {
-            final DataManager dataManager = (DataManager) object;
+        if (object instanceof AbstractDataManager) {
+            final AbstractDataManager dataManager = (AbstractDataManager) object;
 
             try {
                 List<XWikiEclipseSpaceSummary> result = dataManager.getSpaces();
                 return result.toArray();
-            } catch (XWikiEclipseException e) {
+            } catch (XWikiEclipseStorageException e) {
                 UIUtils
                     .showMessageDialog(
                         Display.getDefault().getActiveShell(),
@@ -72,8 +76,8 @@ public class DataManagerAdapter extends WorkbenchAdapter implements IDeferredWor
     @Override
     public String getLabel(Object object)
     {
-        if (object instanceof DataManager) {
-            DataManager dataManager = (DataManager) object;
+        if (object instanceof AbstractDataManager) {
+            AbstractDataManager dataManager = (AbstractDataManager) object;
             return dataManager.getName();
         }
 
@@ -89,8 +93,8 @@ public class DataManagerAdapter extends WorkbenchAdapter implements IDeferredWor
     @Override
     public FontData getFont(Object object)
     {
-        if (object instanceof DataManager) {
-            DataManager dataManager = (DataManager) object;
+        if (object instanceof AbstractDataManager) {
+            AbstractDataManager dataManager = (AbstractDataManager) object;
 
             if (dataManager.isConnected()) {
                 return JFaceResources.getFontRegistry().getBold(JFaceResources.DEFAULT_FONT).getFontData()[0];

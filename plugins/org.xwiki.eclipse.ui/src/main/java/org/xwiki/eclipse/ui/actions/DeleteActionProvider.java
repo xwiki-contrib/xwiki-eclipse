@@ -29,6 +29,10 @@ import org.eclipse.ui.navigator.ICommonActionExtensionSite;
 import org.eclipse.ui.navigator.ICommonMenuConstants;
 import org.xwiki.eclipse.ui.UIConstants;
 
+/**
+ * 
+ * @version $Id$
+ */
 public class DeleteActionProvider extends CommonActionProvider
 {
     private CommandContributionItem delete;

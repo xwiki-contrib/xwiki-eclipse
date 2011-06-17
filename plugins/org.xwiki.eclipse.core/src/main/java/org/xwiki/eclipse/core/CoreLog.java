@@ -23,6 +23,10 @@ package org.xwiki.eclipse.core;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 
+/**
+ * 
+ * @version $Id$
+ */
 public class CoreLog
 {
     public static void logInfo(String message)

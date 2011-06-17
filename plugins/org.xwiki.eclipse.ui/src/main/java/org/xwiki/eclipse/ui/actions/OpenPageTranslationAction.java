@@ -27,12 +27,17 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.xwiki.eclipse.core.CoreLog;
 import org.xwiki.eclipse.core.XWikiEclipseException;
-import org.xwiki.eclipse.core.model.XWikiEclipsePage;
-import org.xwiki.eclipse.core.model.XWikiEclipsePageSummary;
+import org.xwiki.eclipse.model.XWikiEclipsePage;
+import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
+import org.xwiki.eclipse.storage.XWikiEclipseStorageException;
 import org.xwiki.eclipse.ui.editors.PageEditor;
 import org.xwiki.eclipse.ui.editors.PageEditorInput;
 import org.xwiki.eclipse.ui.utils.UIUtils;
 
+/**
+ * 
+ * @version $Id$
+ */
 public class OpenPageTranslationAction extends Action
 {
 
@@ -53,7 +58,7 @@ public class OpenPageTranslationAction extends Action
         try {
             XWikiEclipsePage page =
                 pageSummary.getDataManager().getPage(
-                    String.format("%s?language=%s", pageSummary.getData().getId(), translation));
+                    String.format("%s?language=%s", pageSummary.getId(), translation));
 
             if (page == null) {
                 UIUtils
@@ -67,7 +72,7 @@ public class OpenPageTranslationAction extends Action
 
             PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().openEditor(
                 new PageEditorInput(page, false), PageEditor.ID);
-        } catch (XWikiEclipseException e) {
+        } catch (XWikiEclipseStorageException e) {
             UIUtils
                 .showMessageDialog(
                     Display.getDefault().getActiveShell(),

@@ -20,6 +20,10 @@
  */
 package org.xwiki.eclipse.ui;
 
+/**
+ * 
+ * @version $Id$
+ */
 public class UIConstants
 {
     public final static String XWIKI_ICON = "icons/xwiki.png";

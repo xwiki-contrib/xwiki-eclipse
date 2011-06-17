@@ -33,6 +33,10 @@ import org.eclipse.swt.widgets.Text;
 import org.xwiki.eclipse.ui.UIConstants;
 import org.xwiki.eclipse.ui.UIPlugin;
 
+/**
+ * 
+ * @version $Id$
+ */
 public class PageSettingsPage extends WizardPage
 {
     private NewPageWizardState newPageWizardState;

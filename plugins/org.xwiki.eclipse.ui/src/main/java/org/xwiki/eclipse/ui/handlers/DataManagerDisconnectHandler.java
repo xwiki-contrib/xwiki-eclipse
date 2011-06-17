@@ -30,9 +30,13 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.handlers.HandlerUtil;
-import org.xwiki.eclipse.core.DataManager;
+import org.xwiki.eclipse.storage.AbstractDataManager;
 import org.xwiki.eclipse.ui.utils.UIUtils;
 
+/**
+ * 
+ * @version $Id$
+ */
 public class DataManagerDisconnectHandler extends AbstractHandler
 {
     public Object execute(ExecutionEvent event) throws ExecutionException
@@ -41,8 +45,8 @@ public class DataManagerDisconnectHandler extends AbstractHandler
 
         Set selectedObjects = UIUtils.getSelectedObjectsFromSelection(selection);
         for (Object selectedObject : selectedObjects) {
-            if (selectedObject instanceof DataManager) {
-                final DataManager dataManager = (DataManager) selectedObject;
+            if (selectedObject instanceof AbstractDataManager) {
+                final AbstractDataManager dataManager = (AbstractDataManager) selectedObject;
 
                 try {
                     UIUtils.runWithProgress(new IRunnableWithProgress()

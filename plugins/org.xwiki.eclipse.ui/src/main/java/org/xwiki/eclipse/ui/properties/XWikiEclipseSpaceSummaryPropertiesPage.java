@@ -36,8 +36,12 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.browser.IWebBrowser;
 import org.eclipse.ui.browser.IWorkbenchBrowserSupport;
 import org.eclipse.ui.dialogs.PropertyPage;
-import org.xwiki.eclipse.core.model.XWikiEclipseSpaceSummary;
+import org.xwiki.eclipse.model.XWikiEclipseSpaceSummary;
 
+/**
+ * 
+ * @version $Id$
+ */
 public class XWikiEclipseSpaceSummaryPropertiesPage extends PropertyPage
 {
 
@@ -58,18 +62,17 @@ public class XWikiEclipseSpaceSummaryPropertiesPage extends PropertyPage
         Label property = new Label(composite, SWT.NONE);
         property.setText("Key:");
         Label value = new Label(composite, SWT.NONE);
-        value.setText(spaceSummary.getData().getKey() == null ? "" : spaceSummary.getData().getKey());
+        value.setText(spaceSummary.getKey() == null ? "" : spaceSummary.getKey());
 
         property = new Label(composite, SWT.NONE);
         property.setText("Name:");
         value = new Label(composite, SWT.NONE);
-        value.setText(spaceSummary.getData().getName() == null ? "" : spaceSummary.getData().getName());
+        value.setText(spaceSummary.getName() == null ? "" : spaceSummary.getName());
 
         property = new Label(composite, SWT.NONE);
         property.setText("Url:");
         Link link = new Link(composite, SWT.NONE);
-        link.setText(spaceSummary.getData().getUrl() == null ? "" : String.format("<a>%s</a>", spaceSummary.getData()
-            .getUrl()));
+        link.setText(spaceSummary.getUrl() == null ? "" : String.format("<a>%s</a>", spaceSummary.getUrl()));
         link.addSelectionListener(new SelectionListener()
         {
 

@@ -22,10 +22,14 @@ package org.xwiki.eclipse.ui.adapters;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.model.WorkbenchAdapter;
-import org.xwiki.eclipse.core.model.XWikiEclipseObjectSummary;
+import org.xwiki.eclipse.model.XWikiEclipseObjectSummary;
 import org.xwiki.eclipse.ui.UIConstants;
 import org.xwiki.eclipse.ui.UIPlugin;
 
+/**
+ * 
+ * @version $Id$
+ */
 public class XWikiEclipseObjectSummaryAdapter extends WorkbenchAdapter
 {
     @Override
@@ -34,7 +38,7 @@ public class XWikiEclipseObjectSummaryAdapter extends WorkbenchAdapter
         if (object instanceof XWikiEclipseObjectSummary) {
             XWikiEclipseObjectSummary objectSummary = (XWikiEclipseObjectSummary) object;
 
-            return objectSummary.getData().getPrettyName();
+            return objectSummary.getPrettyName();
         }
 
         return super.getLabel(object);

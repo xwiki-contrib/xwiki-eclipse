@@ -30,12 +30,16 @@ import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.handlers.HandlerUtil;
-import org.xwiki.eclipse.core.Functionality;
-import org.xwiki.eclipse.core.model.XWikiEclipsePageSummary;
+import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
+import org.xwiki.eclipse.storage.Functionality;
 import org.xwiki.eclipse.ui.dialogs.RenamePageDialog;
 import org.xwiki.eclipse.ui.utils.UIUtils;
 import org.xwiki.eclipse.ui.utils.XWikiEclipseSafeRunnable;
 
+/**
+ * 
+ * @version $Id$
+ */
 public class RenamePageHandler extends AbstractHandler
 {
     public Object execute(ExecutionEvent event) throws ExecutionException
@@ -63,7 +67,7 @@ public class RenamePageHandler extends AbstractHandler
                     {
                         public void run() throws Exception
                         {
-                            pageSummary.getDataManager().renamePage(pageSummary.getData().getId(),
+                            pageSummary.getDataManager().renamePage(pageSummary.getId(),
                                 dialog.getNewSpace(), dialog.getNewPageName());
                         }
                     });

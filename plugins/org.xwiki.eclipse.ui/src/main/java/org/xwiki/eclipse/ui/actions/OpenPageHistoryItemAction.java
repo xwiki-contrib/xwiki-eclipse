@@ -26,13 +26,17 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.xwiki.eclipse.core.CoreLog;
-import org.xwiki.eclipse.core.XWikiEclipseException;
-import org.xwiki.eclipse.core.model.XWikiEclipsePage;
-import org.xwiki.eclipse.core.model.XWikiEclipsePageHistorySummary;
+import org.xwiki.eclipse.model.XWikiEclipsePage;
+import org.xwiki.eclipse.model.XWikiEclipsePageHistorySummary;
+import org.xwiki.eclipse.storage.XWikiEclipseStorageException;
 import org.xwiki.eclipse.ui.editors.PageEditor;
 import org.xwiki.eclipse.ui.editors.PageEditorInput;
 import org.xwiki.eclipse.ui.utils.UIUtils;
 
+/**
+ * 
+ * @version $Id$
+ */
 public class OpenPageHistoryItemAction extends Action
 {
     private XWikiEclipsePageHistorySummary pageHistorySummary;
@@ -41,8 +45,8 @@ public class OpenPageHistoryItemAction extends Action
     {
         super();
 
-        int version = pageHistorySummary.getData().getVersion();
-        int minorVersion = pageHistorySummary.getData().getMinorVersion();
+        int version = pageHistorySummary.getVersion();
+        int minorVersion = pageHistorySummary.getMinorVersion();
 
         /* Compatibility with XWiki 1.3 */
         if (version > 65536) {
@@ -60,7 +64,7 @@ public class OpenPageHistoryItemAction extends Action
     public void run()
     {
         try {
-            XWikiEclipsePage page = pageHistorySummary.getDataManager().getPage(pageHistorySummary.getData().getId());
+            XWikiEclipsePage page = pageHistorySummary.getDataManager().getPage(pageHistorySummary.getId());
 
             if (page == null) {
                 UIUtils
@@ -74,7 +78,7 @@ public class OpenPageHistoryItemAction extends Action
 
             PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().openEditor(
                 new PageEditorInput(page, true), PageEditor.ID);
-        } catch (XWikiEclipseException e) {
+        } catch (XWikiEclipseStorageException e) {
             UIUtils
                 .showMessageDialog(
                     Display.getDefault().getActiveShell(),

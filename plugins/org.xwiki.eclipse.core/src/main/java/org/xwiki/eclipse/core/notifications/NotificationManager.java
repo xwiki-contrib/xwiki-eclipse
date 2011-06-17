@@ -28,6 +28,8 @@ import org.eclipse.core.runtime.ListenerList;
 
 /**
  * A singleton implementing a notification manager. XWiki Core classes should use this singleton for publishing events.
+ * 
+ * @version $Id$
  */
 public class NotificationManager
 {

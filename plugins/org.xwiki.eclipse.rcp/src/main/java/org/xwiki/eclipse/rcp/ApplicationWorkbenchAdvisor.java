@@ -36,6 +36,10 @@ import org.eclipse.ui.internal.ide.model.WorkbenchAdapterBuilder;
 import org.osgi.framework.Bundle;
 import org.xwiki.eclipse.ui.perspectives.XWikiPerspectiveFactory;
 
+/**
+ * 
+ * @version $Id$
+ */
 public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor
 {
 

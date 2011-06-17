@@ -36,8 +36,12 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.browser.IWebBrowser;
 import org.eclipse.ui.browser.IWorkbenchBrowserSupport;
 import org.eclipse.ui.dialogs.PropertyPage;
-import org.xwiki.eclipse.core.model.XWikiEclipsePageSummary;
+import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
 
+/**
+ * 
+ * @version $Id$
+ */
 public class XWikiEclipsePageSummaryPropertiesPage extends PropertyPage
 {
 
@@ -58,33 +62,32 @@ public class XWikiEclipsePageSummaryPropertiesPage extends PropertyPage
         Label property = new Label(composite, SWT.NONE);
         property.setText("Id:");
         Label value = new Label(composite, SWT.NONE);
-        value.setText(pageSummary.getData().getId() == null ? "" : pageSummary.getData().getId());
+        value.setText(pageSummary.getId() == null ? "" : pageSummary.getId());
 
         property = new Label(composite, SWT.NONE);
         property.setText("Title:");
         value = new Label(composite, SWT.NONE);
-        value.setText(pageSummary.getData().getTitle() == null ? "" : pageSummary.getData().getTitle());
+        value.setText(pageSummary.getTitle() == null ? "" : pageSummary.getTitle());
 
         property = new Label(composite, SWT.NONE);
         property.setText("Parent:");
         value = new Label(composite, SWT.NONE);
-        value.setText(pageSummary.getData().getParentId() == null ? "" : pageSummary.getData().getParentId());
+        value.setText(pageSummary.getParentId() == null ? "" : pageSummary.getParentId());
 
         property = new Label(composite, SWT.NONE);
         property.setText("Space:");
         value = new Label(composite, SWT.NONE);
-        value.setText(pageSummary.getData().getSpace() == null ? "" : pageSummary.getData().getSpace());
+        value.setText(pageSummary.getSpace() == null ? "" : pageSummary.getSpace());
 
         property = new Label(composite, SWT.NONE);
         property.setText("Translations:");
         value = new Label(composite, SWT.NONE);
-        value.setText(pageSummary.getData().getTranslations().toString());
+        value.setText(pageSummary.getTranslations().toString());
 
         property = new Label(composite, SWT.NONE);
         property.setText("Url:");
         Link link = new Link(composite, SWT.NONE);
-        link.setText(pageSummary.getData().getUrl() == null ? "" : String.format("<a>%s</a>", pageSummary.getData()
-            .getUrl()));
+        link.setText(pageSummary.getUrl() == null ? "" : String.format("<a>%s</a>", pageSummary.getUrl()));
         link.addSelectionListener(new SelectionListener()
         {
 
