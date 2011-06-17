@@ -192,4 +192,15 @@ public class XWikiEclipsePageInXmlrpc extends XWikiEclipsePage
     {
         return data.getUrl();
     }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.xwiki.eclipse.model.XWikiEclipsePage#getMinorVersion()
+     */
+    @Override
+    public int getMinorVersion()
+    {        
+        return data.getMinorVersion();
+    }
 }

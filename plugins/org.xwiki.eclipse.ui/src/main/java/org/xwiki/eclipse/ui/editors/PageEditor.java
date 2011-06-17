@@ -54,7 +54,6 @@ import org.eclipse.ui.texteditor.TextOperationAction;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.xwiki.eclipse.core.CoreLog;
 import org.xwiki.eclipse.core.CorePlugin;
-import org.xwiki.eclipse.core.XWikiEclipseException;
 import org.xwiki.eclipse.core.notifications.CoreEvent;
 import org.xwiki.eclipse.core.notifications.ICoreEventListener;
 import org.xwiki.eclipse.core.notifications.NotificationManager;
@@ -62,6 +61,7 @@ import org.xwiki.eclipse.model.XWikiEclipseObject;
 import org.xwiki.eclipse.model.XWikiEclipsePage;
 import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
 import org.xwiki.eclipse.model.XWikiEclipseSpaceSummary;
+import org.xwiki.eclipse.model.XWikiExtendedId;
 import org.xwiki.eclipse.storage.AbstractDataManager;
 import org.xwiki.eclipse.storage.XWikiEclipseStorageException;
 import org.xwiki.eclipse.ui.UIConstants;
@@ -278,19 +278,19 @@ public class PageEditor extends TextEditor implements ICoreEventListener
                  * If the page id does not have a '.' then we are dealing with confluence ids
                  */
                 if (page.getId().indexOf('.') != -1) {
-                    XWikiExtendedId extendedId = new XWikiExtendedId(page.getData().getId());
+                    XWikiExtendedId extendedId = new XWikiExtendedId(page.getId());
 
                     String language = "Default";
-                    if (page.getData().getLanguage() != null) {
-                        if (!page.getData().getLanguage().equals("")) {
-                            language = page.getData().getLanguage();
+                    if (page.getLanguage() != null) {
+                        if (!page.getLanguage().equals("")) {
+                            language = page.getLanguage();
                         }
                     }
 
                     form.setText(String.format("%s version %s.%s [Language: %s] %s", extendedId.getBasePageId(),
                         version, minorVersion, language, input.isReadOnly() ? "[READONLY]" : ""));
                 } else {
-                    form.setText(String.format("%s version %s.%s %s", page.getData().getTitle(), version, minorVersion,
+                    form.setText(String.format("%s version %s.%s %s", page.getTitle(), version, minorVersion,
                         input.isReadOnly() ? "[READONLY]" : ""));
                 }
             }
@@ -343,16 +343,23 @@ public class PageEditor extends TextEditor implements ICoreEventListener
 
                 switch (result) {
                     case PageConflictDialog.ID_USE_LOCAL:
-                        XWikiPage newPage = new XWikiPage(conflictingPage.getData().toRawMap());
-                        newPage.setContent(currentPage.getData().getContent());
+                        
+                        XWikiEclipsePage newPage = dataManager.createPage(conflictingPage.getSpace(), 
+                            conflictingPage.getName(), 
+                            conflictingPage.getTitle(), 
+                            conflictingPage.getLanguage(), 
+                            conflictingPage.getContent());
+                        newPage.setContent(currentPage.getContent());
+//                        XWikiPage newPage = new XWikiPage(conflictingPage.getData().toRawMap());
+//                        newPage.setContent(currentPage.getContent());
                         dataManager.clearConflictingStatus(newPage.getId());
-                        setInput(new PageEditorInput(new XWikiEclipsePage(dataManager, newPage), input.isReadOnly()));
+                        setInput(new PageEditorInput(newPage, input.isReadOnly()));
 
                         doSave(new NullProgressMonitor());
 
                         break;
                     case PageConflictDialog.ID_USE_REMOTE:
-                        dataManager.clearConflictingStatus(conflictingPage.getData().getId());
+                        dataManager.clearConflictingStatus(conflictingPage.getId());
                         setInput(new PageEditorInput(conflictingPage, input.isReadOnly()));
 
                         doSave(new NullProgressMonitor());
@@ -365,7 +372,7 @@ public class PageEditor extends TextEditor implements ICoreEventListener
 
                 conflictDialogDisplayed = false;
 
-            } catch (XWikiEclipseException e) {
+            } catch (XWikiEclipseStorageException e) {
                 CoreLog.logError("Error while handling conflict", e);
             }
         }

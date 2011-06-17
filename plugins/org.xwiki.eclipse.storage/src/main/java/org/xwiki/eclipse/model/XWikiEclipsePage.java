@@ -62,4 +62,6 @@ public abstract class XWikiEclipsePage extends ModelObject
     public abstract void setContent(String content);
 
     public abstract String getUrl();
+
+    public abstract int getMinorVersion();
 }
