@@ -49,6 +49,7 @@ import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.xwiki.eclipse.core.notifications.CoreEvent;
 import org.xwiki.eclipse.core.notifications.NotificationManager;
+import org.xwiki.eclipse.model.XWikiEclipseClass;
 import org.xwiki.eclipse.model.XWikiEclipseObject;
 import org.xwiki.eclipse.model.XWikiEclipseObjectProperty;
 import org.xwiki.eclipse.ui.UIConstants;
@@ -183,39 +184,39 @@ public class ObjectEditor extends EditorPart
             BasePropertyEditor propertyEditor = null;
 
             if ("com.xpn.xwiki.objects.classes.StringClass".equals(property
-                .getAttribute(XWikiClass.XWIKICLASS_ATTRIBUTE))) {
+                .getAttribute(XWikiEclipseClass.XWIKICLASS_ATTRIBUTE))) {
                 propertyEditor = new StringPropertyEditor(toolkit, scrolledForm.getBody(), property);
             }
 
             if ("com.xpn.xwiki.objects.classes.PasswordClass".equals(property
-                .getAttribute(XWikiClass.XWIKICLASS_ATTRIBUTE))) {
+                .getAttribute(XWikiEclipseClass.XWIKICLASS_ATTRIBUTE))) {
                 propertyEditor = new PasswordPropertyEditor(toolkit, scrolledForm.getBody(), property);
             }
 
             if ("com.xpn.xwiki.objects.classes.NumberClass".equals(property
-                .getAttribute(XWikiClass.XWIKICLASS_ATTRIBUTE))) {
+                .getAttribute(XWikiEclipseClass.XWIKICLASS_ATTRIBUTE))) {
                 propertyEditor = new NumberPropertyEditor(toolkit, scrolledForm.getBody(), property);
             }
 
             if ("com.xpn.xwiki.objects.classes.BooleanClass".equals(property
-                .getAttribute(XWikiClass.XWIKICLASS_ATTRIBUTE))) {
+                .getAttribute(XWikiEclipseClass.XWIKICLASS_ATTRIBUTE))) {
                 propertyEditor = new BooleanPropertyEditor(toolkit, scrolledForm.getBody(), property);
             }
 
             if ("com.xpn.xwiki.objects.classes.TextAreaClass".equals(property
-                .getAttribute(XWikiClass.XWIKICLASS_ATTRIBUTE))) {
+                .getAttribute(XWikiEclipseClass.XWIKICLASS_ATTRIBUTE))) {
                 propertyEditor = new TextAreaPropertyEditor(toolkit, scrolledForm.getBody(), property);
             }
 
             if ("com.xpn.xwiki.objects.classes.DateClass"
-                .equals(property.getAttribute(XWikiClass.XWIKICLASS_ATTRIBUTE))) {
+                .equals(property.getAttribute(XWikiEclipseClass.XWIKICLASS_ATTRIBUTE))) {
                 propertyEditor = new DatePropertyEditor(toolkit, scrolledForm.getBody(), property);
             }
 
             if ("com.xpn.xwiki.objects.classes.StaticListClass".equals(property
-                .getAttribute(XWikiClass.XWIKICLASS_ATTRIBUTE))
+                .getAttribute(XWikiEclipseClass.XWIKICLASS_ATTRIBUTE))
                 || "com.xpn.xwiki.objects.classes.DBListClass".equals(property
-                    .getAttribute(XWikiClass.XWIKICLASS_ATTRIBUTE))) {
+                    .getAttribute(XWikiEclipseClass.XWIKICLASS_ATTRIBUTE))) {
                 propertyEditor = new ListPropertyEditor(toolkit, scrolledForm.getBody(), property);
             }
 

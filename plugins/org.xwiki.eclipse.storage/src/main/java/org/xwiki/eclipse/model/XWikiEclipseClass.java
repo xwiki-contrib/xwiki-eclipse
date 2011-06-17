@@ -30,6 +30,8 @@ import org.xwiki.eclipse.storage.AbstractDataManager;
  */
 public abstract class XWikiEclipseClass extends ModelObject
 {
+    public static final String XWIKICLASS_ATTRIBUTE = "xwikiclass";
+    
     public XWikiEclipseClass(AbstractDataManager dataManager) {
 		super(dataManager);
 	}
