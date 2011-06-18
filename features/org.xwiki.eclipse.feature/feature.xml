@@ -88,7 +88,8 @@ if not, write to the Free Software Foundation, Inc.,
          id="org.xwiki.eclipse.xmlrpc"
          download-size="0"
          install-size="0"
-         version="0.0.0"/>
+         version="0.0.0"
+         unpack="false"/>
 
    <plugin
          id="org.xwiki.eclipse.rcp"

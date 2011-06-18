@@ -11,8 +11,14 @@ Bundle-ClassPath: junit-3.8.1.jar,
  xmlrpc-client-3.1.jar,
  xmlrpc-common-3.1.jar,
  xwiki-core-xmlrpc-client-1.4.jar,
- xwiki-core-xmlrpc-model-1.4.jar
+ xwiki-core-xmlrpc-model-1.4.jar,
+ library.jar,
+ .
 Bundle-Vendor: XWiki
+Require-Bundle: org.eclipse.core.runtime;bundle-version="3.7.0",
+ org.eclipse.core.resources;bundle-version="3.7.100",
+ org.xwiki.eclipse.storage;bundle-version="1.2.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: javax.xml.parsers,
  javax.xml.transform,
  javax.xml.transform.dom,
@@ -27,7 +33,7 @@ Export-Package: javax.xml.parsers,
  org.apache.ws.commons.serialize,
  org.apache.ws.commons.util,
  org.apache.xmlcommons,
- org.apache.xmlrpc;uses:="org.apache.xmlrpc.common",
+ org.apache.xmlrpc,
  org.apache.xmlrpc.client,
  org.apache.xmlrpc.client.util,
  org.apache.xmlrpc.common,
@@ -49,15 +55,6 @@ Export-Package: javax.xml.parsers,
  org.xml.sax.helpers,
  org.xwiki.eclipse.xmlrpc,
  org.xwiki.eclipse.xmlrpc.model,
- org.xwiki.eclipse.xmlrpc.storage;
-  uses:="org.xwiki.eclipse.model,
-   org.codehaus.swizzle.confluence,
-   org.xwiki.eclipse.storage,
-   org.eclipse.core.resources,
-   org.xwiki.xmlrpc.model",
- org.xwiki.xmlrpc;uses:="org.codehaus.swizzle.confluence,org.xwiki.xmlrpc.model",
- org.xwiki.xmlrpc.model;uses:="org.codehaus.swizzle.confluence"
-Require-Bundle: org.eclipse.core.runtime,
- org.eclipse.core.resources;bundle-version="3.7.100",
- org.xwiki.eclipse.storage;bundle-version="1.2.0"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+ org.xwiki.eclipse.xmlrpc.storage,
+ org.xwiki.xmlrpc,
+ org.xwiki.xmlrpc.model

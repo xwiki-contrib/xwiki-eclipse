@@ -119,6 +119,7 @@ public class NewConnectionWizard extends Wizard implements INewWizard, IExecutab
                         client.logout();
 
                     } catch (Exception e) {
+                        e.printStackTrace();
                         throw new InvocationTargetException(e, e.getMessage());
                     } finally {
                         monitor.done();
@@ -147,7 +148,6 @@ public class NewConnectionWizard extends Wizard implements INewWizard, IExecutab
                         project.create(null);
                         project.open(null);
 
-                        //FIXME: add backend property and add backend type drop down list in the wizard page
                         project.setPersistentProperty(AbstractDataManager.BACKEND, newConnectionWizardState.getBackend());
                         project.setPersistentProperty(AbstractDataManager.ENDPOINT, newConnectionWizardState.getServerUrl());
                         project.setPersistentProperty(AbstractDataManager.USERNAME, newConnectionWizardState.getUserName());

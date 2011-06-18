@@ -32,10 +32,15 @@ import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.xwiki.eclipse.storage.BackendType;
+import org.xwiki.eclipse.storage.StorageConstants;
 import org.xwiki.eclipse.ui.UIConstants;
 import org.xwiki.eclipse.ui.UIPlugin;
 
@@ -49,6 +54,8 @@ public class ConnectionSettingsWizardPage extends WizardPage
 
     private Text connectionNameText;
 
+    private Combo backendCombo;
+    
     private Text serverUrlText;
 
     private Text userNameText;
@@ -88,8 +95,43 @@ public class ConnectionSettingsWizardPage extends WizardPage
         Group group = new Group(composite, SWT.NONE);
         GridLayoutFactory.fillDefaults().numColumns(2).margins(5, 5).applyTo(group);
         GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, false).span(2, 1).applyTo(group);
-        group.setText("Connection settings");
+        group.setText("Connection settings");        
 
+        /* Combo List */
+        label = new Label(group, SWT.NONE);
+        label.setText("Backend type:");
+        
+        backendCombo = new Combo(group, SWT.VERTICAL | SWT.DROP_DOWN | SWT.BORDER | SWT.READ_ONLY);
+        BackendType[] backendTypes = BackendType.values();
+        for (int i = 0; i < backendTypes.length; i++) {
+            backendCombo.add(backendTypes[i].toString());
+        }   
+        
+        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, false).applyTo(backendCombo);
+        backendCombo.addModifyListener(new ModifyListener()
+        {
+            
+            @Override
+            public void modifyText(ModifyEvent e)
+            {
+                String backend = backendCombo.getText().trim();
+                BackendType backendT = BackendType.valueOf(backend);
+                switch (backendT) {
+                    case xmlrpc:
+                        serverUrlText.setText(StorageConstants.XMLRPC_API_ENTRYPOINT);
+                        break;
+                    case rest:
+                        serverUrlText.setText(StorageConstants.REST_API_ENTRYPOINT);                        
+                        break;
+                    default:
+                        break;
+                }
+                newConnectionWizardState.setBackend(backend);                
+                getContainer().updateButtons();
+                
+            }
+        });        
+        
         /* Server URL */
         label = new Label(group, SWT.NONE);
         label.setText("Server URL:");
@@ -104,7 +146,12 @@ public class ConnectionSettingsWizardPage extends WizardPage
                 getContainer().updateButtons();
             }
         });
-        serverUrlText.setText("http://localhost:8080/xwiki/xmlrpc/confluence");
+        
+        /*
+         * initial value of backendCombo
+         * it is initialized here because it needs to populate the serverUrlText field as well
+         */
+        backendCombo.setText(BackendType.xmlrpc.name());
 
         /* Username */
         label = new Label(group, SWT.NONE);
@@ -135,7 +182,7 @@ public class ConnectionSettingsWizardPage extends WizardPage
                 getContainer().updateButtons();
             }
         });
-
+        
         setControl(composite);
     }
 
@@ -157,6 +204,11 @@ public class ConnectionSettingsWizardPage extends WizardPage
             return false;
         }
 
+        if (backendCombo.getText() == null || backendCombo.getText().trim().length() == 0) {
+            setErrorMessage("Backend type must be specified.");
+            return false;
+        }
+        
         if (serverUrlText.getText() == null || serverUrlText.getText().trim().length() == 0) {
             setErrorMessage("A server URL must be specified.");
             return false;
