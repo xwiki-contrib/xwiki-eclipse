@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: XWiki Eclipse Rest Plugin
+Bundle-SymbolicName: org.xwiki.eclipse.rest;singleton:=true
+Bundle-Version: 1.2.0.qualifier
+Bundle-Vendor: XWiki
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.xwiki.eclipse.storage;bundle-version="1.2.0"
