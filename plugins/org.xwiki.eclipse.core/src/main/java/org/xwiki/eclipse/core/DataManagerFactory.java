@@ -20,25 +20,10 @@
  */
 package org.xwiki.eclipse.core;
 
-import java.util.List;
-import java.util.Set;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
-import org.xwiki.eclipse.core.notifications.CoreEvent;
-import org.xwiki.eclipse.core.notifications.NotificationManager;
-import org.xwiki.eclipse.model.XWikiEclipseClass;
-import org.xwiki.eclipse.model.XWikiEclipseClassSummary;
-import org.xwiki.eclipse.model.XWikiEclipseObject;
-import org.xwiki.eclipse.model.XWikiEclipseObjectSummary;
-import org.xwiki.eclipse.model.XWikiEclipsePage;
-import org.xwiki.eclipse.model.XWikiEclipsePageHistorySummary;
-import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
-import org.xwiki.eclipse.model.XWikiEclipseSpaceSummary;
 import org.xwiki.eclipse.storage.AbstractDataManager;
 import org.xwiki.eclipse.storage.BackendType;
-import org.xwiki.eclipse.storage.Functionality;
-import org.xwiki.eclipse.storage.XWikiEclipseStorageException;
 import org.xwiki.eclipse.xmlrpc.storage.DataManagerInXmlrpc;
 
 
@@ -52,8 +37,6 @@ import org.xwiki.eclipse.xmlrpc.storage.DataManagerInXmlrpc;
  */
 public class DataManagerFactory
 {
-	AbstractDataManager dataManager = null;
-
 	public static AbstractDataManager createDataManager(IProject project) throws CoreException {
 		try {
 			String backend = project.getPersistentProperty(AbstractDataManager.BACKEND);

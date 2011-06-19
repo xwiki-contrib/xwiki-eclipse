@@ -65,11 +65,6 @@ import org.xwiki.xmlrpc.model.XWikiPageSummary;
 public class DataManagerInXmlrpc extends AbstractDataManager
 {
     /**
-     * The project associated to this data manager.
-     */
-    private IProject project;
-
-    /**
      * The remote XWiki
      */
     private RemoteXWikiDataStorage remoteXWikiDataStorage;
