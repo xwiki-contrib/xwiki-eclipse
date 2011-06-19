@@ -23,6 +23,7 @@ import java.net.MalformedURLException;
 
 import org.apache.xmlrpc.XmlRpcException;
 import org.xwiki.eclipse.storage.AbstractXWikiClient;
+import org.xwiki.eclipse.storage.XWikiEclipseStorageException;
 import org.xwiki.xmlrpc.XWikiXmlRpcClient;
 
 /**
@@ -52,12 +53,13 @@ public class XWikiXmlrpcClient extends AbstractXWikiClient
      * @see org.xwiki.eclipse.storage.AbstractXWikiClient#login(java.lang.String, java.lang.String)
      */
     @Override
-    public void login(String username, String password)
+    public void login(String username, String password) throws XWikiEclipseStorageException
     {
         try {
             this.client.login(username, password);
         } catch (XmlRpcException e) {
             e.printStackTrace();
+            throw new XWikiEclipseStorageException(e);
         }
         
     }

@@ -38,7 +38,6 @@
   <packaging>pom</packaging>
 
   <modules>
-    <module>org.xwiki.eclipse.storage</module>
     <module>org.xwiki.eclipse.core</module>
     <module>org.xwiki.eclipse.xmlrpc</module>
     <module>org.xwiki.eclipse.ui</module>

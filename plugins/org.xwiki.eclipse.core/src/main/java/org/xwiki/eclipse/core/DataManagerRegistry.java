@@ -70,7 +70,7 @@ public class DataManagerRegistry implements IResourceChangeListener
                         if (project.isOpen()) {
                             try {
                                 if (hasXWikiEclipseNature(project)) {
-                                    sharedInstance.register(new DataManager(project));
+                                    sharedInstance.register(DataManagerFactory.createDataManager(project));
                                 }
                             } catch (CoreException e) {
                                 CoreLog.logError(String
@@ -134,7 +134,7 @@ public class DataManagerRegistry implements IResourceChangeListener
                             if (project.isOpen()) {
                                 if (hasXWikiEclipseNature(project)) {
                                     if (dataManager == null) {
-                                        register(new DataManager(project));
+                                        register(DataManagerFactory.createDataManager(project));
                                     }
                                 }
                             } else {

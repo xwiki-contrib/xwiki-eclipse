@@ -21,6 +21,7 @@ package org.xwiki.eclipse.core;
 
 import org.xwiki.eclipse.storage.AbstractXWikiClient;
 import org.xwiki.eclipse.storage.BackendType;
+import org.xwiki.eclipse.storage.XWikiEclipseStorageException;
 import org.xwiki.eclipse.xmlrpc.storage.XWikiXmlrpcClient;
 
 /**
@@ -45,8 +46,13 @@ public class  XWikiClient
         }        
     }
     
-    public void login(String username, String password) {
-        this.client.login(username, password);
+    public void login(String username, String password) throws XWikiEclipseException {        
+        try {
+            this.client.login(username, password);
+        } catch (XWikiEclipseStorageException e) {
+            e.printStackTrace();
+            throw new XWikiEclipseException(e);
+        }
     }
     
     public boolean logout() {

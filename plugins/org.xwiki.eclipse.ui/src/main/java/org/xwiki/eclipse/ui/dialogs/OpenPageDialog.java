@@ -218,7 +218,7 @@ public class OpenPageDialog extends FilteredItemsSelectionDialog
         progressMonitor.beginTask("Searching...", targetDataManagers.size());
 
         for (AbstractDataManager dataManager : targetDataManagers) {
-            final AbstractDataManager currentDataManager = (AbstractDataManager) dataManager;
+            final AbstractDataManager currentDataManager = dataManager;
 
             /* If we don't already have summaries, then fetch them from the data manager */
             if (dataManagerToPageSummariesMap.get(currentDataManager) == null) {

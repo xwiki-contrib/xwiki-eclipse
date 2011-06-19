@@ -31,7 +31,7 @@ public abstract class  AbstractXWikiClient
         this.serverUrl = serverUrl;
     }
     
-    public abstract void login(String username, String password);
+    public abstract void login(String username, String password) throws XWikiEclipseStorageException;
     public abstract boolean logout();
     
     public String getServerUrl()

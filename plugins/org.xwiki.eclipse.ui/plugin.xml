@@ -88,41 +88,41 @@
           </test>
        </adapt>
        <instanceof
-             value="org.xwiki.eclipse.core.model.XWikiEclipseSpaceSummary">
+             value="org.xwiki.eclipse.model.XWikiEclipseSpaceSummary">
        </instanceof>
        <instanceof
-             value="org.xwiki.eclipse.core.model.XWikiEclipsePageSummary">
+             value="org.xwiki.eclipse.model.XWikiEclipsePageSummary">
        </instanceof>
        <instanceof
-             value="org.xwiki.eclipse.core.model.XWikiEclipseObjectSummary">
+             value="org.xwiki.eclipse.model.XWikiEclipseObjectSummary">
        </instanceof>
     </or>
 			</triggerPoints>
 			<possibleChildren>
 				<or>
-					<instanceof value="org.xwiki.eclipse.core.DataManager">
+					<instanceof value="org.xwiki.eclipse.storage.AbstractDataManager">
                </instanceof>
-					<instanceof value="org.xwiki.eclipse.core.model.XWikiEclipseSpaceSummary">
+					<instanceof value="org.xwiki.eclipse.model.XWikiEclipseSpaceSummary">
                </instanceof>
-					<instanceof value="org.xwiki.eclipse.core.model.XWikiEclipsePageSummary">
+					<instanceof value="org.xwiki.eclipse.model.XWikiEclipsePageSummary">
                </instanceof>
-					<instanceof value="org.xwiki.eclipse.core.model.XWikiEclipseObjectSummary">
+					<instanceof value="org.xwiki.eclipse.model.XWikiEclipseObjectSummary">
                </instanceof>
 				</or>
 			</possibleChildren>
 		</navigatorContent>
 		<actionProvider class="org.xwiki.eclipse.ui.actions.DataManagerActionProvider" id="org.xwiki.eclipse.ui.actions.DataManagerActionProvider">
 			<enablement>
-				<instanceof value="org.xwiki.eclipse.core.DataManager">
+				<instanceof value="org.xwiki.eclipse.storage.AbstractDataManager">
                </instanceof>
 			</enablement>
 		</actionProvider>
 		<actionProvider class="org.xwiki.eclipse.ui.actions.PropertyActionProvider" id="org.xwiki.eclipse.ui.actions.PropertyActionProvider">
 			<enablement>
 				<or>
-					<instanceof value="org.xwiki.eclipse.core.model.ModelObject">
+					<instanceof value="org.xwiki.eclipse.model.ModelObject">
                </instanceof>
-					<instanceof value="org.xwiki.eclipse.core.DataManager">
+					<instanceof value="org.xwiki.eclipse.storage.AbstractDataManager">
                </instanceof>
 				</or>
 			</enablement>
@@ -132,13 +132,13 @@
         id="org.xwiki.eclipse.ui.actions.XWikiEclipseSpaceSummaryActionProvider">
      <enablement>
         <instanceof
-              value="org.xwiki.eclipse.core.model.XWikiEclipseSpaceSummary">
+              value="org.xwiki.eclipse.model.XWikiEclipseSpaceSummary">
         </instanceof>
      </enablement>
   </actionProvider>
 		<actionProvider class="org.xwiki.eclipse.ui.actions.XWikiEclipsePageSummaryActionProvider" id="org.xwiki.eclipse.ui.actions.XWikiEclipsePageSummaryActionProvider">
 			<enablement>
-				<instanceof value="org.xwiki.eclipse.core.model.XWikiEclipsePageSummary">
+				<instanceof value="org.xwiki.eclipse.model.XWikiEclipsePageSummary">
                </instanceof>
 			</enablement>
 		</actionProvider>
@@ -147,7 +147,7 @@
         id="org.xwiki.eclipse.ui.actions.XWikiEclipseObjectSummaryActionProvider">
      <enablement>
         <instanceof
-              value="org.xwiki.eclipse.core.model.XWikiEclipseObjectSummary">
+              value="org.xwiki.eclipse.model.XWikiEclipseObjectSummary">
         </instanceof>
      </enablement>
   </actionProvider>
@@ -157,16 +157,16 @@
      <enablement>
         <or>
            <instanceof
-                 value="org.xwiki.eclipse.core.DataManager">
+                 value="org.xwiki.eclipse.storage.AbstractDataManager">
            </instanceof>
            <instanceof
-                 value="org.xwiki.eclipse.core.model.XWikiEclipsePageSummary">
+                 value="org.xwiki.eclipse.model.XWikiEclipsePageSummary">
            </instanceof>
            <instanceof
-                 value="org.xwiki.eclipse.core.model.XWikiEclipseObjectSummary">
+                 value="org.xwiki.eclipse.model.XWikiEclipseObjectSummary">
            </instanceof>
            <instanceof
-                 value="org.xwiki.eclipse.core.model.XWikiEclipseSpaceSummary">
+                 value="org.xwiki.eclipse.model.XWikiEclipseSpaceSummary">
            </instanceof>
         </or>
      </enablement>
@@ -177,13 +177,13 @@
      <enablement>
         <or>
            <instanceof
-                 value="org.xwiki.eclipse.core.DataManager">
+                 value="org.xwiki.eclipse.storage.AbstractDataManager">
            </instanceof>
            <instanceof
-                 value="org.xwiki.eclipse.core.model.XWikiEclipseSpaceSummary">
+                 value="org.xwiki.eclipse.model.XWikiEclipseSpaceSummary">
            </instanceof>
            <instanceof
-                 value="org.xwiki.eclipse.core.model.XWikiEclipsePageSummary">
+                 value="org.xwiki.eclipse.model.XWikiEclipsePageSummary">
            </instanceof>
         </or>
      </enablement>
@@ -202,7 +202,7 @@
   </commonFilter>
 	</extension>
 	<extension point="org.eclipse.core.runtime.adapters">
-		<factory adaptableType="org.xwiki.eclipse.core.DataManager" class="org.xwiki.eclipse.ui.adapters.AdapterFactory">
+		<factory adaptableType="org.xwiki.eclipse.storage.AbstractDataManager" class="org.xwiki.eclipse.ui.adapters.AdapterFactory">
 			<adapter type="org.eclipse.ui.model.IWorkbenchAdapter">
          </adapter>
 			<adapter type="org.eclipse.ui.model.IWorkbenchAdapter2">
@@ -211,14 +211,14 @@
          type="org.eclipse.ui.progress.IDeferredWorkbenchAdapter">
    </adapter>
 		</factory>
-		<factory adaptableType="org.xwiki.eclipse.core.model.XWikiEclipseSpaceSummary" class="org.xwiki.eclipse.ui.adapters.AdapterFactory">
+		<factory adaptableType="org.xwiki.eclipse.model.XWikiEclipseSpaceSummary" class="org.xwiki.eclipse.ui.adapters.AdapterFactory">
 			<adapter type="org.eclipse.ui.model.IWorkbenchAdapter">
          </adapter>
    <adapter
          type="org.eclipse.ui.progress.IDeferredWorkbenchAdapter">
    </adapter>
 		</factory>
-		<factory adaptableType="org.xwiki.eclipse.core.model.XWikiEclipsePageSummary" class="org.xwiki.eclipse.ui.adapters.AdapterFactory">
+		<factory adaptableType="org.xwiki.eclipse.model.XWikiEclipsePageSummary" class="org.xwiki.eclipse.ui.adapters.AdapterFactory">
 			<adapter type="org.eclipse.ui.model.IWorkbenchAdapter">
          </adapter>
    <adapter
@@ -226,7 +226,7 @@
    </adapter>
 		</factory>
   <factory
-        adaptableType="org.xwiki.eclipse.core.model.XWikiEclipseObjectSummary"
+        adaptableType="org.xwiki.eclipse.model.XWikiEclipseObjectSummary"
         class="org.xwiki.eclipse.ui.adapters.AdapterFactory">
      <adapter
            type="org.eclipse.ui.model.IWorkbenchAdapter">
@@ -258,11 +258,11 @@
       </wizard>
 	</extension>
 	<extension point="org.eclipse.ui.propertyPages">
-		<page class="org.xwiki.eclipse.ui.properties.DataManagerPropertiesPage" icon="icons/xwiki.png" id="org.xwiki.eclipse.ui.properties.DataManager" name="Data Manager" objectClass="org.xwiki.eclipse.core.DataManager">
+		<page class="org.xwiki.eclipse.ui.properties.DataManagerPropertiesPage" icon="icons/xwiki.png" id="org.xwiki.eclipse.ui.properties.DataManager" name="Data Manager" objectClass="org.xwiki.eclipse.storage.AbstractDataManager">
       </page>
-		<page class="org.xwiki.eclipse.ui.properties.XWikiEclipseSpaceSummaryPropertiesPage" icon="icons/xwiki.png" id="org.xwiki.eclipse.ui.properties.XWikiEclipseSpaceSummary" name="Space" objectClass="org.xwiki.eclipse.core.model.XWikiEclipseSpaceSummary">
+		<page class="org.xwiki.eclipse.ui.properties.XWikiEclipseSpaceSummaryPropertiesPage" icon="icons/xwiki.png" id="org.xwiki.eclipse.ui.properties.XWikiEclipseSpaceSummary" name="Space" objectClass="org.xwiki.eclipse.model.XWikiEclipseSpaceSummary">
       </page>
-		<page class="org.xwiki.eclipse.ui.properties.XWikiEclipsePageSummaryPropertiesPage" icon="icons/xwiki.png" id="org.xwiki.eclipse.ui.properties.XWikiEclipsePageSummary" name="Page" objectClass="org.xwiki.eclipse.core.model.XWikiEclipsePageSummary">
+		<page class="org.xwiki.eclipse.ui.properties.XWikiEclipsePageSummaryPropertiesPage" icon="icons/xwiki.png" id="org.xwiki.eclipse.ui.properties.XWikiEclipsePageSummary" name="Page" objectClass="org.xwiki.eclipse.model.XWikiEclipsePageSummary">
       </page>
 	</extension>
 	<extension point="org.eclipse.ui.commands">
@@ -320,7 +320,7 @@
 		<handler class="org.xwiki.eclipse.ui.handlers.DataManagerConnectHandler" commandId="org.xwiki.eclipse.ui.commands.DataManagerConnect">
 			<activeWhen>
 				<iterate operator="and">
-					<test forcePluginActivation="true" property="org.xwiki.eclipse.core.DataManager.isConnected" value="false">
+					<test forcePluginActivation="true" property="org.xwiki.eclipse.storage.AbstractDataManager.isConnected" value="false">
                </test>
 				</iterate>
 			</activeWhen>
@@ -328,7 +328,7 @@
 		<handler class="org.xwiki.eclipse.ui.handlers.DataManagerDisconnectHandler" commandId="org.xwiki.eclipse.ui.commands.DataManagerDisconnect">
 			<activeWhen>
 				<iterate operator="and">
-					<test forcePluginActivation="true" property="org.xwiki.eclipse.core.DataManager.isConnected" value="true">
+					<test forcePluginActivation="true" property="org.xwiki.eclipse.storage.AbstractDataManager.isConnected" value="true">
                </test>
 				</iterate>
 			</activeWhen>
@@ -341,10 +341,10 @@
               operator="and">
            <or>
               <instanceof
-                    value="org.xwiki.eclipse.core.DataManager">
+                    value="org.xwiki.eclipse.storage.AbstractDataManager">
               </instanceof>
               <instanceof
-                    value="org.xwiki.eclipse.core.model.XWikiEclipseSpaceSummary">
+                    value="org.xwiki.eclipse.model.XWikiEclipseSpaceSummary">
               </instanceof>
            </or>
         </iterate>
@@ -357,7 +357,7 @@
         <iterate
               operator="and">
            <instanceof
-                 value="org.xwiki.eclipse.core.model.XWikiEclipsePageSummary">
+                 value="org.xwiki.eclipse.model.XWikiEclipsePageSummary">
            </instanceof>
         </iterate>
      </activeWhen>
@@ -377,7 +377,7 @@
         <iterate
               operator="and">
            <instanceof
-                 value="org.xwiki.eclipse.core.model.XWikiEclipsePageSummary">
+                 value="org.xwiki.eclipse.model.XWikiEclipsePageSummary">
            </instanceof>
         </iterate>
      </activeWhen>
@@ -394,7 +394,7 @@
               operator="and">
            <or>
               <instanceof
-                    value="org.xwiki.eclipse.core.model.XWikiEclipseSpaceSummary">
+                    value="org.xwiki.eclipse.model.XWikiEclipseSpaceSummary">
               </instanceof>
            </or>
         </iterate>

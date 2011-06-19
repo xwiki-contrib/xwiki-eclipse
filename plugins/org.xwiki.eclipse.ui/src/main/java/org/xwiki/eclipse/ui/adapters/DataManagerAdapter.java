@@ -48,7 +48,7 @@ public class DataManagerAdapter extends WorkbenchAdapter implements IDeferredWor
 {
     @Override
     public Object[] getChildren(Object object)
-    {
+    {     
         if (object instanceof AbstractDataManager) {
             final AbstractDataManager dataManager = (AbstractDataManager) object;
 

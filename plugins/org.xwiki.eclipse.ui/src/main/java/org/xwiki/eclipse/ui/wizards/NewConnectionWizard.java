@@ -119,7 +119,6 @@ public class NewConnectionWizard extends Wizard implements INewWizard, IExecutab
                         client.logout();
 
                     } catch (Exception e) {
-                        e.printStackTrace();
                         throw new InvocationTargetException(e, e.getMessage());
                     } finally {
                         monitor.done();

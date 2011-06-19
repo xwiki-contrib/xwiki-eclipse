@@ -12,5 +12,6 @@
 	<classpathentry exported="true" kind="lib" path="xmlrpc-common-3.1.jar" sourcepath="org.xwiki.eclipse.xmlrpcsrc.zip"/>
 	<classpathentry exported="true" kind="lib" path="xwiki-core-xmlrpc-client-1.4.jar"/>
 	<classpathentry exported="true" kind="lib" path="xwiki-core-xmlrpc-model-1.4.jar"/>
+	<classpathentry exported="true" kind="lib" path="library.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
