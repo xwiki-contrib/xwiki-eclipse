@@ -27,6 +27,7 @@ import org.eclipse.ui.progress.IDeferredWorkbenchAdapter;
 import org.xwiki.eclipse.model.XWikiEclipseObjectSummary;
 import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
 import org.xwiki.eclipse.model.XWikiEclipseSpaceSummary;
+import org.xwiki.eclipse.model.XWikiEclipseWikiSummary;
 import org.xwiki.eclipse.storage.AbstractDataManager;
 
 /**
@@ -45,6 +46,8 @@ public class AdapterFactory implements IAdapterFactory
     private XWikiEclipsePageSummaryAdapter xwikiEclipsePageSummaryAdapter = new XWikiEclipsePageSummaryAdapter();
 
     private XWikiEclipseObjectSummaryAdapter xwikiEclipseObjectSummaryAdapter = new XWikiEclipseObjectSummaryAdapter();
+    
+    private XWikiEclipseWikiSummaryAdapter xwikiEclipseWikiSummaryAdapter = new XWikiEclipseWikiSummaryAdapter();
 
     public Object getAdapter(Object adaptableObject, Class adapterType)
     {
@@ -63,6 +66,18 @@ public class AdapterFactory implements IAdapterFactory
             return xwikiEclipseDataManagerAdapter;
         }
 
+        /*
+         * Adapters for XWikiEclipseWikiSummary
+         */
+        if ((adaptableObject instanceof XWikiEclipseWikiSummary) && adapterType.equals(IWorkbenchAdapter.class)) {
+            return xwikiEclipseWikiSummaryAdapter;
+        }
+
+        if ((adaptableObject instanceof XWikiEclipseWikiSummary)
+            && adapterType.equals(IDeferredWorkbenchAdapter.class)) {
+            return xwikiEclipseWikiSummaryAdapter;
+        }
+        
         /*
          * Adapters for XWikiEclipseSpaceSummary
          */

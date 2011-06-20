@@ -17,25 +17,40 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.xwiki.eclipse.storage;
+package org.xwiki.eclipse.model;
+
+import org.xwiki.eclipse.storage.AbstractDataManager;
 
 /**
  * 
  * @version $Id$
  */
-public abstract class  AbstractXWikiClient
+public abstract class XWikiEclipseWikiSummary extends ModelObject
 {
-    private String serverUrl;
-    
-    public AbstractXWikiClient(String serverUrl) {
-        this.serverUrl = serverUrl;
-    }
-    
-    public abstract boolean login(String username, String password);
-    public abstract boolean logout();
-    
-    public String getServerUrl()
+
+    /**
+     * @param dataManager
+     */
+    public XWikiEclipseWikiSummary(AbstractDataManager dataManager)
     {
-        return serverUrl;
+        super(dataManager);
     }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.xwiki.eclipse.model.ModelObject#getXWikiEclipseId()
+     */
+    @Override
+    public String getXWikiEclipseId()
+    {
+        return String.format(
+            "xwikieclipse://%s/rest/wikis/%s", getDataManager().getName(), getWikiId()); //$NON-NLS-1$;
+    }
+
+    public abstract String getWikiId();
+    
+    public abstract String getName();
+    
+    public abstract String getUrl();
 }

@@ -88,8 +88,11 @@
           </test>
        </adapt>
        <instanceof
-             value="org.xwiki.eclipse.model.XWikiEclipseSpaceSummary">
+             value="org.xwiki.eclipse.model.XWikiEclipseWikiSummary">
        </instanceof>
+       <instanceof
+             value="org.xwiki.eclipse.model.XWikiEclipseSpaceSummary">
+       </instanceof>       
        <instanceof
              value="org.xwiki.eclipse.model.XWikiEclipsePageSummary">
        </instanceof>
@@ -102,6 +105,8 @@
 				<or>
 					<instanceof value="org.xwiki.eclipse.storage.AbstractDataManager">
                </instanceof>
+					<instanceof value="org.xwiki.eclipse.model.XWikiEclipseWikiSummary">
+               </instanceof>               
 					<instanceof value="org.xwiki.eclipse.model.XWikiEclipseSpaceSummary">
                </instanceof>
 					<instanceof value="org.xwiki.eclipse.model.XWikiEclipsePageSummary">
@@ -179,6 +184,9 @@
            <instanceof
                  value="org.xwiki.eclipse.storage.AbstractDataManager">
            </instanceof>
+		   <instanceof
+                 value="org.xwiki.eclipse.model.XWikiEclipseWikiSummary">
+           </instanceof>           
            <instanceof
                  value="org.xwiki.eclipse.model.XWikiEclipseSpaceSummary">
            </instanceof>
@@ -206,6 +214,13 @@
 			<adapter type="org.eclipse.ui.model.IWorkbenchAdapter">
          </adapter>
 			<adapter type="org.eclipse.ui.model.IWorkbenchAdapter2">
+         </adapter>
+   <adapter
+         type="org.eclipse.ui.progress.IDeferredWorkbenchAdapter">
+   </adapter>
+		</factory>
+		<factory adaptableType="org.xwiki.eclipse.model.XWikiEclipseWikiSummary" class="org.xwiki.eclipse.ui.adapters.AdapterFactory">
+			<adapter type="org.eclipse.ui.model.IWorkbenchAdapter">
          </adapter>
    <adapter
          type="org.eclipse.ui.progress.IDeferredWorkbenchAdapter">

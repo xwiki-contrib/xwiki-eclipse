@@ -31,6 +31,7 @@ import org.codehaus.swizzle.confluence.SpaceSummary;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
+import org.xwiki.eclipse.model.ModelObject;
 import org.xwiki.eclipse.model.XWikiEclipseClass;
 import org.xwiki.eclipse.model.XWikiEclipseClassSummary;
 import org.xwiki.eclipse.model.XWikiEclipseObject;
@@ -39,6 +40,7 @@ import org.xwiki.eclipse.model.XWikiEclipsePage;
 import org.xwiki.eclipse.model.XWikiEclipsePageHistorySummary;
 import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
 import org.xwiki.eclipse.model.XWikiEclipseSpaceSummary;
+import org.xwiki.eclipse.model.XWikiEclipseWikiSummary;
 import org.xwiki.eclipse.storage.AbstractDataManager;
 import org.xwiki.eclipse.storage.Functionality;
 import org.xwiki.eclipse.storage.XWikiEclipseStorageException;
@@ -893,5 +895,33 @@ public class DataManagerInXmlrpc extends AbstractDataManager
         }
 
         return localXWikiDataStorage.exists(pageId);
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.xwiki.eclipse.storage.AbstractDataManager#getRootResources()
+     */
+    @Override
+    public List<ModelObject> getRootResources() throws XWikiEclipseStorageException
+    {
+        List<XWikiEclipseSpaceSummary> spaces = getSpaces();
+        List<ModelObject> result = new ArrayList<ModelObject>();
+        for (XWikiEclipseSpaceSummary xWikiEclipseSpaceSummary : spaces) {
+            result.add(xWikiEclipseSpaceSummary);
+        }
+        return result;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.xwiki.eclipse.storage.AbstractDataManager#getWikis()
+     */
+    @Override
+    public List<XWikiEclipseWikiSummary> getWikis() throws XWikiEclipseStorageException
+    {
+        //return nothing
+        return null;
     }
 }

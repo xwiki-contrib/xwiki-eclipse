@@ -22,6 +22,7 @@ package org.xwiki.eclipse.core;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
+import org.xwiki.eclipse.rest.storage.DataManagerInRest;
 import org.xwiki.eclipse.storage.AbstractDataManager;
 import org.xwiki.eclipse.storage.BackendType;
 import org.xwiki.eclipse.xmlrpc.storage.DataManagerInXmlrpc;
@@ -38,16 +39,18 @@ import org.xwiki.eclipse.xmlrpc.storage.DataManagerInXmlrpc;
 public class DataManagerFactory
 {
 	public static AbstractDataManager createDataManager(IProject project) throws CoreException {
-		try {
+		try {		    
 			String backend = project.getPersistentProperty(AbstractDataManager.BACKEND);
 			BackendType backendType = BackendType.valueOf(backend);
+
+			AbstractDataManager dataManager = null;
 			switch (backendType) {
 			case xmlrpc:
-			    AbstractDataManager dataManager = new DataManagerInXmlrpc(project);
+			    dataManager = new DataManagerInXmlrpc(project);
 			    return dataManager;
 			case rest:
-			    throw new UnsupportedOperationException();
-			    //break;
+			    dataManager = new DataManagerInRest(project);
+			    return dataManager;
 			default:
 				break;
 			}

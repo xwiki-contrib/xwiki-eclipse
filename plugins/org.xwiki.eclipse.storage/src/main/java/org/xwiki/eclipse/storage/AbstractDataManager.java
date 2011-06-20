@@ -30,6 +30,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.QualifiedName;
+import org.xwiki.eclipse.model.ModelObject;
 import org.xwiki.eclipse.model.XWikiEclipseClass;
 import org.xwiki.eclipse.model.XWikiEclipseClassSummary;
 import org.xwiki.eclipse.model.XWikiEclipseObject;
@@ -38,6 +39,7 @@ import org.xwiki.eclipse.model.XWikiEclipsePage;
 import org.xwiki.eclipse.model.XWikiEclipsePageHistorySummary;
 import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
 import org.xwiki.eclipse.model.XWikiEclipseSpaceSummary;
+import org.xwiki.eclipse.model.XWikiEclipseWikiSummary;
 import org.xwiki.eclipse.storage.utils.PersistentMap;
 
 /**
@@ -279,4 +281,13 @@ public abstract class AbstractDataManager
     public abstract List<XWikiEclipsePageSummary> getAllPageIds() throws XWikiEclipseStorageException;
 
     public abstract boolean exists(String pageId);
+
+    
+    /**
+     * @return different backend implementation may have different root resources, 
+     *         e.g., space summary for xmlrpc and wiki summary for rest 
+     */
+    public abstract List<ModelObject> getRootResources() throws XWikiEclipseStorageException;
+    
+    public abstract List<XWikiEclipseWikiSummary> getWikis() throws XWikiEclipseStorageException;
 }

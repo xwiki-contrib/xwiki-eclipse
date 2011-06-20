@@ -29,8 +29,6 @@ import org.xwiki.eclipse.storage.AbstractDataManager;
  */
 public abstract class XWikiEclipseSpaceSummary extends ModelObject
 {
-
-
     public XWikiEclipseSpaceSummary(AbstractDataManager dataManager) {
 		super(dataManager);
 	}

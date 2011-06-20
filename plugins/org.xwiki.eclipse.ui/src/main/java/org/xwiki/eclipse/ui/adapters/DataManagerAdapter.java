@@ -33,7 +33,7 @@ import org.eclipse.ui.model.WorkbenchAdapter;
 import org.eclipse.ui.progress.IDeferredWorkbenchAdapter;
 import org.eclipse.ui.progress.IElementCollector;
 import org.xwiki.eclipse.core.CoreLog;
-import org.xwiki.eclipse.model.XWikiEclipseSpaceSummary;
+import org.xwiki.eclipse.model.ModelObject;
 import org.xwiki.eclipse.storage.AbstractDataManager;
 import org.xwiki.eclipse.storage.XWikiEclipseStorageException;
 import org.xwiki.eclipse.ui.UIConstants;
@@ -53,7 +53,7 @@ public class DataManagerAdapter extends WorkbenchAdapter implements IDeferredWor
             final AbstractDataManager dataManager = (AbstractDataManager) object;
 
             try {
-                List<XWikiEclipseSpaceSummary> result = dataManager.getSpaces();
+                List<ModelObject> result = dataManager.getRootResources();
                 return result.toArray();
             } catch (XWikiEclipseStorageException e) {
                 UIUtils

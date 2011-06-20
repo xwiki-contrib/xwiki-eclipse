@@ -19,9 +19,9 @@
  */
 package org.xwiki.eclipse.core;
 
+import org.xwiki.eclipse.rest.storage.XWikiRESTClient;
 import org.xwiki.eclipse.storage.AbstractXWikiClient;
 import org.xwiki.eclipse.storage.BackendType;
-import org.xwiki.eclipse.storage.XWikiEclipseStorageException;
 import org.xwiki.eclipse.xmlrpc.storage.XWikiXmlrpcClient;
 
 /**
@@ -39,18 +39,20 @@ public class  XWikiClient
                 this.client = new XWikiXmlrpcClient(serverUrl);
                 break;
             case rest:
-                throw new UnsupportedOperationException();
-//                break;
+                this.client = new XWikiRESTClient(serverUrl);
+                break;
             default:
                 break;
         }        
     }
     
-    public void login(String username, String password) throws XWikiEclipseException {        
-        try {
-            this.client.login(username, password);
-        } catch (XWikiEclipseStorageException e) {
-            e.printStackTrace();
+    public boolean login(String username, String password) throws XWikiEclipseException {
+        boolean success = this.client.login(username, password);
+        
+        if (success) {
+            return true;
+        } else {
+            Exception e = new Exception("login fails");
             throw new XWikiEclipseException(e);
         }
     }
