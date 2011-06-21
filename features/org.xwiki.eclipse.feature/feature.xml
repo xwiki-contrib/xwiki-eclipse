@@ -48,26 +48,25 @@ if not, write to the Free Software Foundation, Inc.,
    </license>
 
    <requires>
-      <import plugin="org.xwiki.eclipse.xmlrpc" version="1.2.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.runtime" version="3.6.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.resources" version="3.6.1" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.expressions" version="3.4.200" match="greaterOrEqual"/>
+      <import plugin="org.xwiki.eclipse.xmlrpc" version="1.2.0" match="greaterOrEqual"/>
       <import plugin="org.xwiki.eclipse.storage" version="1.2.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui" version="3.6.2" match="greaterOrEqual"/>
-      <import plugin="org.xwiki.eclipse.core" version="1.2.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.ui.navigator" version="3.5.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.ui.editors" version="3.6.1" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.jface.text" version="3.6.1" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.ui.forms" version="3.5.2" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.compare" version="3.5.101" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.ui.views" version="3.5.1" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.ide" version="3.6.2" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.navigator" version="3.5.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.views" version="3.5.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.editors" version="3.6.1" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.navigator.resources" version="3.4.202" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.core.resources" version="3.7.100" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.forms" version="3.5.2" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.jface.text" version="3.6.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.compare" version="3.5.101" match="greaterOrEqual"/>
+      <import plugin="org.xwiki.eclipse.core" version="1.2.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.views.log" version="1.0.100" match="greaterOrEqual"/>
       <import plugin="org.xwiki.eclipse.ui" version="1.2.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.swt" version="3.0.0" match="compatible"/>
-      <import plugin="org.eclipse.core.runtime" version="3.7.0" match="greaterOrEqual"/>
+      <import plugin="org.xwiki.eclipse.rest" version="1.2.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin

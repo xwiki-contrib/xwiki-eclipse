@@ -15,8 +15,8 @@ Bundle-ClassPath: junit-3.8.1.jar,
  library.jar,
  .
 Bundle-Vendor: XWiki
-Require-Bundle: org.eclipse.core.runtime;bundle-version="3.7.0",
- org.eclipse.core.resources;bundle-version="3.7.100",
+Require-Bundle: org.eclipse.core.runtime;bundle-version="3.6.0",
+ org.eclipse.core.resources;bundle-version="3.6.1",
  org.xwiki.eclipse.storage;bundle-version="1.2.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: javax.xml.parsers,
