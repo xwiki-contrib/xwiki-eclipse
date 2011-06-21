@@ -115,10 +115,10 @@ public class ConnectionSettingsWizardPage extends WizardPage
                 String backend = backendCombo.getText().trim();
                 BackendType backendT = BackendType.valueOf(backend);
                 switch (backendT) {
-                    case xmlrpc:
+                    case XMLRPC:
                         serverUrlText.setText(StorageConstants.XMLRPC_API_ENTRYPOINT);
                         break;
-                    case rest:
+                    case REST:
                         serverUrlText.setText(StorageConstants.REST_API_ENTRYPOINT);                        
                         break;
                     default:
@@ -149,7 +149,7 @@ public class ConnectionSettingsWizardPage extends WizardPage
          * initial value of backendCombo
          * it is initialized here because it needs to populate the serverUrlText field as well
          */
-        backendCombo.setText(BackendType.xmlrpc.name());
+        backendCombo.setText(BackendType.XMLRPC.name());
 
         /* Username */
         label = new Label(group, SWT.NONE);

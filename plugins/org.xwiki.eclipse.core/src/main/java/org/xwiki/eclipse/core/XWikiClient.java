@@ -35,10 +35,10 @@ public class  XWikiClient
     public XWikiClient(String serverUrl, String backendType) {
         BackendType backend = BackendType.valueOf(backendType);
         switch (backend) {
-            case xmlrpc:
+            case XMLRPC:
                 this.client = new XWikiXmlrpcClient(serverUrl);
                 break;
-            case rest:
+            case REST:
                 this.client = new XWikiRESTClient(serverUrl);
                 break;
             default:

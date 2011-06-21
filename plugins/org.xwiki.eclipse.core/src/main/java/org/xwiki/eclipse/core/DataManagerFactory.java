@@ -45,10 +45,10 @@ public class DataManagerFactory
 
 			AbstractDataManager dataManager = null;
 			switch (backendType) {
-			case xmlrpc:
+			case XMLRPC:
 			    dataManager = new DataManagerInXmlrpc(project);
 			    return dataManager;
-			case rest:
+			case REST:
 			    dataManager = new DataManagerInRest(project);
 			    return dataManager;
 			default:
