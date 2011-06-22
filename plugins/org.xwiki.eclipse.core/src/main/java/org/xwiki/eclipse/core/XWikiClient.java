@@ -22,6 +22,8 @@ package org.xwiki.eclipse.core;
 import org.xwiki.eclipse.rest.storage.XWikiRESTClient;
 import org.xwiki.eclipse.storage.AbstractXWikiClient;
 import org.xwiki.eclipse.storage.BackendType;
+import org.xwiki.eclipse.storage.XWikiEclipseStorageException;
+import org.xwiki.eclipse.storage.utils.StorageUtils;
 import org.xwiki.eclipse.xmlrpc.storage.XWikiXmlrpcClient;
 
 /**
@@ -32,18 +34,24 @@ public class  XWikiClient
 {
     private AbstractXWikiClient client;
     
-    public XWikiClient(String serverUrl, String backendType) {
-        BackendType backend = BackendType.valueOf(backendType);
-        switch (backend) {
-            case XMLRPC:
-                this.client = new XWikiXmlrpcClient(serverUrl);
-                break;
-            case REST:
-                this.client = new XWikiRESTClient(serverUrl);
-                break;
-            default:
-                break;
-        }        
+    public XWikiClient(String serverUrl) {
+        
+        BackendType backend;
+        try {
+            backend = StorageUtils.getBackend(serverUrl);
+            switch (backend) {
+                case XMLRPC:
+                    this.client = new XWikiXmlrpcClient(serverUrl);
+                    break;
+                case REST:
+                    this.client = new XWikiRESTClient(serverUrl);
+                    break;
+                default:
+                    break;
+            }
+        } catch (XWikiEclipseStorageException e) {
+            e.printStackTrace();
+        }
     }
     
     public boolean login(String username, String password) throws XWikiEclipseException {

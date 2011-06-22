@@ -32,6 +32,8 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.xwiki.eclipse.storage.BackendType;
+import org.xwiki.eclipse.storage.XWikiEclipseStorageException;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
@@ -141,5 +143,24 @@ public class StorageUtils
         }
 
         return xstream;
+    }
+    
+    public static BackendType getBackend(String serverUrl) throws XWikiEclipseStorageException {
+        if (serverUrl == null || serverUrl.length() == 0) {
+            IllegalArgumentException e = new IllegalArgumentException("serverUrl cannot be null or empty");
+            throw new XWikiEclipseStorageException(e);
+        }
+        
+        BackendType result = null;
+        if (serverUrl.contains("xmlrpc/confluence")) {
+            result = BackendType.XMLRPC;
+        } else if (serverUrl.contains("/rest")) {
+            result = BackendType.REST;
+        } else {
+            IllegalArgumentException e = new IllegalArgumentException("serverUrl does not contain valid entry point");
+            throw new XWikiEclipseStorageException(e);
+        }
+        
+        return result;
     }
 }

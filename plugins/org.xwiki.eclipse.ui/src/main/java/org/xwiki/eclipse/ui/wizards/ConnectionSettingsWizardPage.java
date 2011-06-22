@@ -32,13 +32,14 @@ import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.xwiki.eclipse.storage.BackendType;
 import org.xwiki.eclipse.storage.StorageConstants;
+import org.xwiki.eclipse.storage.XWikiEclipseStorageException;
+import org.xwiki.eclipse.storage.utils.StorageUtils;
 import org.xwiki.eclipse.ui.UIConstants;
 import org.xwiki.eclipse.ui.UIPlugin;
 
@@ -52,8 +53,6 @@ public class ConnectionSettingsWizardPage extends WizardPage
 
     private Text connectionNameText;
 
-    private Combo backendCombo;
-    
     private Text serverUrlText;
 
     private Text userNameText;
@@ -93,42 +92,7 @@ public class ConnectionSettingsWizardPage extends WizardPage
         Group group = new Group(composite, SWT.NONE);
         GridLayoutFactory.fillDefaults().numColumns(2).margins(5, 5).applyTo(group);
         GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, false).span(2, 1).applyTo(group);
-        group.setText("Connection settings");        
-
-        /* Combo List */
-        label = new Label(group, SWT.NONE);
-        label.setText("Backend type:");
-        
-        backendCombo = new Combo(group, SWT.VERTICAL | SWT.DROP_DOWN | SWT.BORDER | SWT.READ_ONLY);
-        BackendType[] backendTypes = BackendType.values();
-        for (int i = 0; i < backendTypes.length; i++) {
-            backendCombo.add(backendTypes[i].toString());
-        }   
-        
-        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, false).applyTo(backendCombo);
-        backendCombo.addModifyListener(new ModifyListener()
-        {
-            
-            @Override
-            public void modifyText(ModifyEvent e)
-            {
-                String backend = backendCombo.getText().trim();
-                BackendType backendT = BackendType.valueOf(backend);
-                switch (backendT) {
-                    case XMLRPC:
-                        serverUrlText.setText(StorageConstants.XMLRPC_API_ENTRYPOINT);
-                        break;
-                    case REST:
-                        serverUrlText.setText(StorageConstants.REST_API_ENTRYPOINT);                        
-                        break;
-                    default:
-                        break;
-                }
-                newConnectionWizardState.setBackend(backend);                
-                getContainer().updateButtons();
-                
-            }
-        });        
+        group.setText("Connection settings");     
         
         /* Server URL */
         label = new Label(group, SWT.NONE);
@@ -140,16 +104,12 @@ public class ConnectionSettingsWizardPage extends WizardPage
         {
             public void modifyText(ModifyEvent e)
             {
-                newConnectionWizardState.setServerUrl(serverUrlText.getText().trim());
+                newConnectionWizardState.setServerUrl(serverUrlText.getText().trim());                
                 getContainer().updateButtons();
             }
         });
-        
-        /*
-         * initial value of backendCombo
-         * it is initialized here because it needs to populate the serverUrlText field as well
-         */
-        backendCombo.setText(BackendType.XMLRPC.name());
+        /* REST endpoint is the default value */
+        serverUrlText.setText(StorageConstants.REST_API_ENTRYPOINT);
 
         /* Username */
         label = new Label(group, SWT.NONE);
@@ -201,11 +161,6 @@ public class ConnectionSettingsWizardPage extends WizardPage
                 .format("Connection '%s' already exists. Please choose another name.", connectionName));
             return false;
         }
-
-        if (backendCombo.getText() == null || backendCombo.getText().trim().length() == 0) {
-            setErrorMessage("Backend type must be specified.");
-            return false;
-        }
         
         if (serverUrlText.getText() == null || serverUrlText.getText().trim().length() == 0) {
             setErrorMessage("A server URL must be specified.");
@@ -220,6 +175,14 @@ public class ConnectionSettingsWizardPage extends WizardPage
             return false;
         }
 
+        String serverUrl = serverUrlText.getText().trim();
+        try {
+            BackendType backend = StorageUtils.getBackend(serverUrl);
+        } catch (XWikiEclipseStorageException e1) {
+            setErrorMessage("wrong end point URL, end serverUrlText with /rest or /xmlrpc/confluence");
+            return false;
+        }
+        
         if (userNameText.getText() == null || userNameText.getText().trim().length() == 0) {
             setErrorMessage("User name must be specified.");
             return false;

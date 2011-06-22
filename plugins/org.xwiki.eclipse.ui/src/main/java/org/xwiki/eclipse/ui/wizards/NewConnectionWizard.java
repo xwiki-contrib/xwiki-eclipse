@@ -42,6 +42,7 @@ import org.eclipse.ui.wizards.newresource.BasicNewProjectResourceWizard;
 import org.xwiki.eclipse.core.XWikiClient;
 import org.xwiki.eclipse.core.XWikiEclipseNature;
 import org.xwiki.eclipse.storage.AbstractDataManager;
+import org.xwiki.eclipse.storage.utils.StorageUtils;
 import org.xwiki.eclipse.ui.perspectives.XWikiPerspectiveFactory;
 
 /**
@@ -94,7 +95,7 @@ public class NewConnectionWizard extends Wizard implements INewWizard, IExecutab
 
         if (newConnectionWizardState.getPassword() == null || newConnectionWizardState.getPassword().length() == 0) {
             return false;
-        }
+        }                
 
         return super.canFinish();
     }
@@ -113,8 +114,7 @@ public class NewConnectionWizard extends Wizard implements INewWizard, IExecutab
                         monitor.beginTask("Setting up connection", IProgressMonitor.UNKNOWN);
 
                         /* Try to login with the specified username + password */
-                        XWikiClient client = new XWikiClient(newConnectionWizardState.getServerUrl(), 
-                            newConnectionWizardState.getBackend());
+                        XWikiClient client = new XWikiClient(newConnectionWizardState.getServerUrl());
                         client.login(newConnectionWizardState.getUserName(), newConnectionWizardState.getPassword());
                         client.logout();
 
@@ -147,7 +147,7 @@ public class NewConnectionWizard extends Wizard implements INewWizard, IExecutab
                         project.create(null);
                         project.open(null);
 
-                        project.setPersistentProperty(AbstractDataManager.BACKEND, newConnectionWizardState.getBackend());
+                        project.setPersistentProperty(AbstractDataManager.BACKEND, StorageUtils.getBackend(newConnectionWizardState.getServerUrl()).toString());
                         project.setPersistentProperty(AbstractDataManager.ENDPOINT, newConnectionWizardState.getServerUrl());
                         project.setPersistentProperty(AbstractDataManager.USERNAME, newConnectionWizardState.getUserName());
                         project.setPersistentProperty(AbstractDataManager.PASSWORD, newConnectionWizardState.getPassword());
@@ -158,7 +158,7 @@ public class NewConnectionWizard extends Wizard implements INewWizard, IExecutab
                         project.setDescription(description, null);
 
                         ResourcesPlugin.getWorkspace().save(true, new NullProgressMonitor());
-                    } catch (CoreException e) {
+                    } catch (Exception e) {
                         throw new InvocationTargetException(e, e.getMessage());
                     }
                 }

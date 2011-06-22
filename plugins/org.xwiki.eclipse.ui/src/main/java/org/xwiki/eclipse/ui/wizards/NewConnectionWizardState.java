@@ -34,8 +34,6 @@ public class NewConnectionWizardState
 
     private String password;
     
-    private String backend;
-
     public String getServerUrl()
     {
         return serverUrl;
@@ -75,12 +73,4 @@ public class NewConnectionWizardState
     {
         this.connectionName = connectionName;
     }
-    
-    public String getBackend() {
-		return backend;
-	}
-
-	public void setBackend(String backend) {
-		this.backend = backend;
-	}
 }
