@@ -27,21 +27,55 @@ import org.xwiki.eclipse.storage.AbstractDataManager;
  * 
  * @version $Id$
  */
-public abstract class XWikiEclipseSpaceSummary extends ModelObject
+public class XWikiEclipseSpaceSummary extends ModelObject
 {
-    public XWikiEclipseSpaceSummary(AbstractDataManager dataManager) {
-		super(dataManager);
-	}
+    private String key;
 
-    public abstract String getKey();
-    
-	@Override
+    private String name;
+
+    private String url;
+
+    public XWikiEclipseSpaceSummary(AbstractDataManager dataManager, String key, String name, String url)
+    {
+        super(dataManager);
+        this.key = key;
+        this.name = name;
+        this.url = url;
+    }
+
+    @Override
     public String getXWikiEclipseId()
     {
         return String.format("xwikieclipse://%s/%s", getDataManager().getName(), getKey()); //$NON-NLS-1$
     }
 
-    public abstract String getName();
+    public String getKey()
+    {
+        return key;
+    }
 
-    public abstract String getUrl();
+    public void setKey(String key)
+    {
+        this.key = key;
+    }
+
+    public String getName()
+    {
+        return name;
+    }
+
+    public void setName(String name)
+    {
+        this.name = name;
+    }
+
+    public String getUrl()
+    {
+        return url;
+    }
+
+    public void setUrl(String url)
+    {
+        this.url = url;
+    }
 }

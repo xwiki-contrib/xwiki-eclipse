@@ -136,7 +136,9 @@ public class XWikiEclipsePageInXmlrpc extends XWikiEclipsePage
         spaceSummary.setKey(spaceKey);
         spaceSummary.setName(spaceKey);
 
-        XWikiEclipseSpaceSummary space = new XWikiEclipseSpaceSummaryInXmlrpc(getDataManager(), spaceSummary);
+        XWikiEclipseSpaceSummary space =
+            new XWikiEclipseSpaceSummary(getDataManager(), spaceSummary.getKey(), spaceSummary.getName(),
+                spaceSummary.getUrl());
         return space;
     }
 
@@ -149,7 +151,7 @@ public class XWikiEclipsePageInXmlrpc extends XWikiEclipsePage
     public String getName()
     {
         String name = null;
-        
+
         /* If the page id does not have a '.' then we are dealing with confluence ids */
         if (getId().indexOf(".") != -1) {
             XWikiExtendedId extendedId = new XWikiExtendedId(getId());
@@ -167,7 +169,7 @@ public class XWikiEclipsePageInXmlrpc extends XWikiEclipsePage
             /* This is a confuence page */
             name = getTitle();
         }
-        
+
         return name;
     }
 
@@ -179,7 +181,7 @@ public class XWikiEclipsePageInXmlrpc extends XWikiEclipsePage
     @Override
     public void setContent(String content)
     {
-        data.setContent(content);        
+        data.setContent(content);
     }
 
     /**
@@ -200,7 +202,7 @@ public class XWikiEclipsePageInXmlrpc extends XWikiEclipsePage
      */
     @Override
     public int getMinorVersion()
-    {        
+    {
         return data.getMinorVersion();
     }
 }

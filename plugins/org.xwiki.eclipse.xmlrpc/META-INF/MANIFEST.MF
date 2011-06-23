@@ -11,7 +11,8 @@ Bundle-ClassPath: junit-3.8.1.jar,
  xmlrpc-client-3.1.jar,
  xmlrpc-common-3.1.jar,
  xwiki-core-xmlrpc-client-1.4.jar,
- xwiki-core-xmlrpc-model-1.4.jar
+ xwiki-core-xmlrpc-model-1.4.jar,
+ .
 Bundle-Vendor: XWiki
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.6.0",
  org.eclipse.core.resources;bundle-version="3.6.1",
@@ -56,3 +57,4 @@ Export-Package: javax.xml.parsers,
  org.xwiki.eclipse.xmlrpc.storage,
  org.xwiki.xmlrpc,
  org.xwiki.xmlrpc.model
+Bundle-ActivationPolicy: lazy

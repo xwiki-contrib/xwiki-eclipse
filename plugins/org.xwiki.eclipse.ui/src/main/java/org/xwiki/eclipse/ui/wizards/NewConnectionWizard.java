@@ -46,7 +46,6 @@ import org.xwiki.eclipse.storage.utils.StorageUtils;
 import org.xwiki.eclipse.ui.perspectives.XWikiPerspectiveFactory;
 
 /**
- * 
  * @version $Id$
  */
 public class NewConnectionWizard extends Wizard implements INewWizard, IExecutableExtension
@@ -95,7 +94,7 @@ public class NewConnectionWizard extends Wizard implements INewWizard, IExecutab
 
         if (newConnectionWizardState.getPassword() == null || newConnectionWizardState.getPassword().length() == 0) {
             return false;
-        }                
+        }
 
         return super.canFinish();
     }
@@ -126,6 +125,7 @@ public class NewConnectionWizard extends Wizard implements INewWizard, IExecutab
                 }
             });
         } catch (Exception e) {
+            e.printStackTrace();
             currentPage.setErrorMessage(String.format(
                 "Error connecting to remote XWiki: '%s'. Please check your settings.", e.getMessage()));
             return false;
@@ -147,10 +147,14 @@ public class NewConnectionWizard extends Wizard implements INewWizard, IExecutab
                         project.create(null);
                         project.open(null);
 
-                        project.setPersistentProperty(AbstractDataManager.BACKEND, StorageUtils.getBackend(newConnectionWizardState.getServerUrl()).toString());
-                        project.setPersistentProperty(AbstractDataManager.ENDPOINT, newConnectionWizardState.getServerUrl());
-                        project.setPersistentProperty(AbstractDataManager.USERNAME, newConnectionWizardState.getUserName());
-                        project.setPersistentProperty(AbstractDataManager.PASSWORD, newConnectionWizardState.getPassword());
+                        project.setPersistentProperty(AbstractDataManager.BACKEND,
+                            StorageUtils.getBackend(newConnectionWizardState.getServerUrl()).toString());
+                        project.setPersistentProperty(AbstractDataManager.ENDPOINT,
+                            newConnectionWizardState.getServerUrl());
+                        project.setPersistentProperty(AbstractDataManager.USERNAME,
+                            newConnectionWizardState.getUserName());
+                        project.setPersistentProperty(AbstractDataManager.PASSWORD,
+                            newConnectionWizardState.getPassword());
                         project.setPersistentProperty(AbstractDataManager.AUTO_CONNECT, "true");
 
                         IProjectDescription description = project.getDescription();
@@ -169,8 +173,8 @@ public class NewConnectionWizard extends Wizard implements INewWizard, IExecutab
 
         }
 
-        if (!PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getPerspective().getId().equals(
-            XWikiPerspectiveFactory.PERSPECTIVE_ID)) {
+        if (!PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getPerspective().getId()
+            .equals(XWikiPerspectiveFactory.PERSPECTIVE_ID)) {
             // Ask the user to switch to XWiki Eclipse perspective.
             BasicNewProjectResourceWizard.updatePerspective(config);
         }

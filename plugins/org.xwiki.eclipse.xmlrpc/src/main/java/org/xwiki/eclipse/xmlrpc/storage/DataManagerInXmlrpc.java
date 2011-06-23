@@ -51,7 +51,6 @@ import org.xwiki.eclipse.xmlrpc.model.XWikiEclipseObjectSummaryInXmlrpc;
 import org.xwiki.eclipse.xmlrpc.model.XWikiEclipsePageHistorySummaryInXmlrpc;
 import org.xwiki.eclipse.xmlrpc.model.XWikiEclipsePageInXmlrpc;
 import org.xwiki.eclipse.xmlrpc.model.XWikiEclipsePageSummaryInXmlrpc;
-import org.xwiki.eclipse.xmlrpc.model.XWikiEclipseSpaceSummaryInXmlrpc;
 import org.xwiki.xmlrpc.model.XWikiClass;
 import org.xwiki.xmlrpc.model.XWikiClassSummary;
 import org.xwiki.xmlrpc.model.XWikiObject;
@@ -168,7 +167,7 @@ public class DataManagerInXmlrpc extends AbstractDataManager
             space = localXWikiDataStorage.getSpaceSumary(spaceKey);
         }
 
-        return new XWikiEclipseSpaceSummaryInXmlrpc(this, space);
+        return new XWikiEclipseSpaceSummary(this, space.getKey(), space.getName(), space.getUrl());
     }
 
     public List<XWikiEclipseSpaceSummary> getSpaces() throws XWikiEclipseStorageException
@@ -183,7 +182,8 @@ public class DataManagerInXmlrpc extends AbstractDataManager
 
         List<XWikiEclipseSpaceSummary> result = new ArrayList<XWikiEclipseSpaceSummary>();
         for (SpaceSummary spaceSummary : spaceSummaries) {
-            result.add(new XWikiEclipseSpaceSummaryInXmlrpc(this, spaceSummary));
+            result.add(new XWikiEclipseSpaceSummary(this, spaceSummary.getKey(), spaceSummary.getName(), spaceSummary
+                .getUrl()));
         }
 
         return result;
@@ -527,7 +527,7 @@ public class DataManagerInXmlrpc extends AbstractDataManager
         Assert.isTrue(isConnected());
         Assert.isTrue(DIRTY_STATUS.equals(pageToStatusMap.get(page.getId())));
 
-        XWikiPage pageData = ((XWikiEclipsePageInXmlrpc)page).getData();
+        XWikiPage pageData = ((XWikiEclipsePageInXmlrpc) page).getData();
         XWikiPage remotePage = null;
         try {
             remotePage = remoteXWikiDataStorage.getPage(page.getId());
@@ -600,8 +600,8 @@ public class DataManagerInXmlrpc extends AbstractDataManager
 
         Assert.isTrue(isConnected());
         Assert.isTrue(DIRTY_STATUS.equals(objectToStatusMap.get(getCompactIdForObject(object))));
-        
-        XWikiObject objectData = ((XWikiEclipseObjectInXmlrpc)object).getData();
+
+        XWikiObject objectData = ((XWikiEclipseObjectInXmlrpc) object).getData();
         if (object.getId() == -1) {
             /*
              * If we are here we are synchronizing an object that has been created locally and does not exist remotely.
@@ -612,7 +612,7 @@ public class DataManagerInXmlrpc extends AbstractDataManager
              * way, we will be able to cleanup all the references to the locally created object with the -1 id from the
              * status map, index and local storage.
              */
-            
+
             XWikiObject previousObject = objectData;
 
             objectData = remoteXWikiDataStorage.storeObject(objectData);
@@ -630,7 +630,10 @@ public class DataManagerInXmlrpc extends AbstractDataManager
             objectToStatusMap.remove(getCompactIdForObject(object));
         }
 
-        object = new XWikiEclipseObjectInXmlrpc(this, objectData, ((XWikiEclipseObjectInXmlrpc)object).getXWikiClassInXmlrpc(), ((XWikiEclipseObjectInXmlrpc)object).getPageSummaryInXmlrpc());
+        object =
+            new XWikiEclipseObjectInXmlrpc(this, objectData,
+                ((XWikiEclipseObjectInXmlrpc) object).getXWikiClassInXmlrpc(),
+                ((XWikiEclipseObjectInXmlrpc) object).getPageSummaryInXmlrpc());
         return object;
     }
 
@@ -921,7 +924,7 @@ public class DataManagerInXmlrpc extends AbstractDataManager
     @Override
     public List<XWikiEclipseWikiSummary> getWikis() throws XWikiEclipseStorageException
     {
-        //return nothing
+        // return nothing
         return null;
     }
 }
