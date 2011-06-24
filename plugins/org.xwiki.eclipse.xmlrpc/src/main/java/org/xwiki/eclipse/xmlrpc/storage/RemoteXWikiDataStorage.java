@@ -28,7 +28,7 @@ import org.codehaus.swizzle.confluence.SearchResult;
 import org.codehaus.swizzle.confluence.ServerInfo;
 import org.codehaus.swizzle.confluence.SpaceSummary;
 import org.eclipse.core.runtime.Assert;
-import org.xwiki.eclipse.storage.XWikiEclipseStorageException;
+import org.xwiki.eclipse.xmlrpc.XWikiEclipseXmlrpcException;
 import org.xwiki.xmlrpc.XWikiXmlRpcClient;
 import org.xwiki.xmlrpc.model.XWikiClass;
 import org.xwiki.xmlrpc.model.XWikiClassSummary;
@@ -47,14 +47,14 @@ public class RemoteXWikiDataStorage implements IDataStorage
 
     private boolean disposed;
 
-    public RemoteXWikiDataStorage(String endpoint, String userName, String password) throws XWikiEclipseStorageException
+    public RemoteXWikiDataStorage(String endpoint, String userName, String password) throws XWikiEclipseXmlrpcException
     {
         try {
             rpc = new XWikiXmlRpcClient(endpoint);
             rpc.login(userName, password);
             disposed = false;
         } catch (Exception e) {
-            throw new XWikiEclipseStorageException(e);
+            throw new XWikiEclipseXmlrpcException(e);
         }
     }
 
@@ -71,7 +71,7 @@ public class RemoteXWikiDataStorage implements IDataStorage
         disposed = true;
     }
 
-    public synchronized XWikiPage getPage(String pageId) throws XWikiEclipseStorageException
+    public synchronized XWikiPage getPage(String pageId) throws XWikiEclipseXmlrpcException
     {
         Assert.isTrue(!disposed);
 
@@ -87,33 +87,33 @@ public class RemoteXWikiDataStorage implements IDataStorage
 
             return page;
         } catch (XmlRpcException e) {
-            throw new XWikiEclipseStorageException(e);
+            throw new XWikiEclipseXmlrpcException(e);
         }
     }
 
-    public synchronized List<XWikiPageSummary> getPages(String spaceKey) throws XWikiEclipseStorageException
+    public synchronized List<XWikiPageSummary> getPages(String spaceKey) throws XWikiEclipseXmlrpcException
     {
         Assert.isTrue(!disposed);
 
         try {
             return rpc.getPages(spaceKey);
         } catch (XmlRpcException e) {
-            throw new XWikiEclipseStorageException(e);
+            throw new XWikiEclipseXmlrpcException(e);
         }
     }
 
-    public synchronized List<SpaceSummary> getSpaces() throws XWikiEclipseStorageException
+    public synchronized List<SpaceSummary> getSpaces() throws XWikiEclipseXmlrpcException
     {
         Assert.isTrue(!disposed);
 
         try {
             return rpc.getSpaces();
         } catch (XmlRpcException e) {
-            throw new XWikiEclipseStorageException(e);
+            throw new XWikiEclipseXmlrpcException(e);
         }
     }
 
-    public SpaceSummary getSpaceSumary(String spaceKey) throws XWikiEclipseStorageException
+    public SpaceSummary getSpaceSumary(String spaceKey) throws XWikiEclipseXmlrpcException
     {
         List<SpaceSummary> spaces = getSpaces();
         for (SpaceSummary space : spaces) {
@@ -124,18 +124,18 @@ public class RemoteXWikiDataStorage implements IDataStorage
         return null;
     }
 
-    public synchronized void removeSpace(String spaceKey) throws XWikiEclipseStorageException
+    public synchronized void removeSpace(String spaceKey) throws XWikiEclipseXmlrpcException
     {
         Assert.isTrue(!disposed);
 
         try {
             rpc.removeSpace(spaceKey);
         } catch (XmlRpcException e) {
-            throw new XWikiEclipseStorageException(e);
+            throw new XWikiEclipseXmlrpcException(e);
         }
     }
 
-    public synchronized XWikiPage storePage(XWikiPage page) throws XWikiEclipseStorageException
+    public synchronized XWikiPage storePage(XWikiPage page) throws XWikiEclipseXmlrpcException
     {
         Assert.isTrue(!disposed);
 
@@ -151,80 +151,80 @@ public class RemoteXWikiDataStorage implements IDataStorage
 
             return page;
         } catch (XmlRpcException e) {
-            throw new XWikiEclipseStorageException(e);
+            throw new XWikiEclipseXmlrpcException(e);
         }
     }
 
-    public synchronized ServerInfo getServerInfo() throws XWikiEclipseStorageException
+    public synchronized ServerInfo getServerInfo() throws XWikiEclipseXmlrpcException
     {
         Assert.isTrue(!disposed);
 
         try {
             return rpc.getServerInfo();
         } catch (XmlRpcException e) {
-            throw new XWikiEclipseStorageException(e);
+            throw new XWikiEclipseXmlrpcException(e);
         }
     }
 
-    public synchronized boolean removePage(String pageId) throws XWikiEclipseStorageException
+    public synchronized boolean removePage(String pageId) throws XWikiEclipseXmlrpcException
     {
         Assert.isTrue(!disposed);
 
         try {
             return rpc.removePage(pageId);
         } catch (XmlRpcException e) {
-            throw new XWikiEclipseStorageException(e);
+            throw new XWikiEclipseXmlrpcException(e);
         }
 
     }
 
-    public synchronized List<XWikiObjectSummary> getObjects(String pageId) throws XWikiEclipseStorageException
+    public synchronized List<XWikiObjectSummary> getObjects(String pageId) throws XWikiEclipseXmlrpcException
     {
         Assert.isTrue(!disposed);
 
         try {
             return rpc.getObjects(pageId);
         } catch (XmlRpcException e) {
-            throw new XWikiEclipseStorageException(e);
+            throw new XWikiEclipseXmlrpcException(e);
         }
     }
 
     public synchronized XWikiObject getObject(String pageId, String className, int objectId)
-        throws XWikiEclipseStorageException
+        throws XWikiEclipseXmlrpcException
     {
         Assert.isTrue(!disposed);
 
         try {
             return rpc.getObject(pageId, className, objectId);
         } catch (XmlRpcException e) {
-            throw new XWikiEclipseStorageException(e);
+            throw new XWikiEclipseXmlrpcException(e);
         }
     }
 
-    public synchronized XWikiClass getClass(String classId) throws XWikiEclipseStorageException
+    public synchronized XWikiClass getClass(String classId) throws XWikiEclipseXmlrpcException
     {
         Assert.isTrue(!disposed);
 
         try {
             return rpc.getClass(classId);
         } catch (XmlRpcException e) {
-            throw new XWikiEclipseStorageException(e);
+            throw new XWikiEclipseXmlrpcException(e);
         }
     }
 
-    public synchronized XWikiObject storeObject(XWikiObject object) throws XWikiEclipseStorageException
+    public synchronized XWikiObject storeObject(XWikiObject object) throws XWikiEclipseXmlrpcException
     {
         Assert.isTrue(!disposed);
 
         try {
             return rpc.storeObject(object);
         } catch (XmlRpcException e) {
-            throw new XWikiEclipseStorageException(e);
+            throw new XWikiEclipseXmlrpcException(e);
         }
 
     }
 
-    public synchronized void storeClass(XWikiClass xwikiClass) throws XWikiEclipseStorageException
+    public synchronized void storeClass(XWikiClass xwikiClass) throws XWikiEclipseXmlrpcException
     {
         // Do nothing
     }
@@ -233,7 +233,7 @@ public class RemoteXWikiDataStorage implements IDataStorage
     {
         try {
             XWikiPage page = getPage(pageId);
-        } catch (XWikiEclipseStorageException e) {
+        } catch (XWikiEclipseXmlrpcException e) {
             return false;
         }
 
@@ -244,36 +244,36 @@ public class RemoteXWikiDataStorage implements IDataStorage
     {
         try {
             XWikiObject object = getObject(pageId, className, objectId);
-        } catch (XWikiEclipseStorageException e) {
+        } catch (XWikiEclipseXmlrpcException e) {
             return false;
         }
 
         return true;
     }
 
-    public List<XWikiClassSummary> getClasses() throws XWikiEclipseStorageException
+    public List<XWikiClassSummary> getClasses() throws XWikiEclipseXmlrpcException
     {
         Assert.isTrue(!disposed);
 
         try {
             return rpc.getClasses();
         } catch (XmlRpcException e) {
-            throw new XWikiEclipseStorageException(e);
+            throw new XWikiEclipseXmlrpcException(e);
         }
     }
 
-    public boolean removeObject(String pageId, String className, int objectId) throws XWikiEclipseStorageException
+    public boolean removeObject(String pageId, String className, int objectId) throws XWikiEclipseXmlrpcException
     {
         Assert.isTrue(!disposed);
 
         try {
             return rpc.removeObject(pageId, className, objectId);
         } catch (XmlRpcException e) {
-            throw new XWikiEclipseStorageException(e);
+            throw new XWikiEclipseXmlrpcException(e);
         }
     }
 
-    public XWikiPageSummary getPageSummary(String pageId) throws XWikiEclipseStorageException
+    public XWikiPageSummary getPageSummary(String pageId) throws XWikiEclipseXmlrpcException
     {
         Assert.isTrue(!disposed);
 
@@ -291,18 +291,18 @@ public class RemoteXWikiDataStorage implements IDataStorage
         return null;
     }
 
-    public List<XWikiPageHistorySummary> getPageHistory(String pageId) throws XWikiEclipseStorageException
+    public List<XWikiPageHistorySummary> getPageHistory(String pageId) throws XWikiEclipseXmlrpcException
     {
         Assert.isTrue(!disposed);
 
         try {
             return rpc.getPageHistory(pageId);
         } catch (XmlRpcException e) {
-            throw new XWikiEclipseStorageException(e);
+            throw new XWikiEclipseXmlrpcException(e);
         }
     }
 
-    public List<XWikiPageSummary> getAllPageIds() throws XWikiEclipseStorageException
+    public List<XWikiPageSummary> getAllPageIds() throws XWikiEclipseXmlrpcException
     {
         Assert.isTrue(!disposed);
 
@@ -317,7 +317,7 @@ public class RemoteXWikiDataStorage implements IDataStorage
                 result.add(pageSummary);
             }
         } catch (XmlRpcException e) {
-            throw new XWikiEclipseStorageException(e);
+            throw new XWikiEclipseXmlrpcException(e);
         }
 
         return result;
