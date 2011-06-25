@@ -20,18 +20,20 @@
  */
 package org.xwiki.eclipse.ui.adapters;
 
+import java.util.List;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.model.WorkbenchAdapter;
 import org.eclipse.ui.progress.IDeferredWorkbenchAdapter;
 import org.eclipse.ui.progress.IElementCollector;
+import org.xwiki.eclipse.model.XWikiEclipseSpaceSummary;
 import org.xwiki.eclipse.model.XWikiEclipseWikiSummary;
 import org.xwiki.eclipse.ui.UIConstants;
 import org.xwiki.eclipse.ui.UIPlugin;
 
 /**
- * 
  * @version $Id$
  */
 public class XWikiEclipseWikiSummaryAdapter extends WorkbenchAdapter implements IDeferredWorkbenchAdapter
@@ -39,9 +41,10 @@ public class XWikiEclipseWikiSummaryAdapter extends WorkbenchAdapter implements 
     @Override
     public Object[] getChildren(Object object)
     {
-        //FIXME: add List<XWikiEclipseSpaceSummary> getSpaces() here
         if (object instanceof XWikiEclipseWikiSummary) {
-            return NO_CHILDREN;
+            XWikiEclipseWikiSummary wiki = (XWikiEclipseWikiSummary) object;
+            List<XWikiEclipseSpaceSummary> spaces = wiki.getDataManager().getSpaces(wiki);
+            return spaces.toArray();
         }
         return super.getChildren(object);
     }
@@ -67,13 +70,14 @@ public class XWikiEclipseWikiSummaryAdapter extends WorkbenchAdapter implements 
     /**
      * {@inheritDoc}
      * 
-     * @see org.eclipse.ui.progress.IDeferredWorkbenchAdapter#fetchDeferredChildren(java.lang.Object, org.eclipse.ui.progress.IElementCollector, org.eclipse.core.runtime.IProgressMonitor)
+     * @see org.eclipse.ui.progress.IDeferredWorkbenchAdapter#fetchDeferredChildren(java.lang.Object,
+     *      org.eclipse.ui.progress.IElementCollector, org.eclipse.core.runtime.IProgressMonitor)
      */
     @Override
     public void fetchDeferredChildren(Object object, IElementCollector collector, IProgressMonitor monitor)
     {
         collector.add(getChildren(object), monitor);
-        collector.done();        
+        collector.done();
     }
 
     /**
