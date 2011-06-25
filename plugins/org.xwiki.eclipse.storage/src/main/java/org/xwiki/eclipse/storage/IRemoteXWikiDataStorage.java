@@ -19,17 +19,27 @@
  */
 package org.xwiki.eclipse.storage;
 
+import java.util.List;
+
+import org.xwiki.eclipse.model.ModelObject;
+import org.xwiki.eclipse.model.XWikiEclipseServerInfo;
+import org.xwiki.eclipse.model.XWikiEclipseSpaceSummary;
+import org.xwiki.eclipse.model.XWikiEclipseWikiSummary;
+
 /**
+ * remote data storage interface for different backend implementation, e.g., xmlrpc or rest
+ * 
  * @version $Id$
  */
-public class StorageConstants
+public interface IRemoteXWikiDataStorage
 {
-    public static String REST_API_ENTRYPOINT = "http://localhost:8080/xwiki/rest";
+    List<ModelObject> getRootResources();
 
-    public static String REST_API_ENTRYPOINT_SUFFIX = "/rest";
+    List<XWikiEclipseWikiSummary> getWikis();
 
-    public static String XMLRPC_API_ENTRYPOINT = "http://localhost:8080/xwiki/xmlrpc/confluence";
+    List<XWikiEclipseSpaceSummary> getSpaces();
 
-    public static String XMLRPC_API_ENTRYPOINT_SUFFIX = "/confluence";
+    void dispose();
 
+    XWikiEclipseServerInfo getServerInfo();
 }
