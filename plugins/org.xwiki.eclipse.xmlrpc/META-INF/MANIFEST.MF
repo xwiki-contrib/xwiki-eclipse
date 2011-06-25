@@ -50,7 +50,6 @@ Export-Package: javax.xml.parsers,
  org.xml.sax.ext,
  org.xml.sax.helpers,
  org.xwiki.eclipse.xmlrpc,
- org.xwiki.eclipse.xmlrpc.storage,
  org.xwiki.xmlrpc,
  org.xwiki.xmlrpc.model
 Bundle-ActivationPolicy: lazy

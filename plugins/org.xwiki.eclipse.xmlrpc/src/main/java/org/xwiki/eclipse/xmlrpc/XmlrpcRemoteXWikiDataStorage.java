@@ -18,7 +18,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  *
  */
-package org.xwiki.eclipse.xmlrpc.storage;
+package org.xwiki.eclipse.xmlrpc;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,13 +41,13 @@ import org.xwiki.xmlrpc.model.XWikiPageSummary;
 /**
  * This class implements a remote XWiki data storage. Basically it wraps the XWiki XMLRPC interface.
  */
-public class RemoteXWikiDataStorage implements IDataStorage
+public class XmlrpcRemoteXWikiDataStorage
 {
     private XWikiXmlRpcClient rpc;
 
     private boolean disposed;
 
-    public RemoteXWikiDataStorage(String endpoint, String userName, String password) throws XWikiEclipseXmlrpcException
+    public XmlrpcRemoteXWikiDataStorage(String endpoint, String userName, String password) throws XWikiEclipseXmlrpcException
     {
         try {
             rpc = new XWikiXmlRpcClient(endpoint);
