@@ -14,5 +14,5 @@ Bundle-ClassPath: .,
  lib/httpcore.jar,
  lib/httpmime.jar,
  lib/xwiki-platform-rest-model.jar
-Export-Package: org.xwiki.eclipse.rest.storage,
+Export-Package: org.xwiki.eclipse.rest,
  org.xwiki.rest.model.jaxb
