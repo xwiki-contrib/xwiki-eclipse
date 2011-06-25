@@ -29,7 +29,36 @@ import org.xwiki.xmlrpc.model.XWikiPageHistorySummary;
 import org.xwiki.xmlrpc.model.XWikiPageSummary;
 
 /**
- * local data storage
+ * This class implements a local data storage for XWiki elements that uses the Eclipse resource component. The local
+ * storage is rooted at an IFolder passed to the constructor. The structure of the local storage is the following:
+ * 
+ * <pre>
+ * Root 
+ * + index
+ *   + Space1 (directory having its name equals to the space key)
+ *     + Page1 (directory having its name equals to the page id)
+ *       |- Page1.xeps (containing the page summary)
+ *       |- Object1.xeos (object summaries)
+ *       |- ...
+ *       |- ObjectN.xeos
+ *     + Page2
+ *       |- Page2.xeps
+ *       |- ...
+ *     + ...
+ *   + Space2
+ *     +...
+ * + pages
+ *   |- Page1.xep (the actual page information)
+ *   |- ...
+ * + objects
+ *   |- Object1.xeo (the actual object information)
+ *   |- ...
+ * + classes
+ *   |- Class1.xec (the actual class information)
+ *   |- ...
+ * </pre>
+ * 
+ * All xe* files contains an XML serialization of the corresponding XWiki Eclipse elements.
  * 
  * @version $Id$
  */
@@ -570,12 +599,14 @@ public class LocalXWikiDataStorage
     }
 
     /**
+     * FIXME: need to discuss (1) what object to serialize, (2) what is the directory structure and (3) add one folder
+     * for wiki or not
+     * 
      * @return
      */
     public List<ModelObject> getRootResources()
     {
         throw new UnsupportedOperationException();
-        // TODO Auto-generated method stub
         // return null;
     }
 }
