@@ -29,12 +29,11 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.xwiki.eclipse.model.XWikiEclipseSpaceSummary;
-import org.xwiki.eclipse.storage.AbstractDataManager;
+import org.xwiki.eclipse.storage.DataManager;
 import org.xwiki.eclipse.ui.utils.UIUtils;
 import org.xwiki.eclipse.ui.wizards.NewPageWizard;
 
 /**
- * 
  * @version $Id$
  */
 public class NewPageHandler extends AbstractHandler
@@ -42,7 +41,7 @@ public class NewPageHandler extends AbstractHandler
     public Object execute(ExecutionEvent event) throws ExecutionException
     {
         String spaceKey = null;
-        AbstractDataManager dataManager = null;
+        DataManager dataManager = null;
         ISelection selection = HandlerUtil.getCurrentSelection(event);
 
         Set selectedObjects = UIUtils.getSelectedObjectsFromSelection(selection);
@@ -54,8 +53,8 @@ public class NewPageHandler extends AbstractHandler
                 spaceKey = spaceSummary.getKey();
             }
 
-            if (selectedObject instanceof AbstractDataManager) {
-                dataManager = (AbstractDataManager) selectedObject;
+            if (selectedObject instanceof DataManager) {
+                dataManager = (DataManager) selectedObject;
             }
         }
 

@@ -28,7 +28,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
-import org.xwiki.eclipse.storage.AbstractDataManager;
+import org.xwiki.eclipse.storage.DataManager;
 import org.xwiki.eclipse.ui.utils.XWikiEclipseSafeRunnable;
 
 /**
@@ -44,7 +44,7 @@ public class UIPlugin extends AbstractUIPlugin
     // The shared instance
     private static UIPlugin plugin;
 
-    private HashMap<AbstractDataManager, List<XWikiEclipsePageSummary>> dataManagerToPageSummariesMap;
+    private HashMap<DataManager, List<XWikiEclipsePageSummary>> dataManagerToPageSummariesMap;
 
     /**
      * The constructor
@@ -61,7 +61,7 @@ public class UIPlugin extends AbstractUIPlugin
     {
         super.start(context);
         plugin = this;
-        dataManagerToPageSummariesMap = new HashMap<AbstractDataManager, List<XWikiEclipsePageSummary>>();
+        dataManagerToPageSummariesMap = new HashMap<DataManager, List<XWikiEclipsePageSummary>>();
     }
 
     /*
@@ -89,7 +89,7 @@ public class UIPlugin extends AbstractUIPlugin
         return imageDescriptorFromPlugin(PLUGIN_ID, path);
     }
 
-    public List<XWikiEclipsePageSummary> getAllPageSummariesForDataManager(final AbstractDataManager dataManager)
+    public List<XWikiEclipsePageSummary> getAllPageSummariesForDataManager(final DataManager dataManager)
     {
         /* If we don't already have summaries, then fetch them from the data manager */
         if (dataManagerToPageSummariesMap.get(dataManager) == null) {

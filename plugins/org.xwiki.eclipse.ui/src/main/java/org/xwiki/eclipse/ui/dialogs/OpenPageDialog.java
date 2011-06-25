@@ -51,19 +51,18 @@ import org.eclipse.ui.dialogs.FilteredItemsSelectionDialog;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.xwiki.eclipse.core.DataManagerRegistry;
 import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
-import org.xwiki.eclipse.storage.AbstractDataManager;
+import org.xwiki.eclipse.storage.DataManager;
 import org.xwiki.eclipse.ui.UIPlugin;
 import org.xwiki.eclipse.ui.utils.XWikiEclipseSafeRunnable;
 
 /**
- * 
  * @version $Id$
  */
 public class OpenPageDialog extends FilteredItemsSelectionDialog
 {
-    private Set<AbstractDataManager> targetDataManagers;
+    private Set<DataManager> targetDataManagers;
 
-    private Map<AbstractDataManager, List<XWikiEclipsePageSummary>> dataManagerToPageSummariesMap;
+    private Map<DataManager, List<XWikiEclipsePageSummary>> dataManagerToPageSummariesMap;
 
     private static class OpenPageLabelProvider extends LabelProvider
     {
@@ -92,7 +91,7 @@ public class OpenPageDialog extends FilteredItemsSelectionDialog
         }
     }
 
-    public OpenPageDialog(Shell shell, AbstractDataManager dataManager)
+    public OpenPageDialog(Shell shell, DataManager dataManager)
     {
         super(shell);
         setTitle("Open XWiki page");
@@ -100,13 +99,13 @@ public class OpenPageDialog extends FilteredItemsSelectionDialog
         setListLabelProvider(labelProvider);
         setDetailsLabelProvider(labelProvider);
 
-        targetDataManagers = new HashSet<AbstractDataManager>();
-        dataManagerToPageSummariesMap = new HashMap<AbstractDataManager, List<XWikiEclipsePageSummary>>();
+        targetDataManagers = new HashSet<DataManager>();
+        dataManagerToPageSummariesMap = new HashMap<DataManager, List<XWikiEclipsePageSummary>>();
 
         if (dataManager != null) {
             targetDataManagers.add(dataManager);
         } else {
-            for (AbstractDataManager dm : DataManagerRegistry.getDefault().getDataManagers()) {
+            for (DataManager dm : DataManagerRegistry.getDefault().getDataManagers()) {
                 targetDataManagers.add(dm);
             }
         }
@@ -123,8 +122,8 @@ public class OpenPageDialog extends FilteredItemsSelectionDialog
         label.setText("Select the connections to be searched for opening pages:");
 
         CheckboxTreeViewer dataManagerTreeViewers = new CheckboxTreeViewer(composite, SWT.BORDER);
-        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(
-            dataManagerTreeViewers.getControl());
+        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false)
+            .applyTo(dataManagerTreeViewers.getControl());
         dataManagerTreeViewers.setContentProvider(new ITreeContentProvider()
         {
 
@@ -166,7 +165,7 @@ public class OpenPageDialog extends FilteredItemsSelectionDialog
         dataManagerTreeViewers.setLabelProvider(new WorkbenchLabelProvider());
         dataManagerTreeViewers.setInput(this);
 
-        for (AbstractDataManager dataManager : targetDataManagers) {
+        for (DataManager dataManager : targetDataManagers) {
             dataManagerTreeViewers.setChecked(dataManager, true);
         }
 
@@ -175,7 +174,7 @@ public class OpenPageDialog extends FilteredItemsSelectionDialog
             public void checkStateChanged(CheckStateChangedEvent event)
             {
                 if (event.getChecked()) {
-                    targetDataManagers.add((AbstractDataManager) event.getElement());
+                    targetDataManagers.add((DataManager) event.getElement());
                 } else {
                     targetDataManagers.remove(event.getElement());
                 }
@@ -217,8 +216,8 @@ public class OpenPageDialog extends FilteredItemsSelectionDialog
     {
         progressMonitor.beginTask("Searching...", targetDataManagers.size());
 
-        for (AbstractDataManager dataManager : targetDataManagers) {
-            final AbstractDataManager currentDataManager = dataManager;
+        for (DataManager dataManager : targetDataManagers) {
+            final DataManager currentDataManager = dataManager;
 
             /* If we don't already have summaries, then fetch them from the data manager */
             if (dataManagerToPageSummariesMap.get(currentDataManager) == null) {

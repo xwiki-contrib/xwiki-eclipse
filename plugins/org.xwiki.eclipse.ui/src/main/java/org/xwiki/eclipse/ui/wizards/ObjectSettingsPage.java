@@ -34,24 +34,23 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.xwiki.eclipse.model.XWikiEclipseClassSummary;
-import org.xwiki.eclipse.storage.AbstractDataManager;
+import org.xwiki.eclipse.storage.DataManager;
 import org.xwiki.eclipse.ui.UIConstants;
 import org.xwiki.eclipse.ui.UIPlugin;
 import org.xwiki.eclipse.ui.utils.XWikiEclipseSafeRunnableWithResult;
 
 /**
- * 
  * @version $Id$
  */
 public class ObjectSettingsPage extends WizardPage
 {
     private NewObjectWizardState newObjectWizardState;
 
-    private AbstractDataManager dataManager;
+    private DataManager dataManager;
 
     private Combo combo;
 
-    public ObjectSettingsPage(String pageName, AbstractDataManager dataManager)
+    public ObjectSettingsPage(String pageName, DataManager dataManager)
     {
         super(pageName);
         setTitle("New object");

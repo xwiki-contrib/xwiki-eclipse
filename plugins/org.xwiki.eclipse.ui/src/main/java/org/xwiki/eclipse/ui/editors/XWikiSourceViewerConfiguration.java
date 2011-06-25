@@ -32,7 +32,7 @@ import org.eclipse.jface.text.rules.Token;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.ui.editors.text.TextSourceViewerConfiguration;
 import org.xwiki.eclipse.model.XWikiEclipsePage;
-import org.xwiki.eclipse.storage.AbstractDataManager;
+import org.xwiki.eclipse.storage.DataManager;
 import org.xwiki.eclipse.ui.editors.contentassist.CompoundContentAssistProcessor;
 import org.xwiki.eclipse.ui.editors.contentassist.MacroContentAssistProcessor;
 import org.xwiki.eclipse.ui.editors.contentassist.VelocityVariableContentAssistProcessor;
@@ -47,7 +47,6 @@ import org.xwiki.eclipse.ui.editors.scanners.XWikiMarkupScanner;
 import org.xwiki.eclipse.ui.editors.scanners.XWikiPartitionScanner;
 
 /**
- * 
  * @version $Id$
  */
 public class XWikiSourceViewerConfiguration extends TextSourceViewerConfiguration
@@ -121,7 +120,7 @@ public class XWikiSourceViewerConfiguration extends TextSourceViewerConfiguratio
 
         PageEditorInput input = (PageEditorInput) pageEditor.getEditorInput();
         XWikiEclipsePage currentPage = input.getPage();
-        AbstractDataManager dataManager = currentPage.getDataManager();
+        DataManager dataManager = currentPage.getDataManager();
 
         /* Content assist for standard paragraphs and tables */
         compoundContentAssistProcessor = new CompoundContentAssistProcessor();

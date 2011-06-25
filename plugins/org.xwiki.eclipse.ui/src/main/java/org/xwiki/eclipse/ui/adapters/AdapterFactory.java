@@ -28,16 +28,15 @@ import org.xwiki.eclipse.model.XWikiEclipseObjectSummary;
 import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
 import org.xwiki.eclipse.model.XWikiEclipseSpaceSummary;
 import org.xwiki.eclipse.model.XWikiEclipseWikiSummary;
-import org.xwiki.eclipse.storage.AbstractDataManager;
+import org.xwiki.eclipse.storage.DataManager;
 
 /**
- * 
  * @version $Id$
  */
 public class AdapterFactory implements IAdapterFactory
 {
-    private Class[] adapterList =
-        new Class[] {IWorkbenchAdapter.class, IWorkbenchAdapter2.class, IDeferredWorkbenchAdapter.class};
+    private Class[] adapterList = new Class[] {IWorkbenchAdapter.class, IWorkbenchAdapter2.class,
+    IDeferredWorkbenchAdapter.class};
 
     private DataManagerAdapter xwikiEclipseDataManagerAdapter = new DataManagerAdapter();
 
@@ -46,7 +45,7 @@ public class AdapterFactory implements IAdapterFactory
     private XWikiEclipsePageSummaryAdapter xwikiEclipsePageSummaryAdapter = new XWikiEclipsePageSummaryAdapter();
 
     private XWikiEclipseObjectSummaryAdapter xwikiEclipseObjectSummaryAdapter = new XWikiEclipseObjectSummaryAdapter();
-    
+
     private XWikiEclipseWikiSummaryAdapter xwikiEclipseWikiSummaryAdapter = new XWikiEclipseWikiSummaryAdapter();
 
     public Object getAdapter(Object adaptableObject, Class adapterType)
@@ -54,15 +53,15 @@ public class AdapterFactory implements IAdapterFactory
         /*
          * Adapters for DataManager
          */
-        if ((adaptableObject instanceof AbstractDataManager) && adapterType.equals(IWorkbenchAdapter.class)) {
+        if ((adaptableObject instanceof DataManager) && adapterType.equals(IWorkbenchAdapter.class)) {
             return xwikiEclipseDataManagerAdapter;
         }
 
-        if ((adaptableObject instanceof AbstractDataManager) && adapterType.equals(IWorkbenchAdapter2.class)) {
+        if ((adaptableObject instanceof DataManager) && adapterType.equals(IWorkbenchAdapter2.class)) {
             return xwikiEclipseDataManagerAdapter;
         }
 
-        if ((adaptableObject instanceof AbstractDataManager) && adapterType.equals(IDeferredWorkbenchAdapter.class)) {
+        if ((adaptableObject instanceof DataManager) && adapterType.equals(IDeferredWorkbenchAdapter.class)) {
             return xwikiEclipseDataManagerAdapter;
         }
 
@@ -73,11 +72,10 @@ public class AdapterFactory implements IAdapterFactory
             return xwikiEclipseWikiSummaryAdapter;
         }
 
-        if ((adaptableObject instanceof XWikiEclipseWikiSummary)
-            && adapterType.equals(IDeferredWorkbenchAdapter.class)) {
+        if ((adaptableObject instanceof XWikiEclipseWikiSummary) && adapterType.equals(IDeferredWorkbenchAdapter.class)) {
             return xwikiEclipseWikiSummaryAdapter;
         }
-        
+
         /*
          * Adapters for XWikiEclipseSpaceSummary
          */

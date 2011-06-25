@@ -32,17 +32,16 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.PropertyPage;
-import org.xwiki.eclipse.storage.AbstractDataManager;
+import org.xwiki.eclipse.storage.DataManager;
 import org.xwiki.eclipse.storage.Functionality;
 import org.xwiki.eclipse.ui.utils.XWikiEclipseSafeRunnable;
 
 /**
- * 
  * @version $Id$
  */
 public class DataManagerPropertiesPage extends PropertyPage
 {
-    private AbstractDataManager dataManager;
+    private DataManager dataManager;
 
     private Text endpointText;
 
@@ -66,7 +65,7 @@ public class DataManagerPropertiesPage extends PropertyPage
         {
             public void run() throws Exception
             {
-                dataManager = (AbstractDataManager) getElement().getAdapter(AbstractDataManager.class);
+                dataManager = (DataManager) getElement().getAdapter(DataManager.class);
 
                 Label label = new Label(composite, SWT.BORDER);
                 label.setText("Name:");

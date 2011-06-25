@@ -38,12 +38,11 @@ import org.xwiki.eclipse.model.XWikiEclipseObject;
 import org.xwiki.eclipse.model.XWikiEclipsePage;
 import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
 import org.xwiki.eclipse.model.XWikiEclipseSpaceSummary;
-import org.xwiki.eclipse.storage.AbstractDataManager;
+import org.xwiki.eclipse.storage.DataManager;
 import org.xwiki.eclipse.storage.XWikiEclipseStorageException;
 import org.xwiki.eclipse.ui.utils.UIUtils;
 
 /**
- * 
  * @version $Id$
  */
 public class NavigatorContentProvider extends BaseWorkbenchContentProvider implements ICoreEventListener
@@ -83,7 +82,7 @@ public class NavigatorContentProvider extends BaseWorkbenchContentProvider imple
         /* If our parent is a project then return the data manager associated to that project */
         if (element instanceof IProject) {
             IProject project = (IProject) element;
-            AbstractDataManager dataManager = DataManagerRegistry.getDefault().findDataManagerByProject(project);
+            DataManager dataManager = DataManagerRegistry.getDefault().findDataManagerByProject(project);
             if (dataManager != null) {
                 return new Object[] {dataManager};
             } else {
@@ -148,7 +147,7 @@ public class NavigatorContentProvider extends BaseWorkbenchContentProvider imple
                 {
                     public void run()
                     {
-                        AbstractDataManager dataManager = (AbstractDataManager) event.getData();
+                        DataManager dataManager = (DataManager) event.getData();
                         viewer.remove(dataManager);
                     }
                 });
@@ -160,7 +159,7 @@ public class NavigatorContentProvider extends BaseWorkbenchContentProvider imple
                 {
                     public void run()
                     {
-                        AbstractDataManager dataManager = (AbstractDataManager) event.getSource();
+                        DataManager dataManager = (DataManager) event.getSource();
                         viewer.refresh(dataManager);
                     }
                 });
@@ -177,12 +176,12 @@ public class NavigatorContentProvider extends BaseWorkbenchContentProvider imple
                         if (page.getVersion() == 1) {
                             // Make sure the new page/space get drawn.
                             XWikiEclipseSpaceSummary space = page.getSpaceSummary();
-                            
-//                            SpaceSummary spaceSummary = new SpaceSummary();
-//                            spaceSummary.setKey(page.getData().getSpace());
-//                            spaceSummary.setName(page.getData().getSpace());
-//                            XWikiEclipseSpaceSummary space =
-//                                new XWikiEclipseSpaceSummary(page.getDataManager(), spaceSummary);
+
+                            // SpaceSummary spaceSummary = new SpaceSummary();
+                            // spaceSummary.setKey(page.getData().getSpace());
+                            // spaceSummary.setName(page.getData().getSpace());
+                            // XWikiEclipseSpaceSummary space =
+                            // new XWikiEclipseSpaceSummary(page.getDataManager(), spaceSummary);
 
                             // If the space did not previously exist, draw it.
                             if (viewer.testFindItem(space) == null)
@@ -204,14 +203,14 @@ public class NavigatorContentProvider extends BaseWorkbenchContentProvider imple
                     {
                         XWikiEclipsePage oldPage = ((XWikiEclipsePage[]) event.getData())[0];
                         XWikiEclipsePage newPage = ((XWikiEclipsePage[]) event.getData())[1];
-                        
+
                         XWikiEclipseSpaceSummary space = oldPage.getSpaceSummary();
 
-//                        SpaceSummary spaceSummary = new SpaceSummary();
-//                        spaceSummary.setKey(newPage.getData().getSpace());
-//                        spaceSummary.setName(newPage.getData().getSpace());
-//                        XWikiEclipseSpaceSummary space =
-//                            new XWikiEclipseSpaceSummary(newPage.getDataManager(), spaceSummary);
+                        // SpaceSummary spaceSummary = new SpaceSummary();
+                        // spaceSummary.setKey(newPage.getData().getSpace());
+                        // spaceSummary.setName(newPage.getData().getSpace());
+                        // XWikiEclipseSpaceSummary space =
+                        // new XWikiEclipseSpaceSummary(newPage.getDataManager(), spaceSummary);
 
                         viewer.add(newPage.getDataManager(), space);
                         viewer.add(space, newPage.getSummary());
@@ -226,9 +225,9 @@ public class NavigatorContentProvider extends BaseWorkbenchContentProvider imple
                     public void run()
                     {
                         XWikiEclipsePage page = (XWikiEclipsePage) event.getData();
-                        
+
                         String spaceKey = page.getSpace();
-                        //String spaceKey = page.getData().getSpace();
+                        // String spaceKey = page.getData().getSpace();
 
                         List<XWikiEclipsePageSummary> pages = null;
                         try {
@@ -240,12 +239,12 @@ public class NavigatorContentProvider extends BaseWorkbenchContentProvider imple
                         if (pages != null && pages.size() == 0) {
                             // The space is left with no pages so it has to be removed.
                             XWikiEclipseSpaceSummary space = page.getSpaceSummary();
-//                            SpaceSummary spaceSummary = new SpaceSummary();
-//                            spaceSummary.setKey(spaceKey);
-//                            spaceSummary.setName(spaceKey);
-//
-//                            XWikiEclipseSpaceSummary space =
-//                                new XWikiEclipseSpaceSummary(page.getDataManager(), spaceSummary);
+                            // SpaceSummary spaceSummary = new SpaceSummary();
+                            // spaceSummary.setKey(spaceKey);
+                            // spaceSummary.setName(spaceKey);
+                            //
+                            // XWikiEclipseSpaceSummary space =
+                            // new XWikiEclipseSpaceSummary(page.getDataManager(), spaceSummary);
                             viewer.remove(space);
                         } else {
                             viewer.remove(page.getSummary());
@@ -261,8 +260,8 @@ public class NavigatorContentProvider extends BaseWorkbenchContentProvider imple
                     {
                         XWikiEclipseObject object = (XWikiEclipseObject) event.getData();
                         XWikiEclipsePageSummary pageSumary = object.getPageSummary();
-//                        XWikiEclipsePageSummary pageSumary =
-//                            new XWikiEclipsePageSummary(object.getDataManager(), object.getPageSummary());
+                        // XWikiEclipsePageSummary pageSumary =
+                        // new XWikiEclipsePageSummary(object.getDataManager(), object.getPageSummary());
                         /*
                          * FIXME: For lack of a way of knowing whether the object has just been created or modified, I
                          * chose to refresh all the objects in the page. Best way: like the PAGE_STORED event handling,

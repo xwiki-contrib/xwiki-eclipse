@@ -103,7 +103,7 @@
 			</triggerPoints>
 			<possibleChildren>
 				<or>
-					<instanceof value="org.xwiki.eclipse.storage.AbstractDataManager">
+					<instanceof value="org.xwiki.eclipse.storage.DataManager">
                </instanceof>
 					<instanceof value="org.xwiki.eclipse.model.XWikiEclipseWikiSummary">
                </instanceof>               
@@ -118,7 +118,7 @@
 		</navigatorContent>
 		<actionProvider class="org.xwiki.eclipse.ui.actions.DataManagerActionProvider" id="org.xwiki.eclipse.ui.actions.DataManagerActionProvider">
 			<enablement>
-				<instanceof value="org.xwiki.eclipse.storage.AbstractDataManager">
+				<instanceof value="org.xwiki.eclipse.storage.DataManager">
                </instanceof>
 			</enablement>
 		</actionProvider>
@@ -127,7 +127,7 @@
 				<or>
 					<instanceof value="org.xwiki.eclipse.model.ModelObject">
                </instanceof>
-					<instanceof value="org.xwiki.eclipse.storage.AbstractDataManager">
+					<instanceof value="org.xwiki.eclipse.storage.DataManager">
                </instanceof>
 				</or>
 			</enablement>
@@ -162,7 +162,7 @@
      <enablement>
         <or>
            <instanceof
-                 value="org.xwiki.eclipse.storage.AbstractDataManager">
+                 value="org.xwiki.eclipse.storage.DataManager">
            </instanceof>
            <instanceof
                  value="org.xwiki.eclipse.model.XWikiEclipsePageSummary">
@@ -182,7 +182,7 @@
      <enablement>
         <or>
            <instanceof
-                 value="org.xwiki.eclipse.storage.AbstractDataManager">
+                 value="org.xwiki.eclipse.storage.DataManager">
            </instanceof>
 		   <instanceof
                  value="org.xwiki.eclipse.model.XWikiEclipseWikiSummary">
@@ -210,7 +210,7 @@
   </commonFilter>
 	</extension>
 	<extension point="org.eclipse.core.runtime.adapters">
-		<factory adaptableType="org.xwiki.eclipse.storage.AbstractDataManager" class="org.xwiki.eclipse.ui.adapters.AdapterFactory">
+		<factory adaptableType="org.xwiki.eclipse.storage.DataManager" class="org.xwiki.eclipse.ui.adapters.AdapterFactory">
 			<adapter type="org.eclipse.ui.model.IWorkbenchAdapter">
          </adapter>
 			<adapter type="org.eclipse.ui.model.IWorkbenchAdapter2">
@@ -273,7 +273,7 @@
       </wizard>
 	</extension>
 	<extension point="org.eclipse.ui.propertyPages">
-		<page class="org.xwiki.eclipse.ui.properties.DataManagerPropertiesPage" icon="icons/xwiki.png" id="org.xwiki.eclipse.ui.properties.DataManager" name="Data Manager" objectClass="org.xwiki.eclipse.storage.AbstractDataManager">
+		<page class="org.xwiki.eclipse.ui.properties.DataManagerPropertiesPage" icon="icons/xwiki.png" id="org.xwiki.eclipse.ui.properties.DataManager" name="Data Manager" objectClass="org.xwiki.eclipse.storage.DataManager">
       </page>
 		<page class="org.xwiki.eclipse.ui.properties.XWikiEclipseSpaceSummaryPropertiesPage" icon="icons/xwiki.png" id="org.xwiki.eclipse.ui.properties.XWikiEclipseSpaceSummary" name="Space" objectClass="org.xwiki.eclipse.model.XWikiEclipseSpaceSummary">
       </page>
@@ -335,7 +335,7 @@
 		<handler class="org.xwiki.eclipse.ui.handlers.DataManagerConnectHandler" commandId="org.xwiki.eclipse.ui.commands.DataManagerConnect">
 			<activeWhen>
 				<iterate operator="and">
-					<test forcePluginActivation="true" property="org.xwiki.eclipse.storage.AbstractDataManager.isConnected" value="false">
+					<test forcePluginActivation="true" property="org.xwiki.eclipse.storage.DataManager.isConnected" value="false">
                </test>
 				</iterate>
 			</activeWhen>
@@ -343,7 +343,7 @@
 		<handler class="org.xwiki.eclipse.ui.handlers.DataManagerDisconnectHandler" commandId="org.xwiki.eclipse.ui.commands.DataManagerDisconnect">
 			<activeWhen>
 				<iterate operator="and">
-					<test forcePluginActivation="true" property="org.xwiki.eclipse.storage.AbstractDataManager.isConnected" value="true">
+					<test forcePluginActivation="true" property="org.xwiki.eclipse.storage.DataManager.isConnected" value="true">
                </test>
 				</iterate>
 			</activeWhen>
@@ -356,7 +356,7 @@
               operator="and">
            <or>
               <instanceof
-                    value="org.xwiki.eclipse.storage.AbstractDataManager">
+                    value="org.xwiki.eclipse.storage.DataManager">
               </instanceof>
               <instanceof
                     value="org.xwiki.eclipse.model.XWikiEclipseSpaceSummary">

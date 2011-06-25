@@ -43,10 +43,9 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.xwiki.eclipse.model.XWikiEclipseSpaceSummary;
-import org.xwiki.eclipse.storage.AbstractDataManager;
+import org.xwiki.eclipse.storage.DataManager;
 
 /**
- * 
  * @version $Id$
  */
 public class SelectionDialog extends TitleAreaDialog
@@ -201,7 +200,7 @@ public class SelectionDialog extends TitleAreaDialog
 
         boolean warn = false;
         for (Object o : selectedObjects) {
-            if ((o instanceof AbstractDataManager) || (o instanceof XWikiEclipseSpaceSummary)) {
+            if ((o instanceof DataManager) || (o instanceof XWikiEclipseSpaceSummary)) {
                 warn = true;
                 break;
             }

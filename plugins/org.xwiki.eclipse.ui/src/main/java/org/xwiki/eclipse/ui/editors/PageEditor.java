@@ -62,7 +62,7 @@ import org.xwiki.eclipse.model.XWikiEclipsePage;
 import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
 import org.xwiki.eclipse.model.XWikiEclipseSpaceSummary;
 import org.xwiki.eclipse.model.XWikiExtendedId;
-import org.xwiki.eclipse.storage.AbstractDataManager;
+import org.xwiki.eclipse.storage.DataManager;
 import org.xwiki.eclipse.storage.XWikiEclipseStorageException;
 import org.xwiki.eclipse.ui.UIConstants;
 import org.xwiki.eclipse.ui.UIPlugin;
@@ -70,7 +70,6 @@ import org.xwiki.eclipse.ui.dialogs.PageConflictDialog;
 import org.xwiki.eclipse.ui.utils.UIUtils;
 
 /**
- * 
  * @version $Id$
  */
 public class PageEditor extends TextEditor implements ICoreEventListener
@@ -209,8 +208,7 @@ public class PageEditor extends TextEditor implements ICoreEventListener
             // Editor has just been created.
             super.doSetInput(newPageEditorInput);
 
-            if (newPageEditorInput.getPage().getDataManager().isInConflict(
-                newPageEditorInput.getPage().getId())) {
+            if (newPageEditorInput.getPage().getDataManager().isInConflict(newPageEditorInput.getPage().getId())) {
                 UIUtils
                     .showMessageDialog(
                         getSite().getShell(),
@@ -325,14 +323,13 @@ public class PageEditor extends TextEditor implements ICoreEventListener
     {
         PageEditorInput input = (PageEditorInput) getEditorInput();
         XWikiEclipsePage currentPage = input.getPage();
-        AbstractDataManager dataManager = currentPage.getDataManager();
+        DataManager dataManager = currentPage.getDataManager();
 
         if (dataManager.isInConflict(currentPage.getId())) {
             try {
                 XWikiEclipsePage conflictingPage = dataManager.getConflictingPage(currentPage.getId());
 
-                XWikiEclipsePage conflictAncestorPage =
-                    dataManager.getConflictAncestorPage(currentPage.getId());
+                XWikiEclipsePage conflictAncestorPage = dataManager.getConflictAncestorPage(currentPage.getId());
 
                 PageConflictDialog compareDialog =
                     new PageConflictDialog(Display.getDefault().getActiveShell(), currentPage, conflictingPage,
@@ -343,15 +340,15 @@ public class PageEditor extends TextEditor implements ICoreEventListener
 
                 switch (result) {
                     case PageConflictDialog.ID_USE_LOCAL:
-                        
-                        XWikiEclipsePage newPage = dataManager.createPage(conflictingPage.getSpace(), 
-                            conflictingPage.getName(), 
-                            conflictingPage.getTitle(), 
-                            conflictingPage.getLanguage(), 
-                            conflictingPage.getContent());
+
+                        XWikiEclipsePage newPage =
+                            dataManager
+                                .createPage(conflictingPage.getSpace(), conflictingPage.getName(),
+                                    conflictingPage.getTitle(), conflictingPage.getLanguage(),
+                                    conflictingPage.getContent());
                         newPage.setContent(currentPage.getContent());
-//                        XWikiPage newPage = new XWikiPage(conflictingPage.getData().toRawMap());
-//                        newPage.setContent(currentPage.getContent());
+                        // XWikiPage newPage = new XWikiPage(conflictingPage.getData().toRawMap());
+                        // newPage.setContent(currentPage.getContent());
                         dataManager.clearConflictingStatus(newPage.getId());
                         setInput(new PageEditorInput(newPage, input.isReadOnly()));
 
@@ -394,9 +391,9 @@ public class PageEditor extends TextEditor implements ICoreEventListener
         final PageEditorInput input = (PageEditorInput) getEditorInput();
         XWikiEclipsePage page = input.getPage();
         String targetPageId = null;
-        AbstractDataManager dataManager = null;
-        if (event.getSource() instanceof AbstractDataManager) {
-            dataManager = (AbstractDataManager) event.getSource();
+        DataManager dataManager = null;
+        if (event.getSource() instanceof DataManager) {
+            dataManager = (DataManager) event.getSource();
         }
 
         boolean updatePage = false;
@@ -426,12 +423,12 @@ public class PageEditor extends TextEditor implements ICoreEventListener
             case DATA_MANAGER_CONNECTED:
 
                 updatePage = page.getDataManager().equals(dataManager);
-                
+
                 Display.getDefault().syncExec(new Runnable()
                 {
                     public void run()
                     {
-                       PageEditor.this.updateInfo();
+                        PageEditor.this.updateInfo();
                     }
                 });
 
@@ -439,7 +436,7 @@ public class PageEditor extends TextEditor implements ICoreEventListener
 
             case REFRESH:
                 Object data = event.getData();
-                if (data instanceof AbstractDataManager || data instanceof XWikiEclipsePageSummary
+                if (data instanceof DataManager || data instanceof XWikiEclipsePageSummary
                     || data instanceof XWikiEclipseSpaceSummary) {
 
                     // Check if this refresh event was triggered for the page
@@ -450,8 +447,8 @@ public class PageEditor extends TextEditor implements ICoreEventListener
                             return;
                     } else
 
-                    if (data instanceof AbstractDataManager) {
-                        AbstractDataManager aDataManager = (AbstractDataManager) data;
+                    if (data instanceof DataManager) {
+                        DataManager aDataManager = (DataManager) data;
 
                         if (!aDataManager.equals(page.getDataManager()))
                             return;
@@ -514,8 +511,7 @@ public class PageEditor extends TextEditor implements ICoreEventListener
             case SPACE_REMOVED:
                 XWikiEclipseSpaceSummary aSpace = (XWikiEclipseSpaceSummary) event.getData();
 
-                if (aSpace.getDataManager().equals(page.getDataManager())
-                    && aSpace.getKey().equals(page.getSpace())) {
+                if (aSpace.getDataManager().equals(page.getDataManager()) && aSpace.getKey().equals(page.getSpace())) {
                     // The space that the page being edited belonged to has been
                     // deleted.
                     this.close(false);
@@ -525,7 +521,7 @@ public class PageEditor extends TextEditor implements ICoreEventListener
 
             case DATA_MANAGER_UNREGISTERED:
 
-                AbstractDataManager aDataManager = (AbstractDataManager) event.getData();
+                DataManager aDataManager = (DataManager) event.getData();
                 if (aDataManager.equals(page.getDataManager())) {
                     // The connection that the page being edited belonged to has
                     // been deleted.
@@ -536,7 +532,7 @@ public class PageEditor extends TextEditor implements ICoreEventListener
         }
 
         try {
-            if (updatePage) {            	
+            if (updatePage) {
                 if (!isDirty()) {
                     final XWikiEclipsePage newPage = page.getDataManager().getPage(page.getId());
 
@@ -570,7 +566,7 @@ public class PageEditor extends TextEditor implements ICoreEventListener
                         }
 
                     }
-                }                
+                }
             }
         } catch (XWikiEclipseStorageException e) {
             CoreLog.logError("Error while handling XWiki Eclipse event", e);

@@ -31,19 +31,18 @@ import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.jface.text.contentassist.IContextInformationValidator;
 import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
-import org.xwiki.eclipse.storage.AbstractDataManager;
+import org.xwiki.eclipse.storage.DataManager;
 import org.xwiki.eclipse.ui.UIPlugin;
 import org.xwiki.eclipse.ui.editors.utils.Utils;
 
 /**
- * 
  * @version $Id$
  */
 public class XWikiLinkContentAssistProcessor implements IContentAssistProcessor
 {
-    private AbstractDataManager dataManager;
+    private DataManager dataManager;
 
-    public XWikiLinkContentAssistProcessor(AbstractDataManager dataManager)
+    public XWikiLinkContentAssistProcessor(DataManager dataManager)
     {
         this.dataManager = dataManager;
     }

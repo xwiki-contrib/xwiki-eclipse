@@ -39,9 +39,9 @@ import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.wizards.newresource.BasicNewProjectResourceWizard;
-import org.xwiki.eclipse.core.XWikiClient;
 import org.xwiki.eclipse.core.XWikiEclipseNature;
-import org.xwiki.eclipse.storage.AbstractDataManager;
+import org.xwiki.eclipse.storage.DataManager;
+import org.xwiki.eclipse.storage.XWikiClient;
 import org.xwiki.eclipse.storage.utils.StorageUtils;
 import org.xwiki.eclipse.ui.perspectives.XWikiPerspectiveFactory;
 
@@ -147,15 +147,12 @@ public class NewConnectionWizard extends Wizard implements INewWizard, IExecutab
                         project.create(null);
                         project.open(null);
 
-                        project.setPersistentProperty(AbstractDataManager.BACKEND,
+                        project.setPersistentProperty(DataManager.BACKEND,
                             StorageUtils.getBackend(newConnectionWizardState.getServerUrl()).toString());
-                        project.setPersistentProperty(AbstractDataManager.ENDPOINT,
-                            newConnectionWizardState.getServerUrl());
-                        project.setPersistentProperty(AbstractDataManager.USERNAME,
-                            newConnectionWizardState.getUserName());
-                        project.setPersistentProperty(AbstractDataManager.PASSWORD,
-                            newConnectionWizardState.getPassword());
-                        project.setPersistentProperty(AbstractDataManager.AUTO_CONNECT, "true");
+                        project.setPersistentProperty(DataManager.ENDPOINT, newConnectionWizardState.getServerUrl());
+                        project.setPersistentProperty(DataManager.USERNAME, newConnectionWizardState.getUserName());
+                        project.setPersistentProperty(DataManager.PASSWORD, newConnectionWizardState.getPassword());
+                        project.setPersistentProperty(DataManager.AUTO_CONNECT, "true");
 
                         IProjectDescription description = project.getDescription();
                         description.setNatureIds(new String[] {XWikiEclipseNature.ID});

@@ -33,22 +33,21 @@ import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 import org.xwiki.eclipse.model.XWikiEclipseObject;
-import org.xwiki.eclipse.storage.AbstractDataManager;
+import org.xwiki.eclipse.storage.DataManager;
 import org.xwiki.eclipse.ui.editors.ObjectEditor;
 import org.xwiki.eclipse.ui.editors.ObjectEditorInput;
 import org.xwiki.eclipse.ui.utils.XWikiEclipseSafeRunnable;
 
 /**
- * 
  * @version $Id$
  */
 public class NewObjectWizard extends Wizard implements INewWizard
 {
     private NewObjectWizardState newObjectWizardState;
 
-    private AbstractDataManager dataManager;
+    private DataManager dataManager;
 
-    public NewObjectWizard(AbstractDataManager dataManager, String pageId)
+    public NewObjectWizard(DataManager dataManager, String pageId)
     {
         super();
         newObjectWizardState = new NewObjectWizardState();
@@ -68,8 +67,8 @@ public class NewObjectWizard extends Wizard implements INewWizard
                     try {
                         monitor.beginTask("Creating object...", IProgressMonitor.UNKNOWN);
                         final XWikiEclipseObject object =
-                            dataManager.createObject(newObjectWizardState.getPageId(), newObjectWizardState
-                                .getClassName());
+                            dataManager.createObject(newObjectWizardState.getPageId(),
+                                newObjectWizardState.getClassName());
 
                         Display.getDefault().syncExec(new Runnable()
                         {

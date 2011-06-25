@@ -37,10 +37,10 @@ import org.xwiki.eclipse.model.XWikiEclipseObjectSummary;
 import org.xwiki.eclipse.model.XWikiEclipsePage;
 import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
 import org.xwiki.eclipse.model.XWikiEclipseSpaceSummary;
+import org.xwiki.eclipse.storage.XWikiEclipseStorageException;
 import org.xwiki.eclipse.ui.utils.UIUtils;
 
 /**
- * 
  * @version $Id$
  */
 public class PagePreview extends ViewPart implements ISelectionListener, ICoreEventListener
@@ -122,8 +122,8 @@ public class PagePreview extends ViewPart implements ISelectionListener, ICoreEv
 
         addressBarComposite = new Composite(mainComposite, SWT.NONE);
         GridLayoutFactory.fillDefaults().numColumns(3).margins(0, 5).spacing(0, 0).applyTo(addressBarComposite);
-        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).exclude(true).applyTo(
-            addressBarComposite);
+        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).exclude(true)
+            .applyTo(addressBarComposite);
 
         Label label = new Label(addressBarComposite, SWT.NONE);
         label.setText("URL:");
@@ -165,8 +165,8 @@ public class PagePreview extends ViewPart implements ISelectionListener, ICoreEv
                     browser = browserSupport.createBrowser("xeclipse");
                     browser.openURL(new URL(urlText.getText()));
                 } catch (Exception e1) {
-                    MessageDialog.openWarning(Display.getDefault().getActiveShell(), "Warning", String.format(
-                        "Unable to open external browser\n%s", e1));
+                    MessageDialog.openWarning(Display.getDefault().getActiveShell(), "Warning",
+                        String.format("Unable to open external browser\n%s", e1));
                 }
             }
         });
@@ -224,9 +224,14 @@ public class PagePreview extends ViewPart implements ISelectionListener, ICoreEv
 
         if (selectedObject instanceof XWikiEclipseObjectSummary) {
             XWikiEclipseObjectSummary objectSummary = (XWikiEclipseObjectSummary) selectedObject;
+            XWikiEclipsePageSummary pageSummary;
+            try {
+                pageSummary = objectSummary.getDataManager().getPageSummary(objectSummary.getPageId());
+                update(pageSummary != null ? pageSummary.getUrl() : null, objectSummary.getDataManager().isConnected());
+            } catch (XWikiEclipseStorageException e) {
+                e.printStackTrace();
+            }
 
-            update(objectSummary.getPageSummary() != null ? objectSummary.getPageSummary().getUrl() : null,
-                objectSummary.getDataManager().isConnected());
         }
 
     }

@@ -35,13 +35,12 @@ import org.xwiki.eclipse.core.DataManagerRegistry;
 import org.xwiki.eclipse.model.XWikiEclipseObjectSummary;
 import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
 import org.xwiki.eclipse.model.XWikiEclipseSpaceSummary;
-import org.xwiki.eclipse.storage.AbstractDataManager;
+import org.xwiki.eclipse.storage.DataManager;
 import org.xwiki.eclipse.ui.dialogs.SelectionDialog;
 import org.xwiki.eclipse.ui.utils.UIUtils;
 import org.xwiki.eclipse.ui.utils.XWikiEclipseSafeRunnable;
 
 /**
- * 
  * @version $Id$
  */
 public class DeleteXWikiElementHandler extends AbstractHandler
@@ -91,8 +90,8 @@ public class DeleteXWikiElementHandler extends AbstractHandler
 
                 }
 
-                if (selectedObject instanceof AbstractDataManager) {
-                    final AbstractDataManager dataManager = (AbstractDataManager) selectedObject;
+                if (selectedObject instanceof DataManager) {
+                    final DataManager dataManager = (DataManager) selectedObject;
 
                     SafeRunner.run(new XWikiEclipseSafeRunnable()
                     {

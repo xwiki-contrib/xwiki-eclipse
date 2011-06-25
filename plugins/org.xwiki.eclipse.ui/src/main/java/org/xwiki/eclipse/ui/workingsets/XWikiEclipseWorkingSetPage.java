@@ -45,14 +45,13 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.IWorkingSetPage;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.xwiki.eclipse.model.ModelObject;
-import org.xwiki.eclipse.storage.AbstractDataManager;
+import org.xwiki.eclipse.storage.DataManager;
 import org.xwiki.eclipse.ui.NavigatorContentProvider;
 import org.xwiki.eclipse.ui.UIConstants;
 import org.xwiki.eclipse.ui.UIPlugin;
 import org.xwiki.eclipse.ui.utils.UIUtils;
 
 /**
- * 
  * @version $Id$
  */
 public class XWikiEclipseWorkingSetPage extends WizardPage implements IWorkingSetPage
@@ -99,8 +98,8 @@ public class XWikiEclipseWorkingSetPage extends WizardPage implements IWorkingSe
 
         private void setChecked(TreeItem item, Object o)
         {
-            if (o instanceof AbstractDataManager) {
-                AbstractDataManager dataManager = (AbstractDataManager) o;
+            if (o instanceof DataManager) {
+                DataManager dataManager = (DataManager) o;
                 item.setChecked(UIUtils.isXWikiEcipseIdInWorkingSet(dataManager.getXWikiEclipseId(), workingSet));
             }
 
@@ -126,10 +125,10 @@ public class XWikiEclipseWorkingSetPage extends WizardPage implements IWorkingSe
     {
         Set<Object> elements = new HashSet<Object>();
         for (Object object : treeViewer.getCheckedElements()) {
-            if (object instanceof AbstractDataManager) {
-                AbstractDataManager dataManager = (AbstractDataManager) object;
+            if (object instanceof DataManager) {
+                DataManager dataManager = (DataManager) object;
                 elements.add(dataManager.getProject());
-                elements.add(new XWikiEclipseElementId(((AbstractDataManager) object).getXWikiEclipseId()));
+                elements.add(new XWikiEclipseElementId(((DataManager) object).getXWikiEclipseId()));
             }
 
             if (object instanceof ModelObject) {
