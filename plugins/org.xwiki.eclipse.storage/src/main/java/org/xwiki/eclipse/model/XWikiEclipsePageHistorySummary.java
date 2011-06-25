@@ -20,7 +20,7 @@
  */
 package org.xwiki.eclipse.model;
 
-import org.xwiki.eclipse.storage.AbstractDataManager;
+import org.xwiki.eclipse.storage.DataManager;
 
 /**
  * A class representing a space summary.
@@ -30,21 +30,21 @@ import org.xwiki.eclipse.storage.AbstractDataManager;
 public abstract class XWikiEclipsePageHistorySummary extends ModelObject
 {
 
-    public XWikiEclipsePageHistorySummary(AbstractDataManager dataManager) {
-		super(dataManager);
-	}
-
-	@Override
-    public String getXWikiEclipseId()
+    public XWikiEclipsePageHistorySummary(DataManager dataManager)
     {
-        return String
-            .format(
-                "xwikieclipse://%s/%s/%d/%d", getDataManager().getName(), getId(), getVersion(), getMinorVersion()); //$NON-NLS-1$
+        super(dataManager);
     }
 
-	public abstract int getMinorVersion();
+    @Override
+    public String getXWikiEclipseId()
+    {
+        return String.format(
+            "xwikieclipse://%s/%s/%d/%d", getDataManager().getName(), getId(), getVersion(), getMinorVersion()); //$NON-NLS-1$
+    }
 
-	public abstract int getVersion();
+    public abstract int getMinorVersion();
 
-	public abstract String getId();
+    public abstract int getVersion();
+
+    public abstract String getId();
 }

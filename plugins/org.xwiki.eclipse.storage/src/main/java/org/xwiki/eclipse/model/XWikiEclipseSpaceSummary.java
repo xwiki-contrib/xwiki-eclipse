@@ -20,7 +20,7 @@
  */
 package org.xwiki.eclipse.model;
 
-import org.xwiki.eclipse.storage.AbstractDataManager;
+import org.xwiki.eclipse.storage.DataManager;
 
 /**
  * A class representing a space summary.
@@ -35,12 +35,9 @@ public class XWikiEclipseSpaceSummary extends ModelObject
 
     private String url;
 
-    public XWikiEclipseSpaceSummary(AbstractDataManager dataManager, String key, String name, String url)
+    public XWikiEclipseSpaceSummary(DataManager dataManager)
     {
         super(dataManager);
-        this.key = key;
-        this.name = name;
-        this.url = url;
     }
 
     @Override

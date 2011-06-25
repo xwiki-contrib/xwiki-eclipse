@@ -21,7 +21,7 @@
 package org.xwiki.eclipse.model;
 
 import org.eclipse.core.runtime.Assert;
-import org.xwiki.eclipse.storage.AbstractDataManager;
+import org.xwiki.eclipse.storage.DataManager;
 
 /**
  * This class is an utility class used for encapsulating and accessing the information concerning a property in a more
@@ -55,7 +55,7 @@ public abstract class XWikiEclipseObjectProperty extends ModelObject
     /**
      * @param dataManager
      */
-    public XWikiEclipseObjectProperty(AbstractDataManager dataManager)
+    public XWikiEclipseObjectProperty(DataManager dataManager)
     {
         super(dataManager);
     }
@@ -85,14 +85,16 @@ public abstract class XWikiEclipseObjectProperty extends ModelObject
     /**
      * @return The value associated to the property.
      */
-    public Object getValue() {
+    public Object getValue()
+    {
         return object.getProperty(propertyName);
     }
 
     /**
      * @param value The value to be associated to the property.
      */
-    public void setValue(Object value){
+    public void setValue(Object value)
+    {
         object.setProperty(propertyName, value);
     }
 
@@ -103,7 +105,8 @@ public abstract class XWikiEclipseObjectProperty extends ModelObject
      * @param attributeName
      * @return The value for the attribute.
      */
-    public String getAttribute(String attributeName) {
+    public String getAttribute(String attributeName)
+    {
         Object attribute = object.getPropertyAttribute(propertyName, attributeName);
 
         if (attribute != null) {
@@ -112,7 +115,7 @@ public abstract class XWikiEclipseObjectProperty extends ModelObject
 
         return null;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -124,7 +127,7 @@ public abstract class XWikiEclipseObjectProperty extends ModelObject
                 "xwikieclipse://%s/%s/object/%s/%d/%s", getDataManager().getName(), getPageId(), getClass(), getId(), propertyName); //$NON-NLS-1$        
     }
 
-	public abstract int getId();
+    public abstract int getId();
 
-	public abstract String getPageId();
+    public abstract String getPageId();
 }

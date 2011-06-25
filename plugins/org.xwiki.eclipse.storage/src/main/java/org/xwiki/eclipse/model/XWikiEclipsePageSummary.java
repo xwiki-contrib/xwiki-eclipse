@@ -22,20 +22,38 @@ package org.xwiki.eclipse.model;
 
 import java.util.List;
 
-import org.xwiki.eclipse.storage.AbstractDataManager;
+import org.xwiki.eclipse.storage.DataManager;
 
 /**
  * A class representing an XWiki page summary.
  * 
  * @version $Id$
  */
-public abstract class XWikiEclipsePageSummary extends ModelObject
+public class XWikiEclipsePageSummary extends ModelObject
 {
-	public XWikiEclipsePageSummary(AbstractDataManager dataManager) {
-		super(dataManager);
-	}
+    private String id;
 
-	public abstract String getId();
+    private String title;
+
+    private String space;
+
+    private String parentId;
+
+    private String url;
+
+    private List<String> translations;
+
+    public XWikiEclipsePageSummary(DataManager dataManager, String id, String title, String space, String parentId,
+        String url, List<String> translations)
+    {
+        super(dataManager);
+        this.id = id;
+        this.title = title;
+        this.space = space;
+        this.parentId = parentId;
+        this.url = url;
+        this.translations = translations;
+    }
 
     @Override
     public String getXWikiEclipseId()
@@ -43,13 +61,63 @@ public abstract class XWikiEclipsePageSummary extends ModelObject
         return String.format("xwikieclipse://%s/%s/summary", getDataManager().getName(), getId()); //$NON-NLS-1$
     }
 
-    public abstract List<String> getTranslations();
+    public String getId()
+    {
+        return id;
+    }
 
-    public abstract String getTitle();
+    public void setId(String id)
+    {
+        this.id = id;
+    }
 
-    public abstract String getSpace();
+    public String getTitle()
+    {
+        return title;
+    }
 
-    public abstract String getParentId();
+    public void setTitle(String title)
+    {
+        this.title = title;
+    }
 
-    public abstract String getUrl();
+    public String getSpace()
+    {
+        return space;
+    }
+
+    public void setSpace(String space)
+    {
+        this.space = space;
+    }
+
+    public String getParentId()
+    {
+        return parentId;
+    }
+
+    public void setParentId(String parentId)
+    {
+        this.parentId = parentId;
+    }
+
+    public String getUrl()
+    {
+        return url;
+    }
+
+    public void setUrl(String url)
+    {
+        this.url = url;
+    }
+
+    public List<String> getTranslations()
+    {
+        return translations;
+    }
+
+    public void setTranslations(List<String> translations)
+    {
+        this.translations = translations;
+    }
 }

@@ -22,7 +22,7 @@ package org.xwiki.eclipse.model;
 
 import java.util.List;
 
-import org.xwiki.eclipse.storage.AbstractDataManager;
+import org.xwiki.eclipse.storage.DataManager;
 
 /**
  * A class representing an XWiki object.
@@ -32,32 +32,33 @@ import org.xwiki.eclipse.storage.AbstractDataManager;
 public abstract class XWikiEclipseObject extends ModelObject
 {
 
-    public XWikiEclipseObject(AbstractDataManager dataManager) {
-		super(dataManager);
-	}
+    public XWikiEclipseObject(DataManager dataManager)
+    {
+        super(dataManager);
+    }
 
-	/**
+    /**
      * @return The list of properties available for this object.
      * @see XWikiEclipseObjectProperty
      */
     public abstract List<XWikiEclipseObjectProperty> getProperties();
-    
+
     /**
      * @param propertyName
      * @return The information for a given property.
      */
     public abstract XWikiEclipseObjectProperty getProperty(String propertyName);
-    
+
     public abstract String getName();
-    
-    public abstract XWikiEclipsePageSummary getPageSummary();    
+
+    public abstract XWikiEclipsePageSummary getPageSummary();
 
     public abstract XWikiEclipseObjectSummary getSummary();
-    
+
     public abstract String getPageId();
-    
+
     public abstract String getClassName();
-    
+
     public abstract int getId();
 
     /**
@@ -66,9 +67,8 @@ public abstract class XWikiEclipseObject extends ModelObject
     @Override
     public String getXWikiEclipseId()
     {
-        return String
-            .format(
-                "xwikieclipse://%s/%s/%s/%d", getDataManager().getName(), getPageId(), getClassName(), getId()); //$NON-NLS-1$
+        return String.format(
+            "xwikieclipse://%s/%s/%s/%d", getDataManager().getName(), getPageId(), getClassName(), getId()); //$NON-NLS-1$
     }
 
     /**
@@ -84,5 +84,5 @@ public abstract class XWikiEclipseObject extends ModelObject
      */
     public abstract Object getPropertyAttribute(String propertyName, String attributeName);
 
-    public abstract XWikiEclipseClass getXWikiClass();    
+    public abstract XWikiEclipseClass getXWikiClass();
 }

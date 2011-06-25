@@ -19,10 +19,9 @@
  */
 package org.xwiki.eclipse.model;
 
-import org.xwiki.eclipse.storage.AbstractDataManager;
+import org.xwiki.eclipse.storage.DataManager;
 
 /**
- * 
  * @version $Id$
  */
 public abstract class XWikiEclipseWikiSummary extends ModelObject
@@ -31,7 +30,7 @@ public abstract class XWikiEclipseWikiSummary extends ModelObject
     /**
      * @param dataManager
      */
-    public XWikiEclipseWikiSummary(AbstractDataManager dataManager)
+    public XWikiEclipseWikiSummary(DataManager dataManager)
     {
         super(dataManager);
     }
@@ -44,13 +43,12 @@ public abstract class XWikiEclipseWikiSummary extends ModelObject
     @Override
     public String getXWikiEclipseId()
     {
-        return String.format(
-            "xwikieclipse://%s/rest/wikis/%s", getDataManager().getName(), getWikiId()); //$NON-NLS-1$;
+        return String.format("xwikieclipse://%s/rest/wikis/%s", getDataManager().getName(), getWikiId()); //$NON-NLS-1$;
     }
 
     public abstract String getWikiId();
-    
+
     public abstract String getName();
-    
+
     public abstract String getUrl();
 }

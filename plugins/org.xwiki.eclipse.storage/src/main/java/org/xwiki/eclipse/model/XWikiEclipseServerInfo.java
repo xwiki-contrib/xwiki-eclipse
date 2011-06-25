@@ -16,37 +16,53 @@
  * License along with this software; if not, write to the Free
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
- *
  */
 package org.xwiki.eclipse.model;
 
-import org.xwiki.eclipse.storage.DataManager;
-
 /**
- * A class representing an object summary.
- * 
  * @version $Id$
  */
-public abstract class XWikiEclipseObjectSummary extends ModelObject
+public class XWikiEclipseServerInfo
 {
 
-    public XWikiEclipseObjectSummary(DataManager dataManager)
+    private int majorVersion;
+
+    private int minorVersion;
+
+    private String baseUrl;
+
+    public XWikiEclipseServerInfo()
     {
-        super(dataManager);
     }
 
-    public abstract String getPageId();
-
-    public abstract String getClassName();
-
-    public abstract int getId();
-
-    @Override
-    public String getXWikiEclipseId()
+    public int getMajorVersion()
     {
-        return String.format(
-            "xwikieclipse://%s/%s/%s/%d/summary", getDataManager().getName(), getPageId(), getClassName(), getId()); //$NON-NLS-1$        
+        return majorVersion;
     }
 
-    public abstract String getPrettyName();
+    public void setMajorVersion(int majorVersion)
+    {
+        this.majorVersion = majorVersion;
+    }
+
+    public int getMinorVersion()
+    {
+        return minorVersion;
+    }
+
+    public void setMinorVersion(int minorVersion)
+    {
+        this.minorVersion = minorVersion;
+    }
+
+    public String getBaseUrl()
+    {
+        return baseUrl;
+    }
+
+    public void setBaseUrl(String baseUrl)
+    {
+        this.baseUrl = baseUrl;
+    }
+
 }

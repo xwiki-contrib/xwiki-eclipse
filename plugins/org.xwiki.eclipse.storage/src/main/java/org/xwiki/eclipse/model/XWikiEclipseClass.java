@@ -20,23 +20,25 @@
  */
 package org.xwiki.eclipse.model;
 
-import org.xwiki.eclipse.storage.AbstractDataManager;
-
+import org.xwiki.eclipse.storage.DataManager;
 
 /**
  * A class representing an XWiki class.
  * 
  * @version $Id$
  */
-public abstract class XWikiEclipseClass extends ModelObject
+public class XWikiEclipseClass extends ModelObject
 {
     public static final String XWIKICLASS_ATTRIBUTE = "xwikiclass";
-    
-    public XWikiEclipseClass(AbstractDataManager dataManager) {
-		super(dataManager);
-	}
 
-	/**
+    private String id;
+
+    public XWikiEclipseClass(DataManager dataManager)
+    {
+        super(dataManager);
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -45,5 +47,13 @@ public abstract class XWikiEclipseClass extends ModelObject
         return String.format("xwikieclipse://%s/class/%s", getDataManager().getName(), getId()); //$NON-NLS-1$
     }
 
-	public abstract String getId();
+    public String getId()
+    {
+        return id;
+    }
+
+    public void setId(String id)
+    {
+        this.id = id;
+    }
 }

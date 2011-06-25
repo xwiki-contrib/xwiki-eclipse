@@ -21,13 +21,12 @@
 package org.xwiki.eclipse.model;
 
 import org.eclipse.core.runtime.Assert;
-import org.xwiki.eclipse.storage.*;
+import org.xwiki.eclipse.storage.DataManager;
 
 /**
  * Base class for all the objects that are used to model XWiki elements in XWiki Eclipse. This class is used basically
  * to associate the elements returned by XWiki to the data manager that retrieved them.
  * 
- * @see AbstractDataManager 
  * @version $Id$
  */
 public abstract class ModelObject
@@ -35,14 +34,14 @@ public abstract class ModelObject
     /**
      * The data manager that retrieved this object.
      */
-    private AbstractDataManager dataManager;
+    private DataManager dataManager;
 
     /**
      * Constructor.
      * 
      * @param dataManager The data manager that generated this object.
      */
-    public ModelObject(AbstractDataManager dataManager)
+    public ModelObject(DataManager dataManager)
     {
         Assert.isNotNull(dataManager);
         this.dataManager = dataManager;
@@ -51,7 +50,7 @@ public abstract class ModelObject
     /**
      * @return The data manager associated to this object.
      */
-    public AbstractDataManager getDataManager()
+    public DataManager getDataManager()
     {
         return dataManager;
     }

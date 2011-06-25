@@ -20,7 +20,7 @@
  */
 package org.xwiki.eclipse.model;
 
-import org.xwiki.eclipse.storage.AbstractDataManager;
+import org.xwiki.eclipse.storage.DataManager;
 
 /**
  * A class representing an XWiki page.
@@ -29,23 +29,23 @@ import org.xwiki.eclipse.storage.AbstractDataManager;
  */
 public abstract class XWikiEclipsePage extends ModelObject
 {
-    
-    public XWikiEclipsePage(AbstractDataManager dataManager) {
-		super(dataManager);
-	}
+
+    public XWikiEclipsePage(DataManager dataManager)
+    {
+        super(dataManager);
+    }
 
     public abstract XWikiEclipsePageSummary getSummary();
-    
+
     @Override
     public String getXWikiEclipseId()
     {
-        return String.format(
-            "xwikieclipse://%s/%s/page/%s", getDataManager().getName(), getId(), getLanguage()); //$NON-NLS-1$
+        return String.format("xwikieclipse://%s/%s/page/%s", getDataManager().getName(), getId(), getLanguage()); //$NON-NLS-1$
     }
 
-	public abstract String getLanguage();
+    public abstract String getLanguage();
 
-	public abstract String getId();
+    public abstract String getId();
 
     public abstract int getVersion();
 
@@ -56,7 +56,7 @@ public abstract class XWikiEclipsePage extends ModelObject
     public abstract String getSpace();
 
     public abstract XWikiEclipseSpaceSummary getSpaceSummary();
-    
+
     public abstract String getName();
 
     public abstract void setContent(String content);
