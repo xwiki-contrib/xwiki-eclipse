@@ -19,13 +19,17 @@
  */
 package org.xwiki.eclipse.storage;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import org.xwiki.eclipse.model.ModelObject;
 import org.xwiki.eclipse.model.XWikiEclipseServerInfo;
 import org.xwiki.eclipse.model.XWikiEclipseSpaceSummary;
 import org.xwiki.eclipse.model.XWikiEclipseWikiSummary;
 import org.xwiki.eclipse.rest.RestRemoteXWikiDataStorage;
+import org.xwiki.rest.model.jaxb.Wiki;
+import org.xwiki.rest.model.jaxb.Xwiki;
 
 /**
  * @version $Id$
@@ -34,44 +38,51 @@ public class RestRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStorag
 {
     RestRemoteXWikiDataStorage restRemoteStorage;
 
+    private DataManager dataManager;
+
+    private String password;
+
+    private String username;
+
+    private String endpoint;
+
     /**
+     * @param dataManager
      * @param endpoint
      * @param userName
      * @param password
      */
-    public RestRemoteXWikiDataStorageAdapter(String endpoint, String userName, String password)
+    public RestRemoteXWikiDataStorageAdapter(DataManager dataManager, String endpoint, String userName, String password)
     {
-        restRemoteStorage = new RestRemoteXWikiDataStorage(endpoint, userName, password);
-
+        this.dataManager = dataManager;
+        this.restRemoteStorage = new RestRemoteXWikiDataStorage(endpoint, userName, password);
+        this.endpoint = endpoint;
+        this.username = userName;
+        this.password = password;
     }
 
-    // public List<ModelObject> getRootResources() throws XWikiEclipseStorageException
-    // {
-    // List<ModelObject> result = new ArrayList<ModelObject>();
-    //
-    // List<XWikiEclipseWikiSummary> wikis = getWikis();
-    // for (XWikiEclipseWikiSummary xWikiEclipseWikiSummary : wikis) {
-    // result.add(xWikiEclipseWikiSummary);
-    // }
-    //
-    // return result;
-    // }
-    //
-    // public List<XWikiEclipseWikiSummary> getWikis() throws XWikiEclipseStorageException
-    // {
-    // try {
-    // List<XWikiEclipseWikiSummary> result = new ArrayList<XWikiEclipseWikiSummary>();
-    // List<Wiki> wikis = client.getWikis(username, password);
-    // for (Wiki wiki : wikis) {
-    // result.add(new XWikiEclipseWikiSummaryInRest(this, wiki));
-    // }
-    //
-    // return result;
-    // } catch (Exception e) {
-    // e.printStackTrace();
-    // throw new XWikiEclipseStorageException(e);
-    // }
-    // }
+    public List<XWikiEclipseWikiSummary> getWikis() throws XWikiEclipseStorageException
+    {
+        try {
+            List<XWikiEclipseWikiSummary> result = new ArrayList<XWikiEclipseWikiSummary>();
+
+            List<Wiki> wikis = restRemoteStorage.getWikis(username, password);
+            for (Wiki wiki : wikis) {
+                XWikiEclipseWikiSummary wikiSummary = new XWikiEclipseWikiSummary(dataManager);
+                wikiSummary.setWikiId(wiki.getId());
+                wikiSummary.setName(wiki.getName());
+                // wikiSummary.setUrl(wiki.get)
+
+                result.add(wikiSummary);
+
+            }
+
+            return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new XWikiEclipseStorageException(e);
+        }
+    }
 
     /**
      * {@inheritDoc}
@@ -105,8 +116,22 @@ public class RestRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStorag
     @Override
     public XWikiEclipseServerInfo getServerInfo()
     {
-        // TODO Auto-generated method stub
-        return null;
+        XWikiEclipseServerInfo serverInfo = new XWikiEclipseServerInfo();
+
+        Xwiki xwiki = this.restRemoteStorage.getServerInfo();
+
+        String versionStr = xwiki.getVersion(); // e.g., 3.1-rc-1
+        StringTokenizer tokenizer = new StringTokenizer(versionStr, "-");
+
+        String v = tokenizer.nextToken();
+
+        tokenizer = new StringTokenizer(v, ".");
+        serverInfo.setMajorVersion(Integer.parseInt(tokenizer.nextToken()));
+        serverInfo.setMinorVersion(Integer.parseInt(tokenizer.nextToken()));
+
+        serverInfo.setBaseUrl(endpoint);
+
+        return serverInfo;
     }
 
     /**
@@ -117,19 +142,20 @@ public class RestRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStorag
     @Override
     public List<ModelObject> getRootResources()
     {
-        // TODO Auto-generated method stub
-        return null;
-    }
+        List<ModelObject> result = new ArrayList<ModelObject>();
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#getWikis()
-     */
-    @Override
-    public List<XWikiEclipseWikiSummary> getWikis()
-    {
-        // TODO Auto-generated method stub
+        List<XWikiEclipseWikiSummary> wikis;
+        try {
+            wikis = getWikis();
+            for (XWikiEclipseWikiSummary wikiSummary : wikis) {
+                result.add(wikiSummary);
+            }
+            return result;
+        } catch (XWikiEclipseStorageException e) {
+            e.printStackTrace();
+        }
+
         return null;
+
     }
 }

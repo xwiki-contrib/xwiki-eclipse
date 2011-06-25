@@ -19,8 +19,11 @@
  */
 package org.xwiki.eclipse.storage;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.codehaus.swizzle.confluence.ServerInfo;
+import org.codehaus.swizzle.confluence.SpaceSummary;
 import org.xwiki.eclipse.model.ModelObject;
 import org.xwiki.eclipse.model.XWikiEclipseServerInfo;
 import org.xwiki.eclipse.model.XWikiEclipseSpaceSummary;
@@ -33,16 +36,21 @@ import org.xwiki.eclipse.xmlrpc.XmlrpcRemoteXWikiDataStorage;
  */
 public class XmlrpcRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStorage
 {
+    private DataManager dataManager;
 
     private XmlrpcRemoteXWikiDataStorage xmlrpcRemoteDataStorage;
 
     /**
+     * @param dataManager
      * @param endpoint
      * @param userName
      * @param password
      */
-    public XmlrpcRemoteXWikiDataStorageAdapter(String endpoint, String userName, String password)
+    public XmlrpcRemoteXWikiDataStorageAdapter(DataManager dataManager, String endpoint, String userName,
+        String password)
     {
+        this.dataManager = dataManager;
+
         try {
             xmlrpcRemoteDataStorage = new XmlrpcRemoteXWikiDataStorage(endpoint, userName, password);
         } catch (XWikiEclipseXmlrpcException e) {
@@ -58,8 +66,13 @@ public class XmlrpcRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStor
     @Override
     public List<ModelObject> getRootResources()
     {
-        // TODO Auto-generated method stub
-        return null;
+        List<ModelObject> result = new ArrayList<ModelObject>();
+        List<XWikiEclipseSpaceSummary> spaces = getSpaces();
+        for (XWikiEclipseSpaceSummary space : spaces) {
+            result.add(space);
+        }
+
+        return result;
     }
 
     /**
@@ -70,7 +83,6 @@ public class XmlrpcRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStor
     @Override
     public List<XWikiEclipseWikiSummary> getWikis()
     {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -82,7 +94,23 @@ public class XmlrpcRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStor
     @Override
     public List<XWikiEclipseSpaceSummary> getSpaces()
     {
-        // TODO Auto-generated method stub
+        List<XWikiEclipseSpaceSummary> result = new ArrayList<XWikiEclipseSpaceSummary>();
+
+        try {
+            List<SpaceSummary> spaces = this.xmlrpcRemoteDataStorage.getSpaces();
+            for (SpaceSummary spaceSummary : spaces) {
+                XWikiEclipseSpaceSummary space = new XWikiEclipseSpaceSummary(dataManager);
+                space.setKey(spaceSummary.getKey());
+                space.setName(spaceSummary.getName());
+                space.setUrl(spaceSummary.getUrl());
+
+                result.add(space);
+            }
+            return result;
+        } catch (XWikiEclipseXmlrpcException e) {
+            e.printStackTrace();
+        }
+
         return null;
     }
 
@@ -106,7 +134,20 @@ public class XmlrpcRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStor
     @Override
     public XWikiEclipseServerInfo getServerInfo()
     {
-        // TODO Auto-generated method stub
+        XWikiEclipseServerInfo serverInfo = new XWikiEclipseServerInfo();
+
+        try {
+            ServerInfo info = xmlrpcRemoteDataStorage.getServerInfo();
+            serverInfo.setBaseUrl(info.getBaseUrl());
+            serverInfo.setMajorVersion(info.getMajorVersion());
+            serverInfo.setMinorVersion(info.getMinorVersion());
+
+            return serverInfo;
+        } catch (XWikiEclipseXmlrpcException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
         return null;
     }
 

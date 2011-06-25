@@ -22,6 +22,7 @@ package org.xwiki.eclipse.storage;
 import java.net.MalformedURLException;
 
 import org.apache.xmlrpc.XmlRpcException;
+import org.xwiki.eclipse.rest.XWikiRESTClient;
 import org.xwiki.eclipse.storage.utils.StorageUtils;
 import org.xwiki.xmlrpc.XWikiXmlRpcClient;
 
@@ -32,7 +33,9 @@ public class XWikiClient
 {
     private XWikiXmlRpcClient xmlrpcClient = null;
 
-    public XWikiClient(String serverUrl)
+    private XWikiRESTClient restClient = null;
+
+    public XWikiClient(String serverUrl, String username, String password)
     {
 
         BackendType backend;
@@ -43,8 +46,8 @@ public class XWikiClient
                     this.xmlrpcClient = new XWikiXmlRpcClient(serverUrl);
                     break;
                 case REST:
-                    throw new UnsupportedOperationException("not implemented yet");
-                    // break;
+                    this.restClient = new XWikiRESTClient(serverUrl, username, password);
+                    break;
                 default:
                     break;
             }
@@ -58,14 +61,24 @@ public class XWikiClient
     public boolean login(String username, String password) throws XWikiEclipseStorageException
     {
         boolean result = false;
-        try {
-            this.xmlrpcClient.login(username, password);
-            result = true;
-        } catch (Exception e) {
-            throw new XWikiEclipseStorageException(e);
+        if (this.xmlrpcClient != null) {
+            try {
+                this.xmlrpcClient.login(username, password);
+                result = true;
+            } catch (Exception e) {
+                throw new XWikiEclipseStorageException(e);
+            }
+
+            return result;
+
         }
 
-        return result;
+        if (this.restClient != null) {
+            result = this.restClient.login(username, password);
+            return result;
+        }
+
+        return false;
     }
 
     public boolean logout() throws XWikiEclipseStorageException
@@ -77,6 +90,10 @@ public class XWikiClient
                 e.printStackTrace();
                 throw new XWikiEclipseStorageException(e);
             }
+        }
+
+        if (this.restClient != null) {
+            return this.restClient.logout();
         }
 
         return false;

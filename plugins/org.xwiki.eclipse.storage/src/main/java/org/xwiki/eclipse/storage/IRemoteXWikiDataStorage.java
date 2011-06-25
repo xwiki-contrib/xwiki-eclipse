@@ -33,11 +33,11 @@ import org.xwiki.eclipse.model.XWikiEclipseWikiSummary;
  */
 public interface IRemoteXWikiDataStorage
 {
-    List<ModelObject> getRootResources();
+    List<ModelObject> getRootResources() throws XWikiEclipseStorageException;
 
-    List<XWikiEclipseWikiSummary> getWikis();
+    List<XWikiEclipseWikiSummary> getWikis() throws XWikiEclipseStorageException;
 
-    List<XWikiEclipseSpaceSummary> getSpaces();
+    List<XWikiEclipseSpaceSummary> getSpaces() throws XWikiEclipseStorageException;
 
     void dispose();
 

@@ -55,9 +55,16 @@ public class XWikiRESTClient
 
     protected ObjectFactory objectFactory;
 
-    public XWikiRESTClient(String serverUrl)
+    private String username;
+
+    private String password;
+
+    public XWikiRESTClient(String serverUrl, String username, String password)
     {
         this.serverUrl = serverUrl;
+        this.username = username;
+        this.password = password;
+
         JAXBContext context;
         try {
             context = JAXBContext.newInstance("org.xwiki.rest.model.jaxb");
@@ -465,13 +472,33 @@ public class XWikiRESTClient
         String username = "Admin";
         String password = "admin";
         System.out.println("begin testing");
-        XWikiRESTClient client = new XWikiRESTClient(serverUrl);
+        XWikiRESTClient client = new XWikiRESTClient(serverUrl, username, password);
         try {
             List<Wiki> wikis = client.getWikis(username, password);
             System.out.println(wikis.get(0).getName());
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+    }
+
+    /**
+     * @return
+     */
+    public Xwiki getServerInfo()
+    {
+        String wikisUrl = getServerUrl();
+        HttpResponse response;
+        try {
+            response = executeGet(wikisUrl, username, password);
+            Xwiki xwiki = (Xwiki) unmarshaller.unmarshal(response.getEntity().getContent());
+            return xwiki;
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        return null;
 
     }
 }

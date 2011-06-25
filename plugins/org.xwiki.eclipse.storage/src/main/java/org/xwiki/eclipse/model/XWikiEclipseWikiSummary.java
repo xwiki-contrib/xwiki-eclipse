@@ -24,8 +24,14 @@ import org.xwiki.eclipse.storage.DataManager;
 /**
  * @version $Id$
  */
-public abstract class XWikiEclipseWikiSummary extends ModelObject
+public class XWikiEclipseWikiSummary extends ModelObject
 {
+
+    private String wikiId;
+
+    private String name;
+
+    private String url;
 
     /**
      * @param dataManager
@@ -46,9 +52,33 @@ public abstract class XWikiEclipseWikiSummary extends ModelObject
         return String.format("xwikieclipse://%s/rest/wikis/%s", getDataManager().getName(), getWikiId()); //$NON-NLS-1$;
     }
 
-    public abstract String getWikiId();
+    public String getWikiId()
+    {
+        return wikiId;
+    }
 
-    public abstract String getName();
+    public void setWikiId(String wikiId)
+    {
+        this.wikiId = wikiId;
+    }
 
-    public abstract String getUrl();
+    public String getName()
+    {
+        return name;
+    }
+
+    public void setName(String name)
+    {
+        this.name = name;
+    }
+
+    public String getUrl()
+    {
+        return url;
+    }
+
+    public void setUrl(String url)
+    {
+        this.url = url;
+    }
 }

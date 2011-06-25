@@ -113,7 +113,9 @@ public class NewConnectionWizard extends Wizard implements INewWizard, IExecutab
                         monitor.beginTask("Setting up connection", IProgressMonitor.UNKNOWN);
 
                         /* Try to login with the specified username + password */
-                        XWikiClient client = new XWikiClient(newConnectionWizardState.getServerUrl());
+                        XWikiClient client =
+                            new XWikiClient(newConnectionWizardState.getServerUrl(), newConnectionWizardState
+                                .getUserName(), newConnectionWizardState.getPassword());
                         client.login(newConnectionWizardState.getUserName(), newConnectionWizardState.getPassword());
                         client.logout();
 

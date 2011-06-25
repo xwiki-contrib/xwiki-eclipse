@@ -28,12 +28,14 @@ public class RemoteXWikiDataStorageFactory
 {
 
     /**
+     * @param dataManager
      * @param endpoint
      * @param userName
      * @param password
      * @return
      */
-    public static IRemoteXWikiDataStorage getRemoteXWikiDataStorage(String endpoint, String userName, String password)
+    public static IRemoteXWikiDataStorage getRemoteXWikiDataStorage(DataManager dataManager, String endpoint,
+        String userName, String password)
     {
         BackendType backend;
         try {
@@ -41,11 +43,11 @@ public class RemoteXWikiDataStorageFactory
             switch (backend) {
                 case XMLRPC:
                     IRemoteXWikiDataStorage xmlrpcRemoteStorage =
-                        new XmlrpcRemoteXWikiDataStorageAdapter(endpoint, userName, password);
+                        new XmlrpcRemoteXWikiDataStorageAdapter(dataManager, endpoint, userName, password);
                     return xmlrpcRemoteStorage;
                 case REST:
                     IRemoteXWikiDataStorage restRemoteStorage =
-                        new RestRemoteXWikiDataStorageAdapter(endpoint, userName, password);
+                        new RestRemoteXWikiDataStorageAdapter(dataManager, endpoint, userName, password);
                     return restRemoteStorage;
                 default:
                     break;

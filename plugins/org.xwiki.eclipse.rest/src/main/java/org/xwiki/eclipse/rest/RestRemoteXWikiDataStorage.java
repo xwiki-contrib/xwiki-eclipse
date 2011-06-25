@@ -19,6 +19,11 @@
  */
 package org.xwiki.eclipse.rest;
 
+import java.util.List;
+
+import org.xwiki.rest.model.jaxb.Wiki;
+import org.xwiki.rest.model.jaxb.Xwiki;
+
 /**
  * @version $Id$
  */
@@ -37,7 +42,28 @@ public class RestRemoteXWikiDataStorage
         this.endpoint = endpoint;
         this.username = username;
         this.password = password;
-        this.restRemoteClient = new XWikiRESTClient(endpoint);
+        this.restRemoteClient = new XWikiRESTClient(endpoint, username, password);
     }
 
+    /**
+     * @param username
+     * @param password
+     * @return
+     */
+    public List<Wiki> getWikis(String username, String password) throws Exception
+    {
+
+        try {
+            return restRemoteClient.getWikis(username, password);
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+    public Xwiki getServerInfo()
+    {
+        return restRemoteClient.getServerInfo();
+    }
 }

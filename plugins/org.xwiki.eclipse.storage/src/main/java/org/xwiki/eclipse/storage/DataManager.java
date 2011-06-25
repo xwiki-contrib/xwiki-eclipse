@@ -10,6 +10,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.QualifiedName;
+import org.xwiki.eclipse.model.ModelObject;
 import org.xwiki.eclipse.model.XWikiEclipseObject;
 import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
 import org.xwiki.eclipse.model.XWikiEclipseServerInfo;
@@ -189,7 +190,7 @@ public class DataManager
     }
 
     /*
-     * /* Connection management
+     * Connection management
      */
     public boolean isConnected()
     {
@@ -203,7 +204,7 @@ public class DataManager
         }
 
         remoteXWikiDataStorage =
-            RemoteXWikiDataStorageFactory.getRemoteXWikiDataStorage(getEndpoint(), getUserName(), getPassword());
+            RemoteXWikiDataStorageFactory.getRemoteXWikiDataStorage(this, getEndpoint(), getUserName(), getPassword());
         try {
             XWikiEclipseServerInfo serverInfo = remoteXWikiDataStorage.getServerInfo();
 
@@ -275,65 +276,22 @@ public class DataManager
         return null;
     }
 
-    // /*
-    // * Connection management
-    // */
-    // public boolean isConnected()
-    // {
-    // return remoteXWikiDataStorage != null;
-    // }
-    //
-    // public void connect() throws XWikiEclipseException, CoreException
-    // {
-    // if (isConnected()) {
-    // return;
-    // }
-    //
-    // remoteXWikiDataStorage = new RemoteXWikiDataStorage(getEndpoint(), getUserName(), getPassword());
-    // try {
-    // ServerInfo serverInfo = remoteXWikiDataStorage.getServerInfo();
-    //
-    // if (serverInfo.getBaseUrl().contains("xwiki")) {
-    // if (serverInfo.getMajorVersion() == 1) {
-    // if (serverInfo.getMinorVersion() < 5) {
-    // supportedFunctionalities.remove(Functionality.RENAME);
-    // }
-    //
-    // if (serverInfo.getMinorVersion() < 4) {
-    // supportedFunctionalities.remove(Functionality.TRANSLATIONS);
-    // supportedFunctionalities.remove(Functionality.ALL_PAGES_RETRIEVAL);
-    // }
-    // }
-    // } else {
-    // /* We are talking to a confluence server */
-    // supportedFunctionalities.remove(Functionality.TRANSLATIONS);
-    // supportedFunctionalities.remove(Functionality.OBJECTS);
-    // supportedFunctionalities.remove(Functionality.ALL_PAGES_RETRIEVAL);
-    // }
-    // } catch (Exception e) {
-    // /* Here we are talking to an XWiki < 1.4. In this case we only support basic functionalities. */
-    // supportedFunctionalities.clear();
-    // }
-    //
-    // /* When connected synchronize all the pages and objects */
-    // synchronizePages(new HashSet<String>(pageToStatusMap.keySet()));
-    // synchronizeObjects(new HashSet<String>(objectToStatusMap.keySet()));
-    //
-    // NotificationManager.getDefault().fireCoreEvent(CoreEvent.Type.DATA_MANAGER_CONNECTED, this, this);
-    // }
-    //
-    // public void disconnect()
-    // {
-    // remoteXWikiDataStorage.dispose();
-    // remoteXWikiDataStorage = null;
-    //
-    // /* Set this to true, because the local storage always support extended features */
-    // supportedFunctionalities.clear();
-    // supportedFunctionalities.add(Functionality.OBJECTS);
-    // supportedFunctionalities.add(Functionality.RENAME);
-    //
-    // NotificationManager.getDefault().fireCoreEvent(CoreEvent.Type.DATA_MANAGER_DISCONNECTED, this, this);
-    // }
+    /**
+     * @return
+     */
+    public List<ModelObject> getRootResources() throws XWikiEclipseStorageException
+    {
+        List<ModelObject> result = null;
+
+        if (isConnected()) {
+            result = remoteXWikiDataStorage.getRootResources();
+        } else {
+            // FIXME: unimplemented yet
+            result = localXWikiDataStorage.getRootResources();
+        }
+        return result;
+    }
+
     //
     // /*
     // * Space retrieval

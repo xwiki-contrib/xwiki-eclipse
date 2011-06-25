@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
+import org.xwiki.eclipse.model.ModelObject;
 import org.xwiki.eclipse.storage.utils.StorageUtils;
 import org.xwiki.xmlrpc.model.XWikiClass;
 import org.xwiki.xmlrpc.model.XWikiClassSummary;
@@ -566,5 +567,15 @@ public class LocalXWikiDataStorage
         }
 
         return result;
+    }
+
+    /**
+     * @return
+     */
+    public List<ModelObject> getRootResources()
+    {
+        throw new UnsupportedOperationException();
+        // TODO Auto-generated method stub
+        // return null;
     }
 }
