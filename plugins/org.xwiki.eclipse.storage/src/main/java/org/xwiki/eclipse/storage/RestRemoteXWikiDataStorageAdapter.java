@@ -109,6 +109,7 @@ public class RestRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStorag
                 summary.setKey(space.getId());
                 summary.setName(space.getName());
                 summary.setUrl(space.getXwikiAbsoluteUrl());
+                summary.setWiki(space.getWiki());
 
                 result.add(summary);
             }

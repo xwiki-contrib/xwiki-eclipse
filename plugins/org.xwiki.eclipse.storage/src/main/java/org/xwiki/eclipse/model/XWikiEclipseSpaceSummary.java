@@ -35,6 +35,8 @@ public class XWikiEclipseSpaceSummary extends ModelObject
 
     private String url;
 
+    private String wiki;
+
     public XWikiEclipseSpaceSummary(DataManager dataManager)
     {
         super(dataManager);
@@ -74,5 +76,15 @@ public class XWikiEclipseSpaceSummary extends ModelObject
     public void setUrl(String url)
     {
         this.url = url;
+    }
+
+    public String getWiki()
+    {
+        return wiki;
+    }
+
+    public void setWiki(String wiki)
+    {
+        this.wiki = wiki;
     }
 }

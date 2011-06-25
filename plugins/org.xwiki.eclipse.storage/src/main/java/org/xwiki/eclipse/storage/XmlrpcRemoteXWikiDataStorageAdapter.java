@@ -75,6 +75,7 @@ public class XmlrpcRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStor
                 space.setKey(spaceSummary.getKey());
                 space.setName(spaceSummary.getName());
                 space.setUrl(spaceSummary.getUrl());
+                space.setWiki("xwiki");
 
                 result.add(space);
             }

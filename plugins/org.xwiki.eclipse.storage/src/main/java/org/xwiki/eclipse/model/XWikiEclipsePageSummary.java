@@ -43,16 +43,9 @@ public class XWikiEclipsePageSummary extends ModelObject
 
     private List<String> translations;
 
-    public XWikiEclipsePageSummary(DataManager dataManager, String id, String title, String space, String parentId,
-        String url, List<String> translations)
+    public XWikiEclipsePageSummary(DataManager dataManager)
     {
         super(dataManager);
-        this.id = id;
-        this.title = title;
-        this.space = space;
-        this.parentId = parentId;
-        this.url = url;
-        this.translations = translations;
     }
 
     @Override
