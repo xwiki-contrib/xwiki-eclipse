@@ -27,7 +27,9 @@ import org.xwiki.eclipse.model.ModelObject;
 import org.xwiki.eclipse.model.XWikiEclipseServerInfo;
 import org.xwiki.eclipse.model.XWikiEclipseSpaceSummary;
 import org.xwiki.eclipse.model.XWikiEclipseWikiSummary;
+import org.xwiki.eclipse.rest.Relations;
 import org.xwiki.eclipse.rest.RestRemoteXWikiDataStorage;
+import org.xwiki.rest.model.jaxb.Link;
 import org.xwiki.rest.model.jaxb.Space;
 import org.xwiki.rest.model.jaxb.Wiki;
 import org.xwiki.rest.model.jaxb.Xwiki;
@@ -72,10 +74,15 @@ public class RestRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStorag
                 XWikiEclipseWikiSummary wikiSummary = new XWikiEclipseWikiSummary(dataManager);
                 wikiSummary.setWikiId(wiki.getId());
                 wikiSummary.setName(wiki.getName());
-                // wikiSummary.setUrl(wiki.get)
+                List<Link> links = wiki.getLinks();
+                for (Link link : links) {
+                    if (link.getRel().equals(Relations.SPACES)) {
+                        wikiSummary.setSpacesUrl(link.getHref());
+                        break;
+                    }
+                }
 
                 result.add(wikiSummary);
-
             }
 
             return result;
@@ -95,7 +102,7 @@ public class RestRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStorag
     {
         List<XWikiEclipseSpaceSummary> result = new ArrayList<XWikiEclipseSpaceSummary>();
 
-        List<Space> spaces = this.restRemoteStorage.getSpaces(wiki.getWikiId(), username, password);
+        List<Space> spaces = this.restRemoteStorage.getSpaces(wiki.getSpacesUrl(), username, password);
         if (spaces != null) {
             for (Space space : spaces) {
                 XWikiEclipseSpaceSummary summary = new XWikiEclipseSpaceSummary(dataManager);

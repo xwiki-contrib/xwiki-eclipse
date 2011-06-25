@@ -68,10 +68,10 @@ public class RestRemoteXWikiDataStorage
         return restRemoteClient.getServerInfo();
     }
 
-    public List<Space> getSpaces(String wikiId, String username, String password)
+    public List<Space> getSpaces(String spacesUrl, String username, String password)
     {
         try {
-            return restRemoteClient.getSpaces(wikiId, username, password);
+            return restRemoteClient.getSpaces(spacesUrl, username, password);
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

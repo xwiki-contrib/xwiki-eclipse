@@ -31,7 +31,7 @@ public class XWikiEclipseWikiSummary extends ModelObject
 
     private String name;
 
-    private String url;
+    private String spacesUrl;
 
     /**
      * @param dataManager
@@ -72,13 +72,13 @@ public class XWikiEclipseWikiSummary extends ModelObject
         this.name = name;
     }
 
-    public String getUrl()
+    public String getSpacesUrl()
     {
-        return url;
+        return spacesUrl;
     }
 
-    public void setUrl(String url)
+    public void setSpacesUrl(String spacesUrl)
     {
-        this.url = url;
+        this.spacesUrl = spacesUrl;
     }
 }
