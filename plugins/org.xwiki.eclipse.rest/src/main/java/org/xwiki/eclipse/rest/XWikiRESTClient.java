@@ -199,7 +199,7 @@ public class XWikiRESTClient
 
     public List<Space> getSpaces(String wikiId, String username, String password) throws Exception
     {
-        String spacesUrl = getServerUrl() + Relations.WIKIS_PREFIX + "/" + wikiId + Relations.SPACES_PREFIX;
+        String spacesUrl = getServerUrl() + "/" + Relations.WIKIS_PREFIX + "/" + wikiId + "/" + Relations.SPACES_PREFIX;
         HttpResponse response = executeGet(spacesUrl, username, password);
         Spaces spaces = (Spaces) unmarshaller.unmarshal(response.getEntity().getContent());
         return spaces.getSpaces();

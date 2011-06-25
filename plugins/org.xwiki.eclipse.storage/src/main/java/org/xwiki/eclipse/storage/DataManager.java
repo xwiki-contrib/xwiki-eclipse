@@ -1,9 +1,11 @@
 package org.xwiki.eclipse.storage;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.codehaus.swizzle.confluence.SpaceSummary;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
@@ -14,6 +16,8 @@ import org.xwiki.eclipse.model.ModelObject;
 import org.xwiki.eclipse.model.XWikiEclipseObject;
 import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
 import org.xwiki.eclipse.model.XWikiEclipseServerInfo;
+import org.xwiki.eclipse.model.XWikiEclipseSpaceSummary;
+import org.xwiki.eclipse.model.XWikiEclipseWikiSummary;
 import org.xwiki.eclipse.storage.utils.PersistentMap;
 
 /**
@@ -286,46 +290,55 @@ public class DataManager
         if (isConnected()) {
             result = remoteXWikiDataStorage.getRootResources();
         } else {
-            // FIXME: unimplemented yet
+            // FIXME: unimplemented yet, not sure which level to return
             result = localXWikiDataStorage.getRootResources();
         }
         return result;
     }
 
-    //
-    // /*
-    // * Space retrieval
-    // */
-    // public XWikiEclipseSpaceSummary getSpaceSummary(String spaceKey) throws XWikiEclipseException
-    // {
-    // SpaceSummary space = null;
-    //
-    // if (isConnected()) {
-    // space = remoteXWikiDataStorage.getSpaceSumary(spaceKey);
-    // } else {
-    // space = localXWikiDataStorage.getSpaceSumary(spaceKey);
-    // }
-    //
-    // return new XWikiEclipseSpaceSummary(this, space);
-    // }
-    //
-    // public List<XWikiEclipseSpaceSummary> getSpaces() throws XWikiEclipseException
-    // {
-    // List<SpaceSummary> spaceSummaries;
-    //
-    // if (isConnected()) {
-    // spaceSummaries = remoteXWikiDataStorage.getSpaces();
-    // } else {
-    // spaceSummaries = localXWikiDataStorage.getSpaces();
-    // }
-    //
-    // List<XWikiEclipseSpaceSummary> result = new ArrayList<XWikiEclipseSpaceSummary>();
-    // for (SpaceSummary spaceSummary : spaceSummaries) {
-    // result.add(new XWikiEclipseSpaceSummary(this, spaceSummary));
-    // }
-    //
-    // return result;
-    // }
+    /*
+     * space retrieval
+     */
+
+    /**
+     * @param wiki
+     * @return
+     */
+    public List<XWikiEclipseSpaceSummary> getSpaces(XWikiEclipseWikiSummary wiki)
+    {
+        List<XWikiEclipseSpaceSummary> result = null;
+
+        if (isConnected()) {
+            try {
+                result = remoteXWikiDataStorage.getSpaces(wiki);
+            } catch (XWikiEclipseStorageException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        } else {
+            result = new ArrayList<XWikiEclipseSpaceSummary>();
+            List<SpaceSummary> spaces;
+            try {
+                spaces = localXWikiDataStorage.getSpaces();
+                for (SpaceSummary spaceSummary : spaces) {
+                    XWikiEclipseSpaceSummary space = new XWikiEclipseSpaceSummary(this);
+                    space.setKey(spaceSummary.getKey());
+                    space.setName(spaceSummary.getName());
+                    space.setUrl(spaceSummary.getUrl());
+
+                    result.add(space);
+                }
+                return result;
+
+            } catch (XWikiEclipseStorageException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+
+        return result;
+    }
+
     //
     // /*
     // * Page retrieval

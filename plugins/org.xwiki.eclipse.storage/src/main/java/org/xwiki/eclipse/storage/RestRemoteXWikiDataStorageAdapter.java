@@ -28,6 +28,7 @@ import org.xwiki.eclipse.model.XWikiEclipseServerInfo;
 import org.xwiki.eclipse.model.XWikiEclipseSpaceSummary;
 import org.xwiki.eclipse.model.XWikiEclipseWikiSummary;
 import org.xwiki.eclipse.rest.RestRemoteXWikiDataStorage;
+import org.xwiki.rest.model.jaxb.Space;
 import org.xwiki.rest.model.jaxb.Wiki;
 import org.xwiki.rest.model.jaxb.Xwiki;
 
@@ -90,10 +91,23 @@ public class RestRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStorag
      * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#getSpaces()
      */
     @Override
-    public List<XWikiEclipseSpaceSummary> getSpaces()
+    public List<XWikiEclipseSpaceSummary> getSpaces(XWikiEclipseWikiSummary wiki)
     {
-        // TODO Auto-generated method stub
-        return null;
+        List<XWikiEclipseSpaceSummary> result = new ArrayList<XWikiEclipseSpaceSummary>();
+
+        List<Space> spaces = this.restRemoteStorage.getSpaces(wiki.getWikiId(), username, password);
+        if (spaces != null) {
+            for (Space space : spaces) {
+                XWikiEclipseSpaceSummary summary = new XWikiEclipseSpaceSummary(dataManager);
+                summary.setKey(space.getId());
+                summary.setName(space.getName());
+                summary.setUrl(space.getXwikiAbsoluteUrl());
+
+                result.add(summary);
+            }
+        }
+
+        return result;
     }
 
     /**

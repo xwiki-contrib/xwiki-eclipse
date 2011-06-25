@@ -37,7 +37,7 @@ public interface IRemoteXWikiDataStorage
 
     List<XWikiEclipseWikiSummary> getWikis() throws XWikiEclipseStorageException;
 
-    List<XWikiEclipseSpaceSummary> getSpaces() throws XWikiEclipseStorageException;
+    List<XWikiEclipseSpaceSummary> getSpaces(XWikiEclipseWikiSummary wiki) throws XWikiEclipseStorageException;
 
     void dispose();
 

@@ -21,6 +21,7 @@ package org.xwiki.eclipse.rest;
 
 import java.util.List;
 
+import org.xwiki.rest.model.jaxb.Space;
 import org.xwiki.rest.model.jaxb.Wiki;
 import org.xwiki.rest.model.jaxb.Xwiki;
 
@@ -65,5 +66,17 @@ public class RestRemoteXWikiDataStorage
     public Xwiki getServerInfo()
     {
         return restRemoteClient.getServerInfo();
+    }
+
+    public List<Space> getSpaces(String wikiId, String username, String password)
+    {
+        try {
+            return restRemoteClient.getSpaces(wikiId, username, password);
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        return null;
     }
 }
