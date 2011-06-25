@@ -25,11 +25,13 @@ import java.util.List;
 import org.codehaus.swizzle.confluence.ServerInfo;
 import org.codehaus.swizzle.confluence.SpaceSummary;
 import org.xwiki.eclipse.model.ModelObject;
+import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
 import org.xwiki.eclipse.model.XWikiEclipseServerInfo;
 import org.xwiki.eclipse.model.XWikiEclipseSpaceSummary;
 import org.xwiki.eclipse.model.XWikiEclipseWikiSummary;
 import org.xwiki.eclipse.xmlrpc.XWikiEclipseXmlrpcException;
 import org.xwiki.eclipse.xmlrpc.XmlrpcRemoteXWikiDataStorage;
+import org.xwiki.xmlrpc.model.XWikiPageSummary;
 
 /**
  * @version $Id$
@@ -162,6 +164,39 @@ public class XmlrpcRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStor
             e.printStackTrace();
         }
 
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#getPages(org.xwiki.eclipse.model.XWikiEclipseSpaceSummary)
+     */
+    @Override
+    public List<XWikiEclipsePageSummary> getPages(XWikiEclipseSpaceSummary spaceSummary)
+    {
+        try {
+            List<XWikiEclipsePageSummary> result = new ArrayList<XWikiEclipsePageSummary>();
+
+            List<XWikiPageSummary> pages = xmlrpcRemoteDataStorage.getPages(spaceSummary.getKey());
+            for (XWikiPageSummary pageSummary : pages) {
+                XWikiEclipsePageSummary page = new XWikiEclipsePageSummary(dataManager);
+                page.setId(pageSummary.getId());
+                page.setParentId(pageSummary.getParentId());
+                page.setSpace(pageSummary.getSpace());
+                page.setTitle(pageSummary.getTitle());
+                page.setUrl(pageSummary.getUrl());
+                /* default value is "xwiki" for all xmlrpc implementation */
+                page.setWiki("xwiki");
+
+                result.add(page);
+            }
+
+            return result;
+        } catch (XWikiEclipseXmlrpcException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
         return null;
     }
 

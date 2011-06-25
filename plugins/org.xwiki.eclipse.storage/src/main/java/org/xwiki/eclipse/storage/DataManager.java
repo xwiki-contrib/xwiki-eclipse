@@ -14,6 +14,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.QualifiedName;
 import org.xwiki.eclipse.model.ModelObject;
 import org.xwiki.eclipse.model.XWikiEclipseObject;
+import org.xwiki.eclipse.model.XWikiEclipseObjectSummary;
 import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
 import org.xwiki.eclipse.model.XWikiEclipseServerInfo;
 import org.xwiki.eclipse.model.XWikiEclipseSpaceSummary;
@@ -264,10 +265,16 @@ public class DataManager
      * @param spaceKey
      * @return
      */
-    public List<XWikiEclipsePageSummary> getPages(String spaceKey) throws XWikiEclipseStorageException
+    public List<XWikiEclipsePageSummary> getPages(XWikiEclipseSpaceSummary spaceSummary)
+        throws XWikiEclipseStorageException
     {
-        // TODO Auto-generated method stub
-        return null;
+        List<XWikiEclipsePageSummary> result = null;
+        if (isConnected()) {
+            result = remoteXWikiDataStorage.getPages(spaceSummary);
+        } else {
+            // FIXME: unimplemented yet, not sure which level to return
+        }
+        return result;
     }
 
     /**
@@ -337,6 +344,47 @@ public class DataManager
         }
 
         return result;
+    }
+
+    /**
+     * @param pageSummary
+     * @return
+     */
+    public List<XWikiEclipseObjectSummary> getObjects(XWikiEclipsePageSummary pageSummary)
+        throws XWikiEclipseStorageException
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /**
+     * @param id
+     * @return
+     */
+    public boolean isInConflict(String id)
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    /**
+     * @param pageSummary
+     * @return
+     */
+    public boolean isLocallyAvailable(XWikiEclipsePageSummary pageSummary)
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    /**
+     * @param spaceKey
+     * @return
+     */
+    public List<XWikiEclipsePageSummary> getPages(String spaceKey) throws XWikiEclipseStorageException
+    {
+        // TODO Auto-generated method stub
+        return null;
     }
 
     //

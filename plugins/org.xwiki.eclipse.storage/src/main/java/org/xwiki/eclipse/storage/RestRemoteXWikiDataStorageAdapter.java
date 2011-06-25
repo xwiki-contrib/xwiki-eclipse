@@ -24,12 +24,14 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import org.xwiki.eclipse.model.ModelObject;
+import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
 import org.xwiki.eclipse.model.XWikiEclipseServerInfo;
 import org.xwiki.eclipse.model.XWikiEclipseSpaceSummary;
 import org.xwiki.eclipse.model.XWikiEclipseWikiSummary;
 import org.xwiki.eclipse.rest.Relations;
 import org.xwiki.eclipse.rest.RestRemoteXWikiDataStorage;
 import org.xwiki.rest.model.jaxb.Link;
+import org.xwiki.rest.model.jaxb.PageSummary;
 import org.xwiki.rest.model.jaxb.Space;
 import org.xwiki.rest.model.jaxb.Wiki;
 import org.xwiki.rest.model.jaxb.Xwiki;
@@ -110,6 +112,13 @@ public class RestRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStorag
                 summary.setName(space.getName());
                 summary.setUrl(space.getXwikiAbsoluteUrl());
                 summary.setWiki(space.getWiki());
+                List<Link> links = space.getLinks();
+                for (Link link : links) {
+                    if (link.getRel().equals(Relations.PAGES)) {
+                        summary.setPagesUrl(link.getHref());
+                        break;
+                    }
+                }
 
                 result.add(summary);
             }
@@ -179,5 +188,31 @@ public class RestRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStorag
 
         return null;
 
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#getPages(org.xwiki.eclipse.model.XWikiEclipseSpaceSummary)
+     */
+    @Override
+    public List<XWikiEclipsePageSummary> getPages(XWikiEclipseSpaceSummary spaceSummary)
+    {
+        List<XWikiEclipsePageSummary> result = new ArrayList<XWikiEclipsePageSummary>();
+
+        List<PageSummary> pages = this.restRemoteStorage.getPages(spaceSummary.getPagesUrl(), username, password);
+        for (PageSummary pageSummary : pages) {
+            XWikiEclipsePageSummary page = new XWikiEclipsePageSummary(dataManager);
+            page.setId(pageSummary.getId());
+            page.setParentId(pageSummary.getParentId());
+            page.setSpace(pageSummary.getSpace());
+            page.setTitle(pageSummary.getTitle());
+            page.setUrl(pageSummary.getXwikiAbsoluteUrl());
+            page.setWiki(pageSummary.getWiki());
+
+            result.add(page);
+        }
+
+        return result;
     }
 }

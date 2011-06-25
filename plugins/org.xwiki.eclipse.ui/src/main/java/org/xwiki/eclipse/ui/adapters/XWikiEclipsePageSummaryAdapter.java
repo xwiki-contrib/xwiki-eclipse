@@ -39,7 +39,6 @@ import org.xwiki.eclipse.ui.UIPlugin;
 import org.xwiki.eclipse.ui.utils.UIUtils;
 
 /**
- * 
  * @version $Id$
  */
 public class XWikiEclipsePageSummaryAdapter extends WorkbenchAdapter implements IDeferredWorkbenchAdapter
@@ -51,8 +50,7 @@ public class XWikiEclipsePageSummaryAdapter extends WorkbenchAdapter implements 
             final XWikiEclipsePageSummary pageSummary = (XWikiEclipsePageSummary) object;
 
             try {
-                List<XWikiEclipseObjectSummary> result =
-                    pageSummary.getDataManager().getObjects(pageSummary.getId());
+                List<XWikiEclipseObjectSummary> result = pageSummary.getDataManager().getObjects(pageSummary);
                 return result.toArray();
             } catch (XWikiEclipseStorageException e) {
                 UIUtils

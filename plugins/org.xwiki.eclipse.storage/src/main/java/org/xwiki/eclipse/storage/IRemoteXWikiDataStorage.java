@@ -22,6 +22,7 @@ package org.xwiki.eclipse.storage;
 import java.util.List;
 
 import org.xwiki.eclipse.model.ModelObject;
+import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
 import org.xwiki.eclipse.model.XWikiEclipseServerInfo;
 import org.xwiki.eclipse.model.XWikiEclipseSpaceSummary;
 import org.xwiki.eclipse.model.XWikiEclipseWikiSummary;
@@ -42,4 +43,10 @@ public interface IRemoteXWikiDataStorage
     void dispose();
 
     XWikiEclipseServerInfo getServerInfo();
+
+    /**
+     * @param spaceSummary
+     * @return
+     */
+    List<XWikiEclipsePageSummary> getPages(XWikiEclipseSpaceSummary spaceSummary);
 }

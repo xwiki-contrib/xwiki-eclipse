@@ -227,7 +227,6 @@ public class NavigatorContentProvider extends BaseWorkbenchContentProvider imple
                         XWikiEclipsePage page = (XWikiEclipsePage) event.getData();
 
                         String spaceKey = page.getSpace();
-                        // String spaceKey = page.getData().getSpace();
 
                         List<XWikiEclipsePageSummary> pages = null;
                         try {

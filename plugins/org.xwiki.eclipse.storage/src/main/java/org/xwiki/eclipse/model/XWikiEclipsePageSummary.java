@@ -20,8 +20,6 @@
  */
 package org.xwiki.eclipse.model;
 
-import java.util.List;
-
 import org.xwiki.eclipse.storage.DataManager;
 
 /**
@@ -37,11 +35,11 @@ public class XWikiEclipsePageSummary extends ModelObject
 
     private String space;
 
+    private String wiki;
+
     private String parentId;
 
     private String url;
-
-    private List<String> translations;
 
     public XWikiEclipsePageSummary(DataManager dataManager)
     {
@@ -104,13 +102,13 @@ public class XWikiEclipsePageSummary extends ModelObject
         this.url = url;
     }
 
-    public List<String> getTranslations()
+    public String getWiki()
     {
-        return translations;
+        return wiki;
     }
 
-    public void setTranslations(List<String> translations)
+    public void setWiki(String wiki)
     {
-        this.translations = translations;
+        this.wiki = wiki;
     }
 }

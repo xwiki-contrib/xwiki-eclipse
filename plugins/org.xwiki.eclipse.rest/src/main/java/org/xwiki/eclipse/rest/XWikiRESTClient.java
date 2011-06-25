@@ -38,6 +38,8 @@ import org.apache.http.protocol.HttpContext;
 import org.xwiki.rest.model.jaxb.Link;
 import org.xwiki.rest.model.jaxb.LinkCollection;
 import org.xwiki.rest.model.jaxb.ObjectFactory;
+import org.xwiki.rest.model.jaxb.PageSummary;
+import org.xwiki.rest.model.jaxb.Pages;
 import org.xwiki.rest.model.jaxb.Space;
 import org.xwiki.rest.model.jaxb.Spaces;
 import org.xwiki.rest.model.jaxb.Wiki;
@@ -499,5 +501,25 @@ public class XWikiRESTClient
 
         return null;
 
+    }
+
+    /**
+     * @param pagesUrl
+     * @param username
+     * @param password
+     * @return
+     */
+    public List<PageSummary> getPages(String pagesUrl, String username, String password)
+    {
+        HttpResponse response;
+        try {
+            response = executeGet(pagesUrl, username, password);
+            Pages pages = (Pages) unmarshaller.unmarshal(response.getEntity().getContent());
+            return pages.getPageSummaries();
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return null;
     }
 }
