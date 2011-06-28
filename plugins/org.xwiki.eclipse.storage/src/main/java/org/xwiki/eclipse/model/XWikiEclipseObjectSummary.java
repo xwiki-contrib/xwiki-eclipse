@@ -27,26 +27,101 @@ import org.xwiki.eclipse.storage.DataManager;
  * 
  * @version $Id$
  */
-public abstract class XWikiEclipseObjectSummary extends ModelObject
+public class XWikiEclipseObjectSummary extends ModelObject
 {
+    private String pageId;
+
+    private String pageName;
+
+    private String className;
+
+    private String id;
+
+    private String prettyName;
+
+    private String space;
+
+    private String wiki;
 
     public XWikiEclipseObjectSummary(DataManager dataManager)
     {
         super(dataManager);
     }
 
-    public abstract String getPageId();
-
-    public abstract String getClassName();
-
-    public abstract int getId();
-
     @Override
     public String getXWikiEclipseId()
     {
         return String.format(
-            "xwikieclipse://%s/%s/%s/%d/summary", getDataManager().getName(), getPageId(), getClassName(), getId()); //$NON-NLS-1$        
+            "xwikieclipse://%s/%s/%s/%s/summary", getDataManager().getName(), getPageId(), getClassName(), getId()); //$NON-NLS-1$        
     }
 
-    public abstract String getPrettyName();
+    public String getPageId()
+    {
+        return pageId;
+    }
+
+    public void setPageId(String pageId)
+    {
+        this.pageId = pageId;
+    }
+
+    public String getClassName()
+    {
+        return className;
+    }
+
+    public void setClassName(String className)
+    {
+        this.className = className;
+    }
+
+    public String getId()
+    {
+        return id;
+    }
+
+    public void setId(String id)
+    {
+        this.id = id;
+    }
+
+    public String getPrettyName()
+    {
+        return prettyName;
+    }
+
+    public void setPrettyName(String prettyName)
+    {
+        this.prettyName = prettyName;
+    }
+
+    public String getSpace()
+    {
+        return space;
+    }
+
+    public void setSpace(String space)
+    {
+        this.space = space;
+    }
+
+    public String getWiki()
+    {
+        return wiki;
+    }
+
+    public void setWiki(String wiki)
+    {
+        this.wiki = wiki;
+    }
+
+    public String getPageName()
+    {
+        return pageName;
+    }
+
+    public void setPageName(String pageName)
+    {
+        this.pageName = pageName;
+    }
 }

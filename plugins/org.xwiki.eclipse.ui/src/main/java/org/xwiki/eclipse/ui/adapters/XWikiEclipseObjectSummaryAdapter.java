@@ -27,7 +27,6 @@ import org.xwiki.eclipse.ui.UIConstants;
 import org.xwiki.eclipse.ui.UIPlugin;
 
 /**
- * 
  * @version $Id$
  */
 public class XWikiEclipseObjectSummaryAdapter extends WorkbenchAdapter
