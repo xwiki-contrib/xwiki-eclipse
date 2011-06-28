@@ -24,6 +24,8 @@ import org.eclipse.core.runtime.IAdapterFactory;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.eclipse.ui.model.IWorkbenchAdapter2;
 import org.eclipse.ui.progress.IDeferredWorkbenchAdapter;
+import org.xwiki.eclipse.model.XWikiEclipseAttachment;
+import org.xwiki.eclipse.model.XWikiEclipseObjectCollection;
 import org.xwiki.eclipse.model.XWikiEclipseObjectSummary;
 import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
 import org.xwiki.eclipse.model.XWikiEclipseSpaceSummary;
@@ -47,6 +49,11 @@ public class AdapterFactory implements IAdapterFactory
     private XWikiEclipseObjectSummaryAdapter xwikiEclipseObjectSummaryAdapter = new XWikiEclipseObjectSummaryAdapter();
 
     private XWikiEclipseWikiSummaryAdapter xwikiEclipseWikiSummaryAdapter = new XWikiEclipseWikiSummaryAdapter();
+
+    private XWikiEclipseAttachmentAdapter xwikiEclipseAttachmentAdapter = new XWikiEclipseAttachmentAdapter();
+
+    private XWikiEclipseObjectCollectionAdapter xwikiEclipseObjectCollectionAdapter =
+        new XWikiEclipseObjectCollectionAdapter();
 
     public Object getAdapter(Object adaptableObject, Class adapterType)
     {
@@ -98,11 +105,31 @@ public class AdapterFactory implements IAdapterFactory
         if ((adaptableObject instanceof XWikiEclipsePageSummary) && adapterType.equals(IDeferredWorkbenchAdapter.class)) {
             return xwikiEclipsePageSummaryAdapter;
         }
+
+        /*
+         * Adapters for XWikiEclipseObjectCollection
+         */
+        if ((adaptableObject instanceof XWikiEclipseObjectCollection) && adapterType.equals(IWorkbenchAdapter.class)) {
+            return xwikiEclipseObjectCollectionAdapter;
+        }
+
+        if ((adaptableObject instanceof XWikiEclipseObjectCollection)
+            && adapterType.equals(IDeferredWorkbenchAdapter.class)) {
+            return xwikiEclipseObjectCollectionAdapter;
+        }
+
         /*
          * Adapters for XWikiEclipseObjectSummary
          */
         if ((adaptableObject instanceof XWikiEclipseObjectSummary) && adapterType.equals(IWorkbenchAdapter.class)) {
             return xwikiEclipseObjectSummaryAdapter;
+        }
+
+        /*
+         * Adapters for XWikiEclipseAttachment
+         */
+        if ((adaptableObject instanceof XWikiEclipseAttachment) && adapterType.equals(IWorkbenchAdapter.class)) {
+            return xwikiEclipseAttachmentAdapter;
         }
 
         return null;
