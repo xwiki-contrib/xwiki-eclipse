@@ -13,6 +13,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.QualifiedName;
 import org.xwiki.eclipse.model.ModelObject;
+import org.xwiki.eclipse.model.XWikiEclipseAttachment;
 import org.xwiki.eclipse.model.XWikiEclipseObject;
 import org.xwiki.eclipse.model.XWikiEclipseObjectSummary;
 import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
@@ -20,6 +21,7 @@ import org.xwiki.eclipse.model.XWikiEclipseServerInfo;
 import org.xwiki.eclipse.model.XWikiEclipseSpaceSummary;
 import org.xwiki.eclipse.model.XWikiEclipseWikiSummary;
 import org.xwiki.eclipse.storage.utils.PersistentMap;
+import org.xwiki.xmlrpc.model.XWikiObject;
 
 /**
  * DataManager is a class that manages remote and local storages and handles their initialization. Basically, it's the
@@ -347,14 +349,21 @@ public class DataManager
     }
 
     /**
+     * FXIME: implement xmlrpc and rest getObjects() method
+     * 
      * @param pageSummary
      * @return
      */
     public List<XWikiEclipseObjectSummary> getObjects(XWikiEclipsePageSummary pageSummary)
         throws XWikiEclipseStorageException
     {
-        // TODO Auto-generated method stub
-        return null;
+        List<XWikiEclipseObjectSummary> result = null;
+
+        if (isConnected()) {
+            result = remoteXWikiDataStorage.getObjects(pageSummary);
+        }
+
+        return result;
     }
 
     /**
@@ -373,8 +382,7 @@ public class DataManager
      */
     public boolean isLocallyAvailable(XWikiEclipsePageSummary pageSummary)
     {
-        // TODO Auto-generated method stub
-        return false;
+        return localXWikiDataStorage.exists(pageSummary.getId());
     }
 
     /**
@@ -385,6 +393,21 @@ public class DataManager
     {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    /**
+     * @param objectSummary
+     * @return
+     */
+    public boolean isLocallyAvailable(XWikiEclipseObjectSummary objectSummary)
+    {
+        return localXWikiDataStorage.exists(objectSummary.getPageId(), objectSummary.getClassName(),
+            objectSummary.getId());
+    }
+
+    private String getCompactIdForObject(XWikiObject object)
+    {
+        return String.format("%s/%s/%d", object.getPageId(), object.getClassName(), object.getId());
     }
 
     //
@@ -718,21 +741,6 @@ public class DataManager
     // }
     // }
     //
-    // public boolean isLocallyAvailable(XWikiEclipsePageSummary pageSummary)
-    // {
-    // return localXWikiDataStorage.exists(pageSummary.getData().getId());
-    // }
-    //
-    // public boolean isLocallyAvailable(XWikiEclipseObjectSummary objectSummary)
-    // {
-    // return localXWikiDataStorage.exists(objectSummary.getData().getPageId(),
-    // objectSummary.getData().getClassName(), objectSummary.getData().getId());
-    // }
-    //
-    // private String getCompactIdForObject(XWikiObject object)
-    // {
-    // return String.format("%s/%s/%d", object.getPageId(), object.getClassName(), object.getId());
-    // }
     //
     // private XWikiObject getObjectByCompactId(IDataStorage storage, String compactId) throws NumberFormatException,
     // XWikiEclipseException
@@ -970,4 +978,19 @@ public class DataManager
     //
     // return localXWikiDataStorage.exists(pageId);
     // }
+
+    /**
+     * @param pageSummary
+     * @return
+     */
+    public List<XWikiEclipseAttachment> getAttachments(XWikiEclipsePageSummary pageSummary)
+    {
+        List<XWikiEclipseAttachment> result = null;
+        if (isConnected()) {
+            result = remoteXWikiDataStorage.getAttachments(pageSummary);
+            return result;
+        }
+
+        return null;
+    }
 }
