@@ -295,7 +295,7 @@ public class LocalXWikiDataStorage
                         /* Remove page objects */
                         List<XWikiObjectSummary> objects = getObjects(pageId);
                         for (XWikiObjectSummary object : objects) {
-                            removeObject(pageId, object.getClassName(), object.getId());
+                            removeObject(pageId, object.getClassName(), Integer.toString(object.getId()));
                         }
 
                         /*
@@ -356,7 +356,7 @@ public class LocalXWikiDataStorage
         return result;
     }
 
-    public XWikiObject getObject(String pageId, String className, int objectId) throws XWikiEclipseStorageException
+    public XWikiObject getObject(String pageId, String className, String objectId) throws XWikiEclipseStorageException
     {
         try {
             IFolder objectsFolder = StorageUtils.createFolder(baseFolder.getFolder(OBJECTS_DIRECTORY));
@@ -417,14 +417,14 @@ public class LocalXWikiDataStorage
                                 .getFolder(object.getPageId())
                                 .getFile(
                                     getFileNameForObjectSummary(objectSummary.getPageId(),
-                                        objectSummary.getClassName(), objectSummary.getId())), //$NON-NLS-1$
+                                        objectSummary.getClassName(), Integer.toString(objectSummary.getId()))), //$NON-NLS-1$
                             objectSummary.toRawMap());
 
                         /* Write the object */
                         StorageUtils.writeDataToXML(
                             baseFolder.getFolder(OBJECTS_DIRECTORY).getFile(
-                                getFileNameForObject(object.getPageId(), object.getClassName(), object.getId())),
-                            object //$NON-NLS-1$
+                                getFileNameForObject(object.getPageId(), object.getClassName(),
+                                    Integer.toString(object.getId()))), object //$NON-NLS-1$
                                 .toRawMap());
                     } catch (XWikiEclipseStorageException e) {
                         throw new CoreException(new Status(Status.ERROR, StoragePlugin.PLUGIN_ID, "Error", e));
@@ -462,7 +462,7 @@ public class LocalXWikiDataStorage
         return pageFile.exists();
     }
 
-    public boolean exists(String pageId, String className, int objectId)
+    public boolean exists(String pageId, String className, String objectId)
     {
         IFile objectFile =
             baseFolder.getFolder(OBJECTS_DIRECTORY).getFile(getFileNameForObject(pageId, className, objectId));
@@ -479,14 +479,14 @@ public class LocalXWikiDataStorage
         return String.format("%s.%s", pageId, PAGE_FILE_EXTENSION); //$NON-NLS-1$
     }
 
-    private String getFileNameForObjectSummary(String pageId, String className, int id)
+    private String getFileNameForObjectSummary(String pageId, String className, String id)
     {
-        return String.format("%s.%s.%d.%s", pageId, className, id, OBJECT_SUMMARY_FILE_EXTENSION); //$NON-NLS-1$
+        return String.format("%s.%s.%s.%s", pageId, className, id, OBJECT_SUMMARY_FILE_EXTENSION); //$NON-NLS-1$
     }
 
-    private String getFileNameForObject(String pageId, String className, int id)
+    private String getFileNameForObject(String pageId, String className, String id)
     {
-        return String.format("%s.%s.%d.%s", pageId, className, id, OBJECT_FILE_EXTENSION); //$NON-NLS-1$
+        return String.format("%s.%s.%s.%s", pageId, className, id, OBJECT_FILE_EXTENSION); //$NON-NLS-1$
     }
 
     private String getFileNameForClass(String id)
@@ -520,7 +520,7 @@ public class LocalXWikiDataStorage
         return result;
     }
 
-    public boolean removeObject(final String pageId, final String className, final int objectId)
+    public boolean removeObject(final String pageId, final String className, final String objectId)
         throws XWikiEclipseStorageException
     {
         try {
