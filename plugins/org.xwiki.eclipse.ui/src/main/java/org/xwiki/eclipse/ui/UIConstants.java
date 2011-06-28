@@ -21,11 +21,12 @@
 package org.xwiki.eclipse.ui;
 
 /**
- * 
  * @version $Id$
  */
 public class UIConstants
 {
+    public final static String DATA_MANAGER_ICON = "icons/data.manager.png";
+
     public final static String XWIKI_ICON = "icons/xwiki.png";
 
     public final static String SPACE_ICON = "icons/space.png";
@@ -35,6 +36,10 @@ public class UIConstants
     public final static String PAGE_LOCALLY_AVAILABLE_ICON = "icons/page.locally.available.png";
 
     public static final String PAGE_CONFLICT_ICON = "icons/page.conflict.png";
+
+    public static final String PAGE_ATTACHMENT_ICON = "icons/page.attachment.png";
+
+    public static final String OBJECT_COLLECTION_ICON = "icons/object.collection.png";
 
     public static final String OBJECT_ICON = "icons/object.png";
 
