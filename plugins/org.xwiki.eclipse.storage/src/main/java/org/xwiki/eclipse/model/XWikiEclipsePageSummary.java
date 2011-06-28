@@ -41,6 +41,10 @@ public class XWikiEclipsePageSummary extends ModelObject
 
     private String url;
 
+    private String objectsUrl;
+
+    private String attachmentsUrl;
+
     public XWikiEclipsePageSummary(DataManager dataManager)
     {
         super(dataManager);
@@ -110,5 +114,25 @@ public class XWikiEclipsePageSummary extends ModelObject
     public void setWiki(String wiki)
     {
         this.wiki = wiki;
+    }
+
+    public String getObjectsUrl()
+    {
+        return objectsUrl;
+    }
+
+    public void setObjectsUrl(String objectsUrl)
+    {
+        this.objectsUrl = objectsUrl;
+    }
+
+    public String getAttachmentsUrl()
+    {
+        return attachmentsUrl;
+    }
+
+    public void setAttachmentsUrl(String attachmentsUrl)
+    {
+        this.attachmentsUrl = attachmentsUrl;
     }
 }
