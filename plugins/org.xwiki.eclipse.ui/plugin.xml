@@ -97,7 +97,13 @@
              value="org.xwiki.eclipse.model.XWikiEclipsePageSummary">
        </instanceof>
        <instanceof
+             value="org.xwiki.eclipse.model.XWikiEclipseObjectCollection">
+       </instanceof>
+       <instanceof
              value="org.xwiki.eclipse.model.XWikiEclipseObjectSummary">
+       </instanceof>
+       <instanceof
+             value="org.xwiki.eclipse.model.XWikiEclipseAttachment">
        </instanceof>
     </or>
 			</triggerPoints>
@@ -111,7 +117,11 @@
                </instanceof>
 					<instanceof value="org.xwiki.eclipse.model.XWikiEclipsePageSummary">
                </instanceof>
+					<instanceof value="org.xwiki.eclipse.model.XWikiEclipseObjectCollection">
+               </instanceof>               
 					<instanceof value="org.xwiki.eclipse.model.XWikiEclipseObjectSummary">
+               </instanceof>					
+                    <instanceof value="org.xwiki.eclipse.model.XWikiEclipseAttachment">
                </instanceof>
 				</or>
 			</possibleChildren>
@@ -240,6 +250,13 @@
          type="org.eclipse.ui.progress.IDeferredWorkbenchAdapter">
    </adapter>
 		</factory>
+	<factory adaptableType="org.xwiki.eclipse.model.XWikiEclipseObjectCollection" class="org.xwiki.eclipse.ui.adapters.AdapterFactory">
+			<adapter type="org.eclipse.ui.model.IWorkbenchAdapter">
+         </adapter>
+   <adapter
+         type="org.eclipse.ui.progress.IDeferredWorkbenchAdapter">
+   </adapter>
+		</factory>		
   <factory
         adaptableType="org.xwiki.eclipse.model.XWikiEclipseObjectSummary"
         class="org.xwiki.eclipse.ui.adapters.AdapterFactory">
@@ -247,6 +264,13 @@
            type="org.eclipse.ui.model.IWorkbenchAdapter">
      </adapter>
   </factory>
+  <factory
+        adaptableType="org.xwiki.eclipse.model.XWikiEclipseAttachment"
+        class="org.xwiki.eclipse.ui.adapters.AdapterFactory">
+     <adapter
+           type="org.eclipse.ui.model.IWorkbenchAdapter">
+     </adapter>
+  </factory>  
 	</extension>
 	<extension point="org.eclipse.ui.editors">
 		<editor class="org.xwiki.eclipse.ui.editors.PageEditor" contributorClass="org.xwiki.eclipse.ui.editors.XWikiEditorActionContributor" icon="icons/xwiki.png" id="org.xwiki.eclipse.ui.editors.PageEditor" name="Page Editor">
