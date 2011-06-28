@@ -86,7 +86,7 @@ public class DataManagerAdapter extends WorkbenchAdapter implements IDeferredWor
     @Override
     public ImageDescriptor getImageDescriptor(Object object)
     {
-        return UIPlugin.getImageDescriptor(UIConstants.XWIKI_ICON);
+        return UIPlugin.getImageDescriptor(UIConstants.DATA_MANAGER_ICON);
     }
 
     @Override
