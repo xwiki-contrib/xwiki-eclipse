@@ -35,9 +35,13 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
+import org.xwiki.rest.model.jaxb.Attachment;
+import org.xwiki.rest.model.jaxb.Attachments;
 import org.xwiki.rest.model.jaxb.Link;
 import org.xwiki.rest.model.jaxb.LinkCollection;
 import org.xwiki.rest.model.jaxb.ObjectFactory;
+import org.xwiki.rest.model.jaxb.ObjectSummary;
+import org.xwiki.rest.model.jaxb.Objects;
 import org.xwiki.rest.model.jaxb.PageSummary;
 import org.xwiki.rest.model.jaxb.Pages;
 import org.xwiki.rest.model.jaxb.Space;
@@ -520,6 +524,50 @@ public class XWikiRESTClient
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+        return null;
+    }
+
+    /**
+     * @param objectsUrl
+     * @param username
+     * @param password
+     * @return
+     */
+    public List<ObjectSummary> getObjects(String objectsUrl, String username, String password)
+    {
+        HttpResponse response;
+        if (objectsUrl != null) {
+            try {
+                response = executeGet(objectsUrl, username, password);
+                Objects objects = (Objects) unmarshaller.unmarshal(response.getEntity().getContent());
+                return objects.getObjectSummaries();
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @param attachmentsUrl
+     * @param username
+     * @param password
+     * @return
+     */
+    public List<Attachment> getAttachments(String attachmentsUrl, String username, String password)
+    {
+        HttpResponse response;
+        try {
+            response = executeGet(attachmentsUrl, username, password);
+            Attachments attachments = (Attachments) unmarshaller.unmarshal(response.getEntity().getContent());
+            return attachments.getAttachments();
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
         return null;
     }
 }

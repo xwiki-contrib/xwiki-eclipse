@@ -21,6 +21,8 @@ package org.xwiki.eclipse.rest;
 
 import java.util.List;
 
+import org.xwiki.rest.model.jaxb.Attachment;
+import org.xwiki.rest.model.jaxb.ObjectSummary;
 import org.xwiki.rest.model.jaxb.PageSummary;
 import org.xwiki.rest.model.jaxb.Space;
 import org.xwiki.rest.model.jaxb.Wiki;
@@ -89,7 +91,32 @@ public class RestRemoteXWikiDataStorage
      */
     public List<PageSummary> getPages(String pagesUrl, String username, String password)
     {
-        List<PageSummary> pages = restRemoteClient.getPages(pagesUrl, username, password);
-        return pages;
+        List<PageSummary> result = restRemoteClient.getPages(pagesUrl, username, password);
+        return result;
+    }
+
+    /**
+     * @param pageSummary
+     */
+    public List<ObjectSummary> getObjects(String objectsUrl, String username, String password)
+    {
+        List<ObjectSummary> result = this.restRemoteClient.getObjects(objectsUrl, username, password);
+        return result;
+    }
+
+    /**
+     * @param attachmentsUrl
+     * @param username
+     * @param password
+     * @return
+     */
+    public List<Attachment> getAttachments(String attachmentsUrl, String username, String password)
+    {
+        if (attachmentsUrl != null) {
+            List<Attachment> result = this.restRemoteClient.getAttachments(attachmentsUrl, username, password);
+            return result;
+        }
+
+        return null;
     }
 }

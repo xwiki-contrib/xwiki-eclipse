@@ -24,13 +24,17 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import org.xwiki.eclipse.model.ModelObject;
+import org.xwiki.eclipse.model.XWikiEclipseAttachment;
+import org.xwiki.eclipse.model.XWikiEclipseObjectSummary;
 import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
 import org.xwiki.eclipse.model.XWikiEclipseServerInfo;
 import org.xwiki.eclipse.model.XWikiEclipseSpaceSummary;
 import org.xwiki.eclipse.model.XWikiEclipseWikiSummary;
 import org.xwiki.eclipse.rest.Relations;
 import org.xwiki.eclipse.rest.RestRemoteXWikiDataStorage;
+import org.xwiki.rest.model.jaxb.Attachment;
 import org.xwiki.rest.model.jaxb.Link;
+import org.xwiki.rest.model.jaxb.ObjectSummary;
 import org.xwiki.rest.model.jaxb.PageSummary;
 import org.xwiki.rest.model.jaxb.Space;
 import org.xwiki.rest.model.jaxb.Wiki;
@@ -210,7 +214,97 @@ public class RestRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStorag
             page.setUrl(pageSummary.getXwikiAbsoluteUrl());
             page.setWiki(pageSummary.getWiki());
 
+            List<Link> links = pageSummary.getLinks();
+            for (Link link : links) {
+                if (link.getRel().equals(Relations.OBJECTS)) {
+                    page.setObjectsUrl(link.getHref());
+                }
+
+                if (link.getRel().equals(Relations.ATTACHMENTS)) {
+                    page.setAttachmentsUrl(link.getHref());
+                }
+            }
+
             result.add(page);
+        }
+
+        return result;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#getObjects(org.xwiki.eclipse.model.XWikiEclipsePageSummary)
+     */
+    @Override
+    public List<XWikiEclipseObjectSummary> getObjects(XWikiEclipsePageSummary pageSummary)
+    {
+        List<XWikiEclipseObjectSummary> result = new ArrayList<XWikiEclipseObjectSummary>();
+
+        List<ObjectSummary> objects =
+            this.restRemoteStorage.getObjects(pageSummary.getObjectsUrl(), username, password);
+
+        if (objects != null) {
+            for (ObjectSummary objectSummary : objects) {
+                XWikiEclipseObjectSummary o = new XWikiEclipseObjectSummary(dataManager);
+                o.setClassName(objectSummary.getClassName());
+                o.setId(objectSummary.getId());
+                o.setPageId(objectSummary.getPageId());
+                o.setPageName(objectSummary.getPageName());
+                o.setSpace(pageSummary.getSpace());
+                o.setWiki(pageSummary.getWiki());
+
+                /* set up pretty name = className + [number] */
+                String className = objectSummary.getClassName();
+                int number = objectSummary.getNumber();
+                String prettyName = className + "[" + number + "]";
+                o.setPrettyName(prettyName);
+
+                result.add(o);
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#getAttachments(org.xwiki.eclipse.model.XWikiEclipsePageSummary)
+     */
+    @Override
+    public List<XWikiEclipseAttachment> getAttachments(XWikiEclipsePageSummary pageSummary)
+    {
+        List<XWikiEclipseAttachment> result = new ArrayList<XWikiEclipseAttachment>();
+
+        List<Attachment> attachments =
+            this.restRemoteStorage.getAttachments(pageSummary.getAttachmentsUrl(), username, password);
+        if (attachments != null) {
+            for (Attachment attachment : attachments) {
+                XWikiEclipseAttachment a = new XWikiEclipseAttachment(dataManager);
+                a.setAbsoluteUrl(attachment.getXwikiAbsoluteUrl());
+                a.setAuthor(attachment.getAuthor());
+                a.setDate(attachment.getDate());
+                a.setId(attachment.getId());
+                a.setMimeType(attachment.getMimeType());
+                a.setName(attachment.getName());
+                a.setPageId(attachment.getPageId());
+                a.setPageVersion(attachment.getPageVersion());
+                a.setVersion(attachment.getVersion());
+
+                List<Link> links = attachment.getLinks();
+                for (Link link : links) {
+                    if (link.getRel().equals(Relations.ATTACHMENT_DATA)) {
+                        a.setAttachmentUrl(link.getHref());
+                    }
+
+                    if (link.getRel().equals(Relations.PAGE)) {
+                        a.setPageUrl(link.getHref());
+                    }
+                }
+
+                result.add(a);
+            }
         }
 
         return result;
