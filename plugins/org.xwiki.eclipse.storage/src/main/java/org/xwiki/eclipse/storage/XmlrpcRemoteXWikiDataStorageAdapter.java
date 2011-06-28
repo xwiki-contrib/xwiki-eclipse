@@ -25,12 +25,15 @@ import java.util.List;
 import org.codehaus.swizzle.confluence.ServerInfo;
 import org.codehaus.swizzle.confluence.SpaceSummary;
 import org.xwiki.eclipse.model.ModelObject;
+import org.xwiki.eclipse.model.XWikiEclipseAttachment;
+import org.xwiki.eclipse.model.XWikiEclipseObjectSummary;
 import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
 import org.xwiki.eclipse.model.XWikiEclipseServerInfo;
 import org.xwiki.eclipse.model.XWikiEclipseSpaceSummary;
 import org.xwiki.eclipse.model.XWikiEclipseWikiSummary;
 import org.xwiki.eclipse.xmlrpc.XWikiEclipseXmlrpcException;
 import org.xwiki.eclipse.xmlrpc.XmlrpcRemoteXWikiDataStorage;
+import org.xwiki.xmlrpc.model.XWikiObjectSummary;
 import org.xwiki.xmlrpc.model.XWikiPageSummary;
 
 /**
@@ -197,6 +200,46 @@ public class XmlrpcRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStor
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#getObjects(org.xwiki.eclipse.model.XWikiEclipsePageSummary)
+     */
+    @Override
+    public List<XWikiEclipseObjectSummary> getObjects(XWikiEclipsePageSummary pageSummary)
+    {
+        List<XWikiEclipseObjectSummary> result = new ArrayList<XWikiEclipseObjectSummary>();
+
+        try {
+            List<XWikiObjectSummary> objectSummaries = xmlrpcRemoteDataStorage.getObjects(pageSummary.getId());
+            for (XWikiObjectSummary objectSummary : objectSummaries) {
+                XWikiEclipseObjectSummary o = new XWikiEclipseObjectSummary(dataManager);
+                o.setClassName(objectSummary.getClassName());
+                o.setId(Integer.toString(objectSummary.getId()));
+                o.setPageId(pageSummary.getParentId());
+                o.setPrettyName(objectSummary.getPrettyName());
+
+                result.add(o);
+            }
+        } catch (XWikiEclipseXmlrpcException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#getAttachments(org.xwiki.eclipse.model.XWikiEclipsePageSummary)
+     */
+    @Override
+    public List<XWikiEclipseAttachment> getAttachments(XWikiEclipsePageSummary pageSummary)
+    {
         return null;
     }
 
