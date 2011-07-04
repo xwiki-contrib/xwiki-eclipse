@@ -19,11 +19,17 @@
  */
 package org.xwiki.eclipse.model;
 
+import java.util.List;
+
 /**
  * @version $Id$
  */
 public class XWikiEclipseServerInfo
 {
+
+    private List<String> syntaxes;
+
+    private String version;
 
     private int majorVersion;
 
@@ -65,4 +71,23 @@ public class XWikiEclipseServerInfo
         this.baseUrl = baseUrl;
     }
 
+    public String getVersion()
+    {
+        return version;
+    }
+
+    public void setVersion(String version)
+    {
+        this.version = version;
+    }
+
+    public List<String> getSyntaxes()
+    {
+        return syntaxes;
+    }
+
+    public void setSyntaxes(List<String> syntaxes)
+    {
+        this.syntaxes = syntaxes;
+    }
 }
