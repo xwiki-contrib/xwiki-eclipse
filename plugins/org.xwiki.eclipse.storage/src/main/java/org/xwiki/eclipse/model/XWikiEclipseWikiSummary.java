@@ -19,6 +19,8 @@
  */
 package org.xwiki.eclipse.model;
 
+import java.util.List;
+
 import org.xwiki.eclipse.storage.DataManager;
 
 /**
@@ -31,7 +33,13 @@ public class XWikiEclipseWikiSummary extends ModelObject
 
     private String name;
 
+    private String baseUrl;
+
     private String spacesUrl;
+
+    private String version;
+
+    private List<String> syntaxes;
 
     /**
      * @param dataManager
@@ -80,5 +88,35 @@ public class XWikiEclipseWikiSummary extends ModelObject
     public void setSpacesUrl(String spacesUrl)
     {
         this.spacesUrl = spacesUrl;
+    }
+
+    public String getVersion()
+    {
+        return version;
+    }
+
+    public void setVersion(String version)
+    {
+        this.version = version;
+    }
+
+    public List<String> getSyntaxes()
+    {
+        return syntaxes;
+    }
+
+    public void setSyntaxes(List<String> syntaxes)
+    {
+        this.syntaxes = syntaxes;
+    }
+
+    public String getBaseUrl()
+    {
+        return baseUrl;
+    }
+
+    public void setBaseUrl(String baseUrl)
+    {
+        this.baseUrl = baseUrl;
     }
 }
