@@ -20,6 +20,8 @@
  */
 package org.xwiki.eclipse.model;
 
+import java.util.Calendar;
+
 import org.xwiki.eclipse.storage.DataManager;
 
 /**
@@ -27,8 +29,29 @@ import org.xwiki.eclipse.storage.DataManager;
  * 
  * @version $Id$
  */
-public abstract class XWikiEclipsePageHistorySummary extends ModelObject
+public class XWikiEclipsePageHistorySummary extends ModelObject
 {
+    private int minorVersion;
+
+    private int majorVersion;
+
+    private String pageId;
+
+    private String language;
+
+    private String space;
+
+    private String wiki;
+
+    private String name;
+
+    private String version;
+
+    private String modifier;
+
+    private Calendar modified;
+
+    private String pageUrl;
 
     public XWikiEclipsePageHistorySummary(DataManager dataManager)
     {
@@ -38,13 +61,118 @@ public abstract class XWikiEclipsePageHistorySummary extends ModelObject
     @Override
     public String getXWikiEclipseId()
     {
-        return String.format(
-            "xwikieclipse://%s/%s/%d/%d", getDataManager().getName(), getId(), getVersion(), getMinorVersion()); //$NON-NLS-1$
+        return String
+            .format(
+                "xwikieclipse://%s/%s/%d/%d", getDataManager().getName(), getPageId(), getMajorVersion(), getMinorVersion()); //$NON-NLS-1$
     }
 
-    public abstract int getMinorVersion();
+    public int getMinorVersion()
+    {
+        return minorVersion;
+    }
 
-    public abstract int getVersion();
+    public void setMinorVersion(int minorVersion)
+    {
+        this.minorVersion = minorVersion;
+    }
 
-    public abstract String getId();
+    public int getMajorVersion()
+    {
+        return majorVersion;
+    }
+
+    public void setMajorVersion(int majorVersion)
+    {
+        this.majorVersion = majorVersion;
+    }
+
+    public String getModifier()
+    {
+        return modifier;
+    }
+
+    public void setModifier(String modifier)
+    {
+        this.modifier = modifier;
+    }
+
+    public Calendar getModified()
+    {
+        return modified;
+    }
+
+    public void setModified(Calendar modified)
+    {
+        this.modified = modified;
+    }
+
+    public String getPageId()
+    {
+        return pageId;
+    }
+
+    public void setPageId(String pageId)
+    {
+        this.pageId = pageId;
+    }
+
+    public String getLanguage()
+    {
+        return language;
+    }
+
+    public void setLanguage(String language)
+    {
+        this.language = language;
+    }
+
+    public String getSpace()
+    {
+        return space;
+    }
+
+    public void setSpace(String space)
+    {
+        this.space = space;
+    }
+
+    public String getWiki()
+    {
+        return wiki;
+    }
+
+    public void setWiki(String wiki)
+    {
+        this.wiki = wiki;
+    }
+
+    public String getName()
+    {
+        return name;
+    }
+
+    public void setName(String name)
+    {
+        this.name = name;
+    }
+
+    public String getVersion()
+    {
+        return version;
+    }
+
+    public void setVersion(String version)
+    {
+        this.version = version;
+    }
+
+    public String getPageUrl()
+    {
+        return pageUrl;
+    }
+
+    public void setPageUrl(String pageUrl)
+    {
+        this.pageUrl = pageUrl;
+    }
 }

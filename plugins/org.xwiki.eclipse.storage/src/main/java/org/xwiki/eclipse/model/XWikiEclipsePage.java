@@ -20,6 +20,8 @@
  */
 package org.xwiki.eclipse.model;
 
+import java.util.Calendar;
+
 import org.xwiki.eclipse.storage.DataManager;
 
 /**
@@ -27,15 +29,40 @@ import org.xwiki.eclipse.storage.DataManager;
  * 
  * @version $Id$
  */
-public abstract class XWikiEclipsePage extends ModelObject
+public class XWikiEclipsePage extends ModelObject
 {
+    private String language;
+
+    private String id;
+
+    private String version;
+
+    private int majorVersion;
+
+    private int minorVersion;
+
+    private String title;
+
+    private String content;
+
+    private String space;
+
+    private String name;
+
+    private String url;
+
+    private String creator;
+
+    private String modifier;
+
+    private Calendar created;
+
+    private Calendar modified;
 
     public XWikiEclipsePage(DataManager dataManager)
     {
         super(dataManager);
     }
-
-    public abstract XWikiEclipsePageSummary getSummary();
 
     @Override
     public String getXWikiEclipseId()
@@ -43,25 +70,143 @@ public abstract class XWikiEclipsePage extends ModelObject
         return String.format("xwikieclipse://%s/%s/page/%s", getDataManager().getName(), getId(), getLanguage()); //$NON-NLS-1$
     }
 
-    public abstract String getLanguage();
+    public String getLanguage()
+    {
+        return language;
+    }
 
-    public abstract String getId();
+    public void setLanguage(String language)
+    {
+        this.language = language;
+    }
 
-    public abstract int getVersion();
+    public String getId()
+    {
+        return id;
+    }
 
-    public abstract String getTitle();
+    public void setId(String id)
+    {
+        this.id = id;
+    }
 
-    public abstract String getContent();
+    public String getVersion()
+    {
+        return version;
+    }
 
-    public abstract String getSpace();
+    public void setVersion(String version)
+    {
+        this.version = version;
+    }
 
-    public abstract XWikiEclipseSpaceSummary getSpaceSummary();
+    public int getMajorVersion()
+    {
+        return majorVersion;
+    }
 
-    public abstract String getName();
+    public void setMajorVersion(int majorVersion)
+    {
+        this.majorVersion = majorVersion;
+    }
 
-    public abstract void setContent(String content);
+    public int getMinorVersion()
+    {
+        return minorVersion;
+    }
 
-    public abstract String getUrl();
+    public void setMinorVersion(int minorVersion)
+    {
+        this.minorVersion = minorVersion;
+    }
 
-    public abstract int getMinorVersion();
+    public String getTitle()
+    {
+        return title;
+    }
+
+    public void setTitle(String title)
+    {
+        this.title = title;
+    }
+
+    public String getContent()
+    {
+        return content;
+    }
+
+    public void setContent(String content)
+    {
+        this.content = content;
+    }
+
+    public String getSpace()
+    {
+        return space;
+    }
+
+    public void setSpace(String space)
+    {
+        this.space = space;
+    }
+
+    public String getName()
+    {
+        return name;
+    }
+
+    public void setName(String name)
+    {
+        this.name = name;
+    }
+
+    public String getUrl()
+    {
+        return url;
+    }
+
+    public void setUrl(String url)
+    {
+        this.url = url;
+    }
+
+    public String getCreator()
+    {
+        return creator;
+    }
+
+    public void setCreator(String creator)
+    {
+        this.creator = creator;
+    }
+
+    public String getModifier()
+    {
+        return modifier;
+    }
+
+    public void setModifier(String modifier)
+    {
+        this.modifier = modifier;
+    }
+
+    public Calendar getCreated()
+    {
+        return created;
+    }
+
+    public void setCreated(Calendar created)
+    {
+        this.created = created;
+    }
+
+    public Calendar getModified()
+    {
+        return modified;
+    }
+
+    public void setModified(Calendar modified)
+    {
+        this.modified = modified;
+    }
 }
