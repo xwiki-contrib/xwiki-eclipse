@@ -37,15 +37,19 @@ import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 import org.xwiki.rest.model.jaxb.Attachment;
 import org.xwiki.rest.model.jaxb.Attachments;
+import org.xwiki.rest.model.jaxb.History;
+import org.xwiki.rest.model.jaxb.HistorySummary;
 import org.xwiki.rest.model.jaxb.Link;
 import org.xwiki.rest.model.jaxb.LinkCollection;
 import org.xwiki.rest.model.jaxb.ObjectFactory;
 import org.xwiki.rest.model.jaxb.ObjectSummary;
 import org.xwiki.rest.model.jaxb.Objects;
+import org.xwiki.rest.model.jaxb.Page;
 import org.xwiki.rest.model.jaxb.PageSummary;
 import org.xwiki.rest.model.jaxb.Pages;
 import org.xwiki.rest.model.jaxb.Space;
 import org.xwiki.rest.model.jaxb.Spaces;
+import org.xwiki.rest.model.jaxb.Syntaxes;
 import org.xwiki.rest.model.jaxb.Wiki;
 import org.xwiki.rest.model.jaxb.Wikis;
 import org.xwiki.rest.model.jaxb.Xwiki;
@@ -203,7 +207,7 @@ public class XWikiRESTClient
         return wikis.getWikis();
     }
 
-    public List<Space> getSpaces(String spacesUrl, String username, String password) throws Exception
+    public List<Space> getSpaces(String spacesUrl) throws Exception
     {
         HttpResponse response = executeGet(spacesUrl, username, password);
         Spaces spaces = (Spaces) unmarshaller.unmarshal(response.getEntity().getContent());
@@ -404,15 +408,6 @@ public class XWikiRESTClient
     // return UriBuilder.fromUri(getBaseUrl()).path(resource);
     // }
 
-    // private Page getPage(String wikiName, String spaceName, String pageName) throws Exception
-    // {
-    // String uri = getUriBuilder(PageResource.class).build(wikiName, spaceName, pageName).toString();
-    //
-    // GetMethod getMethod = executeGet(uri);
-    //
-    // return (Page) unmarshaller.unmarshal(getMethod.getResponseBodyAsStream());
-    // }
-
     // protected String getPageContent(String wikiName, String spaceName, String pageName) throws Exception
     // {
     // Page page = getPage(wikiName, spaceName, pageName);
@@ -513,7 +508,7 @@ public class XWikiRESTClient
      * @param password
      * @return
      */
-    public List<PageSummary> getPages(String pagesUrl, String username, String password)
+    public List<PageSummary> getPages(String pagesUrl)
     {
         HttpResponse response;
         try {
@@ -533,7 +528,7 @@ public class XWikiRESTClient
      * @param password
      * @return
      */
-    public List<ObjectSummary> getObjects(String objectsUrl, String username, String password)
+    public List<ObjectSummary> getObjects(String objectsUrl)
     {
         HttpResponse response;
         if (objectsUrl != null) {
@@ -556,7 +551,7 @@ public class XWikiRESTClient
      * @param password
      * @return
      */
-    public List<Attachment> getAttachments(String attachmentsUrl, String username, String password)
+    public List<Attachment> getAttachments(String attachmentsUrl)
     {
         HttpResponse response;
         try {
@@ -569,5 +564,56 @@ public class XWikiRESTClient
         }
 
         return null;
+    }
+
+    /**
+     * @param syntaxesUrl
+     * @return
+     */
+    public Syntaxes getSyntaxes(String syntaxesUrl)
+    {
+        HttpResponse response;
+        try {
+            response = executeGet(syntaxesUrl, username, password);
+            Syntaxes synataxes = (Syntaxes) unmarshaller.unmarshal(response.getEntity().getContent());
+            return synataxes;
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * @param historyUrl
+     * @return
+     */
+    public List<HistorySummary> getPageHistory(String historyUrl)
+    {
+        HttpResponse response;
+        try {
+            response = executeGet(historyUrl, username, password);
+            History history = (History) unmarshaller.unmarshal(response.getEntity().getContent());
+            return history.getHistorySummaries();
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public Page getPage(String pageUrl) throws Exception
+    {
+        HttpResponse response;
+        try {
+            response = executeGet(pageUrl, username, password);
+            Page result = (Page) unmarshaller.unmarshal(response.getEntity().getContent());
+            return result;
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            throw e;
+        }
     }
 }

@@ -21,9 +21,10 @@ package org.xwiki.eclipse.storage;
 
 import java.util.List;
 
-import org.xwiki.eclipse.model.ModelObject;
 import org.xwiki.eclipse.model.XWikiEclipseAttachment;
 import org.xwiki.eclipse.model.XWikiEclipseObjectSummary;
+import org.xwiki.eclipse.model.XWikiEclipsePage;
+import org.xwiki.eclipse.model.XWikiEclipsePageHistorySummary;
 import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
 import org.xwiki.eclipse.model.XWikiEclipseServerInfo;
 import org.xwiki.eclipse.model.XWikiEclipseSpaceSummary;
@@ -36,8 +37,6 @@ import org.xwiki.eclipse.model.XWikiEclipseWikiSummary;
  */
 public interface IRemoteXWikiDataStorage
 {
-    List<ModelObject> getRootResources() throws XWikiEclipseStorageException;
-
     List<XWikiEclipseWikiSummary> getWikis() throws XWikiEclipseStorageException;
 
     List<XWikiEclipseSpaceSummary> getSpaces(XWikiEclipseWikiSummary wiki) throws XWikiEclipseStorageException;
@@ -63,4 +62,17 @@ public interface IRemoteXWikiDataStorage
      * @return
      */
     List<XWikiEclipseAttachment> getAttachments(XWikiEclipsePageSummary pageSummary);
+
+    /**
+     * @param pageSummary
+     * @return
+     */
+    List<XWikiEclipsePageHistorySummary> getPageHistory(XWikiEclipsePageSummary pageSummary)
+        throws XWikiEclipseStorageException;
+
+    /**
+     * @param pageHistorySummary
+     * @return
+     */
+    XWikiEclipsePage getPage(XWikiEclipsePageHistorySummary pageHistorySummary);;
 }

@@ -22,9 +22,12 @@ package org.xwiki.eclipse.rest;
 import java.util.List;
 
 import org.xwiki.rest.model.jaxb.Attachment;
+import org.xwiki.rest.model.jaxb.HistorySummary;
 import org.xwiki.rest.model.jaxb.ObjectSummary;
+import org.xwiki.rest.model.jaxb.Page;
 import org.xwiki.rest.model.jaxb.PageSummary;
 import org.xwiki.rest.model.jaxb.Space;
+import org.xwiki.rest.model.jaxb.Syntaxes;
 import org.xwiki.rest.model.jaxb.Wiki;
 import org.xwiki.rest.model.jaxb.Xwiki;
 
@@ -54,7 +57,7 @@ public class RestRemoteXWikiDataStorage
      * @param password
      * @return
      */
-    public List<Wiki> getWikis(String username, String password) throws Exception
+    public List<Wiki> getWikis() throws Exception
     {
 
         try {
@@ -71,10 +74,10 @@ public class RestRemoteXWikiDataStorage
         return restRemoteClient.getServerInfo();
     }
 
-    public List<Space> getSpaces(String spacesUrl, String username, String password)
+    public List<Space> getSpaces(String spacesUrl)
     {
         try {
-            return restRemoteClient.getSpaces(spacesUrl, username, password);
+            return restRemoteClient.getSpaces(spacesUrl);
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -89,18 +92,18 @@ public class RestRemoteXWikiDataStorage
      * @param password
      * @return
      */
-    public List<PageSummary> getPages(String pagesUrl, String username, String password)
+    public List<PageSummary> getPages(String pagesUrl)
     {
-        List<PageSummary> result = restRemoteClient.getPages(pagesUrl, username, password);
+        List<PageSummary> result = restRemoteClient.getPages(pagesUrl);
         return result;
     }
 
     /**
      * @param pageSummary
      */
-    public List<ObjectSummary> getObjects(String objectsUrl, String username, String password)
+    public List<ObjectSummary> getObjects(String objectsUrl)
     {
-        List<ObjectSummary> result = this.restRemoteClient.getObjects(objectsUrl, username, password);
+        List<ObjectSummary> result = this.restRemoteClient.getObjects(objectsUrl);
         return result;
     }
 
@@ -110,11 +113,45 @@ public class RestRemoteXWikiDataStorage
      * @param password
      * @return
      */
-    public List<Attachment> getAttachments(String attachmentsUrl, String username, String password)
+    public List<Attachment> getAttachments(String attachmentsUrl)
     {
         if (attachmentsUrl != null) {
-            List<Attachment> result = this.restRemoteClient.getAttachments(attachmentsUrl, username, password);
+            List<Attachment> result = this.restRemoteClient.getAttachments(attachmentsUrl);
             return result;
+        }
+
+        return null;
+    }
+
+    /**
+     * @return
+     */
+    public Syntaxes getSyntaxes(String syntaxesUrl)
+    {
+        return this.restRemoteClient.getSyntaxes(syntaxesUrl);
+    }
+
+    /**
+     * @param pageId
+     * @return
+     */
+    public List<HistorySummary> getPageHistory(String historyUrl)
+    {
+        if (historyUrl != null) {
+            List<HistorySummary> result = this.restRemoteClient.getPageHistory(historyUrl);
+            return result;
+        }
+
+        return null;
+    }
+
+    public Page getPage(String pageUrl)
+    {
+        try {
+            return this.restRemoteClient.getPage(pageUrl);
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
 
         return null;
