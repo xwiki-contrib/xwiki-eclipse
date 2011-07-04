@@ -21,6 +21,7 @@
 package org.xwiki.eclipse.ui.properties;
 
 import java.net.URL;
+import java.util.Arrays;
 
 import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.jface.layout.GridLayoutFactory;
@@ -39,7 +40,6 @@ import org.eclipse.ui.dialogs.PropertyPage;
 import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
 
 /**
- * 
  * @version $Id$
  */
 public class XWikiEclipsePageSummaryPropertiesPage extends PropertyPage
@@ -82,7 +82,7 @@ public class XWikiEclipsePageSummaryPropertiesPage extends PropertyPage
         property = new Label(composite, SWT.NONE);
         property.setText("Translations:");
         value = new Label(composite, SWT.NONE);
-        value.setText(pageSummary.getTranslations().toString());
+        value.setText(Arrays.toString(pageSummary.getTranslations().toArray()));
 
         property = new Label(composite, SWT.NONE);
         property.setText("Url:");

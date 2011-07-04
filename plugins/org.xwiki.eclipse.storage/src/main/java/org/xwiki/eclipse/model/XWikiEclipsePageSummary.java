@@ -20,6 +20,8 @@
  */
 package org.xwiki.eclipse.model;
 
+import java.util.List;
+
 import org.xwiki.eclipse.storage.DataManager;
 
 /**
@@ -33,6 +35,10 @@ public class XWikiEclipsePageSummary extends ModelObject
 
     private String title;
 
+    private String name;
+
+    private String fullName;
+
     private String space;
 
     private String wiki;
@@ -44,6 +50,12 @@ public class XWikiEclipsePageSummary extends ModelObject
     private String objectsUrl;
 
     private String attachmentsUrl;
+
+    private String historyUrl;
+
+    private String syntax;
+
+    private List<String> translations;
 
     public XWikiEclipsePageSummary(DataManager dataManager)
     {
@@ -134,5 +146,55 @@ public class XWikiEclipsePageSummary extends ModelObject
     public void setAttachmentsUrl(String attachmentsUrl)
     {
         this.attachmentsUrl = attachmentsUrl;
+    }
+
+    public List<String> getTranslations()
+    {
+        return translations;
+    }
+
+    public void setTranslations(List<String> translations)
+    {
+        this.translations = translations;
+    }
+
+    public String getName()
+    {
+        return name;
+    }
+
+    public void setName(String name)
+    {
+        this.name = name;
+    }
+
+    public String getFullName()
+    {
+        return fullName;
+    }
+
+    public void setFullName(String fullName)
+    {
+        this.fullName = fullName;
+    }
+
+    public String getSyntax()
+    {
+        return syntax;
+    }
+
+    public void setSyntax(String syntax)
+    {
+        this.syntax = syntax;
+    }
+
+    public String getHistoryUrl()
+    {
+        return historyUrl;
+    }
+
+    public void setHistoryUrl(String historyUrl)
+    {
+        this.historyUrl = historyUrl;
     }
 }
