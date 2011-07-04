@@ -12,10 +12,11 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.QualifiedName;
-import org.xwiki.eclipse.model.ModelObject;
 import org.xwiki.eclipse.model.XWikiEclipseAttachment;
 import org.xwiki.eclipse.model.XWikiEclipseObject;
 import org.xwiki.eclipse.model.XWikiEclipseObjectSummary;
+import org.xwiki.eclipse.model.XWikiEclipsePage;
+import org.xwiki.eclipse.model.XWikiEclipsePageHistorySummary;
 import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
 import org.xwiki.eclipse.model.XWikiEclipseServerInfo;
 import org.xwiki.eclipse.model.XWikiEclipseSpaceSummary;
@@ -287,22 +288,6 @@ public class DataManager
     {
         // TODO Auto-generated method stub
         return null;
-    }
-
-    /**
-     * @return
-     */
-    public List<ModelObject> getRootResources() throws XWikiEclipseStorageException
-    {
-        List<ModelObject> result = null;
-
-        if (isConnected()) {
-            result = remoteXWikiDataStorage.getRootResources();
-        } else {
-            // FIXME: unimplemented yet, not sure which level to return
-            result = localXWikiDataStorage.getRootResources();
-        }
-        return result;
     }
 
     /*
@@ -991,6 +976,65 @@ public class DataManager
             return result;
         }
 
+        return null;
+    }
+
+    /**
+     * @return
+     */
+    public List<XWikiEclipseWikiSummary> getWikis() throws XWikiEclipseStorageException
+    {
+        List<XWikiEclipseWikiSummary> result = null;
+
+        if (isConnected()) {
+            try {
+                result = remoteXWikiDataStorage.getWikis();
+            } catch (XWikiEclipseStorageException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+                throw e;
+            }
+            return result;
+        }
+
+        return null;
+    }
+
+    /**
+     * @param pageSummary
+     * @return
+     */
+    public List<XWikiEclipsePageHistorySummary> getPageHistory(XWikiEclipsePageSummary pageSummary)
+        throws XWikiEclipseStorageException
+    {
+        List<XWikiEclipsePageHistorySummary> result = null;
+
+        if (isConnected()) {
+            try {
+                result = remoteXWikiDataStorage.getPageHistory(pageSummary);
+                return result;
+            } catch (XWikiEclipseStorageException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+                throw e;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @param pageHistorySummary
+     * @return
+     */
+    public XWikiEclipsePage getPage(XWikiEclipsePageHistorySummary pageHistorySummary)
+        throws XWikiEclipseStorageException
+    {
+        XWikiEclipsePage result = null;
+
+        if (isConnected()) {
+            result = remoteXWikiDataStorage.getPage(pageHistorySummary);
+        }
         return null;
     }
 }
