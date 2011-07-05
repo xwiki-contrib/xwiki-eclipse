@@ -13,6 +13,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.QualifiedName;
 import org.xwiki.eclipse.model.XWikiEclipseAttachment;
+import org.xwiki.eclipse.model.XWikiEclipseClassSummary;
 import org.xwiki.eclipse.model.XWikiEclipseObject;
 import org.xwiki.eclipse.model.XWikiEclipseObjectSummary;
 import org.xwiki.eclipse.model.XWikiEclipsePage;
@@ -1034,7 +1035,23 @@ public class DataManager
 
         if (isConnected()) {
             result = remoteXWikiDataStorage.getPage(pageHistorySummary);
+            return result;
         }
+        return null;
+    }
+
+    /**
+     * @param pageSummary
+     * @return
+     */
+    public XWikiEclipseClassSummary getPageClass(XWikiEclipsePageSummary pageSummary)
+    {
+        XWikiEclipseClassSummary result = null;
+        if (isConnected()) {
+            result = remoteXWikiDataStorage.getPageClass(pageSummary);
+            return result;
+        }
+
         return null;
     }
 }

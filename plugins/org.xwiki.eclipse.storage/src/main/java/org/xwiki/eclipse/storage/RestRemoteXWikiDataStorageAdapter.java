@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import org.xwiki.eclipse.model.XWikiEclipseAttachment;
+import org.xwiki.eclipse.model.XWikiEclipseClassSummary;
 import org.xwiki.eclipse.model.XWikiEclipseObjectSummary;
 import org.xwiki.eclipse.model.XWikiEclipsePage;
 import org.xwiki.eclipse.model.XWikiEclipsePageHistorySummary;
@@ -54,10 +55,6 @@ public class RestRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStorag
 
     private DataManager dataManager;
 
-    private String password;
-
-    private String username;
-
     private String endpoint;
 
     /**
@@ -71,8 +68,6 @@ public class RestRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStorag
         this.dataManager = dataManager;
         this.restRemoteStorage = new RestRemoteXWikiDataStorage(endpoint, userName, password);
         this.endpoint = endpoint;
-        this.username = userName;
-        this.password = password;
     }
 
     public List<XWikiEclipseWikiSummary> getWikis() throws XWikiEclipseStorageException
@@ -239,6 +234,10 @@ public class RestRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStorag
                 if (link.getRel().equals(Relations.HISTORY)) {
                     page.setHistoryUrl(link.getHref());
                 }
+
+                if (link.getRel().equals(Relations.PAGE)) {
+                    page.setPageUrl(link.getHref());
+                }
             }
 
             result.add(page);
@@ -385,5 +384,53 @@ public class RestRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStorag
         throw new UnsupportedOperationException();
 
         // return result;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#getClasses(org.xwiki.eclipse.model.XWikiEclipsePageSummary)
+     */
+    @Override
+    public XWikiEclipseClassSummary getPageClass(XWikiEclipsePageSummary pageSummary)
+    {
+        XWikiEclipsePage page = getPage(pageSummary);
+
+        org.xwiki.rest.model.jaxb.Class classSummary = this.restRemoteStorage.getPageClass(page.getPageClassUrl());
+
+        XWikiEclipseClassSummary result = new XWikiEclipseClassSummary(dataManager);
+        result.setId(classSummary.getId());
+        result.setName(classSummary.getName());
+
+        List<Link> links = classSummary.getLinks();
+        for (Link link : links) {
+            if (link.getHref().equals(Relations.OBJECTS)) {
+                result.setObjectsUrl(link.getHref());
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#getPage(org.xwiki.eclipse.model.XWikiEclipsePageSummary)
+     */
+    @Override
+    public XWikiEclipsePage getPage(XWikiEclipsePageSummary pageSummary)
+    {
+        Page page = this.restRemoteStorage.getPage(pageSummary.getPageUrl());
+        XWikiEclipsePage result = new XWikiEclipsePage(dataManager);
+
+        // FIXME: need to add more attributes later on
+        List<Link> links = page.getLinks();
+        for (Link link : links) {
+            if (link.getRel().equals(Relations.CLASS)) {
+                result.setPageClassUrl(link.getHref());
+            }
+        }
+
+        return result;
     }
 }

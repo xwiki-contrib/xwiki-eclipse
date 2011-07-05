@@ -22,6 +22,7 @@ package org.xwiki.eclipse.storage;
 import java.util.List;
 
 import org.xwiki.eclipse.model.XWikiEclipseAttachment;
+import org.xwiki.eclipse.model.XWikiEclipseClassSummary;
 import org.xwiki.eclipse.model.XWikiEclipseObjectSummary;
 import org.xwiki.eclipse.model.XWikiEclipsePage;
 import org.xwiki.eclipse.model.XWikiEclipsePageHistorySummary;
@@ -74,5 +75,17 @@ public interface IRemoteXWikiDataStorage
      * @param pageHistorySummary
      * @return
      */
-    XWikiEclipsePage getPage(XWikiEclipsePageHistorySummary pageHistorySummary);;
+    XWikiEclipsePage getPage(XWikiEclipsePageHistorySummary pageHistorySummary);
+
+    /**
+     * @param pageSummary
+     * @return
+     */
+    XWikiEclipsePage getPage(XWikiEclipsePageSummary pageSummary);
+
+    /**
+     * @param pageSummary
+     * @return
+     */
+    XWikiEclipseClassSummary getPageClass(XWikiEclipsePageSummary pageSummary);;
 }

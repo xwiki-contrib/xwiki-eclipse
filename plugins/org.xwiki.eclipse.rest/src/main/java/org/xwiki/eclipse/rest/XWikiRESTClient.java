@@ -37,6 +37,7 @@ import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 import org.xwiki.rest.model.jaxb.Attachment;
 import org.xwiki.rest.model.jaxb.Attachments;
+import org.xwiki.rest.model.jaxb.Class;
 import org.xwiki.rest.model.jaxb.History;
 import org.xwiki.rest.model.jaxb.HistorySummary;
 import org.xwiki.rest.model.jaxb.Link;
@@ -610,6 +611,24 @@ public class XWikiRESTClient
             response = executeGet(pageUrl, username, password);
             Page result = (Page) unmarshaller.unmarshal(response.getEntity().getContent());
             return result;
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+    /**
+     * @param classUrl
+     * @return
+     */
+    public Class getClass(String classUrl) throws Exception
+    {
+        HttpResponse response;
+        try {
+            response = executeGet(classUrl, username, password);
+            Class clazz = (Class) unmarshaller.unmarshal(response.getEntity().getContent());
+            return clazz;
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
