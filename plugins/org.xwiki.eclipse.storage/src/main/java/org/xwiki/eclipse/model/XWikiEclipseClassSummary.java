@@ -27,9 +27,13 @@ import org.xwiki.eclipse.storage.DataManager;
  * 
  * @version $Id$
  */
-public abstract class XWikiEclipseClassSummary extends ModelObject
+public class XWikiEclipseClassSummary extends ModelObject
 {
     private String id;
+
+    private String name;
+
+    private String objectsUrl;
 
     public XWikiEclipseClassSummary(DataManager dataManager)
     {
@@ -53,5 +57,25 @@ public abstract class XWikiEclipseClassSummary extends ModelObject
     public void setId(String id)
     {
         this.id = id;
+    }
+
+    public String getName()
+    {
+        return name;
+    }
+
+    public void setName(String name)
+    {
+        this.name = name;
+    }
+
+    public String getObjectsUrl()
+    {
+        return objectsUrl;
+    }
+
+    public void setObjectsUrl(String objectsUrl)
+    {
+        this.objectsUrl = objectsUrl;
     }
 }
