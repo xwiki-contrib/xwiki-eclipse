@@ -36,6 +36,8 @@ import org.eclipse.ui.progress.IElementCollector;
 import org.xwiki.eclipse.core.CoreLog;
 import org.xwiki.eclipse.model.ModelObject;
 import org.xwiki.eclipse.model.XWikiEclipseAttachment;
+import org.xwiki.eclipse.model.XWikiEclipseAttachments;
+import org.xwiki.eclipse.model.XWikiEclipseClassSummary;
 import org.xwiki.eclipse.model.XWikiEclipseObjectCollection;
 import org.xwiki.eclipse.model.XWikiEclipseObjectSummary;
 import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
@@ -59,19 +61,27 @@ public class XWikiEclipsePageSummaryAdapter extends WorkbenchAdapter implements 
             try {
                 /* fetch both objects and attachments */
                 DataManager dataManager = pageSummary.getDataManager();
+
                 List<XWikiEclipseObjectSummary> objects = dataManager.getObjects(pageSummary);
                 List<XWikiEclipseAttachment> attachments = dataManager.getAttachments(pageSummary);
+                XWikiEclipseClassSummary pageClass = dataManager.getPageClass(pageSummary);
 
+                List<ModelObject> result = new ArrayList<ModelObject>();
+
+                /* add pageClass */
+                result.add(pageClass);
+
+                /* add attachments */
+                if (attachments != null && attachments.size() > 0) {
+                    XWikiEclipseAttachments a = new XWikiEclipseAttachments(dataManager);
+                    a.setId("Attachments");
+                    a.setAttachments(attachments);
+                    result.add(a);
+                }
+
+                /* add objects in group */
                 Map<String, List<ModelObject>> categories = new HashMap<String, List<ModelObject>>();
                 List<ModelObject> list = null;
-                /* here, attachment is also treated as a type of class, although it does not have a className */
-                if (attachments != null && attachments.size() > 0) {
-                    list = new ArrayList<ModelObject>();
-                    for (XWikiEclipseAttachment attachment : attachments) {
-                        list.add(attachment);
-                    }
-                    categories.put("Attachments", list);
-                }
 
                 /* FIXME: add all classes right now, may add a filter in the future */
                 for (XWikiEclipseObjectSummary objectSummary : objects) {
@@ -83,7 +93,6 @@ public class XWikiEclipsePageSummaryAdapter extends WorkbenchAdapter implements 
                     list.add(objectSummary);
                 }
 
-                List<XWikiEclipseObjectCollection> result = new ArrayList<XWikiEclipseObjectCollection>();
                 for (String classname : categories.keySet()) {
                     XWikiEclipseObjectCollection collection = new XWikiEclipseObjectCollection(dataManager);
                     collection.setClassName(classname);
