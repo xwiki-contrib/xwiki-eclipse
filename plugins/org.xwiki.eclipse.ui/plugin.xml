@@ -97,14 +97,20 @@
              value="org.xwiki.eclipse.model.XWikiEclipsePageSummary">
        </instanceof>
        <instanceof
-             value="org.xwiki.eclipse.model.XWikiEclipseObjectCollection">
+             value="org.xwiki.eclipse.model.XWikiEclipseClassSummary">
        </instanceof>
+	   <instanceof
+             value="org.xwiki.eclipse.model.XWikiEclipseObjectCollection">
+       </instanceof>       
        <instanceof
              value="org.xwiki.eclipse.model.XWikiEclipseObjectSummary">
        </instanceof>
        <instanceof
              value="org.xwiki.eclipse.model.XWikiEclipseAttachment">
        </instanceof>
+	   <instanceof
+             value="org.xwiki.eclipse.model.XWikiEclipseAttachments">
+       </instanceof>       
     </or>
 			</triggerPoints>
 			<possibleChildren>
@@ -117,12 +123,16 @@
                </instanceof>
 					<instanceof value="org.xwiki.eclipse.model.XWikiEclipsePageSummary">
                </instanceof>
-					<instanceof value="org.xwiki.eclipse.model.XWikiEclipseObjectCollection">
+					<instanceof value="org.xwiki.eclipse.model.XWikiEclipseClassSummary">
                </instanceof>               
 					<instanceof value="org.xwiki.eclipse.model.XWikiEclipseObjectSummary">
                </instanceof>					
                     <instanceof value="org.xwiki.eclipse.model.XWikiEclipseAttachment">
+               </instanceof>			
+                    <instanceof value="org.xwiki.eclipse.model.XWikiEclipseAttachments">
                </instanceof>
+               		<instanceof value="org.xwiki.eclipse.model.XWikiEclipseObjectCollection">
+               </instanceof>                         
 				</or>
 			</possibleChildren>
 		</navigatorContent>
@@ -250,7 +260,14 @@
          type="org.eclipse.ui.progress.IDeferredWorkbenchAdapter">
    </adapter>
 		</factory>
-	<factory adaptableType="org.xwiki.eclipse.model.XWikiEclipseObjectCollection" class="org.xwiki.eclipse.ui.adapters.AdapterFactory">
+		<factory adaptableType="org.xwiki.eclipse.model.XWikiEclipseObjectCollection" class="org.xwiki.eclipse.ui.adapters.AdapterFactory">
+			<adapter type="org.eclipse.ui.model.IWorkbenchAdapter">
+         </adapter>
+   <adapter
+         type="org.eclipse.ui.progress.IDeferredWorkbenchAdapter">
+   </adapter>
+		</factory>		
+	<factory adaptableType="org.xwiki.eclipse.model.XWikiEclipseClassSummary" class="org.xwiki.eclipse.ui.adapters.AdapterFactory">
 			<adapter type="org.eclipse.ui.model.IWorkbenchAdapter">
          </adapter>
    <adapter
@@ -270,7 +287,17 @@
      <adapter
            type="org.eclipse.ui.model.IWorkbenchAdapter">
      </adapter>
-  </factory>  
+  </factory>
+  <factory
+        adaptableType="org.xwiki.eclipse.model.XWikiEclipseAttachments"
+        class="org.xwiki.eclipse.ui.adapters.AdapterFactory">
+     <adapter
+           type="org.eclipse.ui.model.IWorkbenchAdapter">
+     </adapter>
+     <adapter
+         type="org.eclipse.ui.progress.IDeferredWorkbenchAdapter">
+   </adapter>
+  </factory>    
 	</extension>
 	<extension point="org.eclipse.ui.editors">
 		<editor class="org.xwiki.eclipse.ui.editors.PageEditor" contributorClass="org.xwiki.eclipse.ui.editors.XWikiEditorActionContributor" icon="icons/xwiki.png" id="org.xwiki.eclipse.ui.editors.PageEditor" name="Page Editor">
