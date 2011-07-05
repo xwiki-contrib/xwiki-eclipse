@@ -53,6 +53,8 @@ public class XWikiEclipsePageSummary extends ModelObject
 
     private String historyUrl;
 
+    private String pageUrl;
+
     private String syntax;
 
     private List<String> translations;
@@ -196,5 +198,15 @@ public class XWikiEclipsePageSummary extends ModelObject
     public void setHistoryUrl(String historyUrl)
     {
         this.historyUrl = historyUrl;
+    }
+
+    public String getPageUrl()
+    {
+        return pageUrl;
+    }
+
+    public void setPageUrl(String pageUrl)
+    {
+        this.pageUrl = pageUrl;
     }
 }
