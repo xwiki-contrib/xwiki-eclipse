@@ -31,6 +31,7 @@ import org.xwiki.eclipse.model.XWikiEclipsePageHistorySummary;
 import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
 import org.xwiki.eclipse.model.XWikiEclipseServerInfo;
 import org.xwiki.eclipse.model.XWikiEclipseSpaceSummary;
+import org.xwiki.eclipse.model.XWikiEclipseTag;
 import org.xwiki.eclipse.model.XWikiEclipseWikiSummary;
 import org.xwiki.eclipse.rest.Relations;
 import org.xwiki.eclipse.rest.RestRemoteXWikiDataStorage;
@@ -42,6 +43,7 @@ import org.xwiki.rest.model.jaxb.Page;
 import org.xwiki.rest.model.jaxb.PageSummary;
 import org.xwiki.rest.model.jaxb.Space;
 import org.xwiki.rest.model.jaxb.Syntaxes;
+import org.xwiki.rest.model.jaxb.Tag;
 import org.xwiki.rest.model.jaxb.Translation;
 import org.xwiki.rest.model.jaxb.Wiki;
 import org.xwiki.rest.model.jaxb.Xwiki;
@@ -238,6 +240,14 @@ public class RestRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStorag
                 if (link.getRel().equals(Relations.PAGE)) {
                     page.setPageUrl(link.getHref());
                 }
+
+                if (link.getRel().equals(Relations.COMMENTS)) {
+                    page.setCommentsUrl(link.getHref());
+                }
+
+                if (link.getRel().equals(Relations.TAGS)) {
+                    page.setTagsUrl(link.getHref());
+                }
             }
 
             result.add(page);
@@ -273,6 +283,9 @@ public class RestRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStorag
                 int number = objectSummary.getNumber();
                 String prettyName = className + "[" + number + "]";
                 o.setPrettyName(prettyName);
+
+                /* set up the number */
+                o.setNumber(number);
 
                 result.add(o);
             }
@@ -428,6 +441,36 @@ public class RestRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStorag
         for (Link link : links) {
             if (link.getRel().equals(Relations.CLASS)) {
                 result.setPageClassUrl(link.getHref());
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#getTags(org.xwiki.eclipse.model.XWikiEclipsePageSummary)
+     */
+    @Override
+    public List<XWikiEclipseTag> getTags(XWikiEclipsePageSummary pageSummary)
+    {
+        List<XWikiEclipseTag> result = new ArrayList<XWikiEclipseTag>();
+
+        List<Tag> tags = this.restRemoteStorage.getTags(pageSummary.getTagsUrl());
+
+        if (tags != null) {
+            for (Tag tag : tags) {
+                XWikiEclipseTag t = new XWikiEclipseTag(dataManager);
+                t.setName(tag.getName());
+                List<Link> links = tag.getLinks();
+                for (Link link : links) {
+                    if (link.getRel().equals(Relations.TAG)) {
+                        t.setUrl(link.getHref());
+                    }
+                }
+
+                result.add(t);
             }
         }
 

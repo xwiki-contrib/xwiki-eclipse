@@ -21,6 +21,7 @@ import org.xwiki.eclipse.model.XWikiEclipsePageHistorySummary;
 import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
 import org.xwiki.eclipse.model.XWikiEclipseServerInfo;
 import org.xwiki.eclipse.model.XWikiEclipseSpaceSummary;
+import org.xwiki.eclipse.model.XWikiEclipseTag;
 import org.xwiki.eclipse.model.XWikiEclipseWikiSummary;
 import org.xwiki.eclipse.storage.utils.PersistentMap;
 import org.xwiki.xmlrpc.model.XWikiObject;
@@ -1049,6 +1050,21 @@ public class DataManager
         XWikiEclipseClassSummary result = null;
         if (isConnected()) {
             result = remoteXWikiDataStorage.getPageClass(pageSummary);
+            return result;
+        }
+
+        return null;
+    }
+
+    /**
+     * @param pageSummary
+     * @return
+     */
+    public List<XWikiEclipseTag> getTags(XWikiEclipsePageSummary pageSummary) throws XWikiEclipseStorageException
+    {
+        List<XWikiEclipseTag> result = null;
+        if (isConnected()) {
+            result = remoteXWikiDataStorage.getTags(pageSummary);
             return result;
         }
 

@@ -51,6 +51,8 @@ import org.xwiki.rest.model.jaxb.Pages;
 import org.xwiki.rest.model.jaxb.Space;
 import org.xwiki.rest.model.jaxb.Spaces;
 import org.xwiki.rest.model.jaxb.Syntaxes;
+import org.xwiki.rest.model.jaxb.Tag;
+import org.xwiki.rest.model.jaxb.Tags;
 import org.xwiki.rest.model.jaxb.Wiki;
 import org.xwiki.rest.model.jaxb.Wikis;
 import org.xwiki.rest.model.jaxb.Xwiki;
@@ -634,5 +636,27 @@ public class XWikiRESTClient
             e.printStackTrace();
             throw e;
         }
+    }
+
+    /**
+     * @param tagsUrl
+     * @return
+     */
+    public List<Tag> getTags(String tagsUrl) throws Exception
+    {
+        if (tagsUrl != null) {
+            HttpResponse response;
+            try {
+                response = executeGet(tagsUrl, username, password);
+                Tags tags = (Tags) unmarshaller.unmarshal(response.getEntity().getContent());
+                return tags.getTags();
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+                throw e;
+            }
+        }
+
+        return null;
     }
 }

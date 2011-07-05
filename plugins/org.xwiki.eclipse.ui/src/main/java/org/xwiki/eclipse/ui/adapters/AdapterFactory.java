@@ -30,6 +30,7 @@ import org.xwiki.eclipse.model.XWikiEclipseObjectCollection;
 import org.xwiki.eclipse.model.XWikiEclipseObjectSummary;
 import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
 import org.xwiki.eclipse.model.XWikiEclipseSpaceSummary;
+import org.xwiki.eclipse.model.XWikiEclipseTag;
 import org.xwiki.eclipse.model.XWikiEclipseWikiSummary;
 import org.xwiki.eclipse.storage.DataManager;
 
@@ -57,6 +58,8 @@ public class AdapterFactory implements IAdapterFactory
         new XWikiEclipseObjectCollectionAdapter();
 
     private XWikiEclipseClassSummaryAdapter xwikiEclipseClassSummaryAdapter = new XWikiEclipseClassSummaryAdapter();
+
+    private XWikiEclipseTagAdapter xwikiEclipseTagAdapter = new XWikiEclipseTagAdapter();
 
     public Object getAdapter(Object adaptableObject, Class adapterType)
     {
@@ -145,6 +148,13 @@ public class AdapterFactory implements IAdapterFactory
          */
         if ((adaptableObject instanceof XWikiEclipseAttachment) && adapterType.equals(IWorkbenchAdapter.class)) {
             return xwikiEclipseAttachmentAdapter;
+        }
+
+        /*
+         * Adapters for XWikiEclipseAttachment
+         */
+        if ((adaptableObject instanceof XWikiEclipseTag) && adapterType.equals(IWorkbenchAdapter.class)) {
+            return xwikiEclipseTagAdapter;
         }
 
         return null;
