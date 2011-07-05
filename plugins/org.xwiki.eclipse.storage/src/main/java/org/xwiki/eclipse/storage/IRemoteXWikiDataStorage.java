@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.xwiki.eclipse.model.XWikiEclipseAttachment;
 import org.xwiki.eclipse.model.XWikiEclipseClassSummary;
+import org.xwiki.eclipse.model.XWikiEclipseComment;
 import org.xwiki.eclipse.model.XWikiEclipseObjectSummary;
 import org.xwiki.eclipse.model.XWikiEclipsePage;
 import org.xwiki.eclipse.model.XWikiEclipsePageHistorySummary;
@@ -94,5 +95,11 @@ public interface IRemoteXWikiDataStorage
      * @param pageSummary
      * @return
      */
-    List<XWikiEclipseTag> getTags(XWikiEclipsePageSummary pageSummary);;
+    List<XWikiEclipseTag> getTags(XWikiEclipsePageSummary pageSummary);
+
+    /**
+     * @param pageSummary
+     * @return
+     */
+    List<XWikiEclipseComment> getComments(XWikiEclipsePageSummary pageSummary);;
 }

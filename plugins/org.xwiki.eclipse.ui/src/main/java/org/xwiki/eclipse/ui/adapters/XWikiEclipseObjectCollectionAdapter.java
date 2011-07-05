@@ -89,6 +89,8 @@ public class XWikiEclipseObjectCollectionAdapter extends WorkbenchAdapter implem
                 return UIPlugin.getImageDescriptor(UIConstants.PAGE_ATTACHMENTS_ICON);
             } else if (classname.equals("Tags")) {
                 return UIPlugin.getImageDescriptor(UIConstants.TAGS_ICON);
+            } else if (classname.equals("Comments")) {
+                return UIPlugin.getImageDescriptor(UIConstants.PAGE_COMMENTS_ICON);
             } else {
                 return UIPlugin.getImageDescriptor(UIConstants.OBJECT_COLLECTION_ICON);
             }

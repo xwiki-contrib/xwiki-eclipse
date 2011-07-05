@@ -25,6 +25,7 @@ import java.util.StringTokenizer;
 
 import org.xwiki.eclipse.model.XWikiEclipseAttachment;
 import org.xwiki.eclipse.model.XWikiEclipseClassSummary;
+import org.xwiki.eclipse.model.XWikiEclipseComment;
 import org.xwiki.eclipse.model.XWikiEclipseObjectSummary;
 import org.xwiki.eclipse.model.XWikiEclipsePage;
 import org.xwiki.eclipse.model.XWikiEclipsePageHistorySummary;
@@ -36,6 +37,7 @@ import org.xwiki.eclipse.model.XWikiEclipseWikiSummary;
 import org.xwiki.eclipse.rest.Relations;
 import org.xwiki.eclipse.rest.RestRemoteXWikiDataStorage;
 import org.xwiki.rest.model.jaxb.Attachment;
+import org.xwiki.rest.model.jaxb.Comment;
 import org.xwiki.rest.model.jaxb.HistorySummary;
 import org.xwiki.rest.model.jaxb.Link;
 import org.xwiki.rest.model.jaxb.ObjectSummary;
@@ -472,6 +474,31 @@ public class RestRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStorag
 
                 result.add(t);
             }
+        }
+
+        return result;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#getComments(org.xwiki.eclipse.model.XWikiEclipsePageSummary)
+     */
+    @Override
+    public List<XWikiEclipseComment> getComments(XWikiEclipsePageSummary pageSummary)
+    {
+        List<XWikiEclipseComment> result = new ArrayList<XWikiEclipseComment>();
+        List<Comment> comments = this.restRemoteStorage.getComments(pageSummary.getCommentsUrl());
+
+        for (Comment comment : comments) {
+            XWikiEclipseComment c = new XWikiEclipseComment(dataManager);
+            c.setAuthor(comment.getAuthor());
+            c.setDate(comment.getDate());
+            c.setHighlight(comment.getHighlight());
+            c.setId(comment.getId());
+            c.setText(comment.getText());
+
+            result.add(c);
         }
 
         return result;

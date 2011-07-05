@@ -38,6 +38,8 @@ import org.apache.http.protocol.HttpContext;
 import org.xwiki.rest.model.jaxb.Attachment;
 import org.xwiki.rest.model.jaxb.Attachments;
 import org.xwiki.rest.model.jaxb.Class;
+import org.xwiki.rest.model.jaxb.Comment;
+import org.xwiki.rest.model.jaxb.Comments;
 import org.xwiki.rest.model.jaxb.History;
 import org.xwiki.rest.model.jaxb.HistorySummary;
 import org.xwiki.rest.model.jaxb.Link;
@@ -650,6 +652,28 @@ public class XWikiRESTClient
                 response = executeGet(tagsUrl, username, password);
                 Tags tags = (Tags) unmarshaller.unmarshal(response.getEntity().getContent());
                 return tags.getTags();
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+                throw e;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @param commentsUrl
+     * @return
+     */
+    public List<Comment> getComments(String commentsUrl) throws Exception
+    {
+        if (commentsUrl != null) {
+            HttpResponse response;
+            try {
+                response = executeGet(commentsUrl, username, password);
+                Comments comments = (Comments) unmarshaller.unmarshal(response.getEntity().getContent());
+                return comments.getComments();
             } catch (Exception e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();

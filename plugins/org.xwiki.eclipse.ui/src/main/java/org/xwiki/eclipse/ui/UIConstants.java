@@ -37,11 +37,23 @@ public class UIConstants
 
     public static final String PAGE_CONFLICT_ICON = "icons/page.conflict.png";
 
-    public static final String PAGE_ATTACHMENT_ICON = "icons/page.attachment.png";
-
     public static final String CLASS_ICON = "icons/class.png";
 
+    public static final String TAGS_ICON = "icons/tags.png";
+
+    public static final String TAG_ICON = "icons/tag.png";
+
     public static final String PAGE_ATTACHMENTS_ICON = "icons/page.attachments.png";
+
+    public static final String PAGE_ATTACHMENT_ICON = "icons/page.attachment.png";
+
+    public static final String PAGE_COMMENTS_ICON = "icons/page.comments.png";
+
+    public static final String PAGE_COMMNENT_ICON = "icons/page.comment.png";
+
+    public static final String PAGE_ANNOTATIONS_ICON = "icons/page.annotations.png";
+
+    public static final String PAGE_ANNOTATION_ICON = "icons/page.annotation.png";
 
     public static final String OBJECT_COLLECTION_ICON = "icons/object.collection.png";
 

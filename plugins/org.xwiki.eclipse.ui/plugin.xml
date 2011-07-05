@@ -111,6 +111,9 @@
        <instanceof
              value="org.xwiki.eclipse.model.XWikiEclipseTag">
        </instanceof>
+       <instanceof
+             value="org.xwiki.eclipse.model.XWikiEclipseComment">
+       </instanceof>
     </or>
 			</triggerPoints>
 			<possibleChildren>
@@ -132,6 +135,8 @@
                		<instanceof value="org.xwiki.eclipse.model.XWikiEclipseObjectCollection">
                </instanceof>
                	    <instanceof value="org.xwiki.eclipse.model.XWikiEclipseTag">
+               </instanceof>                         
+                    <instanceof value="org.xwiki.eclipse.model.XWikiEclipseComment">
                </instanceof>                         
 				</or>
 			</possibleChildren>
@@ -290,6 +295,13 @@
   </factory>
   <factory
         adaptableType="org.xwiki.eclipse.model.XWikiEclipseTag"
+        class="org.xwiki.eclipse.ui.adapters.AdapterFactory">
+     <adapter
+           type="org.eclipse.ui.model.IWorkbenchAdapter">
+     </adapter>
+  </factory>
+  <factory
+        adaptableType="org.xwiki.eclipse.model.XWikiEclipseComment"
         class="org.xwiki.eclipse.ui.adapters.AdapterFactory">
      <adapter
            type="org.eclipse.ui.model.IWorkbenchAdapter">

@@ -35,6 +35,7 @@ import org.xwiki.eclipse.core.CoreLog;
 import org.xwiki.eclipse.model.ModelObject;
 import org.xwiki.eclipse.model.XWikiEclipseAttachment;
 import org.xwiki.eclipse.model.XWikiEclipseClassSummary;
+import org.xwiki.eclipse.model.XWikiEclipseComment;
 import org.xwiki.eclipse.model.XWikiEclipseObjectCollection;
 import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
 import org.xwiki.eclipse.model.XWikiEclipseTag;
@@ -63,6 +64,7 @@ public class XWikiEclipsePageSummaryAdapter extends WorkbenchAdapter implements 
                 List<XWikiEclipseAttachment> attachments = dataManager.getAttachments(pageSummary);
                 XWikiEclipseClassSummary pageClass = dataManager.getPageClass(pageSummary);
                 List<XWikiEclipseTag> tags = dataManager.getTags(pageSummary);
+                List<XWikiEclipseComment> comments = dataManager.getComments(pageSummary);
 
                 List<ModelObject> result = new ArrayList<ModelObject>();
 
@@ -92,6 +94,20 @@ public class XWikiEclipsePageSummaryAdapter extends WorkbenchAdapter implements 
                     list = new ArrayList<ModelObject>();
                     for (XWikiEclipseTag tag : tags) {
                         list.add(tag);
+                    }
+
+                    t.setObjects(list);
+                    result.add(t);
+                }
+
+                /* add comments */
+                if (comments != null && comments.size() > 0) {
+                    XWikiEclipseObjectCollection t = new XWikiEclipseObjectCollection(dataManager);
+                    t.setClassName("Comments");
+
+                    list = new ArrayList<ModelObject>();
+                    for (XWikiEclipseComment comment : comments) {
+                        list.add(comment);
                     }
 
                     t.setObjects(list);

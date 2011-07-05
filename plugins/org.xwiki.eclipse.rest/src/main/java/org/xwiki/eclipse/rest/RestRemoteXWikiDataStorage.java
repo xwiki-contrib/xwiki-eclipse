@@ -22,6 +22,7 @@ package org.xwiki.eclipse.rest;
 import java.util.List;
 
 import org.xwiki.rest.model.jaxb.Attachment;
+import org.xwiki.rest.model.jaxb.Comment;
 import org.xwiki.rest.model.jaxb.HistorySummary;
 import org.xwiki.rest.model.jaxb.ObjectSummary;
 import org.xwiki.rest.model.jaxb.Page;
@@ -182,6 +183,23 @@ public class RestRemoteXWikiDataStorage
     {
         try {
             return this.restRemoteClient.getTags(tagsUrl);
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    /**
+     * @param commentsUrl
+     * @return
+     */
+    public List<Comment> getComments(String commentsUrl)
+    {
+
+        try {
+            return this.restRemoteClient.getComments(commentsUrl);
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

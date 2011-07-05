@@ -14,6 +14,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.QualifiedName;
 import org.xwiki.eclipse.model.XWikiEclipseAttachment;
 import org.xwiki.eclipse.model.XWikiEclipseClassSummary;
+import org.xwiki.eclipse.model.XWikiEclipseComment;
 import org.xwiki.eclipse.model.XWikiEclipseObject;
 import org.xwiki.eclipse.model.XWikiEclipseObjectSummary;
 import org.xwiki.eclipse.model.XWikiEclipsePage;
@@ -1065,6 +1066,22 @@ public class DataManager
         List<XWikiEclipseTag> result = null;
         if (isConnected()) {
             result = remoteXWikiDataStorage.getTags(pageSummary);
+            return result;
+        }
+
+        return null;
+    }
+
+    /**
+     * @param pageSummary
+     * @return
+     */
+    public List<XWikiEclipseComment> getComments(XWikiEclipsePageSummary pageSummary)
+    {
+        List<XWikiEclipseComment> result = null;
+
+        if (isConnected()) {
+            result = remoteXWikiDataStorage.getComments(pageSummary);
             return result;
         }
 
