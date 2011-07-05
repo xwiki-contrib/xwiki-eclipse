@@ -59,6 +59,8 @@ public class XWikiEclipsePage extends ModelObject
 
     private Calendar modified;
 
+    private String pageClassUrl;
+
     public XWikiEclipsePage(DataManager dataManager)
     {
         super(dataManager);
@@ -208,5 +210,15 @@ public class XWikiEclipsePage extends ModelObject
     public void setModified(Calendar modified)
     {
         this.modified = modified;
+    }
+
+    public String getPageClassUrl()
+    {
+        return pageClassUrl;
+    }
+
+    public void setPageClassUrl(String pageClassUrl)
+    {
+        this.pageClassUrl = pageClassUrl;
     }
 }
