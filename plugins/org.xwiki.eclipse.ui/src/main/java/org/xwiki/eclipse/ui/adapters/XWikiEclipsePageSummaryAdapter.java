@@ -21,9 +21,7 @@
 package org.xwiki.eclipse.ui.adapters;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
@@ -36,11 +34,10 @@ import org.eclipse.ui.progress.IElementCollector;
 import org.xwiki.eclipse.core.CoreLog;
 import org.xwiki.eclipse.model.ModelObject;
 import org.xwiki.eclipse.model.XWikiEclipseAttachment;
-import org.xwiki.eclipse.model.XWikiEclipseAttachments;
 import org.xwiki.eclipse.model.XWikiEclipseClassSummary;
 import org.xwiki.eclipse.model.XWikiEclipseObjectCollection;
-import org.xwiki.eclipse.model.XWikiEclipseObjectSummary;
 import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
+import org.xwiki.eclipse.model.XWikiEclipseTag;
 import org.xwiki.eclipse.storage.DataManager;
 import org.xwiki.eclipse.storage.XWikiEclipseStorageException;
 import org.xwiki.eclipse.ui.UIConstants;
@@ -59,12 +56,13 @@ public class XWikiEclipsePageSummaryAdapter extends WorkbenchAdapter implements 
             final XWikiEclipsePageSummary pageSummary = (XWikiEclipsePageSummary) object;
 
             try {
-                /* fetch both objects and attachments */
+                /* fetch attachments, pageClass, tags, comments, and annotations */
                 DataManager dataManager = pageSummary.getDataManager();
 
-                List<XWikiEclipseObjectSummary> objects = dataManager.getObjects(pageSummary);
+                // List<XWikiEclipseObjectSummary> objects = dataManager.getObjects(pageSummary);
                 List<XWikiEclipseAttachment> attachments = dataManager.getAttachments(pageSummary);
                 XWikiEclipseClassSummary pageClass = dataManager.getPageClass(pageSummary);
+                List<XWikiEclipseTag> tags = dataManager.getTags(pageSummary);
 
                 List<ModelObject> result = new ArrayList<ModelObject>();
 
@@ -72,34 +70,54 @@ public class XWikiEclipsePageSummaryAdapter extends WorkbenchAdapter implements 
                 result.add(pageClass);
 
                 /* add attachments */
+                List<ModelObject> list = null;
                 if (attachments != null && attachments.size() > 0) {
-                    XWikiEclipseAttachments a = new XWikiEclipseAttachments(dataManager);
-                    a.setId("Attachments");
-                    a.setAttachments(attachments);
+                    XWikiEclipseObjectCollection a = new XWikiEclipseObjectCollection(dataManager);
+                    a.setClassName("Attachments");
+
+                    list = new ArrayList<ModelObject>();
+                    for (XWikiEclipseAttachment attach : attachments) {
+                        list.add(attach);
+                    }
+
+                    a.setObjects(list);
                     result.add(a);
                 }
 
+                /* add tags */
+                if (tags != null && tags.size() > 0) {
+                    XWikiEclipseObjectCollection t = new XWikiEclipseObjectCollection(dataManager);
+                    t.setClassName("Tags");
+
+                    list = new ArrayList<ModelObject>();
+                    for (XWikiEclipseTag tag : tags) {
+                        list.add(tag);
+                    }
+
+                    t.setObjects(list);
+                    result.add(t);
+                }
+
                 /* add objects in group */
-                Map<String, List<ModelObject>> categories = new HashMap<String, List<ModelObject>>();
-                List<ModelObject> list = null;
-
-                /* FIXME: add all classes right now, may add a filter in the future */
-                for (XWikiEclipseObjectSummary objectSummary : objects) {
-                    String classname = objectSummary.getClassName();
-
-                    list = categories.get(classname);
-                    if (list == null)
-                        categories.put(classname, list = new ArrayList<ModelObject>());
-                    list.add(objectSummary);
-                }
-
-                for (String classname : categories.keySet()) {
-                    XWikiEclipseObjectCollection collection = new XWikiEclipseObjectCollection(dataManager);
-                    collection.setClassName(classname);
-                    collection.setObjects(categories.get(classname));
-
-                    result.add(collection);
-                }
+                // Map<String, List<ModelObject>> categories = new HashMap<String, List<ModelObject>>();
+                //
+                // /* FIXME: add all classes right now, may add a filter in the future */
+                // for (XWikiEclipseObjectSummary objectSummary : objects) {
+                // String classname = objectSummary.getClassName();
+                //
+                // list = categories.get(classname);
+                // if (list == null)
+                // categories.put(classname, list = new ArrayList<ModelObject>());
+                // list.add(objectSummary);
+                // }
+                //
+                // for (String classname : categories.keySet()) {
+                // XWikiEclipseObjectCollection collection = new XWikiEclipseObjectCollection(dataManager);
+                // collection.setClassName(classname);
+                // collection.setObjects(categories.get(classname));
+                //
+                // result.add(collection);
+                // }
 
                 return result.toArray();
             } catch (XWikiEclipseStorageException e) {
