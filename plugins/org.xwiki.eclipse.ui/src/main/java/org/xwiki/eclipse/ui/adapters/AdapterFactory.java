@@ -25,7 +25,6 @@ import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.eclipse.ui.model.IWorkbenchAdapter2;
 import org.eclipse.ui.progress.IDeferredWorkbenchAdapter;
 import org.xwiki.eclipse.model.XWikiEclipseAttachment;
-import org.xwiki.eclipse.model.XWikiEclipseAttachments;
 import org.xwiki.eclipse.model.XWikiEclipseClassSummary;
 import org.xwiki.eclipse.model.XWikiEclipseObjectCollection;
 import org.xwiki.eclipse.model.XWikiEclipseObjectSummary;
@@ -53,8 +52,6 @@ public class AdapterFactory implements IAdapterFactory
     private XWikiEclipseWikiSummaryAdapter xwikiEclipseWikiSummaryAdapter = new XWikiEclipseWikiSummaryAdapter();
 
     private XWikiEclipseAttachmentAdapter xwikiEclipseAttachmentAdapter = new XWikiEclipseAttachmentAdapter();
-
-    private XWikiEclipseAttachmentsAdapter xwikiEclipseAttachmentsAdapter = new XWikiEclipseAttachmentsAdapter();
 
     private XWikiEclipseObjectCollectionAdapter xwikiEclipseObjectCollectionAdapter =
         new XWikiEclipseObjectCollectionAdapter();
@@ -141,17 +138,6 @@ public class AdapterFactory implements IAdapterFactory
          */
         if ((adaptableObject instanceof XWikiEclipseObjectSummary) && adapterType.equals(IWorkbenchAdapter.class)) {
             return xwikiEclipseObjectSummaryAdapter;
-        }
-
-        /*
-         * Adapters for XWikiEclipseAttachments
-         */
-        if ((adaptableObject instanceof XWikiEclipseAttachments) && adapterType.equals(IWorkbenchAdapter.class)) {
-            return xwikiEclipseAttachmentsAdapter;
-        }
-
-        if ((adaptableObject instanceof XWikiEclipseAttachments) && adapterType.equals(IDeferredWorkbenchAdapter.class)) {
-            return xwikiEclipseAttachmentsAdapter;
         }
 
         /*

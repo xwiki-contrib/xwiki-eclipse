@@ -82,7 +82,15 @@ public class XWikiEclipseObjectCollectionAdapter extends WorkbenchAdapter implem
     public ImageDescriptor getImageDescriptor(Object object)
     {
         if (object instanceof XWikiEclipseObjectCollection) {
-            return UIPlugin.getImageDescriptor(UIConstants.OBJECT_COLLECTION_ICON);
+            XWikiEclipseObjectCollection collection = (XWikiEclipseObjectCollection) object;
+            String classname = collection.getClassName();
+
+            if (classname.equals("Attachments")) {
+                return UIPlugin.getImageDescriptor(UIConstants.PAGE_ATTACHMENTS_ICON);
+            } else {
+                return UIPlugin.getImageDescriptor(UIConstants.OBJECT_COLLECTION_ICON);
+            }
+
         }
 
         return null;
