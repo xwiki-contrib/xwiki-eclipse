@@ -39,6 +39,10 @@ public class UIConstants
 
     public static final String PAGE_ATTACHMENT_ICON = "icons/page.attachment.png";
 
+    public static final String CLASS_ICON = "icons/class.png";
+
+    public static final String PAGE_ATTACHMENTS_ICON = "icons/page.attachments.png";
+
     public static final String OBJECT_COLLECTION_ICON = "icons/object.collection.png";
 
     public static final String OBJECT_ICON = "icons/object.png";
