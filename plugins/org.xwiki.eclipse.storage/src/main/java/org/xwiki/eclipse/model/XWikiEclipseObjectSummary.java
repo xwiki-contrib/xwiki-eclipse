@@ -43,6 +43,10 @@ public class XWikiEclipseObjectSummary extends ModelObject
 
     private String wiki;
 
+    private int number;
+
+    private String propertiesUrl;
+
     public XWikiEclipseObjectSummary(DataManager dataManager)
     {
         super(dataManager);
@@ -123,5 +127,25 @@ public class XWikiEclipseObjectSummary extends ModelObject
     public void setPageName(String pageName)
     {
         this.pageName = pageName;
+    }
+
+    public int getNumber()
+    {
+        return number;
+    }
+
+    public void setNumber(int number)
+    {
+        this.number = number;
+    }
+
+    public String getPropertiesUrl()
+    {
+        return propertiesUrl;
+    }
+
+    public void setPropertiesUrl(String propertiesUrl)
+    {
+        this.propertiesUrl = propertiesUrl;
     }
 }
