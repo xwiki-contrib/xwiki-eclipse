@@ -504,15 +504,17 @@ public class RestRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStorag
         List<XWikiEclipseComment> result = new ArrayList<XWikiEclipseComment>();
         List<Comment> comments = this.restRemoteStorage.getComments(pageSummary.getCommentsUrl());
 
-        for (Comment comment : comments) {
-            XWikiEclipseComment c = new XWikiEclipseComment(dataManager);
-            c.setAuthor(comment.getAuthor());
-            c.setDate(comment.getDate());
-            c.setHighlight(comment.getHighlight());
-            c.setId(comment.getId());
-            c.setText(comment.getText());
+        if (comments != null && comments.size() > 0) {
+            for (Comment comment : comments) {
+                XWikiEclipseComment c = new XWikiEclipseComment(dataManager);
+                c.setAuthor(comment.getAuthor());
+                c.setDate(comment.getDate());
+                c.setHighlight(comment.getHighlight());
+                c.setId(comment.getId());
+                c.setText(comment.getText());
 
-            result.add(c);
+                result.add(c);
+            }
         }
 
         return result;

@@ -128,8 +128,10 @@ public class XWikiEclipsePageSummaryAdapter extends WorkbenchAdapter implements 
 
                     }
 
-                    t.setObjects(list);
-                    result.add(t);
+                    if (list.size() > 0) {
+                        t.setObjects(list);
+                        result.add(t);
+                    }
                 }
 
                 return result.toArray();
