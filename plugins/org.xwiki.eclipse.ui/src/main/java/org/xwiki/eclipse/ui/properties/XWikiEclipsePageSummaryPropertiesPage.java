@@ -60,9 +60,24 @@ public class XWikiEclipsePageSummaryPropertiesPage extends PropertyPage
             (XWikiEclipsePageSummary) getElement().getAdapter(XWikiEclipsePageSummary.class);
 
         Label property = new Label(composite, SWT.NONE);
-        property.setText("Id:");
+        property.setText("ID:");
         Label value = new Label(composite, SWT.NONE);
         value.setText(pageSummary.getId() == null ? "" : pageSummary.getId());
+
+        property = new Label(composite, SWT.NONE);
+        property.setText("Name:");
+        value = new Label(composite, SWT.NONE);
+        value.setText(pageSummary.getName() == null ? "" : pageSummary.getName());
+
+        property = new Label(composite, SWT.NONE);
+        property.setText("Wiki:");
+        value = new Label(composite, SWT.NONE);
+        value.setText(pageSummary.getWiki() == null ? "" : pageSummary.getWiki());
+
+        property = new Label(composite, SWT.NONE);
+        property.setText("Space:");
+        value = new Label(composite, SWT.NONE);
+        value.setText(pageSummary.getSpace() == null ? "" : pageSummary.getSpace());
 
         property = new Label(composite, SWT.NONE);
         property.setText("Title:");
@@ -73,11 +88,6 @@ public class XWikiEclipsePageSummaryPropertiesPage extends PropertyPage
         property.setText("Parent:");
         value = new Label(composite, SWT.NONE);
         value.setText(pageSummary.getParentId() == null ? "" : pageSummary.getParentId());
-
-        property = new Label(composite, SWT.NONE);
-        property.setText("Space:");
-        value = new Label(composite, SWT.NONE);
-        value.setText(pageSummary.getSpace() == null ? "" : pageSummary.getSpace());
 
         property = new Label(composite, SWT.NONE);
         property.setText("Translations:");
