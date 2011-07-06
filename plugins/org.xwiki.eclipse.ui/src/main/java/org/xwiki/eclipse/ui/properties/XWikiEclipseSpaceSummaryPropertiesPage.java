@@ -39,7 +39,6 @@ import org.eclipse.ui.dialogs.PropertyPage;
 import org.xwiki.eclipse.model.XWikiEclipseSpaceSummary;
 
 /**
- * 
  * @version $Id$
  */
 public class XWikiEclipseSpaceSummaryPropertiesPage extends PropertyPage
@@ -60,7 +59,7 @@ public class XWikiEclipseSpaceSummaryPropertiesPage extends PropertyPage
             (XWikiEclipseSpaceSummary) getElement().getAdapter(XWikiEclipseSpaceSummary.class);
 
         Label property = new Label(composite, SWT.NONE);
-        property.setText("Key:");
+        property.setText("ID:");
         Label value = new Label(composite, SWT.NONE);
         value.setText(spaceSummary.getKey() == null ? "" : spaceSummary.getKey());
 
@@ -68,6 +67,11 @@ public class XWikiEclipseSpaceSummaryPropertiesPage extends PropertyPage
         property.setText("Name:");
         value = new Label(composite, SWT.NONE);
         value.setText(spaceSummary.getName() == null ? "" : spaceSummary.getName());
+
+        property = new Label(composite, SWT.NONE);
+        property.setText("Wiki:");
+        value = new Label(composite, SWT.NONE);
+        value.setText(spaceSummary.getWiki() == null ? "" : spaceSummary.getWiki());
 
         property = new Label(composite, SWT.NONE);
         property.setText("Url:");
