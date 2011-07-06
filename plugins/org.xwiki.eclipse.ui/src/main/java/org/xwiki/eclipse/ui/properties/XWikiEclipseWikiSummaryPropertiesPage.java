@@ -61,6 +61,11 @@ public class XWikiEclipseWikiSummaryPropertiesPage extends PropertyPage
                 wiki = (XWikiEclipseWikiSummary) getElement().getAdapter(XWikiEclipseWikiSummary.class);
 
                 Label label = new Label(composite, SWT.BORDER);
+                label.setText("ID:");
+                label = new Label(composite, SWT.BORDER);
+                label.setText(wiki.getWikiId());
+
+                label = new Label(composite, SWT.BORDER);
                 label.setText("Name:");
                 label = new Label(composite, SWT.BORDER);
                 label.setText(wiki.getName());
