@@ -76,7 +76,7 @@ public class XWikiEclipseSpaceSummaryAdapter extends WorkbenchAdapter implements
     {
         if (object instanceof XWikiEclipseSpaceSummary) {
             XWikiEclipseSpaceSummary spaceSummary = (XWikiEclipseSpaceSummary) object;
-            return spaceSummary.getKey();
+            return spaceSummary.getName();
         }
 
         return super.getLabel(object);
