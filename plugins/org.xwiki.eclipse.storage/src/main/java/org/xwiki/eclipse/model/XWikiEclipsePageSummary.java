@@ -51,6 +51,10 @@ public class XWikiEclipsePageSummary extends ModelObject
 
     private String attachmentsUrl;
 
+    private String tagsUrl;
+
+    private String commentsUrl;
+
     private String historyUrl;
 
     private String pageUrl;
@@ -208,5 +212,25 @@ public class XWikiEclipsePageSummary extends ModelObject
     public void setPageUrl(String pageUrl)
     {
         this.pageUrl = pageUrl;
+    }
+
+    public String getTagsUrl()
+    {
+        return tagsUrl;
+    }
+
+    public void setTagsUrl(String tagsUrl)
+    {
+        this.tagsUrl = tagsUrl;
+    }
+
+    public String getCommentsUrl()
+    {
+        return commentsUrl;
+    }
+
+    public void setCommentsUrl(String commentsUrl)
+    {
+        this.commentsUrl = commentsUrl;
     }
 }
