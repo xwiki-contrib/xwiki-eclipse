@@ -20,12 +20,15 @@
 package org.xwiki.eclipse.storage;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 import org.xwiki.eclipse.model.XWikiEclipseAttachment;
 import org.xwiki.eclipse.model.XWikiEclipseClassSummary;
 import org.xwiki.eclipse.model.XWikiEclipseComment;
+import org.xwiki.eclipse.model.XWikiEclipseObjectProperty;
 import org.xwiki.eclipse.model.XWikiEclipseObjectSummary;
 import org.xwiki.eclipse.model.XWikiEclipsePage;
 import org.xwiki.eclipse.model.XWikiEclipsePageHistorySummary;
@@ -37,12 +40,14 @@ import org.xwiki.eclipse.model.XWikiEclipseWikiSummary;
 import org.xwiki.eclipse.rest.Relations;
 import org.xwiki.eclipse.rest.RestRemoteXWikiDataStorage;
 import org.xwiki.rest.model.jaxb.Attachment;
+import org.xwiki.rest.model.jaxb.Attribute;
 import org.xwiki.rest.model.jaxb.Comment;
 import org.xwiki.rest.model.jaxb.HistorySummary;
 import org.xwiki.rest.model.jaxb.Link;
 import org.xwiki.rest.model.jaxb.ObjectSummary;
 import org.xwiki.rest.model.jaxb.Page;
 import org.xwiki.rest.model.jaxb.PageSummary;
+import org.xwiki.rest.model.jaxb.Property;
 import org.xwiki.rest.model.jaxb.Space;
 import org.xwiki.rest.model.jaxb.Syntaxes;
 import org.xwiki.rest.model.jaxb.Tag;
@@ -289,6 +294,15 @@ public class RestRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStorag
                 /* set up the number */
                 o.setNumber(number);
 
+                /* set up propertiesUrl */
+                List<Link> links = objectSummary.getLinks();
+                for (Link link : links) {
+                    if (link.getRel().equals(Relations.PROPERTIES)) {
+                        o.setPropertiesUrl(link.getHref());
+                        break;
+                    }
+                }
+
                 result.add(o);
             }
         }
@@ -499,6 +513,38 @@ public class RestRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStorag
             c.setText(comment.getText());
 
             result.add(c);
+        }
+
+        return result;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#getObjectProperties(org.xwiki.eclipse.model.XWikiEclipseObjectSummary)
+     */
+    @Override
+    public List<XWikiEclipseObjectProperty> getObjectProperties(XWikiEclipseObjectSummary objectSummary)
+    {
+        List<XWikiEclipseObjectProperty> result = new ArrayList<XWikiEclipseObjectProperty>();
+
+        List<Property> properties = this.restRemoteStorage.getObjectProperties(objectSummary.getPropertiesUrl());
+
+        for (Property property : properties) {
+            XWikiEclipseObjectProperty p = new XWikiEclipseObjectProperty(dataManager);
+            p.setName(property.getName());
+            p.setType(property.getType());
+            p.setValue(property.getValue());
+            Map<String, String> attributeMap = new HashMap<String, String>();
+
+            List<Attribute> attributes = property.getAttributes();
+            for (Attribute attribute : attributes) {
+                attributeMap.put(attribute.getName(), attribute.getValue());
+            }
+
+            p.setAttributes(attributeMap);
+
+            result.add(p);
         }
 
         return result;

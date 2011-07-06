@@ -50,6 +50,8 @@ import org.xwiki.rest.model.jaxb.Objects;
 import org.xwiki.rest.model.jaxb.Page;
 import org.xwiki.rest.model.jaxb.PageSummary;
 import org.xwiki.rest.model.jaxb.Pages;
+import org.xwiki.rest.model.jaxb.Properties;
+import org.xwiki.rest.model.jaxb.Property;
 import org.xwiki.rest.model.jaxb.Space;
 import org.xwiki.rest.model.jaxb.Spaces;
 import org.xwiki.rest.model.jaxb.Syntaxes;
@@ -674,6 +676,28 @@ public class XWikiRESTClient
                 response = executeGet(commentsUrl, username, password);
                 Comments comments = (Comments) unmarshaller.unmarshal(response.getEntity().getContent());
                 return comments.getComments();
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+                throw e;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @param propertiesUrl
+     * @return
+     */
+    public List<Property> getObjectProperties(String propertiesUrl) throws Exception
+    {
+        if (propertiesUrl != null) {
+            HttpResponse response;
+            try {
+                response = executeGet(propertiesUrl, username, password);
+                Properties properties = (Properties) unmarshaller.unmarshal(response.getEntity().getContent());
+                return properties.getProperties();
             } catch (Exception e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();

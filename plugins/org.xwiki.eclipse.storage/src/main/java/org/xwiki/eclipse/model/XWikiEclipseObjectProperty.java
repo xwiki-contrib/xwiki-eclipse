@@ -20,7 +20,8 @@
  */
 package org.xwiki.eclipse.model;
 
-import org.eclipse.core.runtime.Assert;
+import java.util.Map;
+
 import org.xwiki.eclipse.storage.DataManager;
 
 /**
@@ -29,28 +30,15 @@ import org.xwiki.eclipse.storage.DataManager;
  * 
  * @version $Id$
  */
-public abstract class XWikiEclipseObjectProperty extends ModelObject
+public class XWikiEclipseObjectProperty extends ModelObject
 {
-    private XWikiEclipseObject object;
+    private String name;
 
-    private String propertyName;
+    private String type;
 
-    /**
-     * Constructor.
-     * 
-     * @param object The XWiki object containing the actual property.
-     * @param propertyName The name of the property.
-     */
-    public XWikiEclipseObjectProperty(XWikiEclipseObject object, String propertyName)
-    {
-        super(object.getDataManager());
+    private String value;
 
-        Assert.isNotNull(object);
-        this.object = object;
-
-        Assert.isNotNull(propertyName);
-        this.propertyName = propertyName;
-    }
+    private Map<String, String> attributes;
 
     /**
      * @param dataManager
@@ -61,73 +49,51 @@ public abstract class XWikiEclipseObjectProperty extends ModelObject
     }
 
     /**
-     * @return The XWiki object the property belongs to.
-     */
-    public XWikiEclipseObject getObject()
-    {
-        return object;
-    }
-
-    public String getName()
-    {
-        return propertyName;
-    }
-
-    public String getPrettyName()
-    {
-        if (getAttribute("prettyName") != null) {
-            return getAttribute("prettyName");
-        }
-
-        return getName();
-    }
-
-    /**
-     * @return The value associated to the property.
-     */
-    public Object getValue()
-    {
-        return object.getProperty(propertyName);
-    }
-
-    /**
-     * @param value The value to be associated to the property.
-     */
-    public void setValue(Object value)
-    {
-        object.setProperty(propertyName, value);
-    }
-
-    /**
-     * This method allows the user to access to the attributes defined for the property. For example "unmodifiable",
-     * "prettyName", etc. Attributes are defined in the XWiki class of the object the property belongs to.
-     * 
-     * @param attributeName
-     * @return The value for the attribute.
-     */
-    public String getAttribute(String attributeName)
-    {
-        Object attribute = object.getPropertyAttribute(propertyName, attributeName);
-
-        if (attribute != null) {
-            return attribute.toString();
-        }
-
-        return null;
-    }
-
-    /**
      * {@inheritDoc}
      */
     @Override
     public String getXWikiEclipseId()
     {
-        return String
-            .format(
-                "xwikieclipse://%s/%s/object/%s/%d/%s", getDataManager().getName(), getPageId(), getClass(), getId(), propertyName); //$NON-NLS-1$        
+        return String.format("xwikieclipse://%s/properties/%s/%s", getDataManager().getName(), getType(), getName()); //$NON-NLS-1$        
     }
 
-    public abstract int getId();
+    public String getName()
+    {
+        return name;
+    }
 
-    public abstract String getPageId();
+    public void setName(String name)
+    {
+        this.name = name;
+    }
+
+    public String getType()
+    {
+        return type;
+    }
+
+    public void setType(String type)
+    {
+        this.type = type;
+    }
+
+    public String getValue()
+    {
+        return value;
+    }
+
+    public void setValue(String value)
+    {
+        this.value = value;
+    }
+
+    public Map<String, String> getAttributes()
+    {
+        return attributes;
+    }
+
+    public void setAttributes(Map<String, String> attributes)
+    {
+        this.attributes = attributes;
+    }
 }

@@ -20,8 +20,11 @@
  */
 package org.xwiki.eclipse.ui.adapters;
 
+import java.util.List;
+
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.model.WorkbenchAdapter;
+import org.xwiki.eclipse.model.XWikiEclipseObjectProperty;
 import org.xwiki.eclipse.model.XWikiEclipseObjectSummary;
 import org.xwiki.eclipse.ui.UIConstants;
 import org.xwiki.eclipse.ui.UIPlugin;
@@ -37,7 +40,18 @@ public class XWikiEclipseObjectSummaryAdapter extends WorkbenchAdapter
         if (object instanceof XWikiEclipseObjectSummary) {
             XWikiEclipseObjectSummary objectSummary = (XWikiEclipseObjectSummary) object;
 
-            return objectSummary.getPrettyName();
+            int number = objectSummary.getNumber();
+
+            String label = "[" + number + "] : ";
+            List<XWikiEclipseObjectProperty> objectProperties =
+                objectSummary.getDataManager().getObjectProperties(objectSummary);
+            for (XWikiEclipseObjectProperty property : objectProperties) {
+                if (property.getName().equals("author")) {
+                    label += property.getValue();
+                }
+            }
+
+            return label;
         }
 
         return super.getLabel(object);
@@ -48,6 +62,11 @@ public class XWikiEclipseObjectSummaryAdapter extends WorkbenchAdapter
     {
         if (object instanceof XWikiEclipseObjectSummary) {
             XWikiEclipseObjectSummary objectSummary = (XWikiEclipseObjectSummary) object;
+            String classname = objectSummary.getClassName();
+            if (classname.equals("AnnotationCode.AnnotationClass")) {
+                return UIPlugin.getImageDescriptor(UIConstants.PAGE_ANNOTATION_ICON);
+            }
+
             if (objectSummary.getDataManager().isLocallyAvailable(objectSummary)) {
                 return UIPlugin.getImageDescriptor(UIConstants.OBJECT_LOCALLY_AVAILABLE_ICON);
             } else {

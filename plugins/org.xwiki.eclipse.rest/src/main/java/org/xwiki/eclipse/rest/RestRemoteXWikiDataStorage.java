@@ -27,6 +27,7 @@ import org.xwiki.rest.model.jaxb.HistorySummary;
 import org.xwiki.rest.model.jaxb.ObjectSummary;
 import org.xwiki.rest.model.jaxb.Page;
 import org.xwiki.rest.model.jaxb.PageSummary;
+import org.xwiki.rest.model.jaxb.Property;
 import org.xwiki.rest.model.jaxb.Space;
 import org.xwiki.rest.model.jaxb.Syntaxes;
 import org.xwiki.rest.model.jaxb.Tag;
@@ -200,6 +201,22 @@ public class RestRemoteXWikiDataStorage
 
         try {
             return this.restRemoteClient.getComments(commentsUrl);
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    /**
+     * @param propertiesUrl
+     * @return
+     */
+    public List<Property> getObjectProperties(String propertiesUrl)
+    {
+        try {
+            return this.restRemoteClient.getObjectProperties(propertiesUrl);
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

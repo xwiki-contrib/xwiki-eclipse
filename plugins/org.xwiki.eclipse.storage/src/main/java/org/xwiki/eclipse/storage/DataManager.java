@@ -16,6 +16,7 @@ import org.xwiki.eclipse.model.XWikiEclipseAttachment;
 import org.xwiki.eclipse.model.XWikiEclipseClassSummary;
 import org.xwiki.eclipse.model.XWikiEclipseComment;
 import org.xwiki.eclipse.model.XWikiEclipseObject;
+import org.xwiki.eclipse.model.XWikiEclipseObjectProperty;
 import org.xwiki.eclipse.model.XWikiEclipseObjectSummary;
 import org.xwiki.eclipse.model.XWikiEclipsePage;
 import org.xwiki.eclipse.model.XWikiEclipsePageHistorySummary;
@@ -1082,6 +1083,22 @@ public class DataManager
 
         if (isConnected()) {
             result = remoteXWikiDataStorage.getComments(pageSummary);
+            return result;
+        }
+
+        return null;
+    }
+
+    /**
+     * @param objectSummary
+     * @return
+     */
+    public List<XWikiEclipseObjectProperty> getObjectProperties(XWikiEclipseObjectSummary objectSummary)
+    {
+        List<XWikiEclipseObjectProperty> result = null;
+
+        if (isConnected()) {
+            result = remoteXWikiDataStorage.getObjectProperties(objectSummary);
             return result;
         }
 
