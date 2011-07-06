@@ -67,8 +67,8 @@ public class XWikiEclipseClassSummaryAdapter extends WorkbenchAdapter implements
     {
         if (object instanceof XWikiEclipseClassSummary) {
             XWikiEclipseClassSummary classSummary = (XWikiEclipseClassSummary) object;
-
-            return classSummary.getId();
+            /* a generic class name instead of space.class */
+            return "Class";
         }
 
         return super.getLabel(object);
