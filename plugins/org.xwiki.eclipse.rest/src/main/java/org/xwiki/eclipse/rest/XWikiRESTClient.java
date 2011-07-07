@@ -29,9 +29,9 @@ import javax.xml.bind.Unmarshaller;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
-import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
@@ -183,18 +183,13 @@ public class XWikiRESTClient
 
     protected HttpResponse executeGet(String uri, String username, String password) throws Exception
     {
+        DefaultHttpClient httpClient = new DefaultHttpClient();
 
-        DefaultHttpClient httpclient = new DefaultHttpClient();
+        UsernamePasswordCredentials creds = new UsernamePasswordCredentials(username, password);
 
-        httpclient.getCredentialsProvider().setCredentials(AuthScope.ANY,
-            new UsernamePasswordCredentials(username, password));
-
-        HttpContext localContext = new BasicHttpContext();
-
-        HttpGet httpget = new HttpGet(uri);
-        httpget.addHeader("Accept", MediaType.APPLICATION_XML.toString());
-
-        HttpResponse response = httpclient.execute(httpget, localContext);
+        HttpGet request = new HttpGet(uri);
+        request.addHeader(new BasicScheme().authenticate(creds, request));
+        HttpResponse response = httpClient.execute(request);
 
         return response;
     }
@@ -471,22 +466,6 @@ public class XWikiRESTClient
     public void setServerUrl(String serverUrl)
     {
         this.serverUrl = serverUrl;
-    }
-
-    public static void main(String[] args)
-    {
-        String serverUrl = "http://localhost:8080/xwiki/rest";
-        String username = "Admin";
-        String password = "admin";
-        System.out.println("begin testing");
-        XWikiRESTClient client = new XWikiRESTClient(serverUrl, username, password);
-        try {
-            List<Wiki> wikis = client.getWikis(username, password);
-            System.out.println(wikis.get(0).getName());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
     }
 
     /**
