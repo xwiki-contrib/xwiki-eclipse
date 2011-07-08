@@ -81,6 +81,8 @@ public class UIConstants
 
     public static final String DELETE_COMMAND = "org.xwiki.eclipse.ui.commands.Delete";
 
+    public static final String DOWNLOAD_ATTACHMENT_COMMAND = "org.xwiki.eclipse.ui.commands.DownloadAttachment";
+
     public static final String REFRESH_COMMAND = "org.xwiki.eclipse.ui.commands.Refresh";
 
     public static final String RENAME_PAGE_COMMAND = "org.xwiki.eclipse.ui.commands.RenamePage";

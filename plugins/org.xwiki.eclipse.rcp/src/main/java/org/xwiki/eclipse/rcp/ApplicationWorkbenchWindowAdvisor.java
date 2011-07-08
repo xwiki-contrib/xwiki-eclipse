@@ -27,7 +27,6 @@ import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.application.WorkbenchWindowAdvisor;
 
 /**
- * 
  * @version $Id$
  */
 public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor
@@ -49,6 +48,7 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor
         configurer.setInitialSize(new Point(1280, 800));
         configurer.setShowCoolBar(false);
         configurer.setShowStatusLine(false);
+        configurer.setShowProgressIndicator(true);
     }
 
 }

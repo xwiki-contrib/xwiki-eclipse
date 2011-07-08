@@ -37,7 +37,6 @@ import org.osgi.framework.Bundle;
 import org.xwiki.eclipse.ui.perspectives.XWikiPerspectiveFactory;
 
 /**
- * 
  * @version $Id$
  */
 public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor

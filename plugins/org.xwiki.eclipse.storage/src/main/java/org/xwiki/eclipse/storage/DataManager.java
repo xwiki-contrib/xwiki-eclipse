@@ -1119,4 +1119,14 @@ public class DataManager
         // TODO Auto-generated method stub
         return null;
     }
+
+    /**
+     * @param dir
+     * @param attachments
+     */
+    public void download(String dir, XWikiEclipseAttachment attachment)
+    {
+        remoteXWikiDataStorage.download(dir, attachment);
+
+    }
 }

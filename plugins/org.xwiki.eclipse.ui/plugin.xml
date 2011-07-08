@@ -233,6 +233,15 @@
         id="org.xwiki.eclipse.ui.filters.XWikiEclipseIdFiter"
         name="XWiki Eclipse ID filter">
   </commonFilter>
+  <actionProvider
+        class="org.xwiki.eclipse.ui.actions.DownloadAttachmentActionProvider"
+        id="org.xwiki.eclipse.ui.actions.DownloadAttachmentActionProvider">
+     <enablement>
+        <instanceof
+              value="org.xwiki.eclipse.model.XWikiEclipseAttachment">
+        </instanceof>
+     </enablement>
+  </actionProvider>
 	</extension>
 	<extension point="org.eclipse.core.runtime.adapters">
 		<factory adaptableType="org.xwiki.eclipse.storage.DataManager" class="org.xwiki.eclipse.ui.adapters.AdapterFactory">
@@ -404,6 +413,11 @@
         id="org.xwiki.eclipse.ui.commands.GrabSpace"
         name="Grab space">
   </command>
+  <command
+        categoryId="org.xwiki.eclipse"
+        id="org.xwiki.eclipse.ui.commands.DownloadAttachment"
+        name="Download">
+  </command>
 	</extension>
 	<extension point="org.eclipse.ui.handlers">
 		<handler class="org.xwiki.eclipse.ui.handlers.DataManagerConnectHandler" commandId="org.xwiki.eclipse.ui.commands.DataManagerConnect">
@@ -488,6 +502,10 @@
            </or>
         </iterate>
      </activeWhen>
+  </handler>
+  <handler
+        class="org.xwiki.eclipse.ui.handlers.DownloadAttachmentHandler"
+        commandId="org.xwiki.eclipse.ui.commands.DownloadAttachment">
   </handler>
 	</extension>
  <extension

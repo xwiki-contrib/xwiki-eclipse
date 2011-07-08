@@ -224,4 +224,13 @@ public class RestRemoteXWikiDataStorage
 
         return null;
     }
+
+    /**
+     * @param dir
+     * @param absoluteUrl
+     */
+    public void download(String dir, String absoluteUrl, String name)
+    {
+        restRemoteClient.download(dir, absoluteUrl, name);
+    }
 }

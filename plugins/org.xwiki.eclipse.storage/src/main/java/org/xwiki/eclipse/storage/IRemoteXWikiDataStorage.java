@@ -114,5 +114,11 @@ public interface IRemoteXWikiDataStorage
      * @param attachment
      * @return
      */
-    XWikiEclipsePage getPage(XWikiEclipseAttachment attachment);;
+    XWikiEclipsePage getPage(XWikiEclipseAttachment attachment);
+
+    /**
+     * @param dir
+     * @param attachment
+     */
+    void download(String dir, XWikiEclipseAttachment attachment);
 }

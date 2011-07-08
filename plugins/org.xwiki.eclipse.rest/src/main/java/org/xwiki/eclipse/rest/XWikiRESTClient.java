@@ -19,6 +19,8 @@
  */
 package org.xwiki.eclipse.rest;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,6 +29,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.auth.UsernamePasswordCredentials;
@@ -61,6 +64,9 @@ import org.xwiki.rest.model.jaxb.Wiki;
 import org.xwiki.rest.model.jaxb.Wikis;
 import org.xwiki.rest.model.jaxb.Xwiki;
 
+/**
+ * @version $Id$
+ */
 public class XWikiRESTClient
 {
 
@@ -160,11 +166,6 @@ public class XWikiRESTClient
     {
         return getServerUrl();
     }
-
-    // protected String getFullUri(Class< ? > resourceClass)
-    // {
-    // return String.format("%s%s", getBaseUrl(), UriBuilder.fromResource(resourceClass).build());
-    // }
 
     protected HttpResponse executeGet(String uri) throws Exception
     {
@@ -685,5 +686,28 @@ public class XWikiRESTClient
         }
 
         return null;
+    }
+
+    /**
+     * @param dir
+     * @param absoluteUrl
+     * @param name
+     */
+    public void download(String dir, String absoluteUrl, String name)
+    {
+        HttpResponse response;
+        try {
+            response = executeGet(absoluteUrl, username, password);
+            HttpEntity entity = response.getEntity();
+            if (entity != null) {
+                FileOutputStream fos = new java.io.FileOutputStream(dir + File.separator + name);
+                entity.writeTo(fos);
+                fos.close();
+            }
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
     }
 }

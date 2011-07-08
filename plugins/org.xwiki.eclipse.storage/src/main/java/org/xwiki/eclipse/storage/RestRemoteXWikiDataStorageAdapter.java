@@ -574,4 +574,18 @@ public class RestRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStorag
 
         return result;
     }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#download(java.lang.String, java.util.List)
+     */
+    @Override
+    public void download(String dir, XWikiEclipseAttachment attachment)
+    {
+        if (attachment != null) {
+            restRemoteStorage.download(dir, attachment.getAbsoluteUrl(), attachment.getName());
+        }
+
+    }
 }
