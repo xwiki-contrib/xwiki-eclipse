@@ -551,4 +551,27 @@ public class RestRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStorag
 
         return result;
     }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#getPage(org.xwiki.eclipse.model.XWikiEclipseAttachment)
+     */
+    @Override
+    public XWikiEclipsePage getPage(XWikiEclipseAttachment attachment)
+    {
+        String pageUrl = attachment.getPageUrl();
+        Page page = restRemoteStorage.getPage(pageUrl);
+        XWikiEclipsePage result = new XWikiEclipsePage(dataManager);
+        result.setFullName(page.getFullName());
+        result.setId(page.getId());
+        result.setName(page.getName());
+        result.setParentId(page.getParentId());
+        result.setSpace(page.getSpace());
+        result.setSyntax(page.getSyntax());
+        result.setTitle(page.getTitle());
+        result.setWiki(page.getWiki());
+
+        return result;
+    }
 }

@@ -346,6 +346,13 @@
         name="Wiki"
         objectClass="org.xwiki.eclipse.model.XWikiEclipseWikiSummary">
   </page>
+  <page
+        class="org.xwiki.eclipse.ui.properties.XWikiEclipseAttachmentPropertiesPage"
+        icon="icons/page.attachment.png"
+        id="org.xwiki.eclipse.ui.properties.XWikiEclipseAttachment"
+        name="Attachment"
+        objectClass="org.xwiki.eclipse.model.XWikiEclipseAttachment">
+  </page>
 	</extension>
 	<extension point="org.eclipse.ui.commands">
 		<command

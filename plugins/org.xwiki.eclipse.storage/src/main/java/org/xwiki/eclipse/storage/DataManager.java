@@ -285,12 +285,17 @@ public class DataManager
     }
 
     /**
-     * @param pageId
+     * @param attachment
      * @return
      */
-    public XWikiEclipsePageSummary getPageSummary(String pageId) throws XWikiEclipseStorageException
+    public XWikiEclipsePage getPage(XWikiEclipseAttachment attachment) throws XWikiEclipseStorageException
     {
-        // TODO Auto-generated method stub
+        XWikiEclipsePage result = null;
+        if (isConnected()) {
+            result = remoteXWikiDataStorage.getPage(attachment);
+            return result;
+        }
+
         return null;
     }
 
@@ -1102,6 +1107,16 @@ public class DataManager
             return result;
         }
 
+        return null;
+    }
+
+    /**
+     * @param pageId
+     * @return
+     */
+    public XWikiEclipsePageSummary getPage(String pageId) throws XWikiEclipseStorageException
+    {
+        // TODO Auto-generated method stub
         return null;
     }
 }

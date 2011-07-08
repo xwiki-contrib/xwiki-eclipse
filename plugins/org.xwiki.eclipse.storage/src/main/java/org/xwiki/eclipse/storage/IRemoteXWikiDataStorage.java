@@ -108,5 +108,11 @@ public interface IRemoteXWikiDataStorage
      * @param objectSummary
      * @return
      */
-    List<XWikiEclipseObjectProperty> getObjectProperties(XWikiEclipseObjectSummary objectSummary);;
+    List<XWikiEclipseObjectProperty> getObjectProperties(XWikiEclipseObjectSummary objectSummary);
+
+    /**
+     * @param attachment
+     * @return
+     */
+    XWikiEclipsePage getPage(XWikiEclipseAttachment attachment);;
 }

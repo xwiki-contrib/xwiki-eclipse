@@ -47,7 +47,11 @@ public class XWikiEclipsePage extends ModelObject
 
     private String space;
 
+    private String wiki;
+
     private String name;
+
+    private String fullName;
 
     private String url;
 
@@ -60,6 +64,10 @@ public class XWikiEclipsePage extends ModelObject
     private Calendar modified;
 
     private String pageClassUrl;
+
+    private String parentId;
+
+    private String syntax;
 
     public XWikiEclipsePage(DataManager dataManager)
     {
@@ -220,5 +228,45 @@ public class XWikiEclipsePage extends ModelObject
     public void setPageClassUrl(String pageClassUrl)
     {
         this.pageClassUrl = pageClassUrl;
+    }
+
+    public String getWiki()
+    {
+        return wiki;
+    }
+
+    public void setWiki(String wiki)
+    {
+        this.wiki = wiki;
+    }
+
+    public String getFullName()
+    {
+        return fullName;
+    }
+
+    public void setFullName(String fullName)
+    {
+        this.fullName = fullName;
+    }
+
+    public String getParentId()
+    {
+        return parentId;
+    }
+
+    public void setParentId(String parentId)
+    {
+        this.parentId = parentId;
+    }
+
+    public String getSyntax()
+    {
+        return syntax;
+    }
+
+    public void setSyntax(String syntax)
+    {
+        this.syntax = syntax;
     }
 }
