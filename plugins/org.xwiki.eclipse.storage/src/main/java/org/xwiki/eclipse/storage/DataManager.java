@@ -1121,12 +1121,11 @@ public class DataManager
     }
 
     /**
-     * @param dir
+     * @param directory
      * @param attachments
      */
-    public void download(String dir, XWikiEclipseAttachment attachment)
+    public void download(String directory, XWikiEclipseAttachment attachment)
     {
-        remoteXWikiDataStorage.download(dir, attachment);
-
+        remoteXWikiDataStorage.download(directory, attachment);
     }
 }

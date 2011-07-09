@@ -125,7 +125,7 @@ public class DownloadAttachmentWizard extends Wizard implements INewWizard
                     dataManager.download(dir, attachment);
                     monitor.worked(work);
                     try {
-                        Thread.sleep(5000);
+                        Thread.sleep(2000);
                     } catch (InterruptedException e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
@@ -138,6 +138,7 @@ public class DownloadAttachmentWizard extends Wizard implements INewWizard
         };
         downloadJob.setUser(true);
         downloadJob.schedule();
+
         return true;
     }
 
