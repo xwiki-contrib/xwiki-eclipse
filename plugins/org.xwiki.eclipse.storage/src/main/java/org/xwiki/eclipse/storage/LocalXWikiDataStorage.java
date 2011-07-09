@@ -18,7 +18,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
-import org.xwiki.eclipse.model.ModelObject;
 import org.xwiki.eclipse.storage.utils.StorageUtils;
 import org.xwiki.xmlrpc.model.XWikiClass;
 import org.xwiki.xmlrpc.model.XWikiClassSummary;
@@ -596,17 +595,5 @@ public class LocalXWikiDataStorage
         }
 
         return result;
-    }
-
-    /**
-     * FIXME: need to discuss (1) what object to serialize, (2) what is the directory structure and (3) add one folder
-     * for wiki or not
-     * 
-     * @return
-     */
-    public List<ModelObject> getRootResources()
-    {
-        throw new UnsupportedOperationException();
-        // return null;
     }
 }
