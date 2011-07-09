@@ -58,7 +58,7 @@ public class XWikiEclipsePageSummaryAdapter extends WorkbenchAdapter implements 
             final XWikiEclipsePageSummary pageSummary = (XWikiEclipsePageSummary) object;
 
             try {
-                /* fetch attachments, pageClass, tags, comments, and annotations */
+                /* fetch objects (including annotations and customized objects), pageClass, tags, comments */
                 DataManager dataManager = pageSummary.getDataManager();
 
                 List<XWikiEclipseObjectSummary> objects = dataManager.getObjects(pageSummary);
@@ -83,8 +83,10 @@ public class XWikiEclipsePageSummaryAdapter extends WorkbenchAdapter implements 
                         list.add(attach);
                     }
 
-                    a.setObjects(list);
-                    result.add(a);
+                    if (list.size() > 0) {
+                        a.setObjects(list);
+                        result.add(a);
+                    }
                 }
 
                 /* add tags */
@@ -97,8 +99,10 @@ public class XWikiEclipsePageSummaryAdapter extends WorkbenchAdapter implements 
                         list.add(tag);
                     }
 
-                    t.setObjects(list);
-                    result.add(t);
+                    if (list.size() > 0) {
+                        t.setObjects(list);
+                        result.add(t);
+                    }
                 }
 
                 /* add comments */
@@ -111,21 +115,26 @@ public class XWikiEclipsePageSummaryAdapter extends WorkbenchAdapter implements 
                         list.add(comment);
                     }
 
-                    t.setObjects(list);
-                    result.add(t);
+                    if (list.size() > 0) {
+                        t.setObjects(list);
+                        result.add(t);
+                    }
                 }
 
-                /* add annotation, all the annotations are included in the object list */
+                /*
+                 * add objects that are not comments or tags, may include all the annotations and all the customized
+                 * classes
+                 */
                 if (objects != null && objects.size() > 0) {
                     XWikiEclipseObjectCollection t = new XWikiEclipseObjectCollection(dataManager);
-                    t.setClassName("Annotations");
+                    t.setClassName("Objects");
 
                     list = new ArrayList<ModelObject>();
                     for (XWikiEclipseObjectSummary objectSummary : objects) {
-                        if (objectSummary.getClassName().equals("AnnotationCode.AnnotationClass")) {
+                        if (!objectSummary.getClassName().equals("XWiki.TagClass")
+                            && !objectSummary.getClassName().equals("XWiki.XWikiComments")) {
                             list.add(objectSummary);
                         }
-
                     }
 
                     if (list.size() > 0) {
