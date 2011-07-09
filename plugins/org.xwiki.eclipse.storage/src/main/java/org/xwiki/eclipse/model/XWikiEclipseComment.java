@@ -38,6 +38,8 @@ public class XWikiEclipseComment extends ModelObject
 
     private String highlight;
 
+    private int replyTo;
+
     /**
      * @param dataManager
      */
@@ -54,7 +56,7 @@ public class XWikiEclipseComment extends ModelObject
     @Override
     public String getXWikiEclipseId()
     {
-        return String.format("xwikieclipse://%s/comment/%s", getDataManager().getName(), getAuthor()); //$NON-NLS-1$
+        return String.format("xwikieclipse://%s/comment/%s/%s", getDataManager().getName(), getId(), getAuthor()); //$NON-NLS-1$
     }
 
     public int getId()
@@ -105,5 +107,15 @@ public class XWikiEclipseComment extends ModelObject
     public void setHighlight(String highlight)
     {
         this.highlight = highlight;
+    }
+
+    public int getReplyTo()
+    {
+        return replyTo;
+    }
+
+    public void setReplyTo(int replyTo)
+    {
+        this.replyTo = replyTo;
     }
 }
