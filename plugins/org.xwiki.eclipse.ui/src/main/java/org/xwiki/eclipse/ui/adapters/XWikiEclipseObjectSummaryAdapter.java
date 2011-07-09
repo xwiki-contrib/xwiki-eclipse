@@ -45,10 +45,17 @@ public class XWikiEclipseObjectSummaryAdapter extends WorkbenchAdapter
             String label = "[" + number + "] : ";
             List<XWikiEclipseObjectProperty> objectProperties =
                 objectSummary.getDataManager().getObjectProperties(objectSummary);
+
+            boolean noAuthorProperty = true;
             for (XWikiEclipseObjectProperty property : objectProperties) {
                 if (property.getName().equals("author")) {
                     label += property.getValue();
+                    noAuthorProperty = false;
                 }
+            }
+
+            if (noAuthorProperty) {
+                label += objectSummary.getClassName();
             }
 
             return label;
