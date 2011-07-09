@@ -20,6 +20,8 @@
  */
 package org.xwiki.eclipse.ui.adapters;
 
+import java.util.List;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -29,6 +31,7 @@ import org.eclipse.ui.model.WorkbenchAdapter;
 import org.eclipse.ui.progress.IDeferredWorkbenchAdapter;
 import org.eclipse.ui.progress.IElementCollector;
 import org.xwiki.eclipse.core.CoreLog;
+import org.xwiki.eclipse.model.ModelObject;
 import org.xwiki.eclipse.model.XWikiEclipseObjectCollection;
 import org.xwiki.eclipse.storage.XWikiEclipseStorageException;
 import org.xwiki.eclipse.ui.UIConstants;
@@ -47,7 +50,8 @@ public class XWikiEclipseObjectCollectionAdapter extends WorkbenchAdapter implem
             final XWikiEclipseObjectCollection collection = (XWikiEclipseObjectCollection) object;
 
             try {
-                return collection.getObjects().toArray();
+                List<ModelObject> objects = collection.getObjects();
+                return objects.toArray();
             } catch (XWikiEclipseStorageException e) {
                 UIUtils
                     .showMessageDialog(
