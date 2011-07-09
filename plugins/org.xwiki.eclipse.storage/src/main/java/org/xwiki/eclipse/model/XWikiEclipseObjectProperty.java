@@ -34,6 +34,8 @@ public class XWikiEclipseObjectProperty extends ModelObject
 {
     private String name;
 
+    private String prettyName;
+
     private String type;
 
     private String value;
@@ -55,6 +57,11 @@ public class XWikiEclipseObjectProperty extends ModelObject
     public String getXWikiEclipseId()
     {
         return String.format("xwikieclipse://%s/properties/%s/%s", getDataManager().getName(), getType(), getName()); //$NON-NLS-1$        
+    }
+
+    public String getAttribute(String attributeName)
+    {
+        return attributes.get(attributeName);
     }
 
     public String getName()
@@ -95,5 +102,15 @@ public class XWikiEclipseObjectProperty extends ModelObject
     public void setAttributes(Map<String, String> attributes)
     {
         this.attributes = attributes;
+    }
+
+    public String getPrettyName()
+    {
+        return prettyName;
+    }
+
+    public void setPrettyName(String prettyName)
+    {
+        this.prettyName = prettyName;
     }
 }
