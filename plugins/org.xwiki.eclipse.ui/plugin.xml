@@ -198,6 +198,9 @@
            <instanceof
                  value="org.xwiki.eclipse.model.XWikiEclipseSpaceSummary">
            </instanceof>
+           <instanceof
+                 value="org.xwiki.eclipse.model.XWikiEclipseComment">
+           </instanceof>
         </or>
      </enablement>
   </actionProvider>
@@ -239,6 +242,15 @@
      <enablement>
         <instanceof
               value="org.xwiki.eclipse.model.XWikiEclipseAttachment">
+        </instanceof>
+     </enablement>
+  </actionProvider>
+  <actionProvider
+        class="org.xwiki.eclipse.ui.actions.XWikiEclipseCommentActionProvider"
+        id="org.xwiki.eclipse.ui.actions.XWikiEclipseCommentActionProvider">
+     <enablement>
+        <instanceof
+              value="org.xwiki.eclipse.model.XWikiEclipseComment">
         </instanceof>
      </enablement>
   </actionProvider>
@@ -325,6 +337,12 @@
         icon="icons/xwiki.png"
         id="org.xwiki.eclipse.ui.editors.Object"
         name="Object Editor">
+  </editor>
+  <editor
+        class="org.xwiki.eclipse.ui.editors.CommentEditor"
+        icon="icons/xwiki.png"
+        id="org.xwiki.eclipse.ui.editors.Comment"
+        name="Comment Editor">
   </editor>
 	</extension>
 	<extension point="org.eclipse.ui.newWizards">
