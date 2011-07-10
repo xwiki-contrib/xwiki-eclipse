@@ -21,7 +21,9 @@
 package org.xwiki.eclipse.ui.adapters;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
@@ -123,17 +125,32 @@ public class XWikiEclipsePageSummaryAdapter extends WorkbenchAdapter implements 
 
                 /*
                  * add objects that are not comments or tags, may include all the annotations and all the customized
-                 * classes
+                 * classes, group them based on the className
                  */
                 if (objects != null && objects.size() > 0) {
                     XWikiEclipseObjectCollection t = new XWikiEclipseObjectCollection(dataManager);
                     t.setClassName("Objects");
 
                     list = new ArrayList<ModelObject>();
+                    Map<String, XWikiEclipseObjectCollection> classnameCollectionMap =
+                        new HashMap<String, XWikiEclipseObjectCollection>();
+
                     for (XWikiEclipseObjectSummary objectSummary : objects) {
                         if (!objectSummary.getClassName().equals("XWiki.TagClass")
                             && !objectSummary.getClassName().equals("XWiki.XWikiComments")) {
-                            list.add(objectSummary);
+                            String classname = objectSummary.getClassName();
+
+                            if (classnameCollectionMap.containsKey(classname)) {
+                                classnameCollectionMap.get(classname).getObjects().add(objectSummary);
+                            } else {
+                                XWikiEclipseObjectCollection subCollection =
+                                    new XWikiEclipseObjectCollection(dataManager);
+                                subCollection.setClassName(classname);
+                                subCollection.getObjects().add(objectSummary);
+
+                                classnameCollectionMap.put(classname, subCollection);
+                                list.add(subCollection);
+                            }
                         }
                     }
 

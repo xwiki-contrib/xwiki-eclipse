@@ -19,6 +19,7 @@
  */
 package org.xwiki.eclipse.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.xwiki.eclipse.storage.DataManager;
@@ -69,6 +70,10 @@ public class XWikiEclipseObjectCollection extends ModelObject
 
     public List<ModelObject> getObjects() throws XWikiEclipseStorageException
     {
+        if (objects == null) {
+            objects = new ArrayList<ModelObject>();
+        }
+
         return objects;
     }
 
