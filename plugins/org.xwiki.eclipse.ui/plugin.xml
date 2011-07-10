@@ -362,6 +362,13 @@
         name="Attachment"
         objectClass="org.xwiki.eclipse.model.XWikiEclipseAttachment">
   </page>
+  <page
+        class="org.xwiki.eclipse.ui.properties.XWikiEclipseCommentPropertiesPage"
+        icon="icons/page.comment.png"
+        id="org.xwiki.eclipse.ui.properties.XWikiEclipseComment"
+        name="Comment"
+        objectClass="org.xwiki.eclipse.model.XWikiEclipseComment">
+  </page>
 	</extension>
 	<extension point="org.eclipse.ui.commands">
 		<command
