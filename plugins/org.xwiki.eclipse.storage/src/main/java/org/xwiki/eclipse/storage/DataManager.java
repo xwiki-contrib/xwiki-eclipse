@@ -12,6 +12,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.QualifiedName;
+import org.xwiki.eclipse.model.ModelObject;
 import org.xwiki.eclipse.model.XWikiEclipseAttachment;
 import org.xwiki.eclipse.model.XWikiEclipseClassSummary;
 import org.xwiki.eclipse.model.XWikiEclipseComment;
@@ -277,26 +278,11 @@ public class DataManager
     {
         List<XWikiEclipsePageSummary> result = null;
         if (isConnected()) {
-            result = remoteXWikiDataStorage.getPages(spaceSummary);
+            result = remoteXWikiDataStorage.getPageSummaries(spaceSummary);
         } else {
             // FIXME: unimplemented yet, not sure which level to return
         }
         return result;
-    }
-
-    /**
-     * @param attachment
-     * @return
-     */
-    public XWikiEclipsePage getPage(XWikiEclipseAttachment attachment) throws XWikiEclipseStorageException
-    {
-        XWikiEclipsePage result = null;
-        if (isConnected()) {
-            result = remoteXWikiDataStorage.getPage(attachment);
-            return result;
-        }
-
-        return null;
     }
 
     /*
@@ -313,7 +299,7 @@ public class DataManager
 
         if (isConnected()) {
             try {
-                result = remoteXWikiDataStorage.getSpaces(wiki);
+                result = remoteXWikiDataStorage.getSpaceSummaries(wiki);
             } catch (XWikiEclipseStorageException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -354,7 +340,7 @@ public class DataManager
         List<XWikiEclipseObjectSummary> result = null;
 
         if (isConnected()) {
-            result = remoteXWikiDataStorage.getObjects(pageSummary);
+            result = remoteXWikiDataStorage.getObjectSummaries(pageSummary);
         }
 
         return result;
@@ -997,7 +983,7 @@ public class DataManager
 
         if (isConnected()) {
             try {
-                result = remoteXWikiDataStorage.getWikis();
+                result = remoteXWikiDataStorage.getWikiSummaries();
             } catch (XWikiEclipseStorageException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -1020,7 +1006,7 @@ public class DataManager
 
         if (isConnected()) {
             try {
-                result = remoteXWikiDataStorage.getPageHistory(pageSummary);
+                result = remoteXWikiDataStorage.getPageHistorySummaries(pageSummary);
                 return result;
             } catch (XWikiEclipseStorageException e) {
                 // TODO Auto-generated catch block
@@ -1033,16 +1019,15 @@ public class DataManager
     }
 
     /**
-     * @param pageHistorySummary
+     * @param o
      * @return
      */
-    public XWikiEclipsePage getPage(XWikiEclipsePageHistorySummary pageHistorySummary)
-        throws XWikiEclipseStorageException
+    public XWikiEclipsePage getPage(ModelObject o) throws XWikiEclipseStorageException
     {
         XWikiEclipsePage result = null;
 
         if (isConnected()) {
-            result = remoteXWikiDataStorage.getPage(pageHistorySummary);
+            result = remoteXWikiDataStorage.getPage(o);
             return result;
         }
         return null;
@@ -1056,7 +1041,7 @@ public class DataManager
     {
         XWikiEclipseClassSummary result = null;
         if (isConnected()) {
-            result = remoteXWikiDataStorage.getPageClass(pageSummary);
+            result = remoteXWikiDataStorage.getPageClassSummary(pageSummary);
             return result;
         }
 
@@ -1111,21 +1096,22 @@ public class DataManager
     }
 
     /**
-     * @param pageId
-     * @return
-     */
-    public XWikiEclipsePageSummary getPage(String pageId) throws XWikiEclipseStorageException
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /**
      * @param directory
      * @param attachments
      */
     public void download(String directory, XWikiEclipseAttachment attachment)
     {
         remoteXWikiDataStorage.download(directory, attachment);
+    }
+
+    /**
+     * @param objectSummary
+     * @return
+     */
+    public XWikiEclipsePageSummary getPageSummary(XWikiEclipseObjectSummary objectSummary)
+        throws XWikiEclipseStorageException
+    {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

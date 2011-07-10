@@ -21,6 +21,7 @@ package org.xwiki.eclipse.storage;
 
 import java.util.List;
 
+import org.xwiki.eclipse.model.ModelObject;
 import org.xwiki.eclipse.model.XWikiEclipseAttachment;
 import org.xwiki.eclipse.model.XWikiEclipseClassSummary;
 import org.xwiki.eclipse.model.XWikiEclipseComment;
@@ -41,9 +42,9 @@ import org.xwiki.eclipse.model.XWikiEclipseWikiSummary;
  */
 public interface IRemoteXWikiDataStorage
 {
-    List<XWikiEclipseWikiSummary> getWikis() throws XWikiEclipseStorageException;
+    List<XWikiEclipseWikiSummary> getWikiSummaries() throws XWikiEclipseStorageException;
 
-    List<XWikiEclipseSpaceSummary> getSpaces(XWikiEclipseWikiSummary wiki) throws XWikiEclipseStorageException;
+    List<XWikiEclipseSpaceSummary> getSpaceSummaries(XWikiEclipseWikiSummary wiki) throws XWikiEclipseStorageException;
 
     void dispose();
 
@@ -53,13 +54,13 @@ public interface IRemoteXWikiDataStorage
      * @param spaceSummary
      * @return
      */
-    List<XWikiEclipsePageSummary> getPages(XWikiEclipseSpaceSummary spaceSummary);
+    List<XWikiEclipsePageSummary> getPageSummaries(XWikiEclipseSpaceSummary spaceSummary);
 
     /**
      * @param pageSummary
      * @return
      */
-    List<XWikiEclipseObjectSummary> getObjects(XWikiEclipsePageSummary pageSummary);
+    List<XWikiEclipseObjectSummary> getObjectSummaries(XWikiEclipsePageSummary pageSummary);
 
     /**
      * @param pageSummary
@@ -71,26 +72,14 @@ public interface IRemoteXWikiDataStorage
      * @param pageSummary
      * @return
      */
-    List<XWikiEclipsePageHistorySummary> getPageHistory(XWikiEclipsePageSummary pageSummary)
+    List<XWikiEclipsePageHistorySummary> getPageHistorySummaries(XWikiEclipsePageSummary pageSummary)
         throws XWikiEclipseStorageException;
 
     /**
-     * @param pageHistorySummary
-     * @return
-     */
-    XWikiEclipsePage getPage(XWikiEclipsePageHistorySummary pageHistorySummary);
-
-    /**
      * @param pageSummary
      * @return
      */
-    XWikiEclipsePage getPage(XWikiEclipsePageSummary pageSummary);
-
-    /**
-     * @param pageSummary
-     * @return
-     */
-    XWikiEclipseClassSummary getPageClass(XWikiEclipsePageSummary pageSummary);
+    XWikiEclipseClassSummary getPageClassSummary(XWikiEclipsePageSummary pageSummary);
 
     /**
      * @param pageSummary
@@ -111,14 +100,10 @@ public interface IRemoteXWikiDataStorage
     List<XWikiEclipseObjectProperty> getObjectProperties(XWikiEclipseObjectSummary objectSummary);
 
     /**
+     * @param directory
      * @param attachment
-     * @return
      */
-    XWikiEclipsePage getPage(XWikiEclipseAttachment attachment);
+    void download(String directory, XWikiEclipseAttachment attachment);
 
-    /**
-     * @param dir
-     * @param attachment
-     */
-    void download(String dir, XWikiEclipseAttachment attachment);
+    XWikiEclipsePage getPage(ModelObject o);
 }
