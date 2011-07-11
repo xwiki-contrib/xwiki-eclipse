@@ -11,6 +11,5 @@ Require-Bundle: org.eclipse.core.runtime;bundle-version="3.6.0",
  org.xwiki.eclipse.storage;bundle-version="1.2.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.xwiki.eclipse.core,
- org.xwiki.eclipse.core.expressions,
- org.xwiki.eclipse.core.notifications
+ org.xwiki.eclipse.core.expressions
 Bundle-ClassPath: .

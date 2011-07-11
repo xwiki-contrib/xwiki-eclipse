@@ -13,4 +13,5 @@ Bundle-ClassPath: lib/xstream-1.3.jar,
  .
 Export-Package: org.xwiki.eclipse.model,
  org.xwiki.eclipse.storage,
+ org.xwiki.eclipse.storage.notification,
  org.xwiki.eclipse.storage.utils

@@ -18,7 +18,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  *
  */
-package org.xwiki.eclipse.core.notifications;
+package org.xwiki.eclipse.storage.notification;
 
 import org.eclipse.core.runtime.Assert;
 
@@ -34,7 +34,20 @@ public class CoreEvent
      */
     public static enum Type
     {
-        DATA_MANAGER_REGISTERED, DATA_MANAGER_UNREGISTERED, DATA_MANAGER_CONNECTED, DATA_MANAGER_DISCONNECTED, PAGE_STORED, OBJECT_STORED, PAGE_REMOVED, OBJECT_REMOVED, PAGE_SELECTED, OBJECT_SELECTED, REFRESH, PAGE_RENAMED, SPACE_REMOVED;
+        DATA_MANAGER_REGISTERED,
+        DATA_MANAGER_UNREGISTERED,
+        DATA_MANAGER_CONNECTED,
+        DATA_MANAGER_DISCONNECTED,
+        PAGE_STORED,
+        OBJECT_STORED,
+        PAGE_REMOVED,
+        OBJECT_REMOVED,
+        PAGE_SELECTED,
+        OBJECT_SELECTED,
+        REFRESH,
+        PAGE_RENAMED,
+        SPACE_REMOVED,
+        COMMENT_REMOVED;
     }
 
     /**
