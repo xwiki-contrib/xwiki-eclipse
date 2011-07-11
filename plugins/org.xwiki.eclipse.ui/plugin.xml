@@ -340,7 +340,7 @@
   </editor>
   <editor
         class="org.xwiki.eclipse.ui.editors.CommentEditor"
-        icon="icons/xwiki.png"
+        icon="icons/page.comment.png"
         id="org.xwiki.eclipse.ui.editors.Comment"
         name="Comment Editor">
   </editor>

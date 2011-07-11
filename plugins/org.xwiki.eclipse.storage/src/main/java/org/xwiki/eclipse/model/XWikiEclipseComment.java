@@ -111,7 +111,7 @@ public class XWikiEclipseComment extends ModelObject
         this.highlight = highlight;
     }
 
-    public int getReplyTo()
+    public Integer getReplyTo()
     {
         return replyTo;
     }
