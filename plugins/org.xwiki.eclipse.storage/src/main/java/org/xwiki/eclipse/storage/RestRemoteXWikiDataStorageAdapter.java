@@ -29,6 +29,7 @@ import org.xwiki.eclipse.model.ModelObject;
 import org.xwiki.eclipse.model.XWikiEclipseAttachment;
 import org.xwiki.eclipse.model.XWikiEclipseClassSummary;
 import org.xwiki.eclipse.model.XWikiEclipseComment;
+import org.xwiki.eclipse.model.XWikiEclipseObject;
 import org.xwiki.eclipse.model.XWikiEclipseObjectProperty;
 import org.xwiki.eclipse.model.XWikiEclipseObjectSummary;
 import org.xwiki.eclipse.model.XWikiEclipsePage;
@@ -127,7 +128,7 @@ public class RestRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStorag
         if (spaces != null) {
             for (Space space : spaces) {
                 XWikiEclipseSpaceSummary summary = new XWikiEclipseSpaceSummary(dataManager);
-                summary.setKey(space.getId());
+                summary.setId(space.getId());
                 summary.setName(space.getName());
                 summary.setUrl(space.getXwikiAbsoluteUrl());
                 summary.setWiki(space.getWiki());
@@ -300,7 +301,10 @@ public class RestRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStorag
                 for (Link link : links) {
                     if (link.getRel().equals(Relations.PROPERTIES)) {
                         o.setPropertiesUrl(link.getHref());
-                        break;
+                    }
+
+                    if (link.getRel().equals(Relations.OBJECT)) {
+                        o.setObjectUrl(link.getHref());
                     }
                 }
 
@@ -469,9 +473,8 @@ public class RestRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStorag
                 c.setHighlight(comment.getHighlight());
                 c.setId(comment.getId());
                 c.setText(comment.getText());
-                if (comment.getReplyTo() != null) {
-                    c.setReplyTo(comment.getReplyTo());
-                }
+                c.setPageId(comment.getPageId());
+                c.setReplyTo(comment.getReplyTo());
 
                 /* add pageUrl attribute */
                 List<Link> links = comment.getLinks();
@@ -580,6 +583,143 @@ public class RestRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStorag
             if (link.getRel().equals(Relations.CLASS)) {
                 result.setPageClassUrl(link.getHref());
             }
+        }
+
+        for (Link link : links) {
+            if (link.getRel().equals(Relations.SPACE)) {
+                result.setSpaceUrl(link.getHref());
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#getObject(org.xwiki.eclipse.model.XWikiEclipseObjectSummary)
+     */
+    @Override
+    public XWikiEclipseObject getObject(XWikiEclipseObjectSummary objectSummary)
+    {
+        XWikiEclipseObject result = new XWikiEclipseObject(dataManager);
+
+        String objectUrl = objectSummary.getObjectUrl();
+
+        org.xwiki.rest.model.jaxb.Object object = restRemoteStorage.getObject(objectUrl);
+        result.setName(object.getId());
+
+        return result;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#removeComment(org.xwiki.eclipse.model.XWikiEclipseComment)
+     */
+    @Override
+    public void removeComment(XWikiEclipseComment comment)
+    {
+        // TODO Auto-generated method stub
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#storeComment(org.xwiki.eclipse.model.XWikiEclipseComment)
+     */
+    @Override
+    public XWikiEclipseComment storeComment(XWikiEclipseComment c)
+    {
+        Comment comment = new Comment();
+        comment.setAuthor(c.getAuthor());
+        comment.setDate(c.getDate());
+        comment.setHighlight(c.getHighlight());
+        comment.setPageId(c.getPageId());
+        comment.setReplyTo(c.getReplyTo());
+        comment.setText(c.getText());
+
+        String commentsUrl = c.getPageUrl() + "/comments";
+        Comment stored = restRemoteStorage.storeComment(commentsUrl, comment);
+
+        XWikiEclipseComment result = new XWikiEclipseComment(dataManager);
+        result.setAuthor(stored.getAuthor());
+        result.setDate(stored.getDate());
+        result.setHighlight(stored.getHighlight());
+        result.setId(stored.getId());
+        result.setText(stored.getText());
+        result.setPageId(stored.getPageId());
+        result.setReplyTo(stored.getReplyTo());
+
+        /* add pageUrl attribute */
+        List<Link> links = stored.getLinks();
+        for (Link link : links) {
+            if (link.getRel().equals(Relations.PAGE)) {
+                result.setPageUrl(link.getHref());
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#getPageSummary(org.xwiki.eclipse.model.ModelObject)
+     */
+    @Override
+    public XWikiEclipsePageSummary getPageSummary(ModelObject m)
+    {
+        XWikiEclipsePageSummary result = null;
+
+        if (m instanceof XWikiEclipseObjectSummary) {
+
+        }
+
+        if (m instanceof XWikiEclipseObject) {
+
+        }
+
+        if (m instanceof XWikiEclipseComment) {
+            XWikiEclipseComment comment = (XWikiEclipseComment) m;
+            XWikiEclipsePage page = getPage(comment);
+            XWikiEclipseSpaceSummary space = getSpaceSummary(page);
+            List<XWikiEclipsePageSummary> pageSummaries = getPageSummaries(space);
+            for (XWikiEclipsePageSummary pageSummary : pageSummaries) {
+                if (pageSummary.getId().equals(page.getId())) {
+                    result = pageSummary;
+                    break;
+                }
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * @param m
+     * @return
+     */
+    public XWikiEclipseSpaceSummary getSpaceSummary(ModelObject m)
+    {
+        XWikiEclipseSpaceSummary result = null;
+
+        if (m instanceof XWikiEclipsePage) {
+            XWikiEclipsePage page = (XWikiEclipsePage) m;
+            Space spaceSummary = this.restRemoteStorage.getSpace(page.getSpaceUrl());
+
+            result = new XWikiEclipseSpaceSummary(dataManager);
+            result.setId(spaceSummary.getId());
+            result.setName(spaceSummary.getName());
+            result.setWiki(spaceSummary.getWiki());
+            List<Link> links = spaceSummary.getLinks();
+            for (Link link : links) {
+                if (link.getRel().equals(Relations.PAGES)) {
+                    result.setPagesUrl(link.getHref());
+                    break;
+                }
+            }
+
         }
 
         return result;
