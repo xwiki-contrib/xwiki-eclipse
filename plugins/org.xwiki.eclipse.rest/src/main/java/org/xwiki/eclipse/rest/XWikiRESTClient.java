@@ -105,7 +105,7 @@ public class XWikiRESTClient
         objectFactory = new ObjectFactory();
     }
 
-    public boolean login(String username, String password)
+    public boolean login(String username, String password) throws Exception
     {
         try {
             HttpResponse loginResponse = executeGet(getServerUrl(), username, password);
@@ -122,7 +122,7 @@ public class XWikiRESTClient
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            throw e;
         }
 
         return false;

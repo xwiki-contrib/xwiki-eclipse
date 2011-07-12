@@ -74,7 +74,11 @@ public class XWikiClient
         }
 
         if (this.restClient != null) {
-            result = this.restClient.login(username, password);
+            try {
+                result = this.restClient.login(username, password);
+            } catch (Exception e) {
+                throw new XWikiEclipseStorageException(e);
+            }
             return result;
         }
 
