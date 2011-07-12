@@ -34,6 +34,7 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ByteArrayEntity;
@@ -242,6 +243,19 @@ public class XWikiRESTClient
         return response;
     }
 
+    protected HttpResponse executeDelete(String uri) throws Exception
+    {
+        DefaultHttpClient httpClient = new DefaultHttpClient();
+
+        UsernamePasswordCredentials creds = new UsernamePasswordCredentials(username, password);
+
+        HttpDelete request = new HttpDelete(uri);
+        request.addHeader(new BasicScheme().authenticate(creds, request));
+        HttpResponse response = httpClient.execute(request);
+
+        return response;
+    }
+
     //
     // protected HttpPost executePost(String uri, String string, String mediaType, String userName, String password)
     // throws Exception
@@ -347,28 +361,6 @@ public class XWikiRESTClient
     //
     // return putMethod;
     // }
-    //
-    // protected HttpDelete executeDelete(String uri) throws Exception
-    // {
-    // HttpClient httpClient = new HttpClient();
-    // DeleteMethod deleteMethod = new DeleteMethod(uri);
-    // httpClient.executeMethod(deleteMethod);
-    //
-    // return deleteMethod;
-    // }
-    //
-    // protected HttpDelete executeDelete(String uri, String userName, String password) throws Exception
-    // {
-    // HttpClient httpClient = new HttpClient();
-    // httpClient.getState().setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(userName, password));
-    // httpClient.getParams().setAuthenticationPreemptive(true);
-    //
-    // DeleteMethod deleteMethod = new DeleteMethod(uri);
-    // httpClient.executeMethod(deleteMethod);
-    //
-    // return deleteMethod;
-    // }
-
     // protected String getWiki() throws Exception
     // {
     // GetMethod getMethod = executeGet(getFullUri(WikisResource.class));

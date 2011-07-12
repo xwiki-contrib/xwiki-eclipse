@@ -282,4 +282,18 @@ public class RestRemoteXWikiDataStorage
 
         return null;
     }
+
+    /**
+     * @param attachmentUrl
+     */
+    public void removeAttachment(String attachmentUrl)
+    {
+        try {
+            this.restRemoteClient.executeDelete(attachmentUrl);
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+    }
 }
