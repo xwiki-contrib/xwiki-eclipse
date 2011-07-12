@@ -148,7 +148,7 @@ public class RenamePageDialog extends TitleAreaDialog
                     String[] elements = new String[runnable.getResult().size()];
                     int i = 0;
                     for (XWikiEclipseSpaceSummary spaceSummary : runnable.getResult()) {
-                        elements[i] = spaceSummary.getKey();
+                        elements[i] = spaceSummary.getId();
                         i++;
                     }
 

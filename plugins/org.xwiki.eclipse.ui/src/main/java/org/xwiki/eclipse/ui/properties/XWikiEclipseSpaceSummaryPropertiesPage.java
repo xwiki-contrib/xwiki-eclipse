@@ -61,7 +61,7 @@ public class XWikiEclipseSpaceSummaryPropertiesPage extends PropertyPage
         Label property = new Label(composite, SWT.NONE);
         property.setText("ID:");
         Label value = new Label(composite, SWT.NONE);
-        value.setText(spaceSummary.getKey() == null ? "" : spaceSummary.getKey());
+        value.setText(spaceSummary.getId() == null ? "" : spaceSummary.getId());
 
         property = new Label(composite, SWT.NONE);
         property.setText("Name:");

@@ -62,7 +62,7 @@ public class GrabSpaceHandler extends AbstractHandler
                         {
                             try {
                                 List<XWikiEclipsePageSummary> pageSummaries =
-                                    spaceSummary.getDataManager().getPages(spaceSummary.getKey());
+                                    spaceSummary.getDataManager().getPages(spaceSummary.getId());
 
                                 monitor.beginTask("Fetching pages", pageSummaries.size());
 

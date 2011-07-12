@@ -50,7 +50,7 @@ public class NewPageHandler extends AbstractHandler
             if (selectedObject instanceof XWikiEclipseSpaceSummary) {
                 XWikiEclipseSpaceSummary spaceSummary = (XWikiEclipseSpaceSummary) selectedObject;
                 dataManager = spaceSummary.getDataManager();
-                spaceKey = spaceSummary.getKey();
+                spaceKey = spaceSummary.getId();
             }
 
             if (selectedObject instanceof DataManager) {
