@@ -87,6 +87,10 @@ public class UIConstants
 
     public static final String DOWNLOAD_ATTACHMENT_COMMAND = "org.xwiki.eclipse.ui.commands.DownloadAttachment";
 
+    public static final String UPDATE_ATTACHMENT_COMMAND = "org.xwiki.eclipse.ui.commands.UpdateAttachment";
+
+    public static final String UPLOAD_ATTACHMENT_COMMAND = "org.xwiki.eclipse.ui.commands.UploadAttachment";
+
     public static final String REFRESH_COMMAND = "org.xwiki.eclipse.ui.commands.Refresh";
 
     public static final String RENAME_PAGE_COMMAND = "org.xwiki.eclipse.ui.commands.RenamePage";

@@ -1185,4 +1185,17 @@ public class DataManager
         NotificationManager.getDefault().fireCoreEvent(CoreEvent.Type.COMMENT_STORED, this, result);
         return result;
     }
+
+    /**
+     * @param attachment
+     */
+    public void removeAttachment(XWikiEclipseAttachment attachment)
+    {
+        if (isConnected()) {
+            remoteXWikiDataStorage.removeAttachment(attachment);
+        }
+
+        NotificationManager.getDefault().fireCoreEvent(CoreEvent.Type.ATTACHMENT_REMOVED, this, attachment);
+
+    }
 }

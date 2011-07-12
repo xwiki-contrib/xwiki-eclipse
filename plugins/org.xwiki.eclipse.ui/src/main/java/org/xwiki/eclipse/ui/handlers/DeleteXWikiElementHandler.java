@@ -32,6 +32,7 @@ import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.xwiki.eclipse.core.DataManagerRegistry;
+import org.xwiki.eclipse.model.XWikiEclipseAttachment;
 import org.xwiki.eclipse.model.XWikiEclipseComment;
 import org.xwiki.eclipse.model.XWikiEclipseObjectSummary;
 import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
@@ -126,6 +127,19 @@ public class DeleteXWikiElementHandler extends AbstractHandler
                         public void run() throws Exception
                         {
                             comment.getDataManager().removeComment(comment);
+                        }
+                    });
+
+                }
+
+                if (selectedObject instanceof XWikiEclipseAttachment) {
+                    final XWikiEclipseAttachment attachment = (XWikiEclipseAttachment) selectedObject;
+
+                    SafeRunner.run(new XWikiEclipseSafeRunnable()
+                    {
+                        public void run() throws Exception
+                        {
+                            attachment.getDataManager().removeAttachment(attachment);
                         }
                     });
 

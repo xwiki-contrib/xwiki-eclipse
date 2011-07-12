@@ -48,7 +48,8 @@ public class CoreEvent
         PAGE_RENAMED,
         SPACE_REMOVED,
         COMMENT_REMOVED,
-        COMMENT_STORED;
+        COMMENT_STORED,
+        ATTACHMENT_REMOVED;
     }
 
     /**

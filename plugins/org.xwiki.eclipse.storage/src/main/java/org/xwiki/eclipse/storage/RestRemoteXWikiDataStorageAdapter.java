@@ -693,6 +693,19 @@ public class RestRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStorag
             }
         }
 
+        if (m instanceof XWikiEclipseAttachment) {
+            XWikiEclipseAttachment attachment = (XWikiEclipseAttachment) m;
+            XWikiEclipsePage page = getPage(attachment);
+            XWikiEclipseSpaceSummary space = getSpaceSummary(page);
+            List<XWikiEclipsePageSummary> pageSummaries = getPageSummaries(space);
+            for (XWikiEclipsePageSummary pageSummary : pageSummaries) {
+                if (pageSummary.getId().equals(page.getId())) {
+                    result = pageSummary;
+                    break;
+                }
+            }
+        }
+
         return result;
     }
 
@@ -723,5 +736,17 @@ public class RestRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStorag
         }
 
         return result;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#removeAttachment(org.xwiki.eclipse.model.XWikiEclipseAttachment)
+     */
+    @Override
+    public void removeAttachment(XWikiEclipseAttachment attachment)
+    {
+        restRemoteStorage.removeAttachment(attachment.getAttachmentUrl());
+
     }
 }

@@ -130,4 +130,9 @@ public interface IRemoteXWikiDataStorage
      * @return
      */
     XWikiEclipsePageSummary getPageSummary(ModelObject m);
+
+    /**
+     * @param attachment
+     */
+    void removeAttachment(XWikiEclipseAttachment attachment);
 }
