@@ -55,7 +55,7 @@ public class XWikiEclipseObjectCollection extends ModelObject
     public String getXWikiEclipseId()
     {
         return String.format(
-            "xwikieclipse://%s/classname/%s/%s", getDataManager().getName(), getPageId(), getClassName()); //$NON-NLS-1$
+            "xwikieclipse://%s/%s/classname/%s", getDataManager().getName(), getPageId(), getClassName()); //$NON-NLS-1$
     }
 
     public String getClassName()

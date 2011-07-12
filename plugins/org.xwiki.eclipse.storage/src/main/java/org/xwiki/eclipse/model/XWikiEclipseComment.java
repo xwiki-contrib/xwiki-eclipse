@@ -62,7 +62,7 @@ public class XWikiEclipseComment extends ModelObject
     {
         return String
             .format(
-                "xwikieclipse://%s/comment/%s/%s/%tc", getDataManager().getName(), getId() == null ? "" : getId(), getAuthor(), getDate() == null ? Calendar.getInstance() : getDate()); //$NON-NLS-1$        
+                "xwikieclipse://%s/%s/comment/%s/%s/%tc", getDataManager().getName(), getPageId(), getId() == null ? "" : getId(), getAuthor(), getDate() == null ? Calendar.getInstance() : getDate()); //$NON-NLS-1$        
     }
 
     public Integer getId()

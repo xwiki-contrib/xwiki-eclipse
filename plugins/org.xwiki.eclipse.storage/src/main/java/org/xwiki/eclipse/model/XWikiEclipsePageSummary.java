@@ -71,7 +71,8 @@ public class XWikiEclipsePageSummary extends ModelObject
     @Override
     public String getXWikiEclipseId()
     {
-        return String.format("xwikieclipse://%s/%s/summary", getDataManager().getName(), getId()); //$NON-NLS-1$
+        return String.format(
+            "xwikieclipse://%s/%s/%s/%s/summary", getDataManager().getName(), getWiki(), getSpace(), getId()); //$NON-NLS-1$
     }
 
     public String getId()

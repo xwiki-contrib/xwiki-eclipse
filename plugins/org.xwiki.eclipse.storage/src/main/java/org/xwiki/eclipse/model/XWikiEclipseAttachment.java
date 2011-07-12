@@ -66,7 +66,7 @@ public class XWikiEclipseAttachment extends ModelObject
     @Override
     public String getXWikiEclipseId()
     {
-        return String.format("xwikieclipse://%s/attachment/%s", getDataManager().getName(), getId()); //$NON-NLS-1$
+        return String.format("xwikieclipse://%s/%s/attachment/%s", getDataManager().getName(), getPageId(), getId()); //$NON-NLS-1$
     }
 
     public String getPageUrl()
