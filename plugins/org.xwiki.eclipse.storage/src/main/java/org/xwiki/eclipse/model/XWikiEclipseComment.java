@@ -28,7 +28,9 @@ import org.xwiki.eclipse.storage.DataManager;
  */
 public class XWikiEclipseComment extends ModelObject
 {
-    private int id;
+    private Integer id;
+
+    private String pageId;
 
     private String author;
 
@@ -58,15 +60,17 @@ public class XWikiEclipseComment extends ModelObject
     @Override
     public String getXWikiEclipseId()
     {
-        return String.format("xwikieclipse://%s/comment/%s/%s", getDataManager().getName(), getId(), getAuthor()); //$NON-NLS-1$
+        return String
+            .format(
+                "xwikieclipse://%s/comment/%s/%s/%tc", getDataManager().getName(), getId() == null ? "" : getId(), getAuthor(), getDate() == null ? Calendar.getInstance() : getDate()); //$NON-NLS-1$        
     }
 
-    public int getId()
+    public Integer getId()
     {
         return id;
     }
 
-    public void setId(int id)
+    public void setId(Integer id)
     {
         this.id = id;
     }
@@ -129,5 +133,15 @@ public class XWikiEclipseComment extends ModelObject
     public void setPageUrl(String pageUrl)
     {
         this.pageUrl = pageUrl;
+    }
+
+    public String getPageId()
+    {
+        return pageId;
+    }
+
+    public void setPageId(String pageId)
+    {
+        this.pageId = pageId;
     }
 }

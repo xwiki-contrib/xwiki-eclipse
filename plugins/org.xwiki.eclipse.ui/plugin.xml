@@ -443,6 +443,16 @@
         id="org.xwiki.eclipse.ui.commands.DownloadAttachment"
         name="Download">
   </command>
+  <command
+        categoryId="org.xwiki.eclipse"
+        id="org.xwiki.eclipse.ui.commands.NewComment"
+        name="New Comment">
+  </command>
+  <command
+        categoryId="org.xwiki.eclipse"
+        id="org.xwiki.eclipse.ui.commands.ReplyToComment"
+        name="Reply To Comment">
+  </command>
 	</extension>
 	<extension point="org.eclipse.ui.handlers">
 		<handler class="org.xwiki.eclipse.ui.handlers.DataManagerConnectHandler" commandId="org.xwiki.eclipse.ui.commands.DataManagerConnect">
@@ -531,6 +541,14 @@
   <handler
         class="org.xwiki.eclipse.ui.handlers.DownloadAttachmentHandler"
         commandId="org.xwiki.eclipse.ui.commands.DownloadAttachment">
+  </handler>
+  <handler
+        class="org.xwiki.eclipse.ui.handlers.NewCommentHandler"
+        commandId="org.xwiki.eclipse.ui.commands.NewComment">
+  </handler>
+  <handler
+        class="org.xwiki.eclipse.ui.handlers.NewCommentHandler"
+        commandId="org.xwiki.eclipse.ui.commands.ReplyToComment">
   </handler>
 	</extension>
  <extension

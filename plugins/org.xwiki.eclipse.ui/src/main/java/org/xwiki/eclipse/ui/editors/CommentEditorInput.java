@@ -32,8 +32,11 @@ public class CommentEditorInput implements IEditorInput
 {
     private XWikiEclipseComment comment;
 
-    public CommentEditorInput(XWikiEclipseComment comment)
+    private String commandName;
+
+    public CommentEditorInput(XWikiEclipseComment comment, String commandName)
     {
+        this.commandName = commandName;
         this.comment = comment;
     }
 
@@ -102,6 +105,20 @@ public class CommentEditorInput implements IEditorInput
     @Override
     public String getName()
     {
-        return comment.getAuthor();
+        String name = null;
+        if (commandName.equals("Reply To Comment")) {
+            name =
+                commandName + " " + (comment.getReplyTo() == null ? "" : comment.getReplyTo()) + ": "
+                    + comment.getAuthor();
+        } else {
+            name = commandName + " " + (comment.getId() == null ? "" : comment.getId()) + ": " + comment.getAuthor();
+        }
+
+        return name;
+    }
+
+    public String getCommandName()
+    {
+        return commandName;
     }
 }

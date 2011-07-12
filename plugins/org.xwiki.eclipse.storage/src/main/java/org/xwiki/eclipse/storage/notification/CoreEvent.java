@@ -47,7 +47,8 @@ public class CoreEvent
         REFRESH,
         PAGE_RENAMED,
         SPACE_REMOVED,
-        COMMENT_REMOVED;
+        COMMENT_REMOVED,
+        COMMENT_STORED;
     }
 
     /**

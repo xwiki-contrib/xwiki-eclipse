@@ -79,6 +79,10 @@ public class UIConstants
 
     public static final String NEW_OBJECT_COMMAND = "org.xwiki.eclipse.ui.commands.NewObject";
 
+    public static final String NEW_COMMENT_COMMAND = "org.xwiki.eclipse.ui.commands.NewComment";
+
+    public static final String REPLYTO_COMMENT_COMMAND = "org.xwiki.eclipse.ui.commands.ReplyToComment";
+
     public static final String DELETE_COMMAND = "org.xwiki.eclipse.ui.commands.Delete";
 
     public static final String DOWNLOAD_ATTACHMENT_COMMAND = "org.xwiki.eclipse.ui.commands.DownloadAttachment";

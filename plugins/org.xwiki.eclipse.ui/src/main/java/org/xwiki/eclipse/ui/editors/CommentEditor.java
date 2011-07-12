@@ -23,6 +23,10 @@ package org.xwiki.eclipse.ui.editors;
 import java.util.Calendar;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.SafeRunner;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
@@ -30,6 +34,7 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.DateTime;
 import org.eclipse.swt.widgets.Display;
@@ -46,6 +51,7 @@ import org.eclipse.ui.forms.widgets.TableWrapLayout;
 import org.eclipse.ui.part.EditorPart;
 import org.xwiki.eclipse.model.XWikiEclipseComment;
 import org.xwiki.eclipse.ui.utils.UIUtils;
+import org.xwiki.eclipse.ui.utils.XWikiEclipseSafeRunnable;
 
 /**
  * @version $Id$
@@ -58,12 +64,25 @@ public class CommentEditor extends EditorPart
 
     private boolean dirty;
 
+    private Button commandButton;
+
+    private Text author;
+
+    private Text highlight;
+
+    private Text commentText;
+
+    private Text replyTo;
+
+    private DateTime date;
+
+    private DateTime time;
+
+    private IEditorSite site;
+
     @Override
     public void doSave(IProgressMonitor monitor)
     {
-        UIUtils.showMessageDialog(Display.getDefault().getActiveShell(), SWT.ICON_ERROR, "Save is not implemented",
-            "Update comment is not supported yet in REST API yet");
-
     }
 
     /**
@@ -86,6 +105,7 @@ public class CommentEditor extends EditorPart
     @Override
     public void init(IEditorSite site, IEditorInput input) throws PartInitException
     {
+        this.site = site;
         setSite(site);
         setInput(input);
         setPartName(input.getName());
@@ -142,7 +162,86 @@ public class CommentEditor extends EditorPart
         scrolledForm.getBody().setLayout(layout);
 
         CommentEditorInput input = (CommentEditorInput) getEditorInput();
-        XWikiEclipseComment c = input.getComment();
+        final XWikiEclipseComment comment = input.getComment();
+        String commandName = input.getCommandName();
+
+        /* command button */
+        if (comment.getId() != null) {
+            commandButton = toolkit.createButton(scrolledForm.getBody(), "Edit", SWT.PUSH);
+        } else {
+            /* can be either New or Reply To */
+            commandButton = toolkit.createButton(scrolledForm.getBody(), commandName, SWT.PUSH);
+        }
+        TableWrapData layoutData = new TableWrapData();
+        layoutData.colspan = 2;
+        commandButton.setLayoutData(layoutData);
+
+        commandButton.addSelectionListener(new SelectionListener()
+        {
+
+            @Override
+            public void widgetSelected(SelectionEvent e)
+            {
+                if (comment.getId() != null) {
+                    /* it is updating the comment */
+                    UIUtils.showMessageDialog(Display.getDefault().getActiveShell(), SWT.ICON_ERROR,
+                        "Save is not implemented", "Update comment is not supported yet in REST API yet");
+                } else {
+                    /* get all the data and populate Comment instance */
+                    final XWikiEclipseComment c = new XWikiEclipseComment(comment.getDataManager());
+                    c.setAuthor(author.getText());
+                    c.setHighlight(highlight.getText());
+                    c.setText(commentText.getText());
+                    String replyToIdStr = replyTo.getText();
+                    c.setReplyTo(replyToIdStr.equals("") ? null : Integer.parseInt(replyToIdStr));
+                    Calendar d = Calendar.getInstance();
+                    d.set(date.getYear(), date.getMonth(), date.getDay(), time.getHours(), time.getMinutes(),
+                        time.getSeconds());
+                    c.setDate(d);
+                    c.setPageUrl(comment.getPageUrl());
+
+                    /* store the comment via REST API */
+                    Job storeJob = new Job(String.format("Storing Comment %s", c.getAuthor()))
+                    {
+
+                        @Override
+                        protected IStatus run(final IProgressMonitor monitor)
+                        {
+
+                            monitor.beginTask("Storing", 100);
+                            if (monitor.isCanceled()) {
+                                return Status.CANCEL_STATUS;
+                            }
+
+                            SafeRunner.run(new XWikiEclipseSafeRunnable()
+                            {
+                                public void run() throws Exception
+                                {
+                                    comment.getDataManager().storeComment(c);
+                                    monitor.worked(50);
+                                }
+                            });
+
+                            monitor.done();
+                            return Status.OK_STATUS;
+                        }
+                    };
+                    storeJob.setUser(true);
+                    storeJob.schedule();
+
+                    /* close the editor */
+                    site.getPage().closeEditor(CommentEditor.this, false);
+                }
+
+            }
+
+            @Override
+            public void widgetDefaultSelected(SelectionEvent e)
+            {
+                // TODO Auto-generated method stub
+
+            }
+        });
 
         /* author prettyName: Author */
         Section authorSection =
@@ -153,7 +252,7 @@ public class CommentEditor extends EditorPart
 
         Composite compositeClient = toolkit.createComposite(authorSection, SWT.NONE);
         GridLayoutFactory.fillDefaults().applyTo(compositeClient);
-        Text author = toolkit.createText(compositeClient, c.getAuthor(), SWT.BORDER | SWT.SINGLE);
+        author = toolkit.createText(compositeClient, comment.getAuthor(), SWT.BORDER | SWT.SINGLE);
         GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, false).applyTo(author);
 
         author.addModifyListener(new ModifyListener()
@@ -178,9 +277,9 @@ public class CommentEditor extends EditorPart
 
         compositeClient = toolkit.createComposite(highlightSection, SWT.NONE);
         GridLayoutFactory.fillDefaults().applyTo(compositeClient);
-        Text highlight =
-            toolkit.createText(compositeClient, c.getHighlight() == null ? "" : c.getHighlight(), SWT.BORDER | SWT.WRAP
-                | SWT.MULTI | SWT.V_SCROLL);
+        highlight =
+            toolkit.createText(compositeClient, comment.getHighlight() == null ? "" : comment.getHighlight(),
+                SWT.BORDER | SWT.WRAP | SWT.MULTI | SWT.V_SCROLL);
         GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, false)
             .hint(0, highlight.getLineHeight() * 3).applyTo(highlight);
 
@@ -206,9 +305,9 @@ public class CommentEditor extends EditorPart
 
         compositeClient = toolkit.createComposite(commentTextSection, SWT.NONE);
         GridLayoutFactory.fillDefaults().applyTo(compositeClient);
-        Text commentText =
-            toolkit.createText(compositeClient, c.getText() == null ? "" : c.getText(), SWT.BORDER | SWT.WRAP
-                | SWT.MULTI | SWT.V_SCROLL);
+        commentText =
+            toolkit.createText(compositeClient, comment.getText() == null ? "" : comment.getText(), SWT.BORDER
+                | SWT.WRAP | SWT.MULTI | SWT.V_SCROLL);
         GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, false)
             .hint(0, commentText.getLineHeight() * 5).applyTo(commentText);
 
@@ -234,9 +333,9 @@ public class CommentEditor extends EditorPart
 
         compositeClient = toolkit.createComposite(replyToSection, SWT.NONE);
         GridLayoutFactory.fillDefaults().applyTo(compositeClient);
-        Text replyTo =
-            toolkit.createText(compositeClient, c.getReplyTo() == null ? "" : c.getReplyTo().toString(), SWT.BORDER
-                | SWT.SINGLE);
+        replyTo =
+            toolkit.createText(compositeClient, comment.getReplyTo() == null ? "" : comment.getReplyTo().toString(),
+                SWT.BORDER | SWT.SINGLE);
         GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, false).applyTo(replyTo);
 
         replyTo.addModifyListener(new ModifyListener()
@@ -268,11 +367,11 @@ public class CommentEditor extends EditorPart
         Label timeLabel = toolkit.createLabel(compositeClient, "Time");
         GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, false).applyTo(timeLabel);
 
-        final DateTime date = new DateTime(compositeClient, SWT.CALENDAR);
+        date = new DateTime(compositeClient, SWT.DROP_DOWN);
         GridDataFactory.fillDefaults().applyTo(date);
         toolkit.adapt(date);
 
-        final DateTime time = new DateTime(compositeClient, SWT.TIME);
+        time = new DateTime(compositeClient, SWT.TIME);
         toolkit.adapt(time);
         time.addSelectionListener(new SelectionListener()
         {
@@ -290,7 +389,9 @@ public class CommentEditor extends EditorPart
                 calendar.set(Calendar.HOUR_OF_DAY, time.getHours());
                 calendar.set(Calendar.MINUTE, time.getMinutes());
                 calendar.set(Calendar.SECOND, time.getSeconds());
-                System.out.println(calendar.toString());
+
+                dirty = true;
+                firePropertyChange(PROP_DIRTY);
             }
         });
 
@@ -310,12 +411,13 @@ public class CommentEditor extends EditorPart
                 calendar.set(Calendar.HOUR_OF_DAY, time.getHours());
                 calendar.set(Calendar.MINUTE, time.getMinutes());
                 calendar.set(Calendar.SECOND, time.getSeconds());
-                System.out.println(calendar.toString());
+
+                dirty = true;
+                firePropertyChange(PROP_DIRTY);
             }
         });
 
         dateSection.setClient(compositeClient);
-
     }
 
     /**
