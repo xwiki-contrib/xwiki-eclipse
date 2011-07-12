@@ -152,7 +152,11 @@ public class NewConnectionWizard extends Wizard implements INewWizard, IExecutab
                         project.setPersistentProperty(DataManager.BACKEND,
                             StorageUtils.getBackend(newConnectionWizardState.getServerUrl()).toString());
                         project.setPersistentProperty(DataManager.ENDPOINT, newConnectionWizardState.getServerUrl());
-                        project.setPersistentProperty(DataManager.USERNAME, newConnectionWizardState.getUserName());
+                        String userName = newConnectionWizardState.getUserName();
+                        if (!userName.startsWith("XWiki.")) {
+                            userName = "XWiki." + userName;
+                        }
+                        project.setPersistentProperty(DataManager.USERNAME, userName);
                         project.setPersistentProperty(DataManager.PASSWORD, newConnectionWizardState.getPassword());
                         project.setPersistentProperty(DataManager.AUTO_CONNECT, "true");
 
