@@ -163,14 +163,16 @@ public class CommentEditor extends EditorPart
 
         CommentEditorInput input = (CommentEditorInput) getEditorInput();
         final XWikiEclipseComment comment = input.getComment();
-        String commandName = input.getCommandName();
+        String text = input.getCommandText();
 
         /* command button */
         if (comment.getId() != null) {
+            /* it is editing the comment */
             commandButton = toolkit.createButton(scrolledForm.getBody(), "Edit", SWT.PUSH);
         } else {
             /* can be either New or Reply To */
-            commandButton = toolkit.createButton(scrolledForm.getBody(), commandName, SWT.PUSH);
+            commandButton = toolkit.createButton(scrolledForm.getBody(), text, SWT.PUSH);
+
         }
         TableWrapData layoutData = new TableWrapData();
         layoutData.colspan = 2;

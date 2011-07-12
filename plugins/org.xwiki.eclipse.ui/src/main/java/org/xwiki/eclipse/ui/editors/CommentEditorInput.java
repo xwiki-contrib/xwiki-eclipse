@@ -20,10 +20,14 @@
  */
 package org.xwiki.eclipse.ui.editors;
 
+import org.eclipse.core.commands.Command;
+import org.eclipse.core.commands.common.NotDefinedException;
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;
 import org.xwiki.eclipse.model.XWikiEclipseComment;
+import org.xwiki.eclipse.ui.UIConstants;
 
 /**
  * @version $Id$
@@ -32,11 +36,20 @@ public class CommentEditorInput implements IEditorInput
 {
     private XWikiEclipseComment comment;
 
-    private String commandName;
+    private Command command = null;
 
-    public CommentEditorInput(XWikiEclipseComment comment, String commandName)
+    private Action action = null;
+
+    public CommentEditorInput(XWikiEclipseComment comment, Object o)
     {
-        this.commandName = commandName;
+        if (o instanceof Action) {
+            this.action = (Action) o;
+        }
+
+        if (o instanceof Command) {
+            this.command = (Command) o;
+        }
+
         this.comment = comment;
     }
 
@@ -106,19 +119,48 @@ public class CommentEditorInput implements IEditorInput
     public String getName()
     {
         String name = null;
-        if (commandName.equals("Reply To Comment")) {
-            name =
-                commandName + " " + (comment.getReplyTo() == null ? "" : comment.getReplyTo()) + ": "
-                    + comment.getAuthor();
-        } else {
-            name = commandName + " " + (comment.getId() == null ? "" : comment.getId()) + ": " + comment.getAuthor();
+        try {
+            if (command != null && command.getId().equals(UIConstants.REPLYTO_COMMENT_COMMAND)) {
+                name =
+                    command.getName() + " " + (comment.getReplyTo() == null ? "" : comment.getReplyTo()) + ": "
+                        + comment.getAuthor();
+            } else {
+                if (command != null) {
+                    name =
+                        command.getName() + " " + (comment.getId() == null ? "" : comment.getId()) + ": "
+                            + comment.getAuthor();
+                }
+
+                if (action != null) {
+                    name =
+                        action.getText() + " " + (comment.getId() == null ? "" : comment.getId()) + ": "
+                            + comment.getAuthor();
+                }
+
+            }
+        } catch (NotDefinedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
 
         return name;
     }
 
-    public String getCommandName()
+    public String getCommandText()
     {
-        return commandName;
+        if (command != null) {
+            try {
+                return command.getName();
+            } catch (NotDefinedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+
+        if (action != null) {
+            return action.getText();
+        }
+
+        return null;
     }
 }

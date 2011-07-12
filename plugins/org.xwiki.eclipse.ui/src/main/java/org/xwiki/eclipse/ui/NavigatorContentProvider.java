@@ -313,9 +313,9 @@ public class NavigatorContentProvider extends BaseWorkbenchContentProvider imple
                     public void run()
                     {
 
-                        XWikiEclipseComment comment = (XWikiEclipseComment) event.getData();
-                        XWikiEclipsePageSummary pageSummary;
                         try {
+                            XWikiEclipseComment comment = (XWikiEclipseComment) event.getData();
+                            XWikiEclipsePageSummary pageSummary;
                             pageSummary = comment.getDataManager().getPageSummary(comment);
 
                             viewer.setExpandedState(pageSummary, true);

@@ -24,9 +24,9 @@ import java.util.Calendar;
 import java.util.Set;
 
 import org.eclipse.core.commands.AbstractHandler;
+import org.eclipse.core.commands.Command;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.core.commands.common.NotDefinedException;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.widgets.Display;
@@ -48,13 +48,8 @@ public class NewCommentHandler extends AbstractHandler
     public Object execute(ExecutionEvent event) throws ExecutionException
     {
         ISelection selection = HandlerUtil.getCurrentSelection(event);
-        String commandName = null;
-        try {
-            commandName = event.getCommand().getName();
-        } catch (NotDefinedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+
+        Command command = event.getCommand();
 
         Set selectedObjects = UIUtils.getSelectedObjectsFromSelection(selection);
         if (selectedObjects.size() == 1) {
@@ -77,7 +72,7 @@ public class NewCommentHandler extends AbstractHandler
                     comment.setPageId(pageSummary.getId());
 
                     PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
-                        .openEditor(new CommentEditorInput(comment, commandName), CommentEditor.ID);
+                        .openEditor(new CommentEditorInput(comment, command), CommentEditor.ID);
                 } catch (PartInitException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
@@ -111,7 +106,7 @@ public class NewCommentHandler extends AbstractHandler
                     replyToComment.setPageUrl(comment.getPageUrl());
 
                     PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
-                        .openEditor(new CommentEditorInput(replyToComment, commandName), CommentEditor.ID);
+                        .openEditor(new CommentEditorInput(replyToComment, command), CommentEditor.ID);
                 } catch (PartInitException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();

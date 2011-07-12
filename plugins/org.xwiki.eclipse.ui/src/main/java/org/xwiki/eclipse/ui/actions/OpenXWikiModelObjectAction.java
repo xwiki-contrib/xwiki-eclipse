@@ -54,9 +54,11 @@ public class OpenXWikiModelObjectAction extends Action
 {
     private ISelectionProvider selectionProvider;
 
+    private final static String text = "Open...";
+
     public OpenXWikiModelObjectAction(ISelectionProvider selectionProvider)
     {
-        super("Open...");
+        super(text);
         this.selectionProvider = selectionProvider;
     }
 
@@ -127,14 +129,29 @@ public class OpenXWikiModelObjectAction extends Action
             }
 
             if (object instanceof XWikiEclipseComment) {
-                XWikiEclipseComment comment = (XWikiEclipseComment) object;
+                final XWikiEclipseComment comment = (XWikiEclipseComment) object;
+
                 try {
                     PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
-                        .openEditor(new CommentEditorInput(comment), CommentEditor.ID);
-                } catch (PartInitException e) {
+                        .openEditor(new CommentEditorInput(comment, this), CommentEditor.ID);
+                }
+                // catch (XWikiEclipseStorageException e) {
+                // UIUtils
+                // .showMessageDialog(
+                // Display.getDefault().getActiveShell(),
+                // SWT.ICON_ERROR,
+                // "Error getting the object.",
+                // "There was a communication error while getting the object. XWiki Eclipse is taking the connection offline in order to prevent further errors. Please check your remote XWiki status and then try to reconnect.");
+                //
+                // CoreLog.logError("Error getting object", e);
+                //
+                // objectSummary.getDataManager().disconnect();
+                // }
+                catch (PartInitException e) {
                     UIUtils.showMessageDialog(Display.getDefault().getActiveShell(), "Error opening editor",
                         "There was an error while opening the editor.");
                 }
+
             }
         }
     }
