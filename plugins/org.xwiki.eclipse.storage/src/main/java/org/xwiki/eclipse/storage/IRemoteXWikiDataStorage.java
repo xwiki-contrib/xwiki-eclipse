@@ -25,6 +25,7 @@ import org.xwiki.eclipse.model.ModelObject;
 import org.xwiki.eclipse.model.XWikiEclipseAttachment;
 import org.xwiki.eclipse.model.XWikiEclipseClassSummary;
 import org.xwiki.eclipse.model.XWikiEclipseComment;
+import org.xwiki.eclipse.model.XWikiEclipseObject;
 import org.xwiki.eclipse.model.XWikiEclipseObjectProperty;
 import org.xwiki.eclipse.model.XWikiEclipseObjectSummary;
 import org.xwiki.eclipse.model.XWikiEclipsePage;
@@ -106,4 +107,27 @@ public interface IRemoteXWikiDataStorage
     void download(String directory, XWikiEclipseAttachment attachment);
 
     XWikiEclipsePage getPage(ModelObject o);
+
+    /**
+     * @param objectSummary
+     * @return
+     */
+    XWikiEclipseObject getObject(XWikiEclipseObjectSummary objectSummary);
+
+    /**
+     * @param comment
+     */
+    void removeComment(XWikiEclipseComment comment);
+
+    /**
+     * @param c
+     * @return
+     */
+    XWikiEclipseComment storeComment(XWikiEclipseComment c);
+
+    /**
+     * @param m
+     * @return
+     */
+    XWikiEclipsePageSummary getPageSummary(ModelObject m);
 }

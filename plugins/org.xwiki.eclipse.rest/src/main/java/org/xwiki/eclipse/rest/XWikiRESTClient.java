@@ -19,6 +19,7 @@
  */
 package org.xwiki.eclipse.rest;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
@@ -34,6 +35,8 @@ import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.protocol.BasicHttpContext;
@@ -47,6 +50,7 @@ import org.xwiki.rest.model.jaxb.History;
 import org.xwiki.rest.model.jaxb.HistorySummary;
 import org.xwiki.rest.model.jaxb.Link;
 import org.xwiki.rest.model.jaxb.LinkCollection;
+import org.xwiki.rest.model.jaxb.Object;
 import org.xwiki.rest.model.jaxb.ObjectFactory;
 import org.xwiki.rest.model.jaxb.ObjectSummary;
 import org.xwiki.rest.model.jaxb.Objects;
@@ -217,45 +221,27 @@ public class XWikiRESTClient
         return spaces.getSpaces();
     }
 
-    // protected HttpPost executePostXml(String uri, Object object) throws Exception
-    // {
-    // HttpClient httpClient = new HttpClient();
-    //
-    // PostMethod postMethod = new PostMethod(uri);
-    // postMethod.addRequestHeader("Accept", MediaType.APPLICATION_XML.toString());
-    //
-    // StringWriter writer = new StringWriter();
-    // marshaller.marshal(object, writer);
-    //
-    // RequestEntity entity =
-    // new StringRequestEntity(writer.toString(), MediaType.APPLICATION_XML.toString(), "UTF-8");
-    // postMethod.setRequestEntity(entity);
-    //
-    // httpClient.executeMethod(postMethod);
-    //
-    // return postMethod;
-    // }
-    //
-    // protected HttpPost executePostXml(String uri, Object object, String userName, String password) throws Exception
-    // {
-    // HttpClient httpClient = new HttpClient();
-    // httpClient.getState().setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(userName, password));
-    // httpClient.getParams().setAuthenticationPreemptive(true);
-    //
-    // PostMethod postMethod = new PostMethod(uri);
-    // postMethod.addRequestHeader("Accept", MediaType.APPLICATION_XML.toString());
-    //
-    // StringWriter writer = new StringWriter();
-    // marshaller.marshal(object, writer);
-    //
-    // RequestEntity entity =
-    // new StringRequestEntity(writer.toString(), MediaType.APPLICATION_XML.toString(), "UTF-8");
-    // postMethod.setRequestEntity(entity);
-    //
-    // httpClient.executeMethod(postMethod);
-    //
-    // return postMethod;
-    // }
+    protected HttpResponse executePostXml(String uri, java.lang.Object object, String userName, String password)
+        throws Exception
+    {
+        DefaultHttpClient httpClient = new DefaultHttpClient();
+
+        UsernamePasswordCredentials creds = new UsernamePasswordCredentials(username, password);
+
+        HttpPost request = new HttpPost(uri);
+        request.addHeader(new BasicScheme().authenticate(creds, request));
+        request.addHeader("Content-type", "text/xml; charset=UTF-8");
+        request.addHeader("Accept", MediaType.APPLICATION_XML);
+
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        marshaller.marshal(object, os);
+        HttpEntity entity = new ByteArrayEntity(os.toByteArray());
+        request.setEntity(entity);
+        HttpResponse response = httpClient.execute(request);
+
+        return response;
+    }
+
     //
     // protected HttpPost executePost(String uri, String string, String mediaType, String userName, String password)
     // throws Exception
@@ -709,5 +695,69 @@ public class XWikiRESTClient
             e.printStackTrace();
         }
 
+    }
+
+    /**
+     * @param objectUrl
+     * @return
+     */
+    public Object getObject(String objectUrl) throws Exception
+    {
+        if (objectUrl != null) {
+            HttpResponse response;
+            try {
+                response = executeGet(objectUrl, username, password);
+                org.xwiki.rest.model.jaxb.Object object =
+                    (org.xwiki.rest.model.jaxb.Object) unmarshaller.unmarshal(response.getEntity().getContent());
+                return object;
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+                throw e;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @param spaceUrl
+     * @return
+     */
+    public Space getSpace(String spaceUrl) throws Exception
+    {
+        if (spaceUrl != null) {
+            HttpResponse response;
+            try {
+                response = executeGet(spaceUrl, username, password);
+                org.xwiki.rest.model.jaxb.Space result =
+                    (org.xwiki.rest.model.jaxb.Space) unmarshaller.unmarshal(response.getEntity().getContent());
+                return result;
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+                throw e;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @param comment
+     * @return
+     */
+    public Comment storeComment(String commentsUrl, Comment comment) throws Exception
+    {
+        HttpResponse response;
+        try {
+            response = executePostXml(commentsUrl, comment, username, password);
+            Comment result = (Comment) unmarshaller.unmarshal(response.getEntity().getContent());
+            return result;
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            throw e;
+        }
     }
 }

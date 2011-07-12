@@ -24,6 +24,7 @@ import java.util.List;
 import org.xwiki.rest.model.jaxb.Attachment;
 import org.xwiki.rest.model.jaxb.Comment;
 import org.xwiki.rest.model.jaxb.HistorySummary;
+import org.xwiki.rest.model.jaxb.Object;
 import org.xwiki.rest.model.jaxb.ObjectSummary;
 import org.xwiki.rest.model.jaxb.Page;
 import org.xwiki.rest.model.jaxb.PageSummary;
@@ -232,5 +233,53 @@ public class RestRemoteXWikiDataStorage
     public void download(String dir, String absoluteUrl, String name)
     {
         restRemoteClient.download(dir, absoluteUrl, name);
+    }
+
+    /**
+     * @param objectUrl
+     * @return
+     */
+    public Object getObject(String objectUrl)
+    {
+        try {
+            return this.restRemoteClient.getObject(objectUrl);
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    /**
+     * @param spaceUrl
+     * @return
+     */
+    public Space getSpace(String spaceUrl)
+    {
+        try {
+            return this.restRemoteClient.getSpace(spaceUrl);
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    /**
+     * @param comment
+     * @return
+     */
+    public Comment storeComment(String commentsUrl, Comment comment)
+    {
+        try {
+            return this.restRemoteClient.storeComment(commentsUrl, comment);
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        return null;
     }
 }
