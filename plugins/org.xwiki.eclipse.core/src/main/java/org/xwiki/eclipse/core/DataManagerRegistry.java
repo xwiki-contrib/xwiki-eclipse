@@ -35,9 +35,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.xwiki.eclipse.core.notifications.CoreEvent;
-import org.xwiki.eclipse.core.notifications.NotificationManager;
 import org.xwiki.eclipse.storage.DataManager;
+import org.xwiki.eclipse.storage.notification.CoreEvent;
+import org.xwiki.eclipse.storage.notification.NotificationManager;
 
 /**
  * @version $Id$

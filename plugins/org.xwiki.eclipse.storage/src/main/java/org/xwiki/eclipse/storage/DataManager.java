@@ -26,6 +26,8 @@ import org.xwiki.eclipse.model.XWikiEclipseServerInfo;
 import org.xwiki.eclipse.model.XWikiEclipseSpaceSummary;
 import org.xwiki.eclipse.model.XWikiEclipseTag;
 import org.xwiki.eclipse.model.XWikiEclipseWikiSummary;
+import org.xwiki.eclipse.storage.notification.CoreEvent;
+import org.xwiki.eclipse.storage.notification.NotificationManager;
 import org.xwiki.eclipse.storage.utils.PersistentMap;
 import org.xwiki.xmlrpc.model.XWikiObject;
 
@@ -311,7 +313,7 @@ public class DataManager
                 spaces = localXWikiDataStorage.getSpaces();
                 for (SpaceSummary spaceSummary : spaces) {
                     XWikiEclipseSpaceSummary space = new XWikiEclipseSpaceSummary(this);
-                    space.setKey(spaceSummary.getKey());
+                    space.setId(spaceSummary.getKey());
                     space.setName(spaceSummary.getName());
                     space.setUrl(spaceSummary.getUrl());
 
@@ -334,7 +336,7 @@ public class DataManager
      * @param pageSummary
      * @return
      */
-    public List<XWikiEclipseObjectSummary> getObjects(XWikiEclipsePageSummary pageSummary)
+    public List<XWikiEclipseObjectSummary> getObjectSummaries(XWikiEclipsePageSummary pageSummary)
         throws XWikiEclipseStorageException
     {
         List<XWikiEclipseObjectSummary> result = null;
@@ -1104,14 +1106,83 @@ public class DataManager
         remoteXWikiDataStorage.download(directory, attachment);
     }
 
+    public XWikiEclipsePageSummary getPageSummary(ModelObject m) throws XWikiEclipseStorageException
+    {
+        XWikiEclipsePageSummary result = null;
+
+        if (isConnected()) {
+            result = remoteXWikiDataStorage.getPageSummary(m);
+        }
+
+        return result;
+    }
+
     /**
      * @param objectSummary
      * @return
      */
-    public XWikiEclipsePageSummary getPageSummary(XWikiEclipseObjectSummary objectSummary)
-        throws XWikiEclipseStorageException
+    public XWikiEclipseObject getObject(XWikiEclipseObjectSummary objectSummary) throws XWikiEclipseStorageException
+    {
+        XWikiEclipseObject result = null;
+
+        if (isConnected()) {
+            result = remoteXWikiDataStorage.getObject(objectSummary);
+        }
+
+        return result;
+    }
+
+    /**
+     * @param spaceSummary
+     */
+    public void removeSpace(XWikiEclipseSpaceSummary spaceSummary)
     {
         // TODO Auto-generated method stub
-        return null;
+
+    }
+
+    /**
+     * @param pageSummary
+     */
+    public void removePage(XWikiEclipsePageSummary pageSummary)
+    {
+        // TODO Auto-generated method stub
+
+    }
+
+    /**
+     * @param objectSummary
+     */
+    public void removeObject(XWikiEclipseObjectSummary objectSummary)
+    {
+        // TODO Auto-generated method stub
+
+    }
+
+    /**
+     * @param comment
+     */
+    public void removeComment(XWikiEclipseComment comment)
+    {
+        if (isConnected()) {
+            remoteXWikiDataStorage.removeComment(comment);
+        }
+
+        NotificationManager.getDefault().fireCoreEvent(CoreEvent.Type.COMMENT_REMOVED, this, comment);
+    }
+
+    /**
+     * @param c
+     */
+    public XWikiEclipseComment storeComment(XWikiEclipseComment c)
+    {
+        XWikiEclipseComment result = null;
+
+        if (isConnected()) {
+            result = remoteXWikiDataStorage.storeComment(c);
+        }
+
+        NotificationManager.getDefault().fireCoreEvent(CoreEvent.Type.COMMENT_STORED, this, result);
+        return result;
     }
 }

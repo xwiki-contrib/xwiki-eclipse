@@ -54,9 +54,6 @@ import org.eclipse.ui.texteditor.TextOperationAction;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.xwiki.eclipse.core.CoreLog;
 import org.xwiki.eclipse.core.CorePlugin;
-import org.xwiki.eclipse.core.notifications.CoreEvent;
-import org.xwiki.eclipse.core.notifications.ICoreEventListener;
-import org.xwiki.eclipse.core.notifications.NotificationManager;
 import org.xwiki.eclipse.model.XWikiEclipseObject;
 import org.xwiki.eclipse.model.XWikiEclipsePage;
 import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
@@ -64,6 +61,9 @@ import org.xwiki.eclipse.model.XWikiEclipseSpaceSummary;
 import org.xwiki.eclipse.model.XWikiExtendedId;
 import org.xwiki.eclipse.storage.DataManager;
 import org.xwiki.eclipse.storage.XWikiEclipseStorageException;
+import org.xwiki.eclipse.storage.notification.CoreEvent;
+import org.xwiki.eclipse.storage.notification.ICoreEventListener;
+import org.xwiki.eclipse.storage.notification.NotificationManager;
 import org.xwiki.eclipse.ui.UIConstants;
 import org.xwiki.eclipse.ui.UIPlugin;
 import org.xwiki.eclipse.ui.dialogs.PageConflictDialog;
@@ -458,7 +458,7 @@ public class PageEditor extends TextEditor implements ICoreEventListener
                         XWikiEclipseSpaceSummary space = (XWikiEclipseSpaceSummary) data;
 
                         if (!space.getDataManager().equals(page.getDataManager())
-                            || !space.getKey().equals(page.getSpace()))
+                            || !space.getId().equals(page.getSpace()))
                             return;
                     }
 
@@ -511,7 +511,7 @@ public class PageEditor extends TextEditor implements ICoreEventListener
             case SPACE_REMOVED:
                 XWikiEclipseSpaceSummary aSpace = (XWikiEclipseSpaceSummary) event.getData();
 
-                if (aSpace.getDataManager().equals(page.getDataManager()) && aSpace.getKey().equals(page.getSpace())) {
+                if (aSpace.getDataManager().equals(page.getDataManager()) && aSpace.getId().equals(page.getSpace())) {
                     // The space that the page being edited belonged to has been
                     // deleted.
                     this.close(false);
