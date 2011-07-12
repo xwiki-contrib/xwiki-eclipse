@@ -32,6 +32,7 @@ import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.xwiki.eclipse.core.DataManagerRegistry;
+import org.xwiki.eclipse.model.XWikiEclipseComment;
 import org.xwiki.eclipse.model.XWikiEclipseObjectSummary;
 import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
 import org.xwiki.eclipse.model.XWikiEclipseSpaceSummary;
@@ -70,7 +71,7 @@ public class DeleteXWikiElementHandler extends AbstractHandler
                     {
                         public void run() throws Exception
                         {
-                            pageSummary.getDataManager().removePage(pageSummary.getId());
+                            pageSummary.getDataManager().removePage(pageSummary);
                         }
                     });
 
@@ -83,8 +84,7 @@ public class DeleteXWikiElementHandler extends AbstractHandler
                     {
                         public void run() throws Exception
                         {
-                            objectSummary.getDataManager().removeObject(objectSummary.getPageId(),
-                                objectSummary.getClassName(), objectSummary.getId());
+                            objectSummary.getDataManager().removeObject(objectSummary);
                         }
                     });
 
@@ -112,14 +112,27 @@ public class DeleteXWikiElementHandler extends AbstractHandler
                     {
                         public void run() throws Exception
                         {
-                            spaceSummary.getDataManager().removeSpace(spaceSummary.getKey());
+                            spaceSummary.getDataManager().removeSpace(spaceSummary);
                         }
                     });
+                }
+
+                if (selectedObject instanceof XWikiEclipseComment) {
+                    final XWikiEclipseComment comment = (XWikiEclipseComment) selectedObject;
+
+                    /* FIXME: comment delete is not supported in REST API yet */
+                    SafeRunner.run(new XWikiEclipseSafeRunnable()
+                    {
+                        public void run() throws Exception
+                        {
+                            comment.getDataManager().removeComment(comment);
+                        }
+                    });
+
                 }
             }
         }
 
         return null;
     }
-
 }
