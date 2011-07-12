@@ -29,7 +29,7 @@ import org.xwiki.eclipse.storage.DataManager;
  */
 public class XWikiEclipseSpaceSummary extends ModelObject
 {
-    private String key;
+    private String id;
 
     private String name;
 
@@ -47,17 +47,17 @@ public class XWikiEclipseSpaceSummary extends ModelObject
     @Override
     public String getXWikiEclipseId()
     {
-        return String.format("xwikieclipse://%s/%s", getDataManager().getName(), getKey()); //$NON-NLS-1$
+        return String.format("xwikieclipse://%s/%s/%s", getDataManager().getName(), getWiki(), getId()); //$NON-NLS-1$
     }
 
-    public String getKey()
+    public String getId()
     {
-        return key;
+        return id;
     }
 
-    public void setKey(String key)
+    public void setId(String id)
     {
-        this.key = key;
+        this.id = id;
     }
 
     public String getName()
