@@ -19,6 +19,7 @@
  */
 package org.xwiki.eclipse.storage;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -68,6 +69,8 @@ public class RestRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStorag
 
     private String endpoint;
 
+    private String username;
+
     /**
      * @param dataManager
      * @param endpoint
@@ -76,6 +79,7 @@ public class RestRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStorag
      */
     public RestRemoteXWikiDataStorageAdapter(DataManager dataManager, String endpoint, String userName, String password)
     {
+        this.username = userName;
         this.dataManager = dataManager;
         this.restRemoteStorage = new RestRemoteXWikiDataStorage(endpoint, userName, password);
         this.endpoint = endpoint;
@@ -256,6 +260,10 @@ public class RestRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStorag
 
                 if (link.getRel().equals(Relations.TAGS)) {
                     page.setTagsUrl(link.getHref());
+                }
+
+                if (link.getRel().equals(Relations.SPACE)) {
+                    page.setSpaceUrl(link.getHref());
                 }
             }
 
@@ -748,5 +756,54 @@ public class RestRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStorag
     {
         restRemoteStorage.removeAttachment(attachment.getAttachmentUrl());
 
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#uploadAttachment(org.xwiki.eclipse.model.XWikiEclipsePageSummary,
+     *      java.lang.String)
+     */
+    @Override
+    public void uploadAttachment(XWikiEclipsePageSummary pageSummary, String filePath)
+    {
+        File f = new File(filePath);
+
+        String attachmentUrl = null;
+        /* this field may be null as the page may does not contain any attachments before */
+        String attachmentsUrl = pageSummary.getAttachmentsUrl();
+        if (attachmentsUrl != null) {
+            attachmentUrl = attachmentsUrl + "/" + f.getName();
+        } else {
+            /* construct one */
+            attachmentUrl = pageSummary.getPageUrl() + "/" + "attachments" + "/" + f.getName();
+        }
+
+        restRemoteStorage.uploadAttachment(attachmentUrl, f.getName(), filePath);
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#getSpace(org.xwiki.eclipse.model.XWikiEclipsePageSummary)
+     */
+    @Override
+    public XWikiEclipseSpaceSummary getSpace(XWikiEclipsePageSummary pageSummary)
+    {
+        Space space = restRemoteStorage.getSpace(pageSummary.getSpaceUrl());
+        XWikiEclipseSpaceSummary result = new XWikiEclipseSpaceSummary(dataManager);
+
+        result.setId(space.getId());
+        result.setName(space.getName());
+        result.setUrl(space.getXwikiAbsoluteUrl());
+        result.setWiki(space.getWiki());
+        List<Link> links = space.getLinks();
+        for (Link link : links) {
+            if (link.getRel().equals(Relations.PAGES)) {
+                result.setPagesUrl(link.getHref());
+                break;
+            }
+        }
+        return result;
     }
 }
