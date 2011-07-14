@@ -201,6 +201,9 @@
            <instanceof
                  value="org.xwiki.eclipse.model.XWikiEclipseComment">
            </instanceof>
+           <instanceof
+                 value="org.xwiki.eclipse.model.XWikiEclipseAttachment">
+           </instanceof>
         </or>
      </enablement>
   </actionProvider>
@@ -237,8 +240,8 @@
         name="XWiki Eclipse ID filter">
   </commonFilter>
   <actionProvider
-        class="org.xwiki.eclipse.ui.actions.DownloadAttachmentActionProvider"
-        id="org.xwiki.eclipse.ui.actions.DownloadAttachmentActionProvider">
+        class="org.xwiki.eclipse.ui.actions.XWikiEclipseAttachmentActionProvider"
+        id="org.xwiki.eclipse.ui.actions.XWikiEclipseAttachmentActionProvider">
      <enablement>
         <instanceof
               value="org.xwiki.eclipse.model.XWikiEclipseAttachment">
@@ -441,7 +444,7 @@
   <command
         categoryId="org.xwiki.eclipse"
         id="org.xwiki.eclipse.ui.commands.DownloadAttachment"
-        name="Download">
+        name="Download Attachment">
   </command>
   <command
         categoryId="org.xwiki.eclipse"
@@ -452,6 +455,16 @@
         categoryId="org.xwiki.eclipse"
         id="org.xwiki.eclipse.ui.commands.ReplyToComment"
         name="Reply To Comment">
+  </command>
+  <command
+        categoryId="org.xwiki.eclipse"
+        id="org.xwiki.eclipse.ui.commands.UpdateAttachment"
+        name="Update Attachment">
+  </command>
+  <command
+        categoryId="org.xwiki.eclipse"
+        id="org.xwiki.eclipse.ui.commands.UploadAttachment"
+        name="Upload Attachment">
   </command>
 	</extension>
 	<extension point="org.eclipse.ui.handlers">
@@ -539,7 +552,7 @@
      </activeWhen>
   </handler>
   <handler
-        class="org.xwiki.eclipse.ui.handlers.DownloadAttachmentHandler"
+        class="org.xwiki.eclipse.ui.handlers.XWikiEclipseAttachmentHandler"
         commandId="org.xwiki.eclipse.ui.commands.DownloadAttachment">
   </handler>
   <handler
@@ -549,6 +562,14 @@
   <handler
         class="org.xwiki.eclipse.ui.handlers.NewCommentHandler"
         commandId="org.xwiki.eclipse.ui.commands.ReplyToComment">
+  </handler>
+  <handler
+        class="org.xwiki.eclipse.ui.handlers.XWikiEclipseAttachmentHandler"
+        commandId="org.xwiki.eclipse.ui.commands.UpdateAttachment">
+  </handler>
+  <handler
+        class="org.xwiki.eclipse.ui.handlers.XWikiEclipseAttachmentHandler"
+        commandId="org.xwiki.eclipse.ui.commands.UploadAttachment">
   </handler>
 	</extension>
  <extension
