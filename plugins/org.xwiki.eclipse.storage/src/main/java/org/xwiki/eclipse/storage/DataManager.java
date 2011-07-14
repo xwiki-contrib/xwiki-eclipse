@@ -275,7 +275,7 @@ public class DataManager
      * @param spaceKey
      * @return
      */
-    public List<XWikiEclipsePageSummary> getPages(XWikiEclipseSpaceSummary spaceSummary)
+    public List<XWikiEclipsePageSummary> getPageSummaries(XWikiEclipseSpaceSummary spaceSummary)
         throws XWikiEclipseStorageException
     {
         List<XWikiEclipsePageSummary> result = null;
@@ -1194,8 +1194,32 @@ public class DataManager
         if (isConnected()) {
             remoteXWikiDataStorage.removeAttachment(attachment);
         }
+    }
 
-        NotificationManager.getDefault().fireCoreEvent(CoreEvent.Type.ATTACHMENT_REMOVED, this, attachment);
+    /**
+     * @param pageSummary
+     * @param filePaths
+     */
+    public void uploadAttachment(XWikiEclipsePageSummary pageSummary, String filePath)
+    {
+        if (isConnected()) {
+            remoteXWikiDataStorage.uploadAttachment(pageSummary, filePath);
+        }
 
+    }
+
+    /**
+     * @param pageSummary
+     * @return
+     */
+    public XWikiEclipseSpaceSummary getSpace(XWikiEclipsePageSummary pageSummary)
+    {
+        XWikiEclipseSpaceSummary result = null;
+
+        if (isConnected()) {
+            result = remoteXWikiDataStorage.getSpace(pageSummary);
+        }
+
+        return result;
     }
 }

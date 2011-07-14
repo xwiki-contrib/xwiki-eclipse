@@ -135,4 +135,16 @@ public interface IRemoteXWikiDataStorage
      * @param attachment
      */
     void removeAttachment(XWikiEclipseAttachment attachment);
+
+    /**
+     * @param pageSummary
+     * @param filePath
+     */
+    void uploadAttachment(XWikiEclipsePageSummary pageSummary, String filePath);
+
+    /**
+     * @param pageSummary
+     * @return
+     */
+    XWikiEclipseSpaceSummary getSpace(XWikiEclipsePageSummary pageSummary);
 }
