@@ -32,6 +32,20 @@ import org.xwiki.rest.model.jaxb.Wiki;
  */
 public class XWikiRESTClientTest
 {
+    @Test
+    public void testUploadAttachment()
+    {
+        String serverUrl = "http://localhost:8080/xwiki/rest";
+        String attachmentName = "content.xml";
+        String attachmentUrl =
+            "http://localhost:8080/xwiki/rest/wikis/xwiki/spaces/myspace/pages/WebHome/attachments/" + attachmentName;
+        String username = "XWiki.Admin";
+        String password = "admin";
+
+        XWikiRESTClient client = new XWikiRESTClient(serverUrl, username, password);
+        String filePath = "/home/JunHAN/tmp/ttt/content.xml";
+        client.uploadAttachment(attachmentUrl, attachmentName, filePath);
+    }
 
     @Test
     public void testGetPages()
@@ -74,7 +88,12 @@ public class XWikiRESTClientTest
         String username = "Admin";
         String password = "admin";
         XWikiRESTClient client = new XWikiRESTClient(serverUrl, username, password);
-        Assert.assertTrue(client.login(username, password));
+        try {
+            Assert.assertTrue(client.login(username, password));
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     @Test
