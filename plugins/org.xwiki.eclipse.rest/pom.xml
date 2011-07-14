@@ -52,7 +52,17 @@
               <goal>copy</goal>
             </goals>
             <configuration>
-              <artifactItems>		
+              <artifactItems>              
+              	<!-- commons-io -->
+                <artifactItem>
+		  <groupId>commons-io</groupId>
+		  <artifactId>commons-io</artifactId>
+		  <version>2.0</version>
+                  <type>jar</type>
+                  <overWrite>false</overWrite>
+                  <outputDirectory>./</outputDirectory>
+		  <destFileName>lib/commons-io.jar</destFileName>
+                </artifactItem>
 		<!-- httpclient -->
                 <artifactItem>
 		  <groupId>org.apache.httpcomponents</groupId>

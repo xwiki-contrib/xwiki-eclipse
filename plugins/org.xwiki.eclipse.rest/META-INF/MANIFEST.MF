@@ -13,6 +13,7 @@ Bundle-ClassPath: .,
  lib/httpclient.jar,
  lib/httpcore.jar,
  lib/httpmime.jar,
- lib/xwiki-platform-rest-model.jar
+ lib/xwiki-platform-rest-model.jar,
+ lib/commons-io.jar
 Export-Package: org.xwiki.eclipse.rest,
  org.xwiki.rest.model.jaxb
