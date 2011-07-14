@@ -33,21 +33,28 @@ import org.xwiki.eclipse.ui.UIConstants;
 /**
  * @version $Id$
  */
-public class DownloadAttachmentActionProvider extends CommonActionProvider
+public class XWikiEclipseAttachmentActionProvider extends CommonActionProvider
 {
     private CommandContributionItem download;
 
-    private final String id = "org.xwiki.eclipse.ui.actions.DownloadAttachmentActionProvider";
+    private CommandContributionItem update;
 
     @Override
     public void init(ICommonActionExtensionSite aSite)
     {
         super.init(aSite);
         CommandContributionItemParameter ccip =
-            new CommandContributionItemParameter(PlatformUI.getWorkbench().getActiveWorkbenchWindow(), id,
-                UIConstants.DOWNLOAD_ATTACHMENT_COMMAND, SWT.NONE);
+            new CommandContributionItemParameter(PlatformUI.getWorkbench().getActiveWorkbenchWindow(),
+                UIConstants.DOWNLOAD_ATTACHMENT_COMMAND, UIConstants.DOWNLOAD_ATTACHMENT_COMMAND, SWT.NONE);
 
         download = new CommandContributionItem(ccip);
+
+        ccip =
+            new CommandContributionItemParameter(PlatformUI.getWorkbench().getActiveWorkbenchWindow(),
+                UIConstants.UPDATE_ATTACHMENT_COMMAND, UIConstants.UPDATE_ATTACHMENT_COMMAND, SWT.NONE);
+
+        update = new CommandContributionItem(ccip);
+
     }
 
     @Override
@@ -55,5 +62,6 @@ public class DownloadAttachmentActionProvider extends CommonActionProvider
     {
         super.fillContextMenu(menu);
         menu.appendToGroup(ICommonMenuConstants.GROUP_EDIT, download);
+        menu.appendToGroup(ICommonMenuConstants.GROUP_EDIT, update);
     }
 }

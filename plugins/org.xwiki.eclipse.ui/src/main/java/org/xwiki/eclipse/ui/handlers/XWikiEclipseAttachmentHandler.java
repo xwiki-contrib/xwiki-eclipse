@@ -22,19 +22,22 @@ package org.xwiki.eclipse.ui.handlers;
 import java.util.Set;
 
 import org.eclipse.core.commands.AbstractHandler;
+import org.eclipse.core.commands.Command;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.wizard.WizardDialog;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.handlers.HandlerUtil;
+import org.xwiki.eclipse.ui.UIConstants;
 import org.xwiki.eclipse.ui.utils.UIUtils;
-import org.xwiki.eclipse.ui.wizards.DownloadAttachmentWizard;
+import org.xwiki.eclipse.ui.wizards.XWikiEclipseAttachmentWizard;
 
 /**
  * @version $Id$
  */
-public class DownloadAttachmentHandler extends AbstractHandler
+public class XWikiEclipseAttachmentHandler extends AbstractHandler
 {
 
     /**
@@ -46,16 +49,26 @@ public class DownloadAttachmentHandler extends AbstractHandler
     public Object execute(ExecutionEvent event) throws ExecutionException
     {
         ISelection selection = HandlerUtil.getCurrentSelection(event);
+        Command command = event.getCommand();
 
         Set selectedObjects = UIUtils.getSelectedObjectsFromSelection(selection);
-
         /* get the shell */
         Shell shell = HandlerUtil.getActiveWorkbenchWindow(event).getShell();
 
-        DownloadAttachmentWizard downloadWizard = new DownloadAttachmentWizard(selectedObjects);
-        WizardDialog wizardDialog = new WizardDialog(shell, downloadWizard);
-        wizardDialog.create();
-        wizardDialog.open();
+        if (command.getId().equals(UIConstants.UPLOAD_ATTACHMENT_COMMAND) && selectedObjects.size() > 1) {
+            UIUtils.showMessageDialog(shell, SWT.ICON_ERROR, "Please only select one page to upload attachment",
+                "Please only select one page to upload attachment");
+            return null;
+        }
+
+        if (command.getId().equals(UIConstants.DOWNLOAD_ATTACHMENT_COMMAND)
+            || command.getId().equals(UIConstants.UPDATE_ATTACHMENT_COMMAND)
+            || command.getId().equals(UIConstants.UPLOAD_ATTACHMENT_COMMAND)) {
+            XWikiEclipseAttachmentWizard wizard = new XWikiEclipseAttachmentWizard(selectedObjects, command);
+            WizardDialog wizardDialog = new WizardDialog(shell, wizard);
+            wizardDialog.create();
+            wizardDialog.open();
+        }
 
         return null;
     }

@@ -22,6 +22,7 @@ package org.xwiki.eclipse.rest;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,13 +31,17 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.auth.AuthenticationException;
 import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -238,6 +243,28 @@ public class XWikiRESTClient
         marshaller.marshal(object, os);
         HttpEntity entity = new ByteArrayEntity(os.toByteArray());
         request.setEntity(entity);
+        HttpResponse response = httpClient.execute(request);
+
+        return response;
+    }
+
+    protected HttpResponse executePutXml(String uri, java.lang.Object object, String userName, String password)
+        throws Exception
+    {
+        DefaultHttpClient httpClient = new DefaultHttpClient();
+
+        UsernamePasswordCredentials creds = new UsernamePasswordCredentials(username, password);
+
+        HttpPut request = new HttpPut(uri);
+        request.addHeader(new BasicScheme().authenticate(creds, request));
+        request.addHeader("Content-type", "text/xml; charset=UTF-8");
+        request.addHeader("Accept", MediaType.APPLICATION_XML);
+
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        marshaller.marshal(object, os);
+        HttpEntity entity = new ByteArrayEntity(os.toByteArray());
+        request.setEntity(entity);
+
         HttpResponse response = httpClient.execute(request);
 
         return response;
@@ -750,6 +777,58 @@ public class XWikiRESTClient
             // TODO Auto-generated catch block
             e.printStackTrace();
             throw e;
+        }
+    }
+
+    /**
+     * FIXME: need to return different response code so that the UI can respond correspondingly
+     * 
+     * @param attachmentUrl
+     * @param attachmentName
+     * @param filePath
+     */
+    public void uploadAttachment(String attachmentUrl, String attachmentName, String filePath)
+    {
+        DefaultHttpClient httpClient = new DefaultHttpClient();
+
+        UsernamePasswordCredentials creds = new UsernamePasswordCredentials(username, password);
+
+        HttpPut request = new HttpPut(attachmentUrl);
+        try {
+            request.addHeader(new BasicScheme().authenticate(creds, request));
+            request.addHeader("Accept", MediaType.APPLICATION_XML);
+
+            File file = new File(filePath);
+            byte[] bytes = FileUtils.readFileToByteArray(file);
+            ByteArrayEntity bin = new ByteArrayEntity(bytes);
+
+            request.setEntity(bin);
+
+            HttpResponse response = httpClient.execute(request);
+
+            /* file created */
+            if (response.getStatusLine().getStatusCode() == HttpStatus.SC_CREATED) {
+                // System.out.println("SC_CREATED");
+            }
+            /* file updated */
+            if (response.getStatusLine().getStatusCode() == HttpStatus.SC_ACCEPTED) {
+                // System.out.println("SC_ACCEPTED");
+            }
+
+            /* user UNAUTHORIZED */
+            if (response.getStatusLine().getStatusCode() == HttpStatus.SC_UNAUTHORIZED) {
+                // System.out.println("SC_UNAUTHORIZED");
+            }
+
+        } catch (AuthenticationException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (ClientProtocolException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
     }
 }

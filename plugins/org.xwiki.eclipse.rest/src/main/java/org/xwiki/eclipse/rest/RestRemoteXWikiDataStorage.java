@@ -296,4 +296,13 @@ public class RestRemoteXWikiDataStorage
         }
 
     }
+
+    /**
+     * @param attachmentsUrl
+     * @param filePath
+     */
+    public void uploadAttachment(String attachmentUrl, String attachmentName, String filePath)
+    {
+        this.restRemoteClient.uploadAttachment(attachmentUrl, attachmentName, filePath);
+    }
 }
