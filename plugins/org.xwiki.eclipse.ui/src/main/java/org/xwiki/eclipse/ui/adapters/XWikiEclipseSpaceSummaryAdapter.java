@@ -50,7 +50,7 @@ public class XWikiEclipseSpaceSummaryAdapter extends WorkbenchAdapter implements
             final XWikiEclipseSpaceSummary spaceSummary = (XWikiEclipseSpaceSummary) object;
 
             try {
-                List<XWikiEclipsePageSummary> result = spaceSummary.getDataManager().getPages(spaceSummary);
+                List<XWikiEclipsePageSummary> result = spaceSummary.getDataManager().getPageSummaries(spaceSummary);
                 return result.toArray();
             } catch (XWikiEclipseStorageException e) {
                 UIUtils
