@@ -390,6 +390,13 @@
         name="Comment"
         objectClass="org.xwiki.eclipse.model.XWikiEclipseComment">
   </page>
+  <page
+        class="org.xwiki.eclipse.ui.properties.XWikiEclipseTagPropertiesPage"
+        icon="icons/tag.png"
+        id="org.xwiki.eclipse.ui.properties.XWikiEclipseTag"
+        name="Tag"
+        objectClass="org.xwiki.eclipse.model.XWikiEclipseTag">
+  </page>
 	</extension>
 	<extension point="org.eclipse.ui.commands">
 		<command
@@ -459,12 +466,16 @@
   <command
         categoryId="org.xwiki.eclipse"
         id="org.xwiki.eclipse.ui.commands.UpdateAttachment"
-        name="Update Attachment">
+        name="Update Attachments">
   </command>
   <command
         categoryId="org.xwiki.eclipse"
         id="org.xwiki.eclipse.ui.commands.UploadAttachment"
-        name="Upload Attachment">
+        name="Upload Attachments">
+  </command>
+  <command
+        id="org.xwiki.eclipse.ui.commands.NewTag"
+        name="New Tag">
   </command>
 	</extension>
 	<extension point="org.eclipse.ui.handlers">
@@ -570,6 +581,10 @@
   <handler
         class="org.xwiki.eclipse.ui.handlers.XWikiEclipseAttachmentHandler"
         commandId="org.xwiki.eclipse.ui.commands.UploadAttachment">
+  </handler>
+  <handler
+        class="org.xwiki.eclipse.ui.handlers.XWikiEclipseTagHandler"
+        commandId="org.xwiki.eclipse.ui.commands.NewTag">
   </handler>
 	</extension>
  <extension
