@@ -43,11 +43,14 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.DirectoryDialog;
+import org.eclipse.swt.widgets.ExpandBar;
+import org.eclipse.swt.widgets.ExpandItem;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
@@ -57,6 +60,7 @@ import org.eclipse.ui.IWorkbench;
 import org.xwiki.eclipse.model.XWikiEclipseAttachment;
 import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
 import org.xwiki.eclipse.storage.DataManager;
+import org.xwiki.eclipse.storage.XWikiEclipseStorageException;
 import org.xwiki.eclipse.storage.notification.CoreEvent;
 import org.xwiki.eclipse.storage.notification.NotificationManager;
 import org.xwiki.eclipse.ui.UIConstants;
@@ -68,6 +72,7 @@ import org.xwiki.eclipse.ui.utils.XWikiEclipseSafeRunnable;
  */
 public class XWikiEclipseAttachmentWizard extends Wizard implements INewWizard
 {
+    private Command command;
 
     private Set selectedObjects;
 
@@ -75,11 +80,15 @@ public class XWikiEclipseAttachmentWizard extends Wizard implements INewWizard
 
     private DownloadAttachmentState downloadState;
 
-    private XWikiEclipsePageSummary pageSummary;
-
-    private Command command;
+    /* contain page information to upload the attachments */
+    private XWikiEclipsePageSummary pageSummaryOfUploadingAttachment;
 
     private List<String> filesToBeUploaded = new ArrayList<String>();
+
+    /* contain page information to update the attachments */
+    private Map<XWikiEclipsePageSummary, List<XWikiEclipseAttachment>> pageAttachmentsMap = null;
+
+    private Map<XWikiEclipseAttachment, String> attachmentUpdateMap = null;
 
     /**
      * @param selectedObjects
@@ -102,7 +111,40 @@ public class XWikiEclipseAttachmentWizard extends Wizard implements INewWizard
 
         if (command.getId().equals(UIConstants.UPLOAD_ATTACHMENT_COMMAND)) {
             /* already make sure that only one page is selected */
-            pageSummary = (XWikiEclipsePageSummary) selectedObjects.iterator().next();
+            pageSummaryOfUploadingAttachment = (XWikiEclipsePageSummary) selectedObjects.iterator().next();
+        }
+
+        if (command.getId().equals(UIConstants.UPDATE_ATTACHMENT_COMMAND)) {
+            /*
+             * user may select different attachments that belong to different page, if pageId is different, add to the
+             * page list
+             */
+            Map<String, XWikiEclipsePageSummary> pageMap = new HashMap<String, XWikiEclipsePageSummary>();
+
+            if (pageAttachmentsMap == null) {
+                pageAttachmentsMap = new HashMap<XWikiEclipsePageSummary, List<XWikiEclipseAttachment>>();
+            }
+
+            for (Object selectedObject : selectedObjects) {
+                if (selectedObject instanceof XWikiEclipseAttachment) {
+                    XWikiEclipseAttachment attachment = (XWikiEclipseAttachment) selectedObject;
+                    try {
+                        XWikiEclipsePageSummary pageSummary = attachment.getDataManager().getPageSummary(attachment);
+                        if (!pageMap.containsKey(pageSummary.getId())) {
+                            pageMap.put(pageSummary.getId(), pageSummary);
+
+                            List<XWikiEclipseAttachment> attachmentList = new ArrayList<XWikiEclipseAttachment>();
+                            attachmentList.add(attachment);
+                            pageAttachmentsMap.put(pageSummary, attachmentList);
+                        } else {
+                            pageAttachmentsMap.get(pageSummary).add(attachment);
+                        }
+                    } catch (XWikiEclipseStorageException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                }
+            }
         }
     }
 
@@ -110,13 +152,16 @@ public class XWikiEclipseAttachmentWizard extends Wizard implements INewWizard
     public void addPages()
     {
         if (command.getId().equals(UIConstants.DOWNLOAD_ATTACHMENT_COMMAND)) {
-            addPage(new DownloadAttachmentPage("Select Attachments to be downloaded"));
+            addPage(new DownloadAttachmentsPage("Select Attachments to be downloaded"));
         }
 
         if (command.getId().equals(UIConstants.UPLOAD_ATTACHMENT_COMMAND)) {
-            addPage(new UploadAttachmentPage("Upload Attachments to a page"));
+            addPage(new UploadAttachmentsPage("Upload Attachments to a page"));
         }
 
+        if (command.getId().equals(UIConstants.UPDATE_ATTACHMENT_COMMAND)) {
+            addPage(new UpdateAttachmentsPage("Update Attachments"));
+        }
     }
 
     @Override
@@ -200,7 +245,7 @@ public class XWikiEclipseAttachmentWizard extends Wizard implements INewWizard
                     for (int i = 0; i < filesToBeUploaded.size(); i++) {
 
                         final int idx = i;
-                        final DataManager dataManager = pageSummary.getDataManager();
+                        final DataManager dataManager = pageSummaryOfUploadingAttachment.getDataManager();
                         monitor.setTaskName("Uploading Attachment: " + fileNames[i]);
                         SafeRunner.run(new XWikiEclipseSafeRunnable()
                         {
@@ -208,7 +253,8 @@ public class XWikiEclipseAttachmentWizard extends Wizard implements INewWizard
                             @Override
                             public void run() throws Exception
                             {
-                                dataManager.uploadAttachment(pageSummary, filesToBeUploaded.get(idx));
+                                dataManager.uploadAttachment(pageSummaryOfUploadingAttachment,
+                                    filesToBeUploaded.get(idx));
                             }
                         });
 
@@ -224,13 +270,72 @@ public class XWikiEclipseAttachmentWizard extends Wizard implements INewWizard
 
                     monitor.done();
                     NotificationManager.getDefault().fireCoreEvent(CoreEvent.Type.ATTACHMENT_UPLOADED, this,
-                        pageSummary);
+                        pageSummaryOfUploadingAttachment);
 
                     return Status.OK_STATUS;
                 }
             };
             uploadJob.setUser(true);
             uploadJob.schedule();
+
+            return true;
+        }
+
+        if (command.getId().equals(UIConstants.UPDATE_ATTACHMENT_COMMAND)) {
+
+            Job updateJob =
+                new Job(String.format("Updating %s", Arrays.toString(attachmentUpdateMap.keySet().toArray())))
+                {
+
+                    @Override
+                    protected IStatus run(IProgressMonitor monitor)
+                    {
+
+                        monitor.beginTask("Updating", 100);
+                        if (monitor.isCanceled()) {
+                            return Status.CANCEL_STATUS;
+                        }
+
+                        int work = 100 / attachmentUpdateMap.size();
+
+                        for (final XWikiEclipseAttachment attachment : attachmentUpdateMap.keySet()) {
+
+                            final DataManager dataManager = attachment.getDataManager();
+                            monitor.setTaskName("Updating Attachment: " + attachment.getName());
+
+                            final String filePath = attachmentUpdateMap.get(attachment);
+                            if (filePath != null && new File(filePath).exists()) {
+                                SafeRunner.run(new XWikiEclipseSafeRunnable()
+                                {
+
+                                    @Override
+                                    public void run() throws Exception
+                                    {
+                                        dataManager.updateAttachment(attachment, filePath);
+                                    }
+                                });
+                            }
+
+                            monitor.worked(work);
+                            try {
+                                Thread.sleep(2000);
+                            } catch (InterruptedException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                            }
+
+                        }
+
+                        monitor.done();
+                        /* return a list of pages that have updated attachment */
+                        NotificationManager.getDefault().fireCoreEvent(CoreEvent.Type.ATTACHMENT_UPDATED, this,
+                            pageAttachmentsMap);
+
+                        return Status.OK_STATUS;
+                    }
+                };
+            updateJob.setUser(true);
+            updateJob.schedule();
 
             return true;
         }
@@ -251,7 +356,179 @@ public class XWikiEclipseAttachmentWizard extends Wizard implements INewWizard
 
     }
 
-    class UploadAttachmentPage extends WizardPage
+    class UpdateAttachmentsPage extends WizardPage
+    {
+        private Group pageSummaryGroup;
+
+        private Group attachmentGroup;
+
+        private Composite attachmentComposite;
+
+        private ExpandBar expandBar;
+
+        /**
+         * @param pageName
+         */
+        protected UpdateAttachmentsPage(String pageName)
+        {
+            super(pageName);
+            setTitle(pageName);
+            setImageDescriptor(UIPlugin.getImageDescriptor(UIConstants.CONNECTION_SETTINGS_BANNER));
+            setPageComplete(false);
+        }
+
+        /**
+         * {@inheritDoc}
+         * 
+         * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
+         */
+        @Override
+        public void createControl(Composite parent)
+        {
+            final Composite composite = new Composite(parent, SWT.NONE);
+            GridLayoutFactory.fillDefaults().applyTo(composite);
+
+            expandBar = new ExpandBar(composite, SWT.V_SCROLL);
+            expandBar.setSpacing(5);
+            GridLayoutFactory.fillDefaults().applyTo(expandBar);
+            GridDataFactory.fillDefaults().grab(true, true).applyTo(expandBar);
+
+            Image image = UIPlugin.getImageDescriptor(UIConstants.PAGE_ICON).createImage();
+            for (XWikiEclipsePageSummary pageSummary : pageAttachmentsMap.keySet()) {
+                ExpandItem item = new ExpandItem(expandBar, SWT.NONE);
+
+                item.setText("page: " + pageSummary.getName());
+                item.setImage(image);
+
+                /* create the composite holding information for page summary and attachment */
+                Composite pageComposite = new Composite(expandBar, SWT.NONE);
+                GridDataFactory.fillDefaults().grab(true, true).applyTo(pageComposite);
+                GridLayoutFactory.fillDefaults().applyTo(pageComposite);
+
+                pageSummaryGroup = new Group(pageComposite, SWT.NONE);
+                pageSummaryGroup.setText("Page Summary Information");
+                GridDataFactory.fillDefaults().grab(true, false).applyTo(pageSummaryGroup);
+                GridLayoutFactory.fillDefaults().numColumns(2).applyTo(pageSummaryGroup);
+
+                Label property = new Label(pageSummaryGroup, SWT.NONE);
+                property.setText("Name:");
+                Label value = new Label(pageSummaryGroup, SWT.NONE);
+                value.setText(pageSummary.getName() == null ? "" : pageSummary.getName());
+
+                property = new Label(pageSummaryGroup, SWT.NONE);
+                property.setText("Wiki:");
+                value = new Label(pageSummaryGroup, SWT.NONE);
+                value.setText(pageSummary.getWiki() == null ? "" : pageSummary.getWiki());
+
+                property = new Label(pageSummaryGroup, SWT.NONE);
+                property.setText("Space:");
+                value = new Label(pageSummaryGroup, SWT.NONE);
+                value.setText(pageSummary.getSpace() == null ? "" : pageSummary.getSpace());
+
+                /* attachments section */
+                attachmentGroup = new Group(pageComposite, SWT.SHADOW_ETCHED_IN);
+                attachmentGroup.setText("Attachments to be updated");
+                GridLayoutFactory.fillDefaults().applyTo(attachmentGroup);
+                GridDataFactory.fillDefaults().grab(true, false).applyTo(attachmentGroup);
+
+                attachmentComposite = new Composite(attachmentGroup, SWT.NONE);
+                GridDataFactory.fillDefaults().grab(true, false).applyTo(attachmentComposite);
+                GridLayoutFactory.fillDefaults().numColumns(2).equalWidth(false).applyTo(attachmentComposite);
+
+                List<XWikiEclipseAttachment> attachments = pageAttachmentsMap.get(pageSummary);
+                for (final XWikiEclipseAttachment attachment : attachments) {
+                    Button browseButton = new Button(attachmentComposite, SWT.PUSH);
+                    GridDataFactory.fillDefaults().align(SWT.BEGINNING, SWT.CENTER).grab(false, false)
+                        .applyTo(browseButton);
+                    browseButton.setText("Browse...");
+
+                    final Text file = new Text(attachmentComposite, SWT.BORDER | SWT.SINGLE);
+                    // file.setText(attachment.getName());
+
+                    GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, false).applyTo(file);
+
+                    browseButton.addSelectionListener(new SelectionListener()
+                    {
+                        @Override
+                        public void widgetSelected(SelectionEvent e)
+                        {
+                            FileDialog fileDialog = new FileDialog(attachmentGroup.getShell());
+
+                            /* Set the initial filter path according to user directory */
+                            fileDialog.setFilterPath(System.getProperty("user.dir"));
+                            String fileName = attachment.getName();
+
+                            /* set up filter for file names */
+                            int idx = fileName.lastIndexOf(".");
+                            if (idx > 0) {
+                                String fileExtension = "*" + fileName.substring(idx);
+                                fileDialog.setFilterExtensions(new String[] {fileExtension});
+                            }
+
+                            /* Change the title bar text */
+                            fileDialog.setText("Select a file to be uploaded");
+
+                            /*
+                             * Calling open() will open and run the dialog. It will return the selected file, or null if
+                             * user cancels
+                             */
+                            String filePath = fileDialog.open();
+                            if (filePath != null) {
+                                if (attachmentUpdateMap == null) {
+                                    attachmentUpdateMap = new HashMap<XWikiEclipseAttachment, String>();
+                                }
+                                /* set the text control along with the corresponding Attachment object */
+                                attachmentUpdateMap.put(attachment, filePath);
+
+                                file.setText(filePath);
+                                getContainer().updateButtons();
+                            }
+
+                        }
+
+                        @Override
+                        public void widgetDefaultSelected(SelectionEvent e)
+                        {
+                            // TODO Auto-generated method stub
+                        }
+                    });
+                }
+
+                /* set control */
+                item.setControl(pageComposite);
+
+                /* compute initial size */
+                item.setExpanded(false);
+                Point size = pageComposite.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+                item.setHeight(size.y);
+            }
+
+            setControl(composite);
+        }
+
+        @Override
+        public boolean isPageComplete()
+        {
+            if (attachmentUpdateMap == null || attachmentUpdateMap.size() == 0) {
+                return false;
+            }
+
+            for (XWikiEclipseAttachment attachment : attachmentUpdateMap.keySet()) {
+                String filePath = attachmentUpdateMap.get(attachment);
+                if (filePath != null && filePath.length() > 0) {
+                    if (!new File(filePath).exists()) {
+                        return false;
+                    }
+                } else {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+    }
+
+    class UploadAttachmentsPage extends WizardPage
     {
 
         private Group pageSummaryGroup;
@@ -265,7 +542,7 @@ public class XWikiEclipseAttachmentWizard extends Wizard implements INewWizard
         /**
          * @param pageName
          */
-        protected UploadAttachmentPage(String pageName)
+        protected UploadAttachmentsPage(String pageName)
         {
             super(pageName);
             setTitle("Upload Attachments");
@@ -292,17 +569,20 @@ public class XWikiEclipseAttachmentWizard extends Wizard implements INewWizard
             Label property = new Label(pageSummaryGroup, SWT.NONE);
             property.setText("Name:");
             Label value = new Label(pageSummaryGroup, SWT.NONE);
-            value.setText(pageSummary.getName() == null ? "" : pageSummary.getName());
+            value.setText(pageSummaryOfUploadingAttachment.getName() == null ? "" : pageSummaryOfUploadingAttachment
+                .getName());
 
             property = new Label(pageSummaryGroup, SWT.NONE);
             property.setText("Wiki:");
             value = new Label(pageSummaryGroup, SWT.NONE);
-            value.setText(pageSummary.getWiki() == null ? "" : pageSummary.getWiki());
+            value.setText(pageSummaryOfUploadingAttachment.getWiki() == null ? "" : pageSummaryOfUploadingAttachment
+                .getWiki());
 
             property = new Label(pageSummaryGroup, SWT.NONE);
             property.setText("Space:");
             value = new Label(pageSummaryGroup, SWT.NONE);
-            value.setText(pageSummary.getSpace() == null ? "" : pageSummary.getSpace());
+            value.setText(pageSummaryOfUploadingAttachment.getSpace() == null ? "" : pageSummaryOfUploadingAttachment
+                .getSpace());
 
             attachmentGroup = new Group(composite, SWT.SHADOW_ETCHED_IN);
             attachmentGroup.setText("Attachment to be uploaded");
@@ -424,12 +704,12 @@ public class XWikiEclipseAttachmentWizard extends Wizard implements INewWizard
         }
     }
 
-    class DownloadAttachmentPage extends WizardPage
+    class DownloadAttachmentsPage extends WizardPage
     {
         /**
          * @param pageName
          */
-        protected DownloadAttachmentPage(String pageName)
+        protected DownloadAttachmentsPage(String pageName)
         {
             super(pageName);
             setTitle("Download Attachments");

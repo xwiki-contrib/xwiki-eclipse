@@ -1222,4 +1222,16 @@ public class DataManager
 
         return result;
     }
+
+    /**
+     * @param attachment
+     * @param filePath
+     */
+    public void updateAttachment(XWikiEclipseAttachment attachment, String filePath)
+    {
+        if (isConnected()) {
+            remoteXWikiDataStorage.updateAttachment(attachment, filePath);
+        }
+
+    }
 }

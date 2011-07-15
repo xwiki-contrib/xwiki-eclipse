@@ -20,6 +20,9 @@
  */
 package org.xwiki.eclipse.ui;
 
+import java.util.List;
+import java.util.Map;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.Viewer;
@@ -63,7 +66,7 @@ public class NavigatorContentProvider extends BaseWorkbenchContentProvider imple
             CoreEvent.Type.PAGE_STORED, CoreEvent.Type.OBJECT_STORED, CoreEvent.Type.PAGE_REMOVED,
             CoreEvent.Type.OBJECT_REMOVED, CoreEvent.Type.REFRESH, CoreEvent.Type.PAGE_RENAMED,
             CoreEvent.Type.SPACE_REMOVED, CoreEvent.Type.COMMENT_REMOVED, CoreEvent.Type.COMMENT_STORED,
-            CoreEvent.Type.ATTACHMENT_REMOVED, CoreEvent.Type.ATTACHMENT_UPLOADED});
+            CoreEvent.Type.ATTACHMENT_REMOVED, CoreEvent.Type.ATTACHMENT_UPLOADED, CoreEvent.Type.ATTACHMENT_UPDATED});
 
         workingSet = null;
     }
@@ -285,6 +288,24 @@ public class NavigatorContentProvider extends BaseWorkbenchContentProvider imple
                         viewer.refresh(pageSummary);
                     }
                 });
+                break;
+            case ATTACHMENT_UPDATED:
+
+                Map<XWikiEclipsePageSummary, List<XWikiEclipseAttachment>> pageSummaries =
+                    (Map<XWikiEclipsePageSummary, List<XWikiEclipseAttachment>>) event.getData();
+
+                /* refresh the page */
+                for (final XWikiEclipsePageSummary pageSummary : pageSummaries.keySet()) {
+                    Display.getDefault().asyncExec(new Runnable()
+                    {
+                        public void run()
+                        {
+                            viewer.setExpandedState(pageSummary, true);
+                            viewer.refresh(pageSummary);
+                        }
+                    });
+                }
+
                 break;
             case ATTACHMENT_REMOVED:
 

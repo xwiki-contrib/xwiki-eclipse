@@ -806,4 +806,19 @@ public class RestRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStorag
         }
         return result;
     }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#updateAttachment(org.xwiki.eclipse.model.XWikiEclipseAttachment,
+     *      java.lang.String)
+     */
+    @Override
+    public void updateAttachment(XWikiEclipseAttachment attachment, String filePath)
+    {
+        String attachmentUrl = attachment.getAttachmentUrl();
+
+        restRemoteStorage.uploadAttachment(attachmentUrl, attachment.getName(), filePath);
+
+    }
 }
