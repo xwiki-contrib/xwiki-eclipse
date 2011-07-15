@@ -28,7 +28,7 @@ public class XWikiEclipseTag extends ModelObject
 {
     private String name;
 
-    private String pagesUrl;
+    private String url;
 
     /**
      * @param dataManager
@@ -59,13 +59,13 @@ public class XWikiEclipseTag extends ModelObject
         this.name = name;
     }
 
-    public String getPagesUrl()
+    public String getUrl()
     {
-        return pagesUrl;
+        return url;
     }
 
     public void setUrl(String pagesUrl)
     {
-        this.pagesUrl = pagesUrl;
+        this.url = pagesUrl;
     }
 }
