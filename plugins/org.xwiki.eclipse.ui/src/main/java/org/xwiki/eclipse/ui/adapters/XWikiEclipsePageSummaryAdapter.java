@@ -71,6 +71,8 @@ public class XWikiEclipsePageSummaryAdapter extends WorkbenchAdapter implements 
 
                 List<ModelObject> result = new ArrayList<ModelObject>();
 
+                String pageId = pageSummary.getId();
+
                 /* add pageClass */
                 result.add(pageClass);
 
@@ -78,6 +80,7 @@ public class XWikiEclipsePageSummaryAdapter extends WorkbenchAdapter implements 
                 if (attachments != null && attachments.size() > 0) {
                     XWikiEclipseObjectCollection a = new XWikiEclipseObjectCollection(dataManager);
                     a.setClassName("Attachments");
+                    a.setPageId(pageId);
 
                     for (XWikiEclipseAttachment attach : attachments) {
                         a.getObjects().add(attach);
@@ -92,6 +95,7 @@ public class XWikiEclipsePageSummaryAdapter extends WorkbenchAdapter implements 
                 if (tags != null && tags.size() > 0) {
                     XWikiEclipseObjectCollection t = new XWikiEclipseObjectCollection(dataManager);
                     t.setClassName("Tags");
+                    t.setPageId(pageId);
 
                     for (XWikiEclipseTag tag : tags) {
                         t.getObjects().add(tag);
@@ -106,6 +110,7 @@ public class XWikiEclipsePageSummaryAdapter extends WorkbenchAdapter implements 
                 if (comments != null && comments.size() > 0) {
                     XWikiEclipseObjectCollection t = new XWikiEclipseObjectCollection(dataManager);
                     t.setClassName("Comments");
+                    t.setPageId(pageId);
 
                     for (XWikiEclipseComment comment : comments) {
                         t.getObjects().add(comment);
@@ -123,6 +128,7 @@ public class XWikiEclipsePageSummaryAdapter extends WorkbenchAdapter implements 
                 if (objects != null && objects.size() > 0) {
                     XWikiEclipseObjectCollection collection = new XWikiEclipseObjectCollection(dataManager);
                     collection.setClassName("Objects");
+                    collection.setPageId(pageId);
 
                     Map<String, XWikiEclipseObjectCollection> classnameCollectionMap =
                         new HashMap<String, XWikiEclipseObjectCollection>();
@@ -137,6 +143,7 @@ public class XWikiEclipsePageSummaryAdapter extends WorkbenchAdapter implements 
                             } else {
                                 XWikiEclipseObjectCollection subCollection =
                                     new XWikiEclipseObjectCollection(dataManager);
+                                subCollection.setPageId(pageId);
                                 if (classname.equals("XWiki.XWikiComments")) {
                                     subCollection.setClassName("Comments");
                                 } else if (classname.equals("AnnotationCode.AnnotationClass")) {
