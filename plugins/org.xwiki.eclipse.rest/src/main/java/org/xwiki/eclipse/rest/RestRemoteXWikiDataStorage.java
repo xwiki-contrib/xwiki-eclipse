@@ -19,6 +19,7 @@
  */
 package org.xwiki.eclipse.rest;
 
+import java.net.URL;
 import java.util.List;
 
 import org.xwiki.rest.model.jaxb.Attachment;
@@ -299,10 +300,48 @@ public class RestRemoteXWikiDataStorage
 
     /**
      * @param attachmentsUrl
-     * @param filePath
+     * @param fileUrl
      */
-    public void uploadAttachment(String attachmentUrl, String attachmentName, String filePath)
+    public void uploadAttachment(String attachmentUrl, String attachmentName, URL fileUrl)
     {
-        this.restRemoteClient.uploadAttachment(attachmentUrl, attachmentName, filePath);
+        this.restRemoteClient.uploadAttachment(attachmentUrl, attachmentName, fileUrl);
+    }
+
+    /**
+     * @param wikiName
+     * @return
+     */
+    public List<Tag> getAllTagsInWiki(String wikiName)
+    {
+        String allTagsUrl = this.endpoint + "/wikis/" + wikiName + "/tags";
+        List<Tag> result;
+        try {
+            result = restRemoteClient.getAllTags(allTagsUrl);
+            return result;
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    /**
+     * @param tagsUrl
+     * @param tagName
+     * @return
+     */
+    public List<Tag> addTag(String tagsUrl, String tagName)
+    {
+        List<Tag> result;
+        try {
+            result = this.restRemoteClient.addTag(tagsUrl, tagName);
+            return result;
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        return null;
     }
 }
