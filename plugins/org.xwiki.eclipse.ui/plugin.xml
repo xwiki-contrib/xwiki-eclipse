@@ -474,6 +474,7 @@
         name="Upload Attachments">
   </command>
   <command
+        categoryId="org.xwiki.eclipse"
         id="org.xwiki.eclipse.ui.commands.NewTag"
         name="New Tag">
   </command>
