@@ -19,12 +19,21 @@
  */
 package org.xwiki.eclipse.rest;
 
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.List;
 
+import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.Path;
 import org.junit.Assert;
 import org.junit.Test;
+import org.osgi.framework.Bundle;
+import org.xwiki.eclipse.TestPlugin;
 import org.xwiki.rest.model.jaxb.PageSummary;
 import org.xwiki.rest.model.jaxb.Space;
+import org.xwiki.rest.model.jaxb.Tag;
 import org.xwiki.rest.model.jaxb.Wiki;
 
 /**
@@ -33,18 +42,63 @@ import org.xwiki.rest.model.jaxb.Wiki;
 public class XWikiRESTClientTest
 {
     @Test
+    public void testAddTag()
+    {
+        String serverUrl = "http://localhost:8080/xwiki/rest";
+
+        String tagsUrl = "http://localhost:8080/xwiki/rest/wikis/xwiki/spaces/myspace/pages/page3/tags";
+        String username = "XWiki.Admin";
+        String password = "admin";
+
+        XWikiRESTClient client = new XWikiRESTClient(serverUrl, username, password);
+
+        try {
+            String tagName = "TestTagInJunit" + System.currentTimeMillis();
+            List<Tag> tags = client.addTag(tagsUrl, tagName);
+            Assert.assertNotNull(tags);
+            boolean found = false;
+            for (Tag t : tags) {
+                if (t.getName().equals(tagName)) {
+                    found = true;
+                    break;
+                }
+            }
+            Assert.assertTrue(found);
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+    }
+
+    @Test
     public void testUploadAttachment()
     {
         String serverUrl = "http://localhost:8080/xwiki/rest";
-        String attachmentName = "content.xml";
+        String attachmentName = "notice.html";
         String attachmentUrl =
             "http://localhost:8080/xwiki/rest/wikis/xwiki/spaces/myspace/pages/WebHome/attachments/" + attachmentName;
         String username = "XWiki.Admin";
         String password = "admin";
 
         XWikiRESTClient client = new XWikiRESTClient(serverUrl, username, password);
-        String filePath = "/home/JunHAN/tmp/ttt/content.xml";
-        client.uploadAttachment(attachmentUrl, attachmentName, filePath);
+        try {
+            Bundle bundle = TestPlugin.getDefault().getBundle();
+            URL url = FileLocator.find(bundle, new Path("src/main/resources/notice.html"), null);
+            System.out.println("url = " + url.toString());
+
+            URL fileUrl = FileLocator.toFileURL(url);
+            URI fileUri = FileLocator.toFileURL(url).toURI();
+
+            System.out.println("uri = " + fileUri);
+            client.uploadAttachment(attachmentUrl, attachmentName, fileUrl);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (URISyntaxException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     @Test
