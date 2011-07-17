@@ -66,7 +66,8 @@ public class NavigatorContentProvider extends BaseWorkbenchContentProvider imple
             CoreEvent.Type.PAGE_STORED, CoreEvent.Type.OBJECT_STORED, CoreEvent.Type.PAGE_REMOVED,
             CoreEvent.Type.OBJECT_REMOVED, CoreEvent.Type.REFRESH, CoreEvent.Type.PAGE_RENAMED,
             CoreEvent.Type.SPACE_REMOVED, CoreEvent.Type.COMMENT_REMOVED, CoreEvent.Type.COMMENT_STORED,
-            CoreEvent.Type.ATTACHMENT_REMOVED, CoreEvent.Type.ATTACHMENT_UPLOADED, CoreEvent.Type.ATTACHMENT_UPDATED});
+            CoreEvent.Type.ATTACHMENT_REMOVED, CoreEvent.Type.ATTACHMENT_UPLOADED, CoreEvent.Type.ATTACHMENT_UPDATED,
+            CoreEvent.Type.TAG_STORED});
 
         workingSet = null;
     }
@@ -274,6 +275,20 @@ public class NavigatorContentProvider extends BaseWorkbenchContentProvider imple
                 // }
                 //
                 // });
+                break;
+            case TAG_STORED:
+
+                Display.getDefault().syncExec(new Runnable()
+                {
+                    public void run()
+                    {
+                        XWikiEclipsePageSummary pageSummary = (XWikiEclipsePageSummary) event.getData();
+
+                        /* refresh the page */
+                        viewer.setExpandedState(pageSummary, true);
+                        viewer.refresh(pageSummary);
+                    }
+                });
                 break;
             case ATTACHMENT_UPLOADED:
 
