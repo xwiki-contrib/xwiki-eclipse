@@ -20,6 +20,8 @@
 package org.xwiki.eclipse.storage;
 
 import java.io.File;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -765,21 +767,28 @@ public class RestRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStorag
      *      java.lang.String)
      */
     @Override
-    public void uploadAttachment(XWikiEclipsePageSummary pageSummary, String filePath)
+    public void uploadAttachment(XWikiEclipsePageSummary pageSummary, URL fileUrl)
     {
-        File f = new File(filePath);
+        File f;
+        try {
+            f = new File(fileUrl.toURI());
+            String attachmentUrl = null;
+            /* this field may be null as the page may does not contain any attachments before */
+            String attachmentsUrl = pageSummary.getAttachmentsUrl();
+            if (attachmentsUrl != null) {
+                attachmentUrl = attachmentsUrl + "/" + f.getName();
+            } else {
+                /* construct one */
+                attachmentUrl = pageSummary.getPageUrl() + "/" + "attachments" + "/" + f.getName();
+            }
 
-        String attachmentUrl = null;
-        /* this field may be null as the page may does not contain any attachments before */
-        String attachmentsUrl = pageSummary.getAttachmentsUrl();
-        if (attachmentsUrl != null) {
-            attachmentUrl = attachmentsUrl + "/" + f.getName();
-        } else {
-            /* construct one */
-            attachmentUrl = pageSummary.getPageUrl() + "/" + "attachments" + "/" + f.getName();
+            restRemoteStorage.uploadAttachment(attachmentUrl, f.getName(), fileUrl);
+
+        } catch (URISyntaxException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
 
-        restRemoteStorage.uploadAttachment(attachmentUrl, f.getName(), filePath);
     }
 
     /**
@@ -814,11 +823,75 @@ public class RestRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStorag
      *      java.lang.String)
      */
     @Override
-    public void updateAttachment(XWikiEclipseAttachment attachment, String filePath)
+    public void updateAttachment(XWikiEclipseAttachment attachment, URL fileUrl)
     {
         String attachmentUrl = attachment.getAttachmentUrl();
 
-        restRemoteStorage.uploadAttachment(attachmentUrl, attachment.getName(), filePath);
+        restRemoteStorage.uploadAttachment(attachmentUrl, attachment.getName(), fileUrl);
 
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#getAllTagsInWiki(org.xwiki.eclipse.model.ModelObject)
+     */
+    @Override
+    public List<XWikiEclipseTag> getAllTagsInWiki(ModelObject o)
+    {
+        List<XWikiEclipseTag> result = new ArrayList<XWikiEclipseTag>();
+
+        if (o instanceof XWikiEclipsePageSummary) {
+            String wikiName = ((XWikiEclipsePageSummary) o).getWiki();
+            List<Tag> tags = restRemoteStorage.getAllTagsInWiki(wikiName);
+            for (Tag tag : tags) {
+                XWikiEclipseTag t = new XWikiEclipseTag(dataManager);
+
+                t.setName(tag.getName());
+                List<Link> links = tag.getLinks();
+                for (Link link : links) {
+                    if (link.getRel().equals(Relations.TAG)) {
+                        t.setUrl(link.getHref());
+                    }
+                }
+
+                result.add(t);
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#addTag(org.xwiki.eclipse.model.XWikiEclipsePageSummary,
+     *      java.lang.String)
+     */
+    @Override
+    public XWikiEclipseTag addTag(XWikiEclipsePageSummary pageSummary, String tagName)
+    {
+        String tagsUrl = pageSummary.getTagsUrl();
+        if (tagsUrl == null) {
+            tagsUrl = pageSummary.getPageUrl() + "/tags";
+        }
+
+        List<Tag> tags = this.restRemoteStorage.addTag(tagsUrl, tagName);
+
+        XWikiEclipseTag result = new XWikiEclipseTag(dataManager);
+        for (Tag t : tags) {
+            if (t.getName().equals(tagName)) {
+                result.setName(t.getName());
+                List<Link> links = t.getLinks();
+                for (Link link : links) {
+                    if (link.getRel().equals(Relations.TAG)) {
+                        result.setUrl(link.getHref());
+                    }
+                }
+                break;
+            }
+        }
+
+        return result;
     }
 }
