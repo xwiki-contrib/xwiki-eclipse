@@ -19,6 +19,7 @@
  */
 package org.xwiki.eclipse.storage;
 
+import java.net.URL;
 import java.util.List;
 
 import org.xwiki.eclipse.model.ModelObject;
@@ -138,9 +139,9 @@ public interface IRemoteXWikiDataStorage
 
     /**
      * @param pageSummary
-     * @param filePath
+     * @param fileUrl
      */
-    void uploadAttachment(XWikiEclipsePageSummary pageSummary, String filePath);
+    void uploadAttachment(XWikiEclipsePageSummary pageSummary, URL fileUrl);
 
     /**
      * @param pageSummary
@@ -150,7 +151,20 @@ public interface IRemoteXWikiDataStorage
 
     /**
      * @param attachment
-     * @param filePath
+     * @param fileUrl
      */
-    void updateAttachment(XWikiEclipseAttachment attachment, String filePath);
+    void updateAttachment(XWikiEclipseAttachment attachment, URL fileUrl);
+
+    /**
+     * @param o
+     * @return
+     */
+    List<XWikiEclipseTag> getAllTagsInWiki(ModelObject o);
+
+    /**
+     * @param pageSummary
+     * @param tagName
+     * @return
+     */
+    XWikiEclipseTag addTag(XWikiEclipsePageSummary pageSummary, String tagName);
 }
