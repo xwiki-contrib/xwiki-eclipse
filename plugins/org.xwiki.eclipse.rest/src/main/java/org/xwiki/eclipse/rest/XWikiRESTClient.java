@@ -23,6 +23,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -248,8 +250,7 @@ public class XWikiRESTClient
         return response;
     }
 
-    protected HttpResponse executePutXml(String uri, java.lang.Object object, String userName, String password)
-        throws Exception
+    protected HttpResponse executePutXml(String uri, java.lang.Object object) throws Exception
     {
         DefaultHttpClient httpClient = new DefaultHttpClient();
 
@@ -261,6 +262,9 @@ public class XWikiRESTClient
         request.addHeader("Accept", MediaType.APPLICATION_XML);
 
         ByteArrayOutputStream os = new ByteArrayOutputStream();
+        // StringWriter writer = new StringWriter();
+        // marshaller.marshal(object, writer);
+        // System.out.println("content = " + writer.toString());
         marshaller.marshal(object, os);
         HttpEntity entity = new ByteArrayEntity(os.toByteArray());
         request.setEntity(entity);
@@ -785,9 +789,9 @@ public class XWikiRESTClient
      * 
      * @param attachmentUrl
      * @param attachmentName
-     * @param filePath
+     * @param fileUrl
      */
-    public void uploadAttachment(String attachmentUrl, String attachmentName, String filePath)
+    public void uploadAttachment(String attachmentUrl, String attachmentName, URL fileUrl)
     {
         DefaultHttpClient httpClient = new DefaultHttpClient();
 
@@ -798,7 +802,7 @@ public class XWikiRESTClient
             request.addHeader(new BasicScheme().authenticate(creds, request));
             request.addHeader("Accept", MediaType.APPLICATION_XML);
 
-            File file = new File(filePath);
+            File file = new File(fileUrl.toURI());
             byte[] bytes = FileUtils.readFileToByteArray(file);
             ByteArrayEntity bin = new ByteArrayEntity(bytes);
 
@@ -829,6 +833,57 @@ public class XWikiRESTClient
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
+        } catch (URISyntaxException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * @param allTagsUrl
+     * @return
+     */
+    public List<Tag> getAllTags(String allTagsUrl) throws Exception
+    {
+        HttpResponse response;
+        try {
+            response = executeGet(allTagsUrl, username, password);
+            Tags result = (Tags) unmarshaller.unmarshal(response.getEntity().getContent());
+            return result.getTags();
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+    /**
+     * FIXME: it only takes the <tags> element
+     * 
+     * @param tagsUrl
+     * @param tagName
+     * @return
+     */
+    public List<Tag> addTag(String tagsUrl, String tagName) throws Exception
+    {
+        HttpResponse response;
+        try {
+            Tag tag = new Tag();
+            tag.setName(tagName);
+
+            List<Tag> tags = getAllTags(tagsUrl);
+            tags.add(tag);
+
+            Tags tagsElement = new Tags();
+            tagsElement.withTags(tags);
+
+            response = executePutXml(tagsUrl, tagsElement);
+            Tags tagsResponse = (Tags) unmarshaller.unmarshal(response.getEntity().getContent());
+            return tagsResponse.getTags();
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            throw e;
         }
     }
 }
