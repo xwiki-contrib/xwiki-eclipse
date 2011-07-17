@@ -60,8 +60,8 @@ public class XWikiEclipseAttachmentActionProvider extends CommonActionProvider
     @Override
     public void fillContextMenu(IMenuManager menu)
     {
+        menu.appendToGroup(ICommonMenuConstants.GROUP_NEW, download);
+        menu.appendToGroup(ICommonMenuConstants.GROUP_NEW, update);
         super.fillContextMenu(menu);
-        menu.appendToGroup(ICommonMenuConstants.GROUP_EDIT, download);
-        menu.appendToGroup(ICommonMenuConstants.GROUP_EDIT, update);
     }
 }
