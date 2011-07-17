@@ -253,8 +253,9 @@ public class XWikiEclipseAttachmentWizard extends Wizard implements INewWizard
                             @Override
                             public void run() throws Exception
                             {
-                                dataManager.uploadAttachment(pageSummaryOfUploadingAttachment,
-                                    filesToBeUploaded.get(idx));
+                                String path = filesToBeUploaded.get(idx);
+                                dataManager.uploadAttachment(pageSummaryOfUploadingAttachment, new File(path).toURI()
+                                    .toURL());
                             }
                         });
 
@@ -311,7 +312,8 @@ public class XWikiEclipseAttachmentWizard extends Wizard implements INewWizard
                                     @Override
                                     public void run() throws Exception
                                     {
-                                        dataManager.updateAttachment(attachment, filePath);
+                                        String path = filePath;
+                                        dataManager.updateAttachment(attachment, new File(path).toURI().toURL());
                                     }
                                 });
                             }
@@ -584,6 +586,7 @@ public class XWikiEclipseAttachmentWizard extends Wizard implements INewWizard
             value.setText(pageSummaryOfUploadingAttachment.getSpace() == null ? "" : pageSummaryOfUploadingAttachment
                 .getSpace());
 
+            /* attachment group */
             attachmentGroup = new Group(composite, SWT.SHADOW_ETCHED_IN);
             attachmentGroup.setText("Attachment to be uploaded");
 
