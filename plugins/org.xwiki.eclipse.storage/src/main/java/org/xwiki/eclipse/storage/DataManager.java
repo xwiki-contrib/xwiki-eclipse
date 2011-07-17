@@ -1,5 +1,6 @@
 package org.xwiki.eclipse.storage;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -1198,12 +1199,12 @@ public class DataManager
 
     /**
      * @param pageSummary
-     * @param filePaths
+     * @param fileUrl
      */
-    public void uploadAttachment(XWikiEclipsePageSummary pageSummary, String filePath)
+    public void uploadAttachment(XWikiEclipsePageSummary pageSummary, URL fileUrl)
     {
         if (isConnected()) {
-            remoteXWikiDataStorage.uploadAttachment(pageSummary, filePath);
+            remoteXWikiDataStorage.uploadAttachment(pageSummary, fileUrl);
         }
 
     }
@@ -1225,13 +1226,41 @@ public class DataManager
 
     /**
      * @param attachment
-     * @param filePath
+     * @param fileUrl
      */
-    public void updateAttachment(XWikiEclipseAttachment attachment, String filePath)
+    public void updateAttachment(XWikiEclipseAttachment attachment, URL fileUrl)
     {
         if (isConnected()) {
-            remoteXWikiDataStorage.updateAttachment(attachment, filePath);
+            remoteXWikiDataStorage.updateAttachment(attachment, fileUrl);
         }
 
+    }
+
+    /**
+     * @param o
+     * @return
+     */
+    public List<XWikiEclipseTag> getAllTagsInWiki(ModelObject o)
+    {
+        List<XWikiEclipseTag> result = null;
+
+        if (o instanceof XWikiEclipsePageSummary) {
+            result = remoteXWikiDataStorage.getAllTagsInWiki(o);
+        }
+        return result;
+    }
+
+    /**
+     * @param pageSummary
+     * @param tag
+     */
+    public XWikiEclipseTag addTag(XWikiEclipsePageSummary pageSummary, String tag)
+    {
+        XWikiEclipseTag result = null;
+        if (isConnected()) {
+            result = remoteXWikiDataStorage.addTag(pageSummary, tag);
+        }
+
+        return result;
     }
 }
