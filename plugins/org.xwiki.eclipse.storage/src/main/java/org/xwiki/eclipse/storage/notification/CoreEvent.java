@@ -49,7 +49,10 @@ public class CoreEvent
         SPACE_REMOVED,
         COMMENT_REMOVED,
         COMMENT_STORED,
-        ATTACHMENT_REMOVED;
+        ATTACHMENT_REMOVED,
+        ATTACHMENT_UPLOADED,
+        ATTACHMENT_UPDATED,
+        TAG_STORED;
     }
 
     /**
