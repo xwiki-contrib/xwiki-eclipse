@@ -257,6 +257,15 @@
         </instanceof>
      </enablement>
   </actionProvider>
+  <actionProvider
+        class="org.xwiki.eclipse.ui.actions.XWikiEclipseClassActionProvider"
+        id="org.xwiki.eclipse.ui.actions.XWikiEclipseClassActionProvider">
+     <enablement>
+        <instanceof
+              value="org.xwiki.eclipse.model.XWikiEclipseClass">
+        </instanceof>
+     </enablement>
+  </actionProvider>
 	</extension>
 	<extension point="org.eclipse.core.runtime.adapters">
 		<factory adaptableType="org.xwiki.eclipse.storage.DataManager" class="org.xwiki.eclipse.ui.adapters.AdapterFactory">

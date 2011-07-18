@@ -617,7 +617,7 @@ public class XWikiRESTClient
      * @param classUrl
      * @return
      */
-    public Class getPageClass(String classUrl) throws Exception
+    public Class getClass(String classUrl) throws Exception
     {
         HttpResponse response;
         try {

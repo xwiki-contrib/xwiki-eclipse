@@ -169,7 +169,7 @@ public class RestRemoteXWikiDataStorage
     public org.xwiki.rest.model.jaxb.Class getClass(String classUrl)
     {
         try {
-            return this.restRemoteClient.getPageClass(classUrl);
+            return this.restRemoteClient.getClass(classUrl);
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

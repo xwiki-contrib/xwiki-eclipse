@@ -440,6 +440,26 @@ public class RestRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStorag
 
         }
 
+        /* populate the properties for page class */
+        List<Property> properties = this.restRemoteStorage.getObjectProperties(result.getPropertiesUrl());
+
+        for (Property property : properties) {
+            XWikiEclipseObjectProperty p = new XWikiEclipseObjectProperty(dataManager);
+            p.setName(property.getName());
+            p.setType(property.getType());
+            p.setValue(property.getValue());
+            Map<String, String> attributeMap = new HashMap<String, String>();
+
+            List<Attribute> attributes = property.getAttributes();
+            for (Attribute attribute : attributes) {
+                attributeMap.put(attribute.getName(), attribute.getValue());
+            }
+
+            p.setAttributes(attributeMap);
+
+            result.getProperties().add(p);
+        }
+
         return result;
     }
 

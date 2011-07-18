@@ -20,6 +20,7 @@
  */
 package org.xwiki.eclipse.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.xwiki.eclipse.storage.DataManager;
@@ -111,6 +112,10 @@ public class XWikiEclipseClass extends ModelObject
 
     public List<XWikiEclipseObjectProperty> getProperties()
     {
+        if (properties == null) {
+            properties = new ArrayList<XWikiEclipseObjectProperty>();
+        }
+
         return properties;
     }
 
