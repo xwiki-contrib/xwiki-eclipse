@@ -41,21 +41,47 @@ public class XWikiEclipseObjectSummaryAdapter extends WorkbenchAdapter
             XWikiEclipseObjectSummary objectSummary = (XWikiEclipseObjectSummary) object;
 
             int number = objectSummary.getNumber();
-
+            /*
+             * display the property name and value, see the implementation in (1)
+             * https://github.com/xwiki/xwiki-platform/blob/master
+             * /xwiki-platform-core/xwiki-platform-web/src/main/webapp/templates/editobject.vm#L57 (2)
+             * https://github.com/xwiki/xwiki-platform/pull/15/files
+             */
             String label = "[" + number + "] : ";
             List<XWikiEclipseObjectProperty> objectProperties =
                 objectSummary.getDataManager().getObjectProperties(objectSummary);
 
-            boolean noAuthorProperty = true;
+            boolean findNameAndTitle = false, foundStringProperty = false;
             for (XWikiEclipseObjectProperty property : objectProperties) {
-                if (property.getName().equals("author")) {
+                /* look for author first */
+                String propertyName = property.getName().toLowerCase();
+                if (propertyName.indexOf("author") >= 0) {
                     label += property.getValue();
-                    noAuthorProperty = false;
+                    return label;
+                }
+            }
+            for (XWikiEclipseObjectProperty property : objectProperties) {
+                String propertyName = property.getName().toLowerCase();
+
+                if (propertyName.indexOf("name") >= 0 || propertyName.indexOf("title") >= 0) {
+                    /* look for name and title */
+                    findNameAndTitle = true;
+                    label += property.getValue();
+                    return label;
                 }
             }
 
-            if (noAuthorProperty) {
-                label += objectSummary.getClassName();
+            for (XWikiEclipseObjectProperty property : objectProperties) {
+                if (!findNameAndTitle) {
+                    if (property.getType().indexOf("StringClass") >= 0 && !foundStringProperty) {
+                        foundStringProperty = true;
+                        label += property.getValue();
+                        return label;
+                    } else if (!(property.getType().indexOf("TextAreaClass") >= 0) && !foundStringProperty) {
+                        label += property.getValue();
+                        return label;
+                    }
+                }
             }
 
             return label;
