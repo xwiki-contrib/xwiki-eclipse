@@ -20,6 +20,8 @@
  */
 package org.xwiki.eclipse.model;
 
+import java.util.List;
+
 import org.xwiki.eclipse.storage.DataManager;
 
 /**
@@ -33,6 +35,16 @@ public class XWikiEclipseClass extends ModelObject
 
     private String id;
 
+    private String name;
+
+    private String objectsUrl;
+
+    private String propertiesUrl;
+
+    private String url;
+
+    private List<XWikiEclipseObjectProperty> properties;
+
     public XWikiEclipseClass(DataManager dataManager)
     {
         super(dataManager);
@@ -44,7 +56,7 @@ public class XWikiEclipseClass extends ModelObject
     @Override
     public String getXWikiEclipseId()
     {
-        return String.format("xwikieclipse://%s/class/%s", getDataManager().getName(), getId()); //$NON-NLS-1$
+        return String.format("xwikieclipse://%s/class/%s/summary", getDataManager().getName(), getId()); //$NON-NLS-1$
     }
 
     public String getId()
@@ -55,5 +67,55 @@ public class XWikiEclipseClass extends ModelObject
     public void setId(String id)
     {
         this.id = id;
+    }
+
+    public String getName()
+    {
+        return name;
+    }
+
+    public void setName(String name)
+    {
+        this.name = name;
+    }
+
+    public String getObjectsUrl()
+    {
+        return objectsUrl;
+    }
+
+    public void setObjectsUrl(String objectsUrl)
+    {
+        this.objectsUrl = objectsUrl;
+    }
+
+    public String getPropertiesUrl()
+    {
+        return propertiesUrl;
+    }
+
+    public void setPropertiesUrl(String propertiesUrl)
+    {
+        this.propertiesUrl = propertiesUrl;
+    }
+
+    public String getUrl()
+    {
+        return url;
+    }
+
+    public void setUrl(String url)
+    {
+        this.url = url;
+    }
+
+    public List<XWikiEclipseObjectProperty> getProperties()
+    {
+        return properties;
+    }
+
+    public void setProperties(List<XWikiEclipseObjectProperty> properties)
+    {
+        this.properties = properties;
     }
 }
