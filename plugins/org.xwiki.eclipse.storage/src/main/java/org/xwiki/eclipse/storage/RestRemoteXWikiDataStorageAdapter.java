@@ -30,7 +30,7 @@ import java.util.StringTokenizer;
 
 import org.xwiki.eclipse.model.ModelObject;
 import org.xwiki.eclipse.model.XWikiEclipseAttachment;
-import org.xwiki.eclipse.model.XWikiEclipseClassSummary;
+import org.xwiki.eclipse.model.XWikiEclipseClass;
 import org.xwiki.eclipse.model.XWikiEclipseComment;
 import org.xwiki.eclipse.model.XWikiEclipseObject;
 import org.xwiki.eclipse.model.XWikiEclipseObjectProperty;
@@ -414,21 +414,30 @@ public class RestRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStorag
      * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#getClasses(org.xwiki.eclipse.model.XWikiEclipsePageSummary)
      */
     @Override
-    public XWikiEclipseClassSummary getPageClassSummary(XWikiEclipsePageSummary pageSummary)
+    public XWikiEclipseClass getClass(XWikiEclipsePageSummary pageSummary)
     {
         XWikiEclipsePage page = getPage(pageSummary);
 
-        org.xwiki.rest.model.jaxb.Class classSummary = this.restRemoteStorage.getPageClass(page.getPageClassUrl());
+        org.xwiki.rest.model.jaxb.Class classSummary = this.restRemoteStorage.getClass(page.getClassUrl());
 
-        XWikiEclipseClassSummary result = new XWikiEclipseClassSummary(dataManager);
+        XWikiEclipseClass result = new XWikiEclipseClass(dataManager);
         result.setId(classSummary.getId());
         result.setName(classSummary.getName());
 
         List<Link> links = classSummary.getLinks();
         for (Link link : links) {
-            if (link.getHref().equals(Relations.OBJECTS)) {
+            if (link.getRel().equals(Relations.OBJECTS)) {
                 result.setObjectsUrl(link.getHref());
             }
+
+            if (link.getRel().equals(Relations.PROPERTIES)) {
+                result.setPropertiesUrl(link.getHref());
+            }
+
+            if (link.getRel().equals(Relations.SELF)) {
+                result.setUrl(link.getHref());
+            }
+
         }
 
         return result;
@@ -591,7 +600,7 @@ public class RestRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStorag
         List<Link> links = page.getLinks();
         for (Link link : links) {
             if (link.getRel().equals(Relations.CLASS)) {
-                result.setPageClassUrl(link.getHref());
+                result.setClassUrl(link.getHref());
             }
         }
 

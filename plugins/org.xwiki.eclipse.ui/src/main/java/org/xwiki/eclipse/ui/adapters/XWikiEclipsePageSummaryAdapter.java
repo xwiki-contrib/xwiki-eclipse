@@ -36,7 +36,7 @@ import org.eclipse.ui.progress.IElementCollector;
 import org.xwiki.eclipse.core.CoreLog;
 import org.xwiki.eclipse.model.ModelObject;
 import org.xwiki.eclipse.model.XWikiEclipseAttachment;
-import org.xwiki.eclipse.model.XWikiEclipseClassSummary;
+import org.xwiki.eclipse.model.XWikiEclipseClass;
 import org.xwiki.eclipse.model.XWikiEclipseComment;
 import org.xwiki.eclipse.model.XWikiEclipseObjectCollection;
 import org.xwiki.eclipse.model.XWikiEclipseObjectSummary;
@@ -65,7 +65,7 @@ public class XWikiEclipsePageSummaryAdapter extends WorkbenchAdapter implements 
 
                 List<XWikiEclipseObjectSummary> objects = dataManager.getObjectSummaries(pageSummary);
                 List<XWikiEclipseAttachment> attachments = dataManager.getAttachments(pageSummary);
-                XWikiEclipseClassSummary pageClass = dataManager.getPageClass(pageSummary);
+                XWikiEclipseClass pageClass = dataManager.getClass(pageSummary);
                 List<XWikiEclipseTag> tags = dataManager.getTags(pageSummary);
                 List<XWikiEclipseComment> comments = dataManager.getComments(pageSummary);
 

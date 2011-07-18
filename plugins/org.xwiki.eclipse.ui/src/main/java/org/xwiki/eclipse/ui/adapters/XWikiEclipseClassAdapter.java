@@ -26,20 +26,20 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.model.WorkbenchAdapter;
 import org.eclipse.ui.progress.IDeferredWorkbenchAdapter;
 import org.eclipse.ui.progress.IElementCollector;
-import org.xwiki.eclipse.model.XWikiEclipseClassSummary;
+import org.xwiki.eclipse.model.XWikiEclipseClass;
 import org.xwiki.eclipse.ui.UIConstants;
 import org.xwiki.eclipse.ui.UIPlugin;
 
 /**
  * @version $Id$
  */
-public class XWikiEclipseClassSummaryAdapter extends WorkbenchAdapter implements IDeferredWorkbenchAdapter
+public class XWikiEclipseClassAdapter extends WorkbenchAdapter implements IDeferredWorkbenchAdapter
 {
     @Override
     public Object[] getChildren(Object object)
     {
-        if (object instanceof XWikiEclipseClassSummary) {
-            final XWikiEclipseClassSummary classSummary = (XWikiEclipseClassSummary) object;
+        if (object instanceof XWikiEclipseClass) {
+            final XWikiEclipseClass classSummary = (XWikiEclipseClass) object;
 
             // try {
             // // XW
@@ -65,8 +65,8 @@ public class XWikiEclipseClassSummaryAdapter extends WorkbenchAdapter implements
     @Override
     public String getLabel(Object object)
     {
-        if (object instanceof XWikiEclipseClassSummary) {
-            XWikiEclipseClassSummary classSummary = (XWikiEclipseClassSummary) object;
+        if (object instanceof XWikiEclipseClass) {
+            XWikiEclipseClass classSummary = (XWikiEclipseClass) object;
             /* a generic class name instead of space.class */
             return "Class";
         }
@@ -77,7 +77,7 @@ public class XWikiEclipseClassSummaryAdapter extends WorkbenchAdapter implements
     @Override
     public ImageDescriptor getImageDescriptor(Object object)
     {
-        if (object instanceof XWikiEclipseClassSummary) {
+        if (object instanceof XWikiEclipseClass) {
             return UIPlugin.getImageDescriptor(UIConstants.CLASS_ICON);
         }
 
@@ -105,7 +105,7 @@ public class XWikiEclipseClassSummaryAdapter extends WorkbenchAdapter implements
     @Override
     public boolean isContainer()
     {
-        return true;
+        return false;
     }
 
     /**

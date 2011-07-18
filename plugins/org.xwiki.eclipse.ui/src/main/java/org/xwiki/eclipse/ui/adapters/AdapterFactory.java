@@ -25,7 +25,7 @@ import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.eclipse.ui.model.IWorkbenchAdapter2;
 import org.eclipse.ui.progress.IDeferredWorkbenchAdapter;
 import org.xwiki.eclipse.model.XWikiEclipseAttachment;
-import org.xwiki.eclipse.model.XWikiEclipseClassSummary;
+import org.xwiki.eclipse.model.XWikiEclipseClass;
 import org.xwiki.eclipse.model.XWikiEclipseComment;
 import org.xwiki.eclipse.model.XWikiEclipseObjectCollection;
 import org.xwiki.eclipse.model.XWikiEclipseObjectSummary;
@@ -58,7 +58,7 @@ public class AdapterFactory implements IAdapterFactory
     private XWikiEclipseObjectCollectionAdapter xwikiEclipseObjectCollectionAdapter =
         new XWikiEclipseObjectCollectionAdapter();
 
-    private XWikiEclipseClassSummaryAdapter xwikiEclipseClassSummaryAdapter = new XWikiEclipseClassSummaryAdapter();
+    private XWikiEclipseClassAdapter xwikiEclipseClassSummaryAdapter = new XWikiEclipseClassAdapter();
 
     private XWikiEclipseTagAdapter xwikiEclipseTagAdapter = new XWikiEclipseTagAdapter();
 
@@ -130,11 +130,11 @@ public class AdapterFactory implements IAdapterFactory
         /*
          * Adapters for XWikiEclipseClassSummary
          */
-        if ((adaptableObject instanceof XWikiEclipseClassSummary) && adapterType.equals(IWorkbenchAdapter.class)) {
+        if ((adaptableObject instanceof XWikiEclipseClass) && adapterType.equals(IWorkbenchAdapter.class)) {
             return xwikiEclipseClassSummaryAdapter;
         }
 
-        if ((adaptableObject instanceof XWikiEclipseClassSummary)
+        if ((adaptableObject instanceof XWikiEclipseClass)
             && adapterType.equals(IDeferredWorkbenchAdapter.class)) {
             return xwikiEclipseClassSummaryAdapter;
         }

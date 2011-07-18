@@ -97,7 +97,7 @@
              value="org.xwiki.eclipse.model.XWikiEclipsePageSummary">
        </instanceof>
        <instanceof
-             value="org.xwiki.eclipse.model.XWikiEclipseClassSummary">
+             value="org.xwiki.eclipse.model.XWikiEclipseClass">
        </instanceof>
 	   <instanceof
              value="org.xwiki.eclipse.model.XWikiEclipseObjectCollection">
@@ -126,7 +126,7 @@
                </instanceof>
 					<instanceof value="org.xwiki.eclipse.model.XWikiEclipsePageSummary">
                </instanceof>
-					<instanceof value="org.xwiki.eclipse.model.XWikiEclipseClassSummary">
+					<instanceof value="org.xwiki.eclipse.model.XWikiEclipseClass">
                </instanceof>               
 					<instanceof value="org.xwiki.eclipse.model.XWikiEclipseObjectSummary">
                </instanceof>					
@@ -296,7 +296,7 @@
          type="org.eclipse.ui.progress.IDeferredWorkbenchAdapter">
    </adapter>
 		</factory>		
-	<factory adaptableType="org.xwiki.eclipse.model.XWikiEclipseClassSummary" class="org.xwiki.eclipse.ui.adapters.AdapterFactory">
+	<factory adaptableType="org.xwiki.eclipse.model.XWikiEclipseClass" class="org.xwiki.eclipse.ui.adapters.AdapterFactory">
 			<adapter type="org.eclipse.ui.model.IWorkbenchAdapter">
          </adapter>
    <adapter
@@ -396,6 +396,13 @@
         id="org.xwiki.eclipse.ui.properties.XWikiEclipseTag"
         name="Tag"
         objectClass="org.xwiki.eclipse.model.XWikiEclipseTag">
+  </page>
+  <page
+        class="org.xwiki.eclipse.ui.properties.XWikiEclipseClassPropertiesPage"
+        icon="icons/class.png"
+        id="org.xwiki.eclipse.ui.properties.XWikiEclipseClass"
+        name="Class"
+        objectClass="org.xwiki.eclipse.model.XWikiEclipseClass">
   </page>
 	</extension>
 	<extension point="org.eclipse.ui.commands">

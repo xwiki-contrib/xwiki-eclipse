@@ -15,7 +15,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.QualifiedName;
 import org.xwiki.eclipse.model.ModelObject;
 import org.xwiki.eclipse.model.XWikiEclipseAttachment;
-import org.xwiki.eclipse.model.XWikiEclipseClassSummary;
+import org.xwiki.eclipse.model.XWikiEclipseClass;
 import org.xwiki.eclipse.model.XWikiEclipseComment;
 import org.xwiki.eclipse.model.XWikiEclipseObject;
 import org.xwiki.eclipse.model.XWikiEclipseObjectProperty;
@@ -1040,11 +1040,11 @@ public class DataManager
      * @param pageSummary
      * @return
      */
-    public XWikiEclipseClassSummary getPageClass(XWikiEclipsePageSummary pageSummary)
+    public XWikiEclipseClass getClass(XWikiEclipsePageSummary pageSummary)
     {
-        XWikiEclipseClassSummary result = null;
+        XWikiEclipseClass result = null;
         if (isConnected()) {
-            result = remoteXWikiDataStorage.getPageClassSummary(pageSummary);
+            result = remoteXWikiDataStorage.getClass(pageSummary);
             return result;
         }
 

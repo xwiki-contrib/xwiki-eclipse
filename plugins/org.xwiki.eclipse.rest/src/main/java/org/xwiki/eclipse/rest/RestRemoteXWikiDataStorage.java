@@ -166,7 +166,7 @@ public class RestRemoteXWikiDataStorage
      * @param pageSummary
      * @return
      */
-    public org.xwiki.rest.model.jaxb.Class getPageClass(String classUrl)
+    public org.xwiki.rest.model.jaxb.Class getClass(String classUrl)
     {
         try {
             return this.restRemoteClient.getPageClass(classUrl);
