@@ -42,10 +42,8 @@ public class XWikiEclipseObjectSummaryAdapter extends WorkbenchAdapter
 
             int number = objectSummary.getNumber();
             /*
-             * display the property name and value, see the implementation in (1)
-             * https://github.com/xwiki/xwiki-platform/blob/master
-             * /xwiki-platform-core/xwiki-platform-web/src/main/webapp/templates/editobject.vm#L57 (2)
-             * https://github.com/xwiki/xwiki-platform/pull/15/files
+             * display the property name and value, the priority: author -> name or title -> the first stringClass ->
+             * the first non-textarea class
              */
             String label = "[" + number + "] : ";
             List<XWikiEclipseObjectProperty> objectProperties =
