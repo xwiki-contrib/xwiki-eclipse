@@ -20,6 +20,9 @@
  */
 package org.xwiki.eclipse.ui.editors.propertyeditors;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
@@ -69,11 +72,15 @@ public class UserPropertyEditor extends BasePropertyEditor
         toolkit.paintBordersFor(tree);
 
         this.allowedValues = property.getAttribute("allowedValues");
+
         String[] values = this.allowedValues.split(",");
         for (String s : values) {
             TreeItem item = new TreeItem(tree, SWT.NONE);
             item.setText(s);
         }
+        /* always add a guest user */
+        TreeItem item = new TreeItem(tree, SWT.NONE);
+        item.setText("XWiki.XWikiGuest");
 
         tree.addSelectionListener(new SelectionListener()
         {
@@ -113,14 +120,31 @@ public class UserPropertyEditor extends BasePropertyEditor
     public void setValue(Object value)
     {
         if (value instanceof String) {
-            TreeItem[] items = tree.getItems();
-            for (TreeItem item : items) {
-                if (item.getText().equals((String) value)) {
-                    tree.setSelection(item);
-                    break;
+            String[] v = ((String) value).split(",");
+            if (v.length > 1) {
+                TreeItem[] items = tree.getItems();
+                List<TreeItem> selectedItems = new ArrayList<TreeItem>();
+                for (TreeItem item : items) {
+                    for (int i = 0; i < v.length; i++) {
+                        if (item.getText().equals(v[i])) {
+                            selectedItems.add(item);
+                            break;
+                        }
+                    }
+                }
+
+                TreeItem[] selected = new TreeItem[selectedItems.size()];
+                selectedItems.toArray(selected);
+                tree.setSelection(selected);
+            } else {
+                TreeItem[] items = tree.getItems();
+                for (TreeItem item : items) {
+                    if (item.getText().equals((String) value)) {
+                        tree.setSelection(item);
+                        break;
+                    }
                 }
             }
         }
     }
-
 }
