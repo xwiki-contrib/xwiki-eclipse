@@ -29,6 +29,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.xwiki.eclipse.core.CoreLog;
+import org.xwiki.eclipse.model.XWikiEclipseClass;
 import org.xwiki.eclipse.model.XWikiEclipseComment;
 import org.xwiki.eclipse.model.XWikiEclipseObject;
 import org.xwiki.eclipse.model.XWikiEclipseObjectSummary;
@@ -101,7 +102,16 @@ public class OpenXWikiModelObjectAction extends Action
                         "There was an error while opening the editor.");
                 }
             }
-
+            if (object instanceof XWikiEclipseClass) {
+                final XWikiEclipseClass clazz = (XWikiEclipseClass) object;
+                try {
+                    PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+                        .openEditor(new ObjectEditorInput(clazz), ObjectEditor.ID);
+                } catch (PartInitException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
             if (object instanceof XWikiEclipseObjectSummary) {
                 final XWikiEclipseObjectSummary objectSummary = (XWikiEclipseObjectSummary) object;
 
