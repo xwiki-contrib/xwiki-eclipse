@@ -647,6 +647,30 @@ public class RestRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStorag
 
         org.xwiki.rest.model.jaxb.Object object = restRemoteStorage.getObject(objectUrl);
         result.setName(object.getId());
+        result.setClassName(object.getClassName());
+        result.setId(object.getId());
+        result.setPageId(object.getPageId());
+        result.setSpace(object.getSpace());
+        result.setWiki(object.getWiki());
+
+        List<Property> props = object.getProperties();
+
+        for (Property property : props) {
+            XWikiEclipseObjectProperty p = new XWikiEclipseObjectProperty(dataManager);
+            p.setName(property.getName());
+            p.setType(property.getType());
+            p.setValue(property.getValue());
+            Map<String, String> attributeMap = new HashMap<String, String>();
+
+            List<Attribute> attributes = property.getAttributes();
+            for (Attribute attribute : attributes) {
+                attributeMap.put(attribute.getName(), attribute.getValue());
+            }
+
+            p.setAttributes(attributeMap);
+
+            result.getProperties().add(p);
+        }
 
         return result;
     }
