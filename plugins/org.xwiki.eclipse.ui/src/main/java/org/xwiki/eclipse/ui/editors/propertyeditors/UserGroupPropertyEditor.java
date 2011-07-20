@@ -38,7 +38,7 @@ import org.xwiki.eclipse.model.XWikiEclipseObjectProperty;
 /**
  * @version $Id$
  */
-public class UserPropertyEditor extends BasePropertyEditor
+public class UserGroupPropertyEditor extends BasePropertyEditor
 {
     String allowedValues;
 
@@ -46,7 +46,7 @@ public class UserPropertyEditor extends BasePropertyEditor
 
     private boolean multiSelect;
 
-    public UserPropertyEditor(FormToolkit toolkit, Composite parent, XWikiEclipseObjectProperty property)
+    public UserGroupPropertyEditor(FormToolkit toolkit, Composite parent, XWikiEclipseObjectProperty property)
     {
         super(toolkit, parent, property);
     }
@@ -78,9 +78,11 @@ public class UserPropertyEditor extends BasePropertyEditor
             TreeItem item = new TreeItem(tree, SWT.NONE);
             item.setText(s);
         }
-        /* always add a guest user */
-        TreeItem item = new TreeItem(tree, SWT.NONE);
-        item.setText("XWiki.XWikiGuest");
+        /* always add a guest user for user list */
+        if (property.getType().equals("com.xpn.xwiki.objects.classes.UsersClass")) {
+            TreeItem item = new TreeItem(tree, SWT.NONE);
+            item.setText("XWiki.XWikiGuest");
+        }
 
         tree.addSelectionListener(new SelectionListener()
         {
