@@ -21,70 +21,38 @@
 package org.xwiki.eclipse.ui.editors.propertyeditors;
 
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.IStructuredContentProvider;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.jface.viewers.ListViewer;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Tree;
+import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.xwiki.eclipse.model.XWikiEclipseObjectProperty;
 
-class ListContentProvider implements IStructuredContentProvider
-{
-    private Object[] NO_OBJECT = new Object[0];
-
-    public void dispose()
-    {
-        // TODO Auto-generated method stub
-    }
-
-    public void inputChanged(Viewer viewer, Object oldInput, Object newInput)
-    {
-        // TODO Auto-generated method stub
-    }
-
-    public Object[] getElements(Object inputElement)
-    {
-        if (inputElement instanceof List) {
-            List list = (List) inputElement;
-            return list.toArray();
-        }
-
-        if (inputElement instanceof String) {
-            String string = (String) inputElement;
-            return string.split("\\|");
-        }
-
-        return NO_OBJECT;
-    }
-}
-
 /**
- * 
  * @version $Id$
  */
 public class ListPropertyEditor extends BasePropertyEditor
 {
-    ListViewer listViewer;
+    private String allowedValues;
 
-    boolean multiSelect;
+    private Map<String, String> valueTextMap;
+
+    private Tree tree;
+
+    private final static String listSeparator = "\\|";
+
+    private boolean multiSelect;
+
+    private boolean unmodifiable;
 
     public ListPropertyEditor(FormToolkit toolkit, Composite parent, XWikiEclipseObjectProperty property)
     {
@@ -94,35 +62,7 @@ public class ListPropertyEditor extends BasePropertyEditor
     @Override
     public Composite createControl(Composite parent)
     {
-        Section section = toolkit.createSection(parent, Section.TITLE_BAR | Section.EXPANDED);
-        section.setText(property.getPrettyName());
-
-        Composite composite = toolkit.createComposite(section, SWT.NONE);
-        GridLayoutFactory.fillDefaults().extendedMargins(0, 0, 0, 10).applyTo(composite);
-
-        String unModifiableAttributeString = property.getAttribute("unmodifiable");
-        if (unModifiableAttributeString == null || unModifiableAttributeString.equals("0")) {
-            createModifiableStaticListField(toolkit, composite, property);
-        } else {
-            createReadOnlyStaticListField(toolkit, composite, property);
-        }
-
-        section.setClient(composite);
-
-        return section;
-    }
-
-    private Control createReadOnlyStaticListField(FormToolkit toolkit, Composite parent,
-        final XWikiEclipseObjectProperty property)
-    {
-        Composite composite = toolkit.createComposite(parent);
-        GridLayoutFactory.fillDefaults().numColumns(2).applyTo(composite);
-        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, true).applyTo(composite);
-
-        toolkit.createLabel(composite, "Current selection:");
-        final Label currentSelectionLabel = toolkit.createLabel(composite, "");
-        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(currentSelectionLabel);
-
+        /* multiSelect */
         String multiSelectAttributeString = property.getAttribute("multiSelect").toString();
         if (multiSelectAttributeString == null || multiSelectAttributeString.equals("0")) {
             multiSelect = false;
@@ -130,163 +70,157 @@ public class ListPropertyEditor extends BasePropertyEditor
             multiSelect = true;
         }
 
-        listViewer =
-            new ListViewer(composite, SWT.BORDER | SWT.V_SCROLL | SWT.FULL_SELECTION
-                | (multiSelect ? SWT.MULTI : SWT.NONE));
-        listViewer.setContentProvider(new ListContentProvider());
-        listViewer.setLabelProvider(new LabelProvider());
-        listViewer.setInput(property.getAttribute("values"));
-
-        StructuredSelection structuredSelection = null;
-        if (multiSelect) {
-            List list = (List) property.getValue();
-            if (list != null) {
-                structuredSelection = new StructuredSelection(list);
-            }
+        String unModifiableAttributeString = property.getAttribute("unmodifiable");
+        if (unModifiableAttributeString == null || unModifiableAttributeString.equals("0")) {
+            unmodifiable = true;
         } else {
-            Object value = property.getValue();
-            if (value != null) {
-                structuredSelection = new StructuredSelection(value);
-            }
+            unmodifiable = false;
         }
 
-        if (structuredSelection != null) {
-            listViewer.setSelection(structuredSelection, true);
-        }
-        currentSelectionLabel.setText(listViewer.getSelection().toString());
+        Section section = toolkit.createSection(parent, Section.TITLE_BAR | Section.EXPANDED);
+        section.setText(property.getPrettyName() + " " + (unmodifiable ? "[unmodifiable]" : "") + " "
+            + (multiSelect ? "[multiSelect]" : ""));
 
-        listViewer.addSelectionChangedListener(new ISelectionChangedListener()
+        Composite composite = toolkit.createComposite(section, SWT.NONE);
+        GridLayoutFactory.fillDefaults().extendedMargins(0, 0, 0, 10).applyTo(composite);
+
+        tree = toolkit.createTree(composite, SWT.BORDER | SWT.V_SCROLL | (multiSelect ? SWT.MULTI : SWT.NONE));
+        GridDataFactory.fillDefaults().grab(true, false).applyTo(tree);
+        toolkit.paintBordersFor(tree);
+
+        tree.addSelectionListener(new SelectionListener()
         {
-            public void selectionChanged(SelectionChangedEvent event)
+
+            @Override
+            public void widgetSelected(SelectionEvent e)
             {
-                List<String> selectedValues = new ArrayList<String>();
+                TreeItem[] items = tree.getSelection();
 
-                IStructuredSelection selection = (IStructuredSelection) listViewer.getSelection();
-                currentSelectionLabel.setText(selection.toString());
-
-                Iterator iterator = selection.iterator();
-                while (iterator.hasNext()) {
-                    selectedValues.add((String) iterator.next());
-                }
-
-                if (!selectedValues.isEmpty()) {
-                    if (multiSelect) {
-                        property.setValue(selectedValues);
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < items.length; i++) {
+                    TreeItem item = items[i];
+                    if (i == items.length - 1) {
+                        sb.append(item.getText());
                     } else {
-                        property.setValue(selectedValues.get(0));
+                        sb.append(item.getText() + ",");
                     }
-                } else {
-                    currentSelectionLabel.setText("");
                 }
-
+                property.setValue(sb.toString());
                 firePropertyModifyListener();
+            }
+
+            @Override
+            public void widgetDefaultSelected(SelectionEvent e)
+            {
+                // TODO Auto-generated method stub
+
             }
         });
 
-        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).span(2, 1).hint(0,
-            5 * listViewer.getList().getItemHeight()).grab(true, false).applyTo(listViewer.getList());
+        populateTree();
 
-        return composite;
+        section.setClient(composite);
+
+        return section;
     }
 
-    private Control createModifiableStaticListField(FormToolkit toolkit, final Composite parent,
-        final XWikiEclipseObjectProperty property)
+    /**
+     * populate the tree based on the values or allowedValues attribute of this property
+     */
+    private void populateTree()
     {
-        Composite composite = toolkit.createComposite(parent);
-        GridLayoutFactory.fillDefaults().numColumns(2).applyTo(composite);
-        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, true).applyTo(composite);
+        /* values attribute, separated by "|", e.g., value1=text for value1|value2=text for value2 */
+        String valuesAttributeString = property.getAttribute("values");
 
-        listViewer = new ListViewer(composite, SWT.BORDER | SWT.V_SCROLL);
-        listViewer.setContentProvider(new ListContentProvider());
-        listViewer.setLabelProvider(new LabelProvider());
-        listViewer.setInput(property.getValue());
+        if (valueTextMap == null) {
+            valueTextMap = new HashMap<String, String>();
+        }
 
-        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).hint(0, 5 * listViewer.getList().getItemHeight())
-            .grab(true, false).applyTo(listViewer.getList());
-        Composite buttonBar = toolkit.createComposite(composite);
-        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.BEGINNING).applyTo(buttonBar);
-        GridLayoutFactory.fillDefaults().applyTo(buttonBar);
+        if (valuesAttributeString != null && valuesAttributeString.length() > 0) {
+            String[] v = valuesAttributeString.split("\\|");
+            for (int i = 0; i < v.length; i++) {
+                /* parse value and text pair, if no text is specified, use the value */
+                String[] vv = v[i].split("=");
+                if (vv.length > 1) {
+                    TreeItem item = new TreeItem(tree, SWT.NONE);
+                    item.setText(vv[1]);
+                    /* set the value in the data field of tree item */
+                    item.setData(vv[0]);
 
-        Button button = toolkit.createButton(buttonBar, "Add", SWT.PUSH);
-        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(button);
-        button.addSelectionListener(new SelectionListener()
-        {
-            public void widgetDefaultSelected(SelectionEvent e)
-            {
-                // TODO Auto-generated method stub
-            }
+                    valueTextMap.put(vv[0], vv[1]);
+                } else {
+                    TreeItem item = new TreeItem(tree, SWT.NONE);
+                    item.setText(vv[0]);
+                    item.setData(vv[0]);
 
-            public void widgetSelected(SelectionEvent e)
-            {
-                InputDialog input =
-                    new InputDialog(parent.getShell(), "Add value", "Please enter the value to add to the list", "",
-                        null);
-                input.open();
-
-                List list = (List) property.getValue();
-                if (list == null) {
-                    list = new ArrayList<String>();
-                    property.setValue(list);
-                    listViewer.setInput(list);
-                }
-
-                if (!input.getValue().equals("")) {
-                    list.add(input.getValue());
-                    listViewer.refresh();
-                    firePropertyModifyListener();
+                    valueTextMap.put(vv[0], vv[0]);
                 }
             }
-        });
+        } else {
+            /* if values attribute is empty, then search for allowedValues, separated by "," */
+            this.allowedValues = property.getAttribute("allowedValues");
+            if (allowedValues != null && allowedValues.length() > 0) {
+                String[] values = this.allowedValues.split(",");
+                for (String s : values) {
 
-        button = toolkit.createButton(buttonBar, "Remove", SWT.PUSH);
-        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(button);
-        button.addSelectionListener(new SelectionListener()
-        {
+                    TreeItem item = new TreeItem(tree, SWT.NONE);
+                    item.setText(s);
+                    item.setData(s);
 
-            public void widgetDefaultSelected(SelectionEvent e)
-            {
-                // TODO Auto-generated method stub
-
-            }
-
-            public void widgetSelected(SelectionEvent e)
-            {
-                IStructuredSelection selection = (IStructuredSelection) listViewer.getSelection();
-                Iterator iterator = selection.iterator();
-                while (iterator.hasNext()) {
-                    ((List) property.getValue()).remove(iterator.next());
+                    valueTextMap.put(s, s);
                 }
-                listViewer.refresh();
-                firePropertyModifyListener();
             }
 
-        });
+        }
 
-        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).hint(0, 5 * listViewer.getList().getItemHeight())
-            .grab(true, false).applyTo(listViewer.getList());
-
-        return composite;
+        /* always add a guest user for user list */
+        if (property.getType().equals("com.xpn.xwiki.objects.classes.UsersClass")) {
+            TreeItem item = new TreeItem(tree, SWT.NONE);
+            item.setText("XWiki.XWikiGuest");
+            item.setData("XWiki.XWikiGuest");
+        }
 
     }
 
     @Override
     public void setValue(Object value)
     {
-        StructuredSelection structuredSelection = null;
-        if (multiSelect) {
-            List list = (List) value;
-            if (list != null) {
-                structuredSelection = new StructuredSelection(list);
+        if (value instanceof String) {
+            String[] v = null;
+            if (property.getType().equals("com.xpn.xwiki.objects.classes.UsersClass")
+                || property.getType().equals("com.xpn.xwiki.objects.classes.GroupsClass")) {
+                /* separated by "," */
+                v = ((String) value).split(",");
+            } else {
+                /* separated by "|" */
+                v = ((String) value).split("\\|");
             }
-        } else {
-            if (value != null) {
-                structuredSelection = new StructuredSelection(value);
-            }
-        }
 
-        if (structuredSelection != null) {
-            listViewer.setSelection(structuredSelection, true);
+            if (v.length > 1) {
+                TreeItem[] items = tree.getItems();
+                List<TreeItem> selectedItems = new ArrayList<TreeItem>();
+                for (TreeItem item : items) {
+                    for (int i = 0; i < v.length; i++) {
+                        /* compare the value instead of text */
+                        if (item.getData().equals(v[i])) {
+                            selectedItems.add(item);
+                            break;
+                        }
+                    }
+                }
+
+                TreeItem[] selected = new TreeItem[selectedItems.size()];
+                selectedItems.toArray(selected);
+                tree.setSelection(selected);
+            } else if (v.length == 1) {
+                TreeItem[] items = tree.getItems();
+                for (TreeItem item : items) {
+                    if (item.getData().equals(v[0])) {
+                        tree.setSelection(item);
+                        break;
+                    }
+                }
+            }
         }
     }
-
 }

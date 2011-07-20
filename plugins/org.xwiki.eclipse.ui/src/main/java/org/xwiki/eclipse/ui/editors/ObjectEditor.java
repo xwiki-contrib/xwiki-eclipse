@@ -63,7 +63,6 @@ import org.xwiki.eclipse.ui.editors.propertyeditors.NumberPropertyEditor;
 import org.xwiki.eclipse.ui.editors.propertyeditors.PasswordPropertyEditor;
 import org.xwiki.eclipse.ui.editors.propertyeditors.StringPropertyEditor;
 import org.xwiki.eclipse.ui.editors.propertyeditors.TextAreaPropertyEditor;
-import org.xwiki.eclipse.ui.editors.propertyeditors.UserGroupPropertyEditor;
 
 class ListContentProvider implements IStructuredContentProvider
 {
@@ -193,14 +192,6 @@ public class ObjectEditor extends EditorPart
             if ("com.xpn.xwiki.objects.classes.StringClass".equals(property.getType())) {
                 propertyEditor = new StringPropertyEditor(toolkit, scrolledForm.getBody(), property);
             }
-            /* add support for com.xpn.xwiki.objects.classes.UsersClass */
-            if ("com.xpn.xwiki.objects.classes.UsersClass".equals(property.getType())) {
-                propertyEditor = new UserGroupPropertyEditor(toolkit, scrolledForm.getBody(), property);
-            }
-            /* add support for com.xpn.xwiki.objects.classes.GroupClass */
-            if ("com.xpn.xwiki.objects.classes.GroupsClass".equals(property.getType())) {
-                propertyEditor = new UserGroupPropertyEditor(toolkit, scrolledForm.getBody(), property);
-            }
 
             if ("com.xpn.xwiki.objects.classes.PasswordClass".equals(property.getType())) {
                 propertyEditor = new PasswordPropertyEditor(toolkit, scrolledForm.getBody(), property);
@@ -223,7 +214,9 @@ public class ObjectEditor extends EditorPart
             }
 
             if ("com.xpn.xwiki.objects.classes.StaticListClass".equals(property.getType())
-                || "com.xpn.xwiki.objects.classes.DBListClass".equals(property.getType())) {
+                || "com.xpn.xwiki.objects.classes.DBListClass".equals(property.getType())
+                || "com.xpn.xwiki.objects.classes.UsersClass".equals(property.getType())
+                || "com.xpn.xwiki.objects.classes.GroupsClass".equals(property.getType())) {
                 propertyEditor = new ListPropertyEditor(toolkit, scrolledForm.getBody(), property);
             }
 
