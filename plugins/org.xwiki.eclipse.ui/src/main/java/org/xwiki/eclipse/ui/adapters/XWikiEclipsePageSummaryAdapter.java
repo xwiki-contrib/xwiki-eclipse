@@ -106,7 +106,7 @@ public class XWikiEclipsePageSummaryAdapter extends WorkbenchAdapter implements 
                     }
                 }
 
-                // /* add comments */
+                /* add comments */
                 if (comments != null && comments.size() > 0) {
                     XWikiEclipseObjectCollection t = new XWikiEclipseObjectCollection(dataManager);
                     t.setClassName("Comments");
