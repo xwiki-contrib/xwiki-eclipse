@@ -34,8 +34,6 @@ public class XWikiEclipseObjectProperty extends ModelObject
 {
     private String name;
 
-    private String prettyName;
-
     private String type;
 
     private String value;
@@ -106,11 +104,6 @@ public class XWikiEclipseObjectProperty extends ModelObject
 
     public String getPrettyName()
     {
-        return prettyName;
-    }
-
-    public void setPrettyName(String prettyName)
-    {
-        this.prettyName = prettyName;
+        return getAttribute("prettyName");
     }
 }

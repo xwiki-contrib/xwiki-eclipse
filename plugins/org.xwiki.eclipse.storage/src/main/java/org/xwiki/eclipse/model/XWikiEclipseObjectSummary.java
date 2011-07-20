@@ -47,6 +47,8 @@ public class XWikiEclipseObjectSummary extends ModelObject
 
     private String propertiesUrl;
 
+    private String objectUrl;
+
     public XWikiEclipseObjectSummary(DataManager dataManager)
     {
         super(dataManager);
@@ -147,5 +149,15 @@ public class XWikiEclipseObjectSummary extends ModelObject
     public void setPropertiesUrl(String propertiesUrl)
     {
         this.propertiesUrl = propertiesUrl;
+    }
+
+    public String getObjectUrl()
+    {
+        return objectUrl;
+    }
+
+    public void setObjectUrl(String objectUrl)
+    {
+        this.objectUrl = objectUrl;
     }
 }
