@@ -20,6 +20,8 @@
  */
 package org.xwiki.eclipse.ui.editors.propertyeditors;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -35,11 +37,12 @@ import org.eclipse.ui.forms.widgets.Section;
 import org.xwiki.eclipse.model.XWikiEclipseObjectProperty;
 
 /**
- * 
  * @version $Id$
  */
 public class DatePropertyEditor extends BasePropertyEditor
 {
+    static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+
     DateTime date;
 
     DateTime time;
@@ -77,7 +80,7 @@ public class DatePropertyEditor extends BasePropertyEditor
                 calendar.set(Calendar.HOUR_OF_DAY, time.getHours());
                 calendar.set(Calendar.MINUTE, time.getMinutes());
                 calendar.set(Calendar.SECOND, time.getSeconds());
-                property.setValue(calendar.getTime());
+                property.setValue(sdf.format(calendar.getTime()));
                 firePropertyModifyListener();
             }
 
@@ -102,7 +105,7 @@ public class DatePropertyEditor extends BasePropertyEditor
                 calendar.set(Calendar.HOUR_OF_DAY, time.getHours());
                 calendar.set(Calendar.MINUTE, time.getMinutes());
                 calendar.set(Calendar.SECOND, time.getSeconds());
-                property.setValue(calendar.getTime());
+                property.setValue(sdf.format(calendar.getTime()));
                 firePropertyModifyListener();
             }
         });
@@ -115,9 +118,10 @@ public class DatePropertyEditor extends BasePropertyEditor
     @Override
     public void setValue(Object value)
     {
-        if (value instanceof Date) {
+        try {
+            Date d = sdf.parse((String) value);
             Calendar calendar = Calendar.getInstance();
-            calendar.setTime((Date) value);
+            calendar.setTime(d);
 
             date.setDay(calendar.get(Calendar.DAY_OF_MONTH));
             date.setMonth(calendar.get(Calendar.MONTH));
@@ -125,7 +129,9 @@ public class DatePropertyEditor extends BasePropertyEditor
             time.setHours(calendar.get(Calendar.HOUR_OF_DAY));
             time.setMinutes(calendar.get(Calendar.MINUTE));
             time.setSeconds(calendar.get(Calendar.SECOND));
+        } catch (ParseException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
-
     }
 }
