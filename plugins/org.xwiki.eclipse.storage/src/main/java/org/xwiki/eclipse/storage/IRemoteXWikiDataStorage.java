@@ -110,10 +110,10 @@ public interface IRemoteXWikiDataStorage
     XWikiEclipsePage getPage(ModelObject o);
 
     /**
-     * @param objectSummary
+     * @param o
      * @return
      */
-    XWikiEclipseObject getObject(XWikiEclipseObjectSummary objectSummary);
+    XWikiEclipseObject getObject(ModelObject o);
 
     /**
      * @param comment
@@ -167,4 +167,17 @@ public interface IRemoteXWikiDataStorage
      * @return
      */
     XWikiEclipseTag addTag(XWikiEclipsePageSummary pageSummary, String tagName);
+
+    /**
+     * @param wiki
+     * @return
+     */
+    List<XWikiEclipseClass> getClasses(String wiki);
+
+    /**
+     * @param wiki
+     * @param className
+     * @return
+     */
+    XWikiEclipseClass getClass(String wiki, String className);
 }
