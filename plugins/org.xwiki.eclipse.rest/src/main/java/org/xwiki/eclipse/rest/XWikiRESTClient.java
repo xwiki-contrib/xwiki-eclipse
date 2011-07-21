@@ -52,6 +52,7 @@ import org.apache.http.protocol.HttpContext;
 import org.xwiki.rest.model.jaxb.Attachment;
 import org.xwiki.rest.model.jaxb.Attachments;
 import org.xwiki.rest.model.jaxb.Class;
+import org.xwiki.rest.model.jaxb.Classes;
 import org.xwiki.rest.model.jaxb.Comment;
 import org.xwiki.rest.model.jaxb.Comments;
 import org.xwiki.rest.model.jaxb.History;
@@ -880,6 +881,25 @@ public class XWikiRESTClient
             response = executePutXml(tagsUrl, tagsElement);
             Tags tagsResponse = (Tags) unmarshaller.unmarshal(response.getEntity().getContent());
             return tagsResponse.getTags();
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+    /**
+     * @param wiki
+     * @return
+     */
+    public List<Class> getClasses(String wiki) throws Exception
+    {
+        String classesUrl = serverUrl + "/wikis/" + wiki + "/classes";
+        HttpResponse response;
+        try {
+            response = executeGet(classesUrl, username, password);
+            Classes clazzes = (Classes) unmarshaller.unmarshal(response.getEntity().getContent());
+            return clazzes.getClazzs();
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

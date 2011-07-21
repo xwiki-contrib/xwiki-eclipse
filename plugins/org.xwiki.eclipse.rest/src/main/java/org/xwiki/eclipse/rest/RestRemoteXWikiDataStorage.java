@@ -23,6 +23,7 @@ import java.net.URL;
 import java.util.List;
 
 import org.xwiki.rest.model.jaxb.Attachment;
+import org.xwiki.rest.model.jaxb.Class;
 import org.xwiki.rest.model.jaxb.Comment;
 import org.xwiki.rest.model.jaxb.HistorySummary;
 import org.xwiki.rest.model.jaxb.Object;
@@ -336,6 +337,24 @@ public class RestRemoteXWikiDataStorage
         List<Tag> result;
         try {
             result = this.restRemoteClient.addTag(tagsUrl, tagName);
+            return result;
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    /**
+     * @param wiki
+     * @return
+     */
+    public List<Class> getClasses(String wiki)
+    {
+        List<Class> result;
+        try {
+            result = this.restRemoteClient.getClasses(wiki);
             return result;
         } catch (Exception e) {
             // TODO Auto-generated catch block
