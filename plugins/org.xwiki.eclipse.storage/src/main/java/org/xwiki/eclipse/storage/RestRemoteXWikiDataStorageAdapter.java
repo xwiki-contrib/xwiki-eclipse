@@ -547,6 +547,14 @@ public class RestRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStorag
             p.setName(property.getName());
             p.setType(property.getType());
             p.setValue(property.getValue());
+
+            List<Link> links = property.getLinks();
+            for (Link link : links) {
+                if (link.getRel().equals(Relations.OBJECT)) {
+                    p.setObjectUrl(link.getHref());
+                }
+            }
+
             Map<String, String> attributeMap = new HashMap<String, String>();
 
             List<Attribute> attributes = property.getAttributes();
@@ -639,11 +647,20 @@ public class RestRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStorag
      * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#getObject(org.xwiki.eclipse.model.XWikiEclipseObjectSummary)
      */
     @Override
-    public XWikiEclipseObject getObject(XWikiEclipseObjectSummary objectSummary)
+    public XWikiEclipseObject getObject(ModelObject o)
     {
         XWikiEclipseObject result = new XWikiEclipseObject(dataManager);
 
-        String objectUrl = objectSummary.getObjectUrl();
+        String objectUrl = null;
+        if (o instanceof XWikiEclipseObjectSummary) {
+            XWikiEclipseObjectSummary objectSummary = (XWikiEclipseObjectSummary) o;
+            objectUrl = objectSummary.getObjectUrl();
+        }
+
+        if (o instanceof XWikiEclipseObjectProperty) {
+            XWikiEclipseObjectProperty objectProperty = (XWikiEclipseObjectProperty) o;
+            objectUrl = objectProperty.getObjectUrl();
+        }
 
         org.xwiki.rest.model.jaxb.Object object = restRemoteStorage.getObject(objectUrl);
         result.setName(object.getId());
@@ -943,6 +960,118 @@ public class RestRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStorag
                 }
                 break;
             }
+        }
+
+        return result;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#getClasses(java.lang.String)
+     */
+    @Override
+    public List<XWikiEclipseClass> getClasses(String wiki)
+    {
+        List<org.xwiki.rest.model.jaxb.Class> classes = this.restRemoteStorage.getClasses(wiki);
+        List<XWikiEclipseClass> result = new ArrayList<XWikiEclipseClass>();
+
+        for (org.xwiki.rest.model.jaxb.Class clazz : classes) {
+            XWikiEclipseClass c = new XWikiEclipseClass(dataManager);
+            c.setId(clazz.getId());
+            c.setName(clazz.getName());
+
+            List<Link> links = clazz.getLinks();
+            for (Link link : links) {
+                if (link.getRel().equals(Relations.OBJECTS)) {
+                    c.setObjectsUrl(link.getHref());
+                }
+
+                if (link.getRel().equals(Relations.PROPERTIES)) {
+                    c.setPropertiesUrl(link.getHref());
+                }
+
+                if (link.getRel().equals(Relations.SELF)) {
+                    c.setUrl(link.getHref());
+                }
+
+            }
+
+            /* populate the properties for page class */
+            List<Property> properties = this.restRemoteStorage.getObjectProperties(c.getPropertiesUrl());
+
+            for (Property property : properties) {
+                XWikiEclipseObjectProperty p = new XWikiEclipseObjectProperty(dataManager);
+                p.setName(property.getName());
+                p.setType(property.getType());
+                p.setValue(property.getValue());
+                Map<String, String> attributeMap = new HashMap<String, String>();
+
+                List<Attribute> attributes = property.getAttributes();
+                for (Attribute attribute : attributes) {
+                    attributeMap.put(attribute.getName(), attribute.getValue());
+                }
+
+                p.setAttributes(attributeMap);
+
+                c.getProperties().add(p);
+            }
+
+            result.add(c);
+        }
+
+        return result;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#getClass(java.lang.String, java.lang.String)
+     */
+    @Override
+    public XWikiEclipseClass getClass(String wiki, String className)
+    {
+        String classUrl = endpoint + "/wikis/" + wiki + "/classes/" + className;
+        org.xwiki.rest.model.jaxb.Class clazz = restRemoteStorage.getClass(classUrl);
+
+        XWikiEclipseClass result = new XWikiEclipseClass(dataManager);
+        result.setId(clazz.getId());
+        result.setName(clazz.getName());
+
+        List<Link> links = clazz.getLinks();
+        for (Link link : links) {
+            if (link.getRel().equals(Relations.OBJECTS)) {
+                result.setObjectsUrl(link.getHref());
+            }
+
+            if (link.getRel().equals(Relations.PROPERTIES)) {
+                result.setPropertiesUrl(link.getHref());
+            }
+
+            if (link.getRel().equals(Relations.SELF)) {
+                result.setUrl(link.getHref());
+            }
+
+        }
+
+        /* populate the properties for page class */
+        List<Property> properties = this.restRemoteStorage.getObjectProperties(result.getPropertiesUrl());
+
+        for (Property property : properties) {
+            XWikiEclipseObjectProperty p = new XWikiEclipseObjectProperty(dataManager);
+            p.setName(property.getName());
+            p.setType(property.getType());
+            p.setValue(property.getValue());
+            Map<String, String> attributeMap = new HashMap<String, String>();
+
+            List<Attribute> attributes = property.getAttributes();
+            for (Attribute attribute : attributes) {
+                attributeMap.put(attribute.getName(), attribute.getValue());
+            }
+
+            p.setAttributes(attributeMap);
+
+            result.getProperties().add(p);
         }
 
         return result;
