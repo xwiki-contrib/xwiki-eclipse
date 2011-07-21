@@ -1119,15 +1119,15 @@ public class DataManager
     }
 
     /**
-     * @param objectSummary
+     * @param o
      * @return
      */
-    public XWikiEclipseObject getObject(XWikiEclipseObjectSummary objectSummary) throws XWikiEclipseStorageException
+    public XWikiEclipseObject getObject(ModelObject o) throws XWikiEclipseStorageException
     {
         XWikiEclipseObject result = null;
 
         if (isConnected()) {
-            result = remoteXWikiDataStorage.getObject(objectSummary);
+            result = remoteXWikiDataStorage.getObject(o);
         }
 
         return result;
@@ -1261,6 +1261,34 @@ public class DataManager
             result = remoteXWikiDataStorage.addTag(pageSummary, tag);
         }
 
+        return result;
+    }
+
+    /**
+     * @param wiki
+     * @return
+     */
+    public List<XWikiEclipseClass> getClasses(String wiki)
+    {
+        List<XWikiEclipseClass> result = null;
+        if (isConnected()) {
+            result = remoteXWikiDataStorage.getClasses(wiki);
+        }
+
+        return result;
+    }
+
+    /**
+     * @param wiki
+     * @param className
+     * @return
+     */
+    public XWikiEclipseClass getClass(String wiki, String className)
+    {
+        XWikiEclipseClass result = null;
+        if (isConnected()) {
+            result = remoteXWikiDataStorage.getClass(wiki, className);
+        }
         return result;
     }
 }
