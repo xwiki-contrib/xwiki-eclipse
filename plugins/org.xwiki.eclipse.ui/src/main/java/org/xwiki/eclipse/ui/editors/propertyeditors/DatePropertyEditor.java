@@ -119,9 +119,11 @@ public class DatePropertyEditor extends BasePropertyEditor
     public void setValue(Object value)
     {
         try {
-            Date d = sdf.parse((String) value);
             Calendar calendar = Calendar.getInstance();
-            calendar.setTime(d);
+            if (value != null) {
+                Date d = sdf.parse((String) value);
+                calendar.setTime(d);
+            }
 
             date.setDay(calendar.get(Calendar.DAY_OF_MONTH));
             date.setMonth(calendar.get(Calendar.MONTH));
