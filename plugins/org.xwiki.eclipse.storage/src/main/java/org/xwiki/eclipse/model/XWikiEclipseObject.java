@@ -20,6 +20,7 @@
  */
 package org.xwiki.eclipse.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.xwiki.eclipse.storage.DataManager;
@@ -29,8 +30,26 @@ import org.xwiki.eclipse.storage.DataManager;
  * 
  * @version $Id$
  */
-public abstract class XWikiEclipseObject extends ModelObject
+public class XWikiEclipseObject extends ModelObject
 {
+    /**
+     * The list of properties available for this object.
+     * 
+     * @see XWikiEclipseObjectProperty
+     */
+    private List<XWikiEclipseObjectProperty> properties;
+
+    private String id;
+
+    private String name;
+
+    private String pageId;
+
+    private String space;
+
+    private String wiki;
+
+    private String className;
 
     public XWikiEclipseObject(DataManager dataManager)
     {
@@ -38,28 +57,14 @@ public abstract class XWikiEclipseObject extends ModelObject
     }
 
     /**
-     * @return The list of properties available for this object.
-     * @see XWikiEclipseObjectProperty
-     */
-    public abstract List<XWikiEclipseObjectProperty> getProperties();
-
-    /**
      * @param propertyName
      * @return The information for a given property.
      */
-    public abstract XWikiEclipseObjectProperty getProperty(String propertyName);
+    public XWikiEclipseObjectProperty getProperty(String propertyName)
+    {
+        return null;
 
-    public abstract String getName();
-
-    public abstract XWikiEclipsePageSummary getPageSummary();
-
-    public abstract XWikiEclipseObjectSummary getSummary();
-
-    public abstract String getPageId();
-
-    public abstract String getClassName();
-
-    public abstract int getId();
+    }
 
     /**
      * {@inheritDoc}
@@ -68,21 +73,98 @@ public abstract class XWikiEclipseObject extends ModelObject
     public String getXWikiEclipseId()
     {
         return String.format(
-            "xwikieclipse://%s/%s/%s/%d", getDataManager().getName(), getPageId(), getClassName(), getId()); //$NON-NLS-1$
+            "xwikieclipse://%s/%s/%s/%s", getDataManager().getName(), getPageId(), getClassName(), getId()); //$NON-NLS-1$
     }
 
     /**
      * @param propertyName
      * @param value
      */
-    public abstract void setProperty(String propertyName, Object value);
+    public void setProperty(String propertyName, Object value)
+    {
+
+    }
 
     /**
      * @param propertyName
      * @param attributeName
      * @return
      */
-    public abstract Object getPropertyAttribute(String propertyName, String attributeName);
+    public Object getPropertyAttribute(String propertyName, String attributeName)
+    {
+        return null;
+    }
 
-    public abstract XWikiEclipseClass getXWikiClass();
+    public List<XWikiEclipseObjectProperty> getProperties()
+    {
+        if (properties == null) {
+            properties = new ArrayList<XWikiEclipseObjectProperty>();
+        }
+        return properties;
+    }
+
+    public void setProperties(List<XWikiEclipseObjectProperty> properties)
+    {
+        this.properties = properties;
+    }
+
+    public String getName()
+    {
+        return name;
+    }
+
+    public void setName(String name)
+    {
+        this.name = name;
+    }
+
+    public String getPageId()
+    {
+        return pageId;
+    }
+
+    public void setPageId(String pageId)
+    {
+        this.pageId = pageId;
+    }
+
+    public String getSpace()
+    {
+        return space;
+    }
+
+    public void setSpace(String space)
+    {
+        this.space = space;
+    }
+
+    public String getWiki()
+    {
+        return wiki;
+    }
+
+    public void setWiki(String wiki)
+    {
+        this.wiki = wiki;
+    }
+
+    public String getClassName()
+    {
+        return className;
+    }
+
+    public void setClassName(String className)
+    {
+        this.className = className;
+    }
+
+    public String getId()
+    {
+        return id;
+    }
+
+    public void setId(String id)
+    {
+        this.id = id;
+    }
 }

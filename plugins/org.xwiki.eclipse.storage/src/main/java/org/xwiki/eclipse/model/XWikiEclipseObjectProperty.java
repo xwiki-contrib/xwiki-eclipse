@@ -40,6 +40,8 @@ public class XWikiEclipseObjectProperty extends ModelObject
 
     private Map<String, String> attributes;
 
+    private String objectUrl;
+
     /**
      * @param dataManager
      */
@@ -105,5 +107,15 @@ public class XWikiEclipseObjectProperty extends ModelObject
     public String getPrettyName()
     {
         return getAttribute("prettyName");
+    }
+
+    public String getObjectUrl()
+    {
+        return objectUrl;
+    }
+
+    public void setObjectUrl(String objectUrl)
+    {
+        this.objectUrl = objectUrl;
     }
 }
