@@ -21,7 +21,6 @@
 package org.xwiki.eclipse.ui.wizards;
 
 /**
- * 
  * @version $Id$
  */
 public class NewObjectWizardState
@@ -29,6 +28,10 @@ public class NewObjectWizardState
     private String className;
 
     private String pageId;
+
+    private String space;
+
+    private String wiki;
 
     public void setClassName(String className)
     {
@@ -50,4 +53,23 @@ public class NewObjectWizardState
         return pageId;
     }
 
+    public String getSpace()
+    {
+        return space;
+    }
+
+    public void setSpace(String space)
+    {
+        this.space = space;
+    }
+
+    public String getWiki()
+    {
+        return wiki;
+    }
+
+    public void setWiki(String wiki)
+    {
+        this.wiki = wiki;
+    }
 }

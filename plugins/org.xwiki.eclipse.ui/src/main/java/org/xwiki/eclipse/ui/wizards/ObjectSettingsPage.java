@@ -33,11 +33,11 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-import org.xwiki.eclipse.model.XWikiEclipseClassSummary;
-import org.xwiki.eclipse.storage.DataManager;
+import org.xwiki.eclipse.model.XWikiEclipseClass;
+import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
 import org.xwiki.eclipse.ui.UIConstants;
 import org.xwiki.eclipse.ui.UIPlugin;
-import org.xwiki.eclipse.ui.utils.XWikiEclipseSafeRunnableWithResult;
+import org.xwiki.eclipse.ui.utils.XWikiEclipseSafeRunnable;
 
 /**
  * @version $Id$
@@ -46,17 +46,16 @@ public class ObjectSettingsPage extends WizardPage
 {
     private NewObjectWizardState newObjectWizardState;
 
-    private DataManager dataManager;
+    private XWikiEclipsePageSummary pageSummary;
 
     private Combo combo;
 
-    public ObjectSettingsPage(String pageName, DataManager dataManager)
+    public ObjectSettingsPage(String wizardPageName, XWikiEclipsePageSummary pageSummary)
     {
-        super(pageName);
+        super(wizardPageName);
         setTitle("New object");
         setImageDescriptor(UIPlugin.getImageDescriptor(UIConstants.OBJECT_SETTINGS_BANNER));
-
-        this.dataManager = dataManager;
+        this.pageSummary = pageSummary;
     }
 
     public void createControl(Composite parent)
@@ -71,33 +70,29 @@ public class ObjectSettingsPage extends WizardPage
         GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, false).applyTo(group);
         group.setText("Object settings");
 
-        /* Page space */
+        /* Page, space, wiki */
         Label label = new Label(group, SWT.NONE);
         label.setText("Page:");
-
         label = new Label(group, SWT.NONE);
         label.setText(newObjectWizardState.getPageId());
 
-        final XWikiEclipseSafeRunnableWithResult<List<XWikiEclipseClassSummary>> runnable =
-            new XWikiEclipseSafeRunnableWithResult<List<XWikiEclipseClassSummary>>()
-            {
-                public void run() throws Exception
-                {
-                    setResult(dataManager.getClasses());
-                }
-            };
-        SafeRunner.run(runnable);
+        label = new Label(group, SWT.NONE);
+        label.setText("Space:");
+        label = new Label(group, SWT.NONE);
+        label.setText(newObjectWizardState.getSpace());
+
+        label = new Label(group, SWT.NONE);
+        label.setText("Wiki:");
+        label = new Label(group, SWT.NONE);
+        label.setText(newObjectWizardState.getWiki());
 
         label = new Label(group, SWT.NONE);
         label.setText("Class:");
 
         combo = new Combo(group, SWT.READ_ONLY);
-        for (XWikiEclipseClassSummary classSummary : runnable.getResult()) {
-            combo.add(classSummary.getId());
-        }
+
         combo.addSelectionListener(new SelectionListener()
         {
-
             public void widgetDefaultSelected(SelectionEvent e)
             {
                 // TODO Auto-generated method stub
@@ -110,7 +105,19 @@ public class ObjectSettingsPage extends WizardPage
                 getContainer().updateButtons();
 
             }
+        });
 
+        SafeRunner.run(new XWikiEclipseSafeRunnable()
+        {
+
+            @Override
+            public void run() throws Exception
+            {
+                List<XWikiEclipseClass> clazzs = pageSummary.getDataManager().getClasses(pageSummary.getWiki());
+                for (XWikiEclipseClass clazz : clazzs) {
+                    combo.add(clazz.getId());
+                }
+            }
         });
 
         setControl(composite);
