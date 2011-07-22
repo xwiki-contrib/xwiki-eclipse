@@ -142,7 +142,6 @@ public class SelectionDialog extends TitleAreaDialog
 
         viewer = new TreeViewer(composite, SWT.BORDER | SWT.CHECK);
         GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, true).applyTo(viewer.getControl());
-        viewer.setLabelProvider(new WorkbenchLabelProvider());
         viewer.setContentProvider(new SelectionDialogContentProvider(objects));
         viewer.setLabelProvider(new WorkbenchLabelProvider());
         viewer.setSorter(new ViewerSorter());
