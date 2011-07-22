@@ -20,7 +20,6 @@
  */
 package org.xwiki.eclipse.ui.handlers;
 
-import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.commands.AbstractHandler;
@@ -30,7 +29,6 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.handlers.HandlerUtil;
-import org.xwiki.eclipse.model.XWikiEclipseClass;
 import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
 import org.xwiki.eclipse.storage.Functionality;
 import org.xwiki.eclipse.ui.utils.UIUtils;
@@ -41,8 +39,6 @@ import org.xwiki.eclipse.ui.wizards.NewObjectWizard;
  */
 public class NewObjectHandler extends AbstractHandler
 {
-    private List<XWikiEclipseClass> clazzs;
-
     public Object execute(final ExecutionEvent event) throws ExecutionException
     {
         ISelection selection = HandlerUtil.getCurrentSelection(event);
