@@ -48,8 +48,6 @@ public class ListPropertyEditor extends BasePropertyEditor
 
     private Tree tree;
 
-    private final static String listSeparator = "\\|";
-
     private boolean multiSelect;
 
     private boolean unmodifiable;
@@ -72,9 +70,9 @@ public class ListPropertyEditor extends BasePropertyEditor
 
         String unModifiableAttributeString = property.getAttribute("unmodifiable");
         if (unModifiableAttributeString == null || unModifiableAttributeString.equals("0")) {
-            unmodifiable = true;
-        } else {
             unmodifiable = false;
+        } else {
+            unmodifiable = true;
         }
 
         Section section = toolkit.createSection(parent, Section.TITLE_BAR | Section.EXPANDED);
