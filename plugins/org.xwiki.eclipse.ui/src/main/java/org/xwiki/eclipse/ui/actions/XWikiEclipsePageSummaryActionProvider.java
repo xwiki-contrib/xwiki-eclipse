@@ -32,25 +32,22 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IActionBars;
-import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.menus.CommandContributionItem;
+import org.eclipse.ui.menus.CommandContributionItemParameter;
 import org.eclipse.ui.navigator.CommonActionProvider;
 import org.eclipse.ui.navigator.ICommonActionConstants;
 import org.eclipse.ui.navigator.ICommonActionExtensionSite;
 import org.eclipse.ui.navigator.ICommonMenuConstants;
-import org.xwiki.eclipse.model.XWikiEclipsePage;
 import org.xwiki.eclipse.model.XWikiEclipsePageHistorySummary;
 import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
+import org.xwiki.eclipse.model.XWikiEclipsePageTranslationSummary;
 import org.xwiki.eclipse.storage.Functionality;
 import org.xwiki.eclipse.storage.XWikiEclipseStorageException;
 import org.xwiki.eclipse.ui.UIConstants;
-import org.xwiki.eclipse.ui.editors.PageEditor;
-import org.xwiki.eclipse.ui.editors.PageEditorInput;
 import org.xwiki.eclipse.ui.utils.UIUtils;
 
 /**
- * 
  * @version $Id$
  */
 public class XWikiEclipsePageSummaryActionProvider extends CommonActionProvider
@@ -58,6 +55,12 @@ public class XWikiEclipsePageSummaryActionProvider extends CommonActionProvider
     private Action open;
 
     private CommandContributionItem newObject;
+
+    private CommandContributionItem newComment;
+
+    private CommandContributionItem newTag;
+
+    private CommandContributionItem uploadAttachment;
 
     private CommandContributionItem renamePage;
 
@@ -80,6 +83,24 @@ public class XWikiEclipsePageSummaryActionProvider extends CommonActionProvider
             new CommandContributionItem(PlatformUI.getWorkbench(), null, UIConstants.NEW_OBJECT_COMMAND, null, null,
                 null, null, null, null, null, SWT.NONE);
 
+        CommandContributionItemParameter ccip =
+            new CommandContributionItemParameter(PlatformUI.getWorkbench().getActiveWorkbenchWindow(),
+                UIConstants.NEW_COMMENT_COMMAND, UIConstants.NEW_COMMENT_COMMAND, SWT.NONE);
+
+        newComment = new CommandContributionItem(ccip);
+
+        ccip =
+            new CommandContributionItemParameter(PlatformUI.getWorkbench().getActiveWorkbenchWindow(),
+                UIConstants.UPLOAD_ATTACHMENT_COMMAND, UIConstants.UPLOAD_ATTACHMENT_COMMAND, SWT.NONE);
+
+        uploadAttachment = new CommandContributionItem(ccip);
+
+        ccip =
+            new CommandContributionItemParameter(PlatformUI.getWorkbench().getActiveWorkbenchWindow(),
+                UIConstants.NEW_TAG_COMMAND, UIConstants.NEW_TAG_COMMAND, SWT.NONE);
+
+        newTag = new CommandContributionItem(ccip);
+
         renamePage =
             new CommandContributionItem(PlatformUI.getWorkbench(), null, UIConstants.RENAME_PAGE_COMMAND, null, null,
                 null, null, null, null, null, SWT.NONE);
@@ -96,6 +117,9 @@ public class XWikiEclipsePageSummaryActionProvider extends CommonActionProvider
 
         menu.appendToGroup(ICommonMenuConstants.GROUP_ADDITIONS, new Separator());
         menu.appendToGroup(ICommonMenuConstants.GROUP_ADDITIONS, newObject);
+        menu.appendToGroup(ICommonMenuConstants.GROUP_ADDITIONS, newComment);
+        menu.appendToGroup(ICommonMenuConstants.GROUP_ADDITIONS, newTag);
+        menu.appendToGroup(ICommonMenuConstants.GROUP_ADDITIONS, uploadAttachment);
         menu.appendToGroup(ICommonMenuConstants.GROUP_ADDITIONS, new Separator());
         menu.appendToGroup(ICommonMenuConstants.GROUP_ADDITIONS, renamePage);
 
@@ -114,7 +138,7 @@ public class XWikiEclipsePageSummaryActionProvider extends CommonActionProvider
 
                 try {
                     List<XWikiEclipsePageHistorySummary> pageHistory =
-                        pageSummary.getDataManager().getPageHistory(pageSummary.getId());
+                        pageSummary.getDataManager().getPageHistory(pageSummary);
                     for (XWikiEclipsePageHistorySummary pageHistorySummary : pageHistory) {
                         menuManager.add(new OpenPageHistoryItemAction(pageHistorySummary));
                     }
@@ -144,8 +168,10 @@ public class XWikiEclipsePageSummaryActionProvider extends CommonActionProvider
                 }
 
                 if (pageSummary.getTranslations() != null) {
-                    for (String language : pageSummary.getTranslations()) {
-                        menuManager.add(new OpenPageTranslationAction(pageSummary, language));
+                    for (XWikiEclipsePageTranslationSummary translation : pageSummary.getTranslations()) {
+                        if (!translation.getLanguage().equals(translation.getDefaultLanguage())) {
+                            menuManager.add(new OpenPageTranslationAction(pageSummary, translation));
+                        }
                     }
 
                     /* TODO: Checkout the server side. This gives non-deterministic results */
@@ -165,19 +191,19 @@ public class XWikiEclipsePageSummaryActionProvider extends CommonActionProvider
                                 if (!inputDialog.getValue().equals("")) {
                                     String[] components = pageSummary.getId().split("\\.");
 
-                                    try {
-                                        XWikiEclipsePage page =
-                                            pageSummary.getDataManager().createPage(components[0], components[1],
-                                                pageSummary.getTitle(), inputDialog.getValue(),
-                                                "Write translation here");
-                                        PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
-                                            .openEditor(new PageEditorInput(page, false), PageEditor.ID);
-                                    } catch (XWikiEclipseStorageException e) {
-                                        e.printStackTrace();
-                                    } catch (PartInitException e) {
-
-                                        e.printStackTrace();
-                                    }
+                                    // try {
+                                    // XWikiEclipsePage page =
+                                    // pageSummary.getDataManager().createPage(components[0], components[1],
+                                    // pageSummary.getTitle(), inputDialog.getValue(),
+                                    // "Write translation here");
+                                    // PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+                                    // .openEditor(new PageEditorInput(page, false), PageEditor.ID);
+                                    // } catch (XWikiEclipseStorageException e) {
+                                    // e.printStackTrace();
+                                    // } catch (PartInitException e) {
+                                    //
+                                    // e.printStackTrace();
+                                    // }
                                 }
                             }
                         }
