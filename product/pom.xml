@@ -37,7 +37,7 @@
   <version>1.2.0-SNAPSHOT</version>
   <packaging>eclipse-repository</packaging>
   <properties>
-    <product-id>org.xwiki.eclipse.rcp.product</product-id>
+    <product-id>org.xwiki.eclipse.product</product-id>
   </properties>
   <build>
     <plugins>
