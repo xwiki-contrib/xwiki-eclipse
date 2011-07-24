@@ -81,6 +81,8 @@ public class UIConstants
 
     public static final String NEW_COMMENT_COMMAND = "org.xwiki.eclipse.ui.commands.NewComment";
 
+    public static final String NEW_TAG_COMMAND = "org.xwiki.eclipse.ui.commands.NewTag";
+
     public static final String REPLYTO_COMMENT_COMMAND = "org.xwiki.eclipse.ui.commands.ReplyToComment";
 
     public static final String DELETE_COMMAND = "org.xwiki.eclipse.ui.commands.Delete";
