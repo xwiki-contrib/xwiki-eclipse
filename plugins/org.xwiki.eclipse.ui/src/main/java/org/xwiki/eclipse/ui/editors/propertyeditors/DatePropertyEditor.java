@@ -120,7 +120,7 @@ public class DatePropertyEditor extends BasePropertyEditor
     {
         try {
             Calendar calendar = Calendar.getInstance();
-            if (value != null) {
+            if (value != null && ((String) value).length() > 0) {
                 Date d = sdf.parse((String) value);
                 calendar.setTime(d);
             }
