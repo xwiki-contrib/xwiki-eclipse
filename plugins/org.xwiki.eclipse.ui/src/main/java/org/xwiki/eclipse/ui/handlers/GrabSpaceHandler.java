@@ -32,14 +32,12 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.xwiki.eclipse.core.CoreLog;
-import org.xwiki.eclipse.core.XWikiEclipseException;
 import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
 import org.xwiki.eclipse.model.XWikiEclipseSpaceSummary;
 import org.xwiki.eclipse.storage.XWikiEclipseStorageException;
 import org.xwiki.eclipse.ui.utils.UIUtils;
 
 /**
- * 
  * @version $Id$
  */
 public class GrabSpaceHandler extends AbstractHandler
@@ -73,7 +71,7 @@ public class GrabSpaceHandler extends AbstractHandler
                                 for (XWikiEclipsePageSummary pageSummary : pageSummaries) {
                                     monitor.setTaskName(String.format("Fetching %s", pageSummary.getId()));
 
-                                    pageSummary.getDataManager().getPage(pageSummary.getId());
+                                    pageSummary.getDataManager().getPage(pageSummary);
 
                                     if (monitor.isCanceled()) {
                                         return;
