@@ -38,6 +38,7 @@ import org.xwiki.eclipse.model.XWikiEclipseObjectSummary;
 import org.xwiki.eclipse.model.XWikiEclipsePage;
 import org.xwiki.eclipse.model.XWikiEclipsePageHistorySummary;
 import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
+import org.xwiki.eclipse.model.XWikiEclipsePageTranslationSummary;
 import org.xwiki.eclipse.model.XWikiEclipseServerInfo;
 import org.xwiki.eclipse.model.XWikiEclipseSpaceSummary;
 import org.xwiki.eclipse.model.XWikiEclipseTag;
@@ -229,14 +230,27 @@ public class RestRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStorag
             page.setWiki(pageSummary.getWiki());
             page.setSyntax(pageSummary.getSyntax());
 
-            List<String> translationLangs = new ArrayList<String>();
+            String defaultLanguage = pageSummary.getTranslations().getDefault();
             List<Translation> translations = pageSummary.getTranslations().getTranslations();
             if (translations != null && translations.size() > 0) {
                 for (Translation translation : translations) {
-                    translationLangs.add(translation.getLanguage());
+                    XWikiEclipsePageTranslationSummary t = new XWikiEclipsePageTranslationSummary(dataManager);
+                    t.setLanguage(translation.getLanguage());
+                    t.setDefaultLanguage(defaultLanguage);
+
+                    List<Link> links = translation.getLinks();
+                    for (Link link : links) {
+                        if (link.getRel().equals(Relations.PAGE)) {
+                            t.setPageUrl(link.getHref());
+                        }
+                        if (link.getRel().equals(Relations.HISTORY)) {
+                            t.setHistoryUrl(link.getHref());
+                        }
+                    }
+
+                    page.getTranslations().add(t);
                 }
             }
-            page.setTranslations(translationLangs);
 
             List<Link> links = pageSummary.getLinks();
             for (Link link : links) {
@@ -593,7 +607,7 @@ public class RestRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStorag
     public XWikiEclipsePage getPage(ModelObject o)
     {
         String pageUrl = null;
-
+        String language = null;
         if (o instanceof XWikiEclipseAttachment) {
             XWikiEclipseAttachment attachment = (XWikiEclipseAttachment) o;
             pageUrl = attachment.getPageUrl();
@@ -614,6 +628,13 @@ public class RestRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStorag
             pageUrl = comment.getPageUrl();
         }
 
+        if (o instanceof XWikiEclipsePageTranslationSummary) {
+            XWikiEclipsePageTranslationSummary translation = (XWikiEclipsePageTranslationSummary) o;
+
+            pageUrl = translation.getPageUrl();
+            language = translation.getLanguage();
+        }
+
         Page page = restRemoteStorage.getPage(pageUrl);
         XWikiEclipsePage result = new XWikiEclipsePage(dataManager);
         result.setFullName(page.getFullName());
@@ -624,17 +645,34 @@ public class RestRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStorag
         result.setSyntax(page.getSyntax());
         result.setTitle(page.getTitle());
         result.setWiki(page.getWiki());
+        result.setContent(page.getContent());
+        result.setCreated(page.getCreated());
+        result.setCreator(page.getCreator());
+        result.setLanguage(page.getLanguage());
+        result.setMajorVersion(page.getMajorVersion());
+        result.setMinorVersion(page.getMinorVersion());
+        result.setModified(page.getModified());
+        result.setModifier(page.getModifier());
+        result.setParentId(page.getParentId());
+        result.setVersion(page.getVersion());
+        if (language != null) {
+            result.setUrl(page.getXwikiAbsoluteUrl() + "?language=" + language);
+        } else {
+            result.setUrl(page.getXwikiAbsoluteUrl() + "?language=default");
+        }
 
         List<Link> links = page.getLinks();
         for (Link link : links) {
             if (link.getRel().equals(Relations.CLASS)) {
                 result.setClassUrl(link.getHref());
             }
-        }
 
-        for (Link link : links) {
             if (link.getRel().equals(Relations.SPACE)) {
                 result.setSpaceUrl(link.getHref());
+            }
+
+            if (link.getRel().equals(Relations.SELF)) {
+                result.setPageUrl(link.getHref());
             }
         }
 
