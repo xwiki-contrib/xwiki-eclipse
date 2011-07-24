@@ -34,7 +34,6 @@ import org.xwiki.eclipse.ui.editors.PageEditorInput;
 import org.xwiki.eclipse.ui.utils.UIUtils;
 
 /**
- * 
  * @version $Id$
  */
 public class OpenPageHistoryItemAction extends Action
@@ -45,17 +44,17 @@ public class OpenPageHistoryItemAction extends Action
     {
         super();
 
-        int version = pageHistorySummary.getVersion();
+        int majorVersion = pageHistorySummary.getMajorVersion();
         int minorVersion = pageHistorySummary.getMinorVersion();
 
         /* Compatibility with XWiki 1.3 */
-        if (version > 65536) {
-            int temp = version;
-            version = temp >> 16;
+        if (majorVersion > 65536) {
+            int temp = majorVersion;
+            majorVersion = temp >> 16;
             minorVersion = temp & 0xFFFF;
         }
 
-        setText(String.format("Version %d.%d", version, minorVersion));
+        setText(String.format("Version %d.%d", majorVersion, minorVersion));
 
         this.pageHistorySummary = pageHistorySummary;
     }
@@ -64,7 +63,7 @@ public class OpenPageHistoryItemAction extends Action
     public void run()
     {
         try {
-            XWikiEclipsePage page = pageHistorySummary.getDataManager().getPage(pageHistorySummary.getId());
+            XWikiEclipsePage page = pageHistorySummary.getDataManager().getPage(pageHistorySummary);
 
             if (page == null) {
                 UIUtils
@@ -76,8 +75,8 @@ public class OpenPageHistoryItemAction extends Action
                 return;
             }
 
-            PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().openEditor(
-                new PageEditorInput(page, true), PageEditor.ID);
+            PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+                .openEditor(new PageEditorInput(page, true), PageEditor.ID);
         } catch (XWikiEclipseStorageException e) {
             UIUtils
                 .showMessageDialog(
