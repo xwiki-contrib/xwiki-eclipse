@@ -63,11 +63,15 @@ public class XWikiEclipsePage extends ModelObject
 
     private Calendar modified;
 
-    private String pageClassUrl;
+    private String classUrl;
+
+    private String spaceUrl;
 
     private String parentId;
 
     private String syntax;
+
+    private String pageUrl;
 
     public XWikiEclipsePage(DataManager dataManager)
     {
@@ -77,7 +81,9 @@ public class XWikiEclipsePage extends ModelObject
     @Override
     public String getXWikiEclipseId()
     {
-        return String.format("xwikieclipse://%s/%s/page/%s", getDataManager().getName(), getId(), getLanguage()); //$NON-NLS-1$
+        return String
+            .format(
+                "xwikieclipse://%s/%s/page/%s/history/%s", getDataManager().getName(), getId(), getLanguage(), getVersion()); //$NON-NLS-1$
     }
 
     public String getLanguage()
@@ -220,14 +226,14 @@ public class XWikiEclipsePage extends ModelObject
         this.modified = modified;
     }
 
-    public String getPageClassUrl()
+    public String getClassUrl()
     {
-        return pageClassUrl;
+        return classUrl;
     }
 
-    public void setPageClassUrl(String pageClassUrl)
+    public void setClassUrl(String classUrl)
     {
-        this.pageClassUrl = pageClassUrl;
+        this.classUrl = classUrl;
     }
 
     public String getWiki()
@@ -268,5 +274,25 @@ public class XWikiEclipsePage extends ModelObject
     public void setSyntax(String syntax)
     {
         this.syntax = syntax;
+    }
+
+    public String getSpaceUrl()
+    {
+        return spaceUrl;
+    }
+
+    public void setSpaceUrl(String spaceUrl)
+    {
+        this.spaceUrl = spaceUrl;
+    }
+
+    public String getPageUrl()
+    {
+        return pageUrl;
+    }
+
+    public void setPageUrl(String pageUrl)
+    {
+        this.pageUrl = pageUrl;
     }
 }
