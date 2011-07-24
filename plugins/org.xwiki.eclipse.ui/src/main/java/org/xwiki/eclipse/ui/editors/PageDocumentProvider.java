@@ -27,14 +27,11 @@ import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentPartitioner;
 import org.eclipse.jface.text.rules.FastPartitioner;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.editors.text.FileDocumentProvider;
-import org.xwiki.eclipse.model.XWikiEclipsePage;
 import org.xwiki.eclipse.ui.editors.scanners.XWikiPartitionScanner;
 import org.xwiki.eclipse.ui.utils.XWikiEclipseSafeRunnable;
 
 /**
- * 
  * @version $Id$
  */
 public class PageDocumentProvider extends FileDocumentProvider
@@ -100,16 +97,16 @@ public class PageDocumentProvider extends FileDocumentProvider
             {
                 public void run() throws Exception
                 {
-                    final XWikiEclipsePage page =
-                        pageEditorInput.getPage().getDataManager().storePage(pageEditorInput.getPage());
-
-                    Display.getDefault().syncExec(new Runnable()
-                    {
-                        public void run()
-                        {
-                            pageEditor.setInput(new PageEditorInput(page, pageEditorInput.isReadOnly()));
-                        }
-                    });
+                    // final XWikiEclipsePage page =
+                    // pageEditorInput.getPage().getDataManager().storePage(pageEditorInput.getPage());
+                    //
+                    // Display.getDefault().syncExec(new Runnable()
+                    // {
+                    // public void run()
+                    // {
+                    // pageEditor.setInput(new PageEditorInput(page, pageEditorInput.isReadOnly()));
+                    // }
+                    // });
                 }
             });
 
