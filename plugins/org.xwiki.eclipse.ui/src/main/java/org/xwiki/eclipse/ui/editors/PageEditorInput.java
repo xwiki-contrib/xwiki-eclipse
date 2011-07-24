@@ -25,9 +25,10 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;
 import org.xwiki.eclipse.model.XWikiEclipsePage;
+import org.xwiki.eclipse.ui.UIConstants;
+import org.xwiki.eclipse.ui.UIPlugin;
 
 /**
- * 
  * @version $Id$
  */
 public class PageEditorInput implements IEditorInput
@@ -53,12 +54,12 @@ public class PageEditorInput implements IEditorInput
 
     public ImageDescriptor getImageDescriptor()
     {
-        return null;
+        return UIPlugin.getImageDescriptor(UIConstants.PAGE_ICON);
     }
 
     public String getName()
     {
-        String name = page.getName();
+        String name = page.getName() + "[" + page.getVersion() + "]";
         return name;
     }
 
