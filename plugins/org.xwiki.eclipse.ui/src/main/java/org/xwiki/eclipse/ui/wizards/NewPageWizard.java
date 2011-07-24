@@ -67,8 +67,8 @@ public class NewPageWizard extends Wizard implements INewWizard
                     try {
                         monitor.beginTask("Creating page...", IProgressMonitor.UNKNOWN);
                         final XWikiEclipsePage page =
-                            dataManager.createPage(newPageWizardState.getSpace(), newPageWizardState.getName(),
-                                newPageWizardState.getTitle(), "Write here content");
+                            dataManager.createPage(newPageWizardState.getWiki(), newPageWizardState.getSpace(),
+                                newPageWizardState.getName(), newPageWizardState.getTitle(), "Write here content");
 
                         Display.getDefault().syncExec(new Runnable()
                         {
@@ -116,6 +116,10 @@ public class NewPageWizard extends Wizard implements INewWizard
     public boolean canFinish()
     {
         if (!super.canFinish()) {
+            return false;
+        }
+
+        if (newPageWizardState.getWiki() == null || newPageWizardState.getWiki().length() == 0) {
             return false;
         }
 

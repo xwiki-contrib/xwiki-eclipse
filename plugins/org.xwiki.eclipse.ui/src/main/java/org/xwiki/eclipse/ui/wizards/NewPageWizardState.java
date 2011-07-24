@@ -21,11 +21,12 @@
 package org.xwiki.eclipse.ui.wizards;
 
 /**
- * 
  * @version $Id$
  */
 public class NewPageWizardState
 {
+    private String wiki;
+
     private String title;
 
     private String space;
@@ -66,4 +67,13 @@ public class NewPageWizardState
         return name;
     }
 
+    public String getWiki()
+    {
+        return wiki;
+    }
+
+    public void setWiki(String wiki)
+    {
+        this.wiki = wiki;
+    }
 }
