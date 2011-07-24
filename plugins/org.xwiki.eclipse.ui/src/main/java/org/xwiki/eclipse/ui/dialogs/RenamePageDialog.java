@@ -52,7 +52,6 @@ import org.xwiki.eclipse.model.XWikiEclipseSpaceSummary;
 import org.xwiki.eclipse.ui.utils.XWikiEclipseSafeRunnableWithResult;
 
 /**
- * 
  * @version $Id$
  */
 public class RenamePageDialog extends TitleAreaDialog
@@ -138,7 +137,7 @@ public class RenamePageDialog extends TitleAreaDialog
 
                         public void run() throws Exception
                         {
-                            setResult(pageSummary.getDataManager().getSpaces());
+                            setResult(pageSummary.getDataManager().getSpaces(pageSummary.getWiki()));
                         }
 
                     };
