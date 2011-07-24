@@ -29,15 +29,15 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.browser.IWebBrowser;
 import org.eclipse.ui.browser.IWorkbenchBrowserSupport;
 import org.eclipse.ui.part.ViewPart;
-import org.xwiki.eclipse.core.notifications.CoreEvent;
-import org.xwiki.eclipse.core.notifications.ICoreEventListener;
-import org.xwiki.eclipse.core.notifications.NotificationManager;
 import org.xwiki.eclipse.model.XWikiEclipseObject;
 import org.xwiki.eclipse.model.XWikiEclipseObjectSummary;
 import org.xwiki.eclipse.model.XWikiEclipsePage;
 import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
 import org.xwiki.eclipse.model.XWikiEclipseSpaceSummary;
 import org.xwiki.eclipse.storage.XWikiEclipseStorageException;
+import org.xwiki.eclipse.storage.notification.CoreEvent;
+import org.xwiki.eclipse.storage.notification.ICoreEventListener;
+import org.xwiki.eclipse.storage.notification.NotificationManager;
 import org.xwiki.eclipse.ui.utils.UIUtils;
 
 /**
@@ -226,7 +226,7 @@ public class PagePreview extends ViewPart implements ISelectionListener, ICoreEv
             XWikiEclipseObjectSummary objectSummary = (XWikiEclipseObjectSummary) selectedObject;
             XWikiEclipsePageSummary pageSummary;
             try {
-                pageSummary = objectSummary.getDataManager().getPageSummary(objectSummary.getPageId());
+                pageSummary = objectSummary.getDataManager().getPageSummary(objectSummary);
                 update(pageSummary != null ? pageSummary.getUrl() : null, objectSummary.getDataManager().isConnected());
             } catch (XWikiEclipseStorageException e) {
                 e.printStackTrace();
@@ -286,8 +286,13 @@ public class PagePreview extends ViewPart implements ISelectionListener, ICoreEv
         if (object instanceof XWikiEclipseObject) {
             XWikiEclipseObject xwikiObject = (XWikiEclipseObject) object;
 
-            update(xwikiObject.getPageSummary() != null ? xwikiObject.getPageSummary().getUrl() : null, xwikiObject
-                .getDataManager().isConnected());
+            try {
+                update(xwikiObject.getDataManager().getPageSummary(xwikiObject) != null ? xwikiObject.getDataManager()
+                    .getPageSummary(xwikiObject).getUrl() : null, xwikiObject.getDataManager().isConnected());
+            } catch (XWikiEclipseStorageException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
         }
 
         else

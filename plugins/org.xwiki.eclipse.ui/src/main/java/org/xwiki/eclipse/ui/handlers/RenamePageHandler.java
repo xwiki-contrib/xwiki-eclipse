@@ -37,7 +37,6 @@ import org.xwiki.eclipse.ui.utils.UIUtils;
 import org.xwiki.eclipse.ui.utils.XWikiEclipseSafeRunnable;
 
 /**
- * 
  * @version $Id$
  */
 public class RenamePageHandler extends AbstractHandler
@@ -67,8 +66,8 @@ public class RenamePageHandler extends AbstractHandler
                     {
                         public void run() throws Exception
                         {
-                            pageSummary.getDataManager().renamePage(pageSummary.getId(),
-                                dialog.getNewSpace(), dialog.getNewPageName());
+                            pageSummary.getDataManager().renamePage(pageSummary, dialog.getNewSpace(),
+                                dialog.getNewPageName());
                         }
                     });
 
