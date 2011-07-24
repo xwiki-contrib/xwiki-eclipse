@@ -31,7 +31,6 @@ import org.eclipse.ui.navigator.ICommonMenuConstants;
 import org.xwiki.eclipse.ui.UIConstants;
 
 /**
- * 
  * @version $Id$
  */
 public class DataManagerActionProvider extends CommonActionProvider
