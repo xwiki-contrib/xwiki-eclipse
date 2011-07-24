@@ -25,26 +25,14 @@
 <project
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
   xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
   <parent>
-    <artifactId>org.xwiki.eclipse</artifactId>
+    <artifactId>org.xwiki.eclipse.plugins</artifactId>
     <groupId>org.xwiki.eclipse</groupId>
     <version>1.2.0-SNAPSHOT</version>
   </parent>
-
-  <modelVersion>4.0.0</modelVersion>
   <groupId>org.xwiki.eclipse</groupId>
-  <artifactId>org.xwiki.eclipse.plugins</artifactId>
+  <artifactId>org.xwiki.eclipse.test</artifactId>
   <version>1.2.0-SNAPSHOT</version>
-  <packaging>pom</packaging>
-
-  <modules>
-    <module>org.xwiki.eclipse.storage</module>
-    <module>org.xwiki.eclipse.core</module>
-    <module>org.xwiki.eclipse.xmlrpc</module>
-    <module>org.xwiki.eclipse.rest</module>
-    <module>org.xwiki.eclipse.ui</module>
-<!--    <module>org.xwiki.eclipse.test</module> -->
-    <module>org.xwiki.eclipse.rcp</module>
-  </modules>
-
+  <packaging>eclipse-test-plugin</packaging>
 </project>
