@@ -1291,4 +1291,79 @@ public class DataManager
         }
         return result;
     }
+
+    /**
+     * @param pageSummary
+     * @param newSpace
+     * @param newPageName
+     */
+    public void renamePage(XWikiEclipsePageSummary pageSummary, String newSpace, String newPageName)
+    {
+        // TODO Auto-generated method stub
+
+    }
+
+    /**
+     * @param id
+     * @return
+     */
+    public XWikiEclipsePage getConflictingPage(String id)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /**
+     * @param id
+     * @return
+     */
+    public XWikiEclipsePage getConflictAncestorPage(String id)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /**
+     * @param pageId
+     * @return
+     */
+    public boolean exists(String pageId)
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    /**
+     * @param wiki
+     * @param space
+     * @param name
+     * @param title
+     * @param string
+     * @return
+     */
+    public XWikiEclipsePage createPage(String wiki, String space, String name, String title, String string)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /**
+     * @param wiki
+     * @return
+     */
+    public List<XWikiEclipseSpaceSummary> getSpaces(String wiki)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /**
+     * @param format
+     * @return
+     */
+    public XWikiEclipsePage getPage(String format) throws XWikiEclipseStorageException
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }
