@@ -435,7 +435,7 @@ public class XWikiEclipseAttachmentWizard extends Wizard implements INewWizard
 
                 attachmentComposite = new Composite(attachmentGroup, SWT.NONE);
                 GridDataFactory.fillDefaults().grab(true, false).applyTo(attachmentComposite);
-                GridLayoutFactory.fillDefaults().numColumns(2).equalWidth(false).applyTo(attachmentComposite);
+                GridLayoutFactory.fillDefaults().numColumns(3).equalWidth(false).applyTo(attachmentComposite);
 
                 List<XWikiEclipseAttachment> attachments = pageAttachmentsMap.get(pageSummary);
                 for (final XWikiEclipseAttachment attachment : attachments) {
@@ -444,8 +444,11 @@ public class XWikiEclipseAttachmentWizard extends Wizard implements INewWizard
                         .applyTo(browseButton);
                     browseButton.setText("Browse...");
 
+                    /* add a file name field */
+                    Label label = new Label(attachmentComposite, SWT.BORDER);
+                    label.setText(attachment.getName());
+
                     final Text file = new Text(attachmentComposite, SWT.BORDER | SWT.SINGLE);
-                    // file.setText(attachment.getName());
 
                     GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, false).applyTo(file);
 
