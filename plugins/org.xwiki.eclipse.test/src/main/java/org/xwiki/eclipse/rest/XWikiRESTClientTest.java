@@ -27,10 +27,10 @@ import java.util.List;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 import org.junit.Assert;
 import org.junit.Test;
 import org.osgi.framework.Bundle;
-import org.xwiki.eclipse.TestPlugin;
 import org.xwiki.rest.model.jaxb.PageSummary;
 import org.xwiki.rest.model.jaxb.Space;
 import org.xwiki.rest.model.jaxb.Tag;
@@ -41,6 +41,8 @@ import org.xwiki.rest.model.jaxb.Wiki;
  */
 public class XWikiRESTClientTest
 {
+    Bundle bundle = Platform.getBundle("org.xwiki.eclipse.test");
+
     @Test
     public void testAddTag()
     {
@@ -83,7 +85,6 @@ public class XWikiRESTClientTest
 
         XWikiRESTClient client = new XWikiRESTClient(serverUrl, username, password);
         try {
-            Bundle bundle = TestPlugin.getDefault().getBundle();
             URL url = FileLocator.find(bundle, new Path("src/main/resources/notice.html"), null);
             System.out.println("url = " + url.toString());
 
