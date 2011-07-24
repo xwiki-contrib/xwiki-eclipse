@@ -43,12 +43,13 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.forms.widgets.Form;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.xwiki.eclipse.model.XWikiEclipseObject;
 import org.xwiki.eclipse.model.XWikiEclipseObjectProperty;
+import org.xwiki.eclipse.storage.XWikiEclipseStorageException;
 import org.xwiki.eclipse.ui.editors.XWikiSourceViewerConfiguration;
 import org.xwiki.eclipse.ui.editors.scanners.XWikiPartitionScanner;
 
 /**
- * 
  * @version $Id$
  */
 public class TextAreaPropertyEditorDialog extends Dialog
@@ -87,8 +88,16 @@ public class TextAreaPropertyEditorDialog extends Dialog
         FormToolkit toolkit = new FormToolkit(parent.getDisplay());
         Form form = toolkit.createForm(composite);
         toolkit.decorateFormHeading(form);
-        form.setText(String.format("Property %s of object %s on page %s", property.getPrettyName(), property
-            .getObject().getName(), property.getObject().getPageId()));
+        XWikiEclipseObject object;
+        try {
+            object = property.getDataManager().getObject(property);
+            form.setText(String.format("Property %s of object %s on page %s", property.getPrettyName(),
+                object.getName(), object.getPageId()));
+        } catch (XWikiEclipseStorageException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
+
         GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, true).applyTo(form);
         GridLayoutFactory.fillDefaults().applyTo(form.getBody());
 
