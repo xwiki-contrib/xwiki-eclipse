@@ -20,6 +20,7 @@
  */
 package org.xwiki.eclipse.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.xwiki.eclipse.storage.DataManager;
@@ -47,6 +48,10 @@ public class XWikiEclipsePageSummary extends ModelObject
 
     private String url;
 
+    private String syntax;
+
+    private List<XWikiEclipsePageTranslationSummary> translations;
+
     private String objectsUrl;
 
     private String attachmentsUrl;
@@ -59,9 +64,7 @@ public class XWikiEclipsePageSummary extends ModelObject
 
     private String pageUrl;
 
-    private String syntax;
-
-    private List<String> translations;
+    private String spaceUrl;
 
     public XWikiEclipsePageSummary(DataManager dataManager)
     {
@@ -155,12 +158,15 @@ public class XWikiEclipsePageSummary extends ModelObject
         this.attachmentsUrl = attachmentsUrl;
     }
 
-    public List<String> getTranslations()
+    public List<XWikiEclipsePageTranslationSummary> getTranslations()
     {
+        if (translations == null) {
+            translations = new ArrayList<XWikiEclipsePageTranslationSummary>();
+        }
         return translations;
     }
 
-    public void setTranslations(List<String> translations)
+    public void setTranslations(List<XWikiEclipsePageTranslationSummary> translations)
     {
         this.translations = translations;
     }
@@ -233,5 +239,15 @@ public class XWikiEclipsePageSummary extends ModelObject
     public void setCommentsUrl(String commentsUrl)
     {
         this.commentsUrl = commentsUrl;
+    }
+
+    public String getSpaceUrl()
+    {
+        return spaceUrl;
+    }
+
+    public void setSpaceUrl(String spaceUrl)
+    {
+        this.spaceUrl = spaceUrl;
     }
 }
