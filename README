@@ -4,6 +4,8 @@ See http://mojo.codehaus.org/pde-maven-plugin/usage.html for more details.
 XEclipse is made of the following plugins and features:
  * org.xwiki.eclipse.core
  * org.xwiki.eclipse.ui
+ * org.xwiki.eclipse.storage
+ * org.xwiki.eclipse.rest
  * org.xwiki.eclipse.xmlrpc
  * org.xwiki.eclipse.rcp
  * org.xwiki.eclipse.feature
@@ -18,16 +20,17 @@ Building XEclipse
 ===========================
 
 0) Install Maven 3.0.3+ and JDK 6.0.
-1) Checkout the master branch: "http://github.com/xwiki/xwiki-eclipse.git".
+0.5) Build and install tycho 0.13.0-SNAPSHOT (see https://docs.sonatype.org/display/TYCHO/BuildingTycho) as it is not publicly available from maven repository
+1) Checkout the master branch: "https://github.com/junhan/xwiki-eclipse".
 2) cd to xwiki-eclipse/.
-3) Do a "mvn install".
-4) A standalone RCP application is in product/target.
+3) Do a "mvn clean install".
+4) Standalone RCP applications (or products) are in product/target.
 5) An update site is in site/target.
 6) A P2 repository is in repository/target.
 7) A feature is in features/org.xwiki.eclipse.feature/target.
 
 Troubleshooting
 ===============
-Generation of MAC OS X product is currently problematic in Tycho 0.11.1, and is not supported. This may be fixed in the future version.
+Generation of MAC OS X product from Linux OS is supported from Tycho 0.13.0+.
 
 Enjoy.
