@@ -34,7 +34,7 @@ import org.xwiki.eclipse.core.CoreLog;
 import org.xwiki.eclipse.core.DataManagerRegistry;
 import org.xwiki.eclipse.model.XWikiEclipseAttachment;
 import org.xwiki.eclipse.model.XWikiEclipseComment;
-import org.xwiki.eclipse.model.XWikiEclipseObject;
+import org.xwiki.eclipse.model.XWikiEclipseObjectSummary;
 import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
 import org.xwiki.eclipse.model.XWikiEclipseSpaceSummary;
 import org.xwiki.eclipse.storage.DataManager;
@@ -379,7 +379,7 @@ public class NavigatorContentProvider extends BaseWorkbenchContentProvider imple
                 {
                     public void run()
                     {
-                        XWikiEclipseObject object = (XWikiEclipseObject) event.getData();
+                        XWikiEclipseObjectSummary object = (XWikiEclipseObjectSummary) event.getData();
                         viewer.remove(object);
                     }
 

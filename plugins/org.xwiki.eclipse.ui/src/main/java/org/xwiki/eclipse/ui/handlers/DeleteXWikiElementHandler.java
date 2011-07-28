@@ -112,14 +112,18 @@ public class DeleteXWikiElementHandler extends AbstractHandler
                         if (selectedObject instanceof XWikiEclipseObjectSummary) {
                             final XWikiEclipseObjectSummary objectSummary = (XWikiEclipseObjectSummary) selectedObject;
 
-                            // SafeRunner.run(new XWikiEclipseSafeRunnable()
-                            // {
-                            // public void run() throws Exception
-                            // {
-                            // objectSummary.getDataManager().removeObject(objectSummary);
-                            // }
-                            // });
+                            toBeRefreshed = objectSummary;
+                            coreEvent = CoreEvent.Type.OBJECT_REMOVED;
 
+                            monitor.setTaskName("Deleting " + objectSummary.getId());
+
+                            SafeRunner.run(new XWikiEclipseSafeRunnable()
+                            {
+                                public void run() throws Exception
+                                {
+                                    objectSummary.getDataManager().removeObject(objectSummary);
+                                }
+                            });
                         }
 
                         if (selectedObject instanceof DataManager) {

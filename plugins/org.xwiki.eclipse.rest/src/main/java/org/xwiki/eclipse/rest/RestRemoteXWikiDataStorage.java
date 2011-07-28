@@ -376,4 +376,17 @@ public class RestRemoteXWikiDataStorage
             e.printStackTrace();
         }
     }
+
+    /**
+     * @param url
+     */
+    public void remove(String url)
+    {
+        try {
+            this.restRemoteClient.executeDelete(url);
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
 }

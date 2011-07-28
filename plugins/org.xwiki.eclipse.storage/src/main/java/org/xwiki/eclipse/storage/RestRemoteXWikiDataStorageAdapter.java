@@ -555,30 +555,32 @@ public class RestRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStorag
         List<XWikiEclipseObjectProperty> result = new ArrayList<XWikiEclipseObjectProperty>();
 
         List<Property> properties = this.restRemoteStorage.getObjectProperties(objectSummary.getPropertiesUrl());
+        if (properties != null) {
 
-        for (Property property : properties) {
-            XWikiEclipseObjectProperty p = new XWikiEclipseObjectProperty(dataManager);
-            p.setName(property.getName());
-            p.setType(property.getType());
-            p.setValue(property.getValue());
+            for (Property property : properties) {
+                XWikiEclipseObjectProperty p = new XWikiEclipseObjectProperty(dataManager);
+                p.setName(property.getName());
+                p.setType(property.getType());
+                p.setValue(property.getValue());
 
-            List<Link> links = property.getLinks();
-            for (Link link : links) {
-                if (link.getRel().equals(Relations.OBJECT)) {
-                    p.setObjectUrl(link.getHref());
+                List<Link> links = property.getLinks();
+                for (Link link : links) {
+                    if (link.getRel().equals(Relations.OBJECT)) {
+                        p.setObjectUrl(link.getHref());
+                    }
                 }
+
+                Map<String, String> attributeMap = new HashMap<String, String>();
+
+                List<Attribute> attributes = property.getAttributes();
+                for (Attribute attribute : attributes) {
+                    attributeMap.put(attribute.getName(), attribute.getValue());
+                }
+
+                p.setAttributes(attributeMap);
+
+                result.add(p);
             }
-
-            Map<String, String> attributeMap = new HashMap<String, String>();
-
-            List<Attribute> attributes = property.getAttributes();
-            for (Attribute attribute : attributes) {
-                attributeMap.put(attribute.getName(), attribute.getValue());
-            }
-
-            p.setAttributes(attributeMap);
-
-            result.add(p);
         }
 
         return result;
@@ -1125,5 +1127,23 @@ public class RestRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStorag
     {
         String pageUrl = pageSummary.getPageUrl();
         restRemoteStorage.removePage(pageUrl);
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#remove(org.xwiki.eclipse.model.ModelObject)
+     */
+    @Override
+    public void remove(ModelObject o)
+    {
+        String url = null;
+        if (o instanceof XWikiEclipseObjectSummary) {
+            url = ((XWikiEclipseObjectSummary) o).getObjectUrl();
+        }
+
+        if (url != null) {
+            restRemoteStorage.remove(url);
+        }
     }
 }

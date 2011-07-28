@@ -1158,8 +1158,9 @@ public class DataManager
      */
     public void removeObject(XWikiEclipseObjectSummary objectSummary)
     {
-        // TODO Auto-generated method stub
-
+        if (isConnected()) {
+            remoteXWikiDataStorage.remove(objectSummary);
+        }
     }
 
     /**
