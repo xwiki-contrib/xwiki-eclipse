@@ -126,9 +126,7 @@ public class XWikiEclipsePageSummaryAdapter extends WorkbenchAdapter implements 
                  * classes, group them based on the className
                  */
                 if (objects != null && objects.size() > 0) {
-                    XWikiEclipseObjectCollection collection = new XWikiEclipseObjectCollection(dataManager);
-                    collection.setClassName("Objects");
-                    collection.setPageId(pageId);
+                    XWikiEclipseObjectCollection collection = null;
 
                     Map<String, XWikiEclipseObjectCollection> classnameCollectionMap =
                         new HashMap<String, XWikiEclipseObjectCollection>();
@@ -156,12 +154,19 @@ public class XWikiEclipsePageSummaryAdapter extends WorkbenchAdapter implements 
 
                                 classnameCollectionMap.put(classname, subCollection);
 
+                                if (collection == null) {
+                                    collection = new XWikiEclipseObjectCollection(dataManager);
+                                    collection.setClassName("Objects");
+                                    collection.setPageId(pageId);
+                                }
                                 collection.getObjects().add(subCollection);
                             }
                         }
                     }
 
-                    result.add(collection);
+                    if (collection != null) {
+                        result.add(collection);
+                    }
                 }
 
                 return result.toArray();
