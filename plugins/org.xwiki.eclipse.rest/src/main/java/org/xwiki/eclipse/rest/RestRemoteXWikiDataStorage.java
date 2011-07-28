@@ -363,4 +363,17 @@ public class RestRemoteXWikiDataStorage
 
         return null;
     }
+
+    /**
+     * @param pageUrl
+     */
+    public void removePage(String pageUrl)
+    {
+        try {
+            this.restRemoteClient.executeDelete(pageUrl);
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
 }

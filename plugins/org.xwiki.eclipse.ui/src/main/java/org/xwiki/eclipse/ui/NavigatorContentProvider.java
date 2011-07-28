@@ -30,6 +30,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.model.BaseWorkbenchContentProvider;
 import org.eclipse.ui.progress.DeferredTreeContentManager;
+import org.xwiki.eclipse.core.CoreLog;
 import org.xwiki.eclipse.core.DataManagerRegistry;
 import org.xwiki.eclipse.model.XWikiEclipseAttachment;
 import org.xwiki.eclipse.model.XWikiEclipseComment;
@@ -223,36 +224,28 @@ public class NavigatorContentProvider extends BaseWorkbenchContentProvider imple
                 break;
 
             case PAGE_REMOVED:
-                // Display.getDefault().syncExec(new Runnable()
-                // {
-                // public void run()
-                // {
-                // XWikiEclipsePage page = (XWikiEclipsePage) event.getData();
-                //
-                // String spaceKey = page.getSpace();
-                //
-                // List<XWikiEclipsePageSummary> pages = null;
-                // try {
-                // pages = page.getDataManager().getPages(spaceKey);
-                // } catch (XWikiEclipseStorageException e) {
-                // CoreLog.logError("Unable to get space pages: " + e.getMessage());
-                // }
-                //
-                // if (pages != null && pages.size() == 0) {
-                // // The space is left with no pages so it has to be removed.
-                // XWikiEclipseSpaceSummary space = page.getSpaceSummary();
-                // // SpaceSummary spaceSummary = new SpaceSummary();
-                // // spaceSummary.setKey(spaceKey);
-                // // spaceSummary.setName(spaceKey);
-                // //
-                // // XWikiEclipseSpaceSummary space =
-                // // new XWikiEclipseSpaceSummary(page.getDataManager(), spaceSummary);
-                // viewer.remove(space);
-                // } else {
-                // viewer.remove(page.getSummary());
-                // }
-                // }
-                // });
+                Display.getDefault().syncExec(new Runnable()
+                {
+                    public void run()
+                    {
+                        XWikiEclipsePageSummary pageSummary = (XWikiEclipsePageSummary) event.getData();
+                        XWikiEclipseSpaceSummary space = pageSummary.getDataManager().getSpace(pageSummary);
+
+                        List<XWikiEclipsePageSummary> pages = null;
+                        try {
+                            pages = space.getDataManager().getPageSummaries(space);
+                        } catch (XWikiEclipseStorageException e) {
+                            CoreLog.logError("Unable to get space pages: " + e.getMessage());
+                        }
+
+                        if (pages != null && pages.size() == 0) {
+                            // The space is left with no pages so it has to be removed.
+                            viewer.remove(space);
+                        } else {
+                            viewer.remove(pageSummary);
+                        }
+                    }
+                });
                 break;
 
             case OBJECT_STORED:

@@ -1147,7 +1147,9 @@ public class DataManager
      */
     public void removePage(XWikiEclipsePageSummary pageSummary)
     {
-        // TODO Auto-generated method stub
+        if (isConnected()) {
+            remoteXWikiDataStorage.removePage(pageSummary);
+        }
 
     }
 

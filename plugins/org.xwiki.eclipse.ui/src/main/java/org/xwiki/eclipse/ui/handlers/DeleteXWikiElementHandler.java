@@ -65,8 +65,8 @@ public class DeleteXWikiElementHandler extends AbstractHandler
         final Set selectedObjects = UIUtils.getSelectedObjectsFromSelection(selection);
 
         SelectionDialog selectionDialog =
-            new SelectionDialog(HandlerUtil.getActiveShell(event), "Delete objects",
-                "Review the objects to be deleted", selectedObjects);
+            new SelectionDialog(HandlerUtil.getActiveShell(event), "Delete XWiki elements",
+                "Review the elements to be deleted", selectedObjects);
         int result = selectionDialog.open();
         if (result == IDialogConstants.CANCEL_ID) {
             return null;
@@ -81,7 +81,7 @@ public class DeleteXWikiElementHandler extends AbstractHandler
             protected IStatus run(final IProgressMonitor monitor)
             {
 
-                monitor.beginTask("Downloading", 100);
+                monitor.beginTask("Deleting...", 100);
                 if (monitor.isCanceled()) {
                     return Status.CANCEL_STATUS;
                 }
@@ -92,14 +92,20 @@ public class DeleteXWikiElementHandler extends AbstractHandler
                         if (selectedObject instanceof XWikiEclipsePageSummary) {
                             final XWikiEclipsePageSummary pageSummary = (XWikiEclipsePageSummary) selectedObject;
 
-                            // SafeRunner.run(new XWikiEclipseSafeRunnable()
-                            // {
-                            // public void run() throws Exception
-                            // {
-                            // pageSummary.getDataManager().removePage(pageSummary);
-                            // monitor.worked(work);
-                            // }
-                            // });
+                            toBeRefreshed = pageSummary;
+                            coreEvent = CoreEvent.Type.PAGE_REMOVED;
+
+                            monitor.setTaskName("Deleting " + pageSummary.getId());
+
+                            SafeRunner.run(new XWikiEclipseSafeRunnable()
+                            {
+                                public void run() throws Exception
+                                {
+                                    pageSummary.getDataManager().removePage(pageSummary);
+                                    monitor.worked(work);
+                                    Thread.sleep(2000);
+                                }
+                            });
 
                         }
 
