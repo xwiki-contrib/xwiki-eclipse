@@ -21,7 +21,9 @@
 package org.xwiki.eclipse.ui.properties;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.jface.layout.GridLayoutFactory;
@@ -38,6 +40,7 @@ import org.eclipse.ui.browser.IWebBrowser;
 import org.eclipse.ui.browser.IWorkbenchBrowserSupport;
 import org.eclipse.ui.dialogs.PropertyPage;
 import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
+import org.xwiki.eclipse.model.XWikiEclipsePageTranslationSummary;
 
 /**
  * @version $Id$
@@ -92,7 +95,19 @@ public class XWikiEclipsePageSummaryPropertiesPage extends PropertyPage
         property = new Label(composite, SWT.NONE);
         property.setText("Translations:");
         value = new Label(composite, SWT.NONE);
-        value.setText(Arrays.toString(pageSummary.getTranslations().toArray()));
+        List<String> translations = new ArrayList<String>();
+        String defaultLang = null;
+        StringBuilder sb = new StringBuilder();
+        for (XWikiEclipsePageTranslationSummary t : pageSummary.getTranslations()) {
+            if (defaultLang == null) {
+                defaultLang = t.getDefaultLanguage();
+                sb.append("[default=" + defaultLang + "], ");
+            } else if (!defaultLang.equals(t.getLanguage())) {
+                translations.add(t.getLanguage());
+            }
+        }
+        sb.append(Arrays.toString(translations.toArray()));
+        value.setText(sb.toString());
 
         property = new Label(composite, SWT.NONE);
         property.setText("Url:");
@@ -123,5 +138,4 @@ public class XWikiEclipsePageSummaryPropertiesPage extends PropertyPage
 
         return composite;
     }
-
 }
