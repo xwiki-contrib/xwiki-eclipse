@@ -160,14 +160,20 @@ public class DeleteXWikiElementHandler extends AbstractHandler
                         if (selectedObject instanceof XWikiEclipseComment) {
                             final XWikiEclipseComment comment = (XWikiEclipseComment) selectedObject;
 
-                            /* FIXME: comment delete is not supported in REST API yet */
-                            // SafeRunner.run(new XWikiEclipseSafeRunnable()
-                            // {
-                            // public void run() throws Exception
-                            // {
-                            // comment.getDataManager().removeComment(comment);
-                            // }
-                            // });
+                            toBeRefreshed = comment;
+                            coreEvent = CoreEvent.Type.COMMENT_REMOVED;
+
+                            monitor.setTaskName("Deleting " + comment.getId());
+
+                            SafeRunner.run(new XWikiEclipseSafeRunnable()
+                            {
+                                public void run() throws Exception
+                                {
+                                    comment.getDataManager().remove(comment);
+                                    monitor.worked(work);
+                                    Thread.sleep(2000);
+                                }
+                            });
 
                         }
 

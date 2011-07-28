@@ -363,7 +363,7 @@ public class NavigatorContentProvider extends BaseWorkbenchContentProvider imple
 
                             viewer.setExpandedState(pageSummary, true);
 
-                            viewer.refresh(pageSummary, false);
+                            viewer.refresh(pageSummary, true);
 
                         } catch (XWikiEclipseStorageException e) {
                             // TODO Auto-generated catch block

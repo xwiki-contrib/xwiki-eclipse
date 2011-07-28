@@ -1161,18 +1161,6 @@ public class DataManager
     }
 
     /**
-     * @param comment
-     */
-    public void removeComment(XWikiEclipseComment comment)
-    {
-        if (isConnected()) {
-            remoteXWikiDataStorage.removeComment(comment);
-        }
-
-        NotificationManager.getDefault().fireCoreEvent(CoreEvent.Type.COMMENT_REMOVED, this, comment);
-    }
-
-    /**
      * @param c
      */
     public XWikiEclipseComment storeComment(XWikiEclipseComment c)

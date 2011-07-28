@@ -1134,6 +1134,13 @@ public class RestRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStorag
             url = ((XWikiEclipsePageSummary) o).getPageUrl();
         }
 
+        if (o instanceof XWikiEclipseComment) {
+            XWikiEclipseComment comment = (XWikiEclipseComment) o;
+            String pageUrl = comment.getPageUrl();
+
+            url = pageUrl + "/objects/XWiki.XWikiComments/" + comment.getId();
+        }
+
         if (url != null) {
             restRemoteStorage.remove(url);
         }
