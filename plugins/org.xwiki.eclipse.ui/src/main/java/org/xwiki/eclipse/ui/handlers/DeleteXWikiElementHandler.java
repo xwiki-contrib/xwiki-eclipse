@@ -101,7 +101,7 @@ public class DeleteXWikiElementHandler extends AbstractHandler
                             {
                                 public void run() throws Exception
                                 {
-                                    pageSummary.getDataManager().removePage(pageSummary);
+                                    pageSummary.getDataManager().remove(pageSummary);
                                     monitor.worked(work);
                                     Thread.sleep(2000);
                                 }

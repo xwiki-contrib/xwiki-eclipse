@@ -1120,18 +1120,6 @@ public class RestRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStorag
     /**
      * {@inheritDoc}
      * 
-     * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#removePage(org.xwiki.eclipse.model.XWikiEclipsePageSummary)
-     */
-    @Override
-    public void removePage(XWikiEclipsePageSummary pageSummary)
-    {
-        String pageUrl = pageSummary.getPageUrl();
-        restRemoteStorage.removePage(pageUrl);
-    }
-
-    /**
-     * {@inheritDoc}
-     * 
      * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#remove(org.xwiki.eclipse.model.ModelObject)
      */
     @Override
@@ -1140,6 +1128,10 @@ public class RestRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStorag
         String url = null;
         if (o instanceof XWikiEclipseObjectSummary) {
             url = ((XWikiEclipseObjectSummary) o).getObjectUrl();
+        }
+
+        if (o instanceof XWikiEclipsePageSummary) {
+            url = ((XWikiEclipsePageSummary) o).getPageUrl();
         }
 
         if (url != null) {

@@ -1142,13 +1142,10 @@ public class DataManager
 
     }
 
-    /**
-     * @param pageSummary
-     */
-    public void removePage(XWikiEclipsePageSummary pageSummary)
+    public void remove(ModelObject o)
     {
         if (isConnected()) {
-            remoteXWikiDataStorage.removePage(pageSummary);
+            remoteXWikiDataStorage.remove(o);
         }
 
     }

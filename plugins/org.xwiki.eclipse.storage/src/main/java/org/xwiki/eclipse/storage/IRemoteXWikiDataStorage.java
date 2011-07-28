@@ -182,11 +182,6 @@ public interface IRemoteXWikiDataStorage
     XWikiEclipseClass getClass(String wiki, String className);
 
     /**
-     * @param pageSummary
-     */
-    void removePage(XWikiEclipsePageSummary pageSummary);
-
-    /**
      * @param o
      */
     void remove(ModelObject o);
