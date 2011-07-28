@@ -187,7 +187,7 @@ public class DeleteXWikiElementHandler extends AbstractHandler
                             {
                                 public void run() throws Exception
                                 {
-                                    attachment.getDataManager().removeAttachment(attachment);
+                                    attachment.getDataManager().remove(attachment);
                                     monitor.worked(work);
                                     Thread.sleep(2000);
                                 }

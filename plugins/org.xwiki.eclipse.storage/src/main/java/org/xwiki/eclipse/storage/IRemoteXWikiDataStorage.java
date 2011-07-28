@@ -116,11 +116,6 @@ public interface IRemoteXWikiDataStorage
     XWikiEclipseObject getObject(ModelObject o);
 
     /**
-     * @param comment
-     */
-    void removeComment(XWikiEclipseComment comment);
-
-    /**
      * @param c
      * @return
      */
@@ -131,11 +126,6 @@ public interface IRemoteXWikiDataStorage
      * @return
      */
     XWikiEclipsePageSummary getPageSummary(ModelObject m);
-
-    /**
-     * @param attachment
-     */
-    void removeAttachment(XWikiEclipseAttachment attachment);
 
     /**
      * @param pageSummary

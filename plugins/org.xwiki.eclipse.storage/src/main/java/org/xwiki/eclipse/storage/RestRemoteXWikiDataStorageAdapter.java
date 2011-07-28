@@ -735,17 +735,6 @@ public class RestRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStorag
     /**
      * {@inheritDoc}
      * 
-     * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#removeComment(org.xwiki.eclipse.model.XWikiEclipseComment)
-     */
-    @Override
-    public void removeComment(XWikiEclipseComment comment)
-    {
-        // TODO Auto-generated method stub
-    }
-
-    /**
-     * {@inheritDoc}
-     * 
      * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#storeComment(org.xwiki.eclipse.model.XWikiEclipseComment)
      */
     @Override
@@ -856,18 +845,6 @@ public class RestRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStorag
         }
 
         return result;
-    }
-
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#removeAttachment(org.xwiki.eclipse.model.XWikiEclipseAttachment)
-     */
-    @Override
-    public void removeAttachment(XWikiEclipseAttachment attachment)
-    {
-        restRemoteStorage.removeAttachment(attachment.getAttachmentUrl());
-
     }
 
     /**
@@ -1139,6 +1116,10 @@ public class RestRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStorag
             String pageUrl = comment.getPageUrl();
 
             url = pageUrl + "/objects/XWiki.XWikiComments/" + comment.getId();
+        }
+
+        if (o instanceof XWikiEclipseAttachment) {
+            url = ((XWikiEclipseAttachment) o).getAttachmentUrl();
         }
 
         if (url != null) {

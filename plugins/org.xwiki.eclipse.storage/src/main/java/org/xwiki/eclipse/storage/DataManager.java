@@ -1176,16 +1176,6 @@ public class DataManager
     }
 
     /**
-     * @param attachment
-     */
-    public void removeAttachment(XWikiEclipseAttachment attachment)
-    {
-        if (isConnected()) {
-            remoteXWikiDataStorage.removeAttachment(attachment);
-        }
-    }
-
-    /**
      * @param pageSummary
      * @param fileUrl
      */

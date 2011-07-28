@@ -375,18 +375,6 @@ public class XmlrpcRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStor
     /**
      * {@inheritDoc}
      * 
-     * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#removeComment(org.xwiki.eclipse.model.XWikiEclipseComment)
-     */
-    @Override
-    public void removeComment(XWikiEclipseComment comment)
-    {
-        // TODO Auto-generated method stub
-
-    }
-
-    /**
-     * {@inheritDoc}
-     * 
      * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#storeComment(org.xwiki.eclipse.model.XWikiEclipseComment)
      */
     @Override
@@ -406,18 +394,6 @@ public class XmlrpcRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStor
     {
         // TODO Auto-generated method stub
         return null;
-    }
-
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#removeAttachment(org.xwiki.eclipse.model.XWikiEclipseAttachment)
-     */
-    @Override
-    public void removeAttachment(XWikiEclipseAttachment attachment)
-    {
-        // TODO Auto-generated method stub
-
     }
 
     /**
@@ -505,6 +481,18 @@ public class XmlrpcRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStor
     {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#remove(org.xwiki.eclipse.model.ModelObject)
+     */
+    @Override
+    public void remove(ModelObject o)
+    {
+        // TODO Auto-generated method stub
+
     }
 
 }
