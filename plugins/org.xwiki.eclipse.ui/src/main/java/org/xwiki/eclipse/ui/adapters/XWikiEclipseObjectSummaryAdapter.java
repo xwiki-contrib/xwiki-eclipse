@@ -53,7 +53,7 @@ public class XWikiEclipseObjectSummaryAdapter extends WorkbenchAdapter
             for (XWikiEclipseObjectProperty property : objectProperties) {
                 /* look for author first */
                 String propertyName = property.getName().toLowerCase();
-                if (propertyName.indexOf("author") >= 0) {
+                if (propertyName.indexOf("author") >= 0 && property.getValue().length() > 0) {
                     label += property.getValue();
                     return label;
                 }
@@ -62,10 +62,12 @@ public class XWikiEclipseObjectSummaryAdapter extends WorkbenchAdapter
                 String propertyName = property.getName().toLowerCase();
 
                 if (propertyName.indexOf("name") >= 0 || propertyName.indexOf("title") >= 0) {
-                    /* look for name and title */
-                    findNameAndTitle = true;
-                    label += property.getValue();
-                    return label;
+                    if (property.getValue().length() > 0) {
+                        /* look for name and title */
+                        findNameAndTitle = true;
+                        label += property.getValue();
+                        return label;
+                    }
                 }
             }
 
