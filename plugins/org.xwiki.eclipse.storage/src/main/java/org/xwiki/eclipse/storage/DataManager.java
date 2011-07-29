@@ -103,6 +103,14 @@ public class DataManager
         Assert.isNotNull(project); //$NON-NLS-1$
         this.project = project;
 
+        /*
+         * initialize LocalDataStorage
+         */
+        localXWikiDataStorage = new LocalXWikiDataStorage(project.getFolder(LOCAL_STORAGE_DIRECTORY));
+
+        lastRetrievedPagesDataStorage = new LocalXWikiDataStorage(project.getFolder(LAST_RETRIEVED_PAGE_DIRECTORY));
+
+        conflictingPagesDataStorage = new LocalXWikiDataStorage(project.getFolder(CONFLICTING_PAGES_DIRECTORY));
         pageToStatusMap = new PersistentMap(project.getFolder(DATA_MANAGER_DIRECTORY).getFile(PAGES_STATUS));
 
         objectToStatusMap = new PersistentMap(project.getFolder(DATA_MANAGER_DIRECTORY).getFile(OBJECTS_STATUS));
@@ -116,15 +124,6 @@ public class DataManager
         supportedFunctionalities.add(Functionality.RENAME);
         supportedFunctionalities.add(Functionality.TRANSLATIONS);
         supportedFunctionalities.add(Functionality.ALL_PAGES_RETRIEVAL);
-
-        /*
-         * initialize LocalDataStorage
-         */
-        localXWikiDataStorage = new LocalXWikiDataStorage(project.getFolder(LOCAL_STORAGE_DIRECTORY));
-
-        lastRetrievedPagesDataStorage = new LocalXWikiDataStorage(project.getFolder(LAST_RETRIEVED_PAGE_DIRECTORY));
-
-        conflictingPagesDataStorage = new LocalXWikiDataStorage(project.getFolder(CONFLICTING_PAGES_DIRECTORY));
     }
 
     /*
@@ -1148,16 +1147,6 @@ public class DataManager
             remoteXWikiDataStorage.remove(o);
         }
 
-    }
-
-    /**
-     * @param objectSummary
-     */
-    public void removeObject(XWikiEclipseObjectSummary objectSummary)
-    {
-        if (isConnected()) {
-            remoteXWikiDataStorage.remove(objectSummary);
-        }
     }
 
     /**

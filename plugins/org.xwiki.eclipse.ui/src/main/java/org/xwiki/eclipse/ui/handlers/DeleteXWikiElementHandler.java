@@ -121,7 +121,7 @@ public class DeleteXWikiElementHandler extends AbstractHandler
                             {
                                 public void run() throws Exception
                                 {
-                                    objectSummary.getDataManager().removeObject(objectSummary);
+                                    objectSummary.getDataManager().remove(objectSummary);
                                 }
                             });
                         }
