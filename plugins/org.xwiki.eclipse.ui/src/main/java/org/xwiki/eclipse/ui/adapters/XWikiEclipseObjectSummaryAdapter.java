@@ -74,12 +74,22 @@ public class XWikiEclipseObjectSummaryAdapter extends WorkbenchAdapter
             for (XWikiEclipseObjectProperty property : objectProperties) {
                 if (!findNameAndTitle) {
                     if (property.getType().indexOf("StringClass") >= 0 && !foundStringProperty) {
-                        foundStringProperty = true;
-                        label += property.getValue();
-                        return label;
-                    } else if (!(property.getType().indexOf("TextAreaClass") >= 0) && !foundStringProperty) {
-                        label += property.getValue();
-                        return label;
+                        if (property.getValue().length() > 0) {
+                            foundStringProperty = true;
+                            label += property.getValue();
+                            return label;
+                        }
+                    }
+                }
+            }
+
+            for (XWikiEclipseObjectProperty property : objectProperties) {
+                if (!findNameAndTitle && !foundStringProperty) {
+                    if (!(property.getType().indexOf("TextAreaClass") >= 0) && !foundStringProperty) {
+                        if (property.getValue().length() > 0) {
+                            label += property.getValue();
+                            return label;
+                        }
                     }
                 }
             }
