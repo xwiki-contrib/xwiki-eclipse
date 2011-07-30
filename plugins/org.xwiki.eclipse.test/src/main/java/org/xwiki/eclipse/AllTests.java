@@ -22,12 +22,13 @@ package org.xwiki.eclipse;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.xwiki.eclipse.rest.XWikiRESTClientTest;
+import org.xwiki.eclipse.storage.utils.StorageUtilsTest;
 
 /**
  * @version $Id$
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({XWikiRESTClientTest.class})
+@Suite.SuiteClasses({XWikiRESTClientTest.class, StorageUtilsTest.class})
 public class AllTests
 {
 

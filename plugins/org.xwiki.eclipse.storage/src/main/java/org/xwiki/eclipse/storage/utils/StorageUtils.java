@@ -23,6 +23,7 @@ package org.xwiki.eclipse.storage.utils;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 
 import org.eclipse.core.resources.IFile;
@@ -32,9 +33,16 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.xwiki.eclipse.model.ModelObject;
 import org.xwiki.eclipse.storage.BackendType;
+import org.xwiki.eclipse.storage.DataManager;
 import org.xwiki.eclipse.storage.XWikiEclipseStorageException;
 
+import com.google.gson.ExclusionStrategy;
+import com.google.gson.FieldAttributes;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.stream.JsonReader;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 
@@ -46,6 +54,8 @@ import com.thoughtworks.xstream.io.xml.DomDriver;
 public class StorageUtils
 {
     private static XStream xstream = null;
+
+    private static Gson gson = null;
 
     /**
      * Create a folder and all its parents.
@@ -76,6 +86,74 @@ public class StorageUtils
         Assert.isTrue(folder.exists());
 
         return folder;
+    }
+
+    private static Gson getGson()
+    {
+        if (gson == null) {
+            gson = new GsonBuilder().setExclusionStrategies(new XEclipseExclusionStrategy(DataManager.class)).create();
+        }
+
+        return gson;
+    }
+
+    /**
+     * Write an JSON serialization of the given object to a file. Overwrites the previous file content is the file
+     * already exists.
+     * 
+     * @param file The file where the serialization should be written to.
+     * @param data
+     * @return
+     * @throws CoreException
+     */
+    public static IFile writeToJson(IFile file, Object data) throws CoreException
+    {
+        Gson gson = getGson();
+
+        if (file.getParent() instanceof IFolder) {
+            IFolder parentFolder = (IFolder) file.getParent();
+            createFolder(parentFolder);
+        }
+
+        byte[] bytes = null;
+
+        try {
+            // We must use UTF-8 since the reader always assumes UTF-8, but getBytes uses the JVM encoding by default
+            bytes = gson.toJson(data).getBytes("UTF-8");
+        } catch (UnsupportedEncodingException e1) {
+            // ignore, UTF-8 is always available
+        }
+
+        InputStream is = new ByteArrayInputStream(bytes);
+        if (!file.exists()) {
+            file.create(is, true, null);
+        } else {
+            file.setContents(is, true, false, null);
+        }
+
+        try {
+            is.close();
+        } catch (IOException e) {
+            // Ignore
+        }
+
+        return file;
+    }
+
+    /**
+     * Read the JSON serialization from a file.
+     * 
+     * @param file
+     * @return The de-serialized object (client should type-cast to the actual type).
+     * @throws CoreException
+     */
+    public static ModelObject readFromJSON(IFile file, String classType) throws Exception
+    {
+        Gson gson = getGson();
+
+        file.refreshLocal(1, null);
+        JsonReader reader = new JsonReader(new InputStreamReader(file.getContents()));
+        return gson.fromJson(reader, Class.forName(classType));
     }
 
     /**
@@ -144,13 +222,14 @@ public class StorageUtils
 
         return xstream;
     }
-    
-    public static BackendType getBackend(String serverUrl) throws XWikiEclipseStorageException {
+
+    public static BackendType getBackend(String serverUrl) throws XWikiEclipseStorageException
+    {
         if (serverUrl == null || serverUrl.length() == 0) {
             IllegalArgumentException e = new IllegalArgumentException("serverUrl cannot be null or empty");
             throw new XWikiEclipseStorageException(e);
         }
-        
+
         BackendType result = null;
         if (serverUrl.contains("xmlrpc/confluence")) {
             result = BackendType.XMLRPC;
@@ -160,7 +239,27 @@ public class StorageUtils
             IllegalArgumentException e = new IllegalArgumentException("serverUrl does not contain valid entry point");
             throw new XWikiEclipseStorageException(e);
         }
-        
+
         return result;
+    }
+}
+
+class XEclipseExclusionStrategy implements ExclusionStrategy
+{
+    private final Class< ? > typeToSkip;
+
+    public XEclipseExclusionStrategy(Class< ? > typeToSkip)
+    {
+        this.typeToSkip = typeToSkip;
+    }
+
+    public boolean shouldSkipClass(Class< ? > clazz)
+    {
+        return (clazz == typeToSkip);
+    }
+
+    public boolean shouldSkipField(FieldAttributes f)
+    {
+        return false;
     }
 }
