@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
+import org.xwiki.eclipse.model.XWikiEclipseSpaceSummary;
 import org.xwiki.eclipse.model.XWikiEclipseWikiSummary;
 import org.xwiki.eclipse.storage.utils.StorageUtils;
 import org.xwiki.xmlrpc.model.XWikiClass;
@@ -250,22 +251,29 @@ public class LocalXWikiDataStorage
         return wiki;
     }
 
-    public List<SpaceSummary> getSpaces() throws XWikiEclipseStorageException
+    public List<XWikiEclipseSpaceSummary> getSpaces(XWikiEclipseWikiSummary wiki) throws XWikiEclipseStorageException
     {
-        final List<SpaceSummary> result = new ArrayList<SpaceSummary>();
+
+        final List<XWikiEclipseSpaceSummary> result = new ArrayList<XWikiEclipseSpaceSummary>();
 
         try {
-            final IFolder indexFolder = StorageUtils.createFolder(baseFolder.getFolder(INDEX_DIRECTORY));
+            final IFolder spaceFolder = StorageUtils.createFolder(baseFolder.getFolder(SPACES_DIRECTORY));
 
-            List<IResource> indexFolderResources = getChildResources(indexFolder, IResource.DEPTH_ONE);
-            for (IResource indexFolderResource : indexFolderResources) {
-                if (indexFolderResource instanceof IFolder) {
-                    IFolder folder = (IFolder) indexFolderResource;
-                    SpaceSummary spaceSummary = new SpaceSummary();
-                    spaceSummary.setKey(folder.getName());
-                    spaceSummary.setName(folder.getName());
-                    spaceSummary.setUrl("local"); //$NON-NLS-1$
-                    result.add(spaceSummary);
+            List<IResource> spaceFolderResources = getChildResources(spaceFolder, IResource.DEPTH_ONE);
+            for (IResource spaceFolderResource : spaceFolderResources) {
+                if (spaceFolderResource instanceof IFile) {
+                    IFile wikiFile = (IFile) spaceFolderResource;
+                    XWikiEclipseSpaceSummary spaceSummary;
+                    try {
+                        spaceSummary =
+                            (XWikiEclipseSpaceSummary) StorageUtils.readFromJSON(wikiFile,
+                                XWikiEclipseSpaceSummary.class.getCanonicalName());
+                        result.add(spaceSummary);
+                    } catch (Exception e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+
                 }
             }
         } catch (CoreException e) {
@@ -277,11 +285,11 @@ public class LocalXWikiDataStorage
 
     public SpaceSummary getSpaceSumary(String spaceKey) throws XWikiEclipseStorageException
     {
-        List<SpaceSummary> spaces = getSpaces();
-        for (SpaceSummary space : spaces) {
-            if (space.getKey().equals(spaceKey))
-                return space;
-        }
+        // List<SpaceSummary> spaces = getSpaces();
+        // for (SpaceSummary space : spaces) {
+        // if (space.getKey().equals(spaceKey))
+        // return space;
+        // }
 
         return null;
     }
@@ -536,6 +544,11 @@ public class LocalXWikiDataStorage
         return objectFile.exists();
     }
 
+    private String getFileNameForSpaceSummary(String spaceKey)
+    {
+        return String.format("%s.%s", spaceKey, SPACE_SUMMARY_FILE_EXTENSION); //$NON-NLS-1$
+    }
+
     private String getFileNameForWikiSummary(String wikiId)
     {
         return String.format("%s.%s", wikiId, WIKI_SUMMARY_FILE_EXTENSION); //$NON-NLS-1$
@@ -659,14 +672,44 @@ public class LocalXWikiDataStorage
     {
         List<XWikiPageSummary> result = new ArrayList<XWikiPageSummary>();
 
-        List<SpaceSummary> spaces = getSpaces();
-        for (SpaceSummary spaceSummary : spaces) {
-            List<XWikiPageSummary> pages = getPages(spaceSummary.getKey());
-            for (XWikiPageSummary pageSummary : pages) {
-                result.add(pageSummary);
-            }
-        }
+        // List<SpaceSummary> spaces = getSpaces();
+        // for (SpaceSummary spaceSummary : spaces) {
+        // List<XWikiPageSummary> pages = getPages(spaceSummary.getKey());
+        // for (XWikiPageSummary pageSummary : pages) {
+        // result.add(pageSummary);
+        // }
+        // }
 
         return result;
+    }
+
+    /**
+     * @param spaceSummary
+     */
+    public XWikiEclipseSpaceSummary storeSpace(final XWikiEclipseSpaceSummary spaceSummary)
+        throws XWikiEclipseStorageException
+    {
+        try {
+            ResourcesPlugin.getWorkspace().run(new IWorkspaceRunnable()
+            {
+                public void run(IProgressMonitor monitor) throws CoreException
+                {
+                    /* Write the page summary */
+                    XWikiEclipseSpaceSummary space = new XWikiEclipseSpaceSummary(spaceSummary.getDataManager());
+                    space.setUrl("local");
+                    space.setName(spaceSummary.getName());
+                    space.setWiki(spaceSummary.getWiki());
+                    space.setId(spaceSummary.getId());
+
+                    StorageUtils.writeToJson(
+                        baseFolder.getFolder(SPACES_DIRECTORY).getFile(getFileNameForWikiSummary(space.getId())), space);
+                }
+            }, null);
+        } catch (CoreException e) {
+            throw new XWikiEclipseStorageException(e);
+        }
+
+        return spaceSummary;
+
     }
 }
