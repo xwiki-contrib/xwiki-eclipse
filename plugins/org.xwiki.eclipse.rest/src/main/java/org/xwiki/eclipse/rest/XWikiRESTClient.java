@@ -482,7 +482,7 @@ public class XWikiRESTClient
     /**
      * @return
      */
-    public Xwiki getServerInfo()
+    public Xwiki getServerInfo() throws Exception
     {
         String wikisUrl = getServerUrl();
         HttpResponse response;
@@ -492,11 +492,9 @@ public class XWikiRESTClient
             return xwiki;
         } catch (Exception e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            // e.printStackTrace();
+            throw e;
         }
-
-        return null;
-
     }
 
     /**

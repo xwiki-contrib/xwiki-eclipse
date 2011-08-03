@@ -50,7 +50,7 @@ public interface IRemoteXWikiDataStorage
 
     void dispose();
 
-    XWikiEclipseServerInfo getServerInfo();
+    XWikiEclipseServerInfo getServerInfo() throws XWikiEclipseStorageException;
 
     /**
      * @param spaceSummary

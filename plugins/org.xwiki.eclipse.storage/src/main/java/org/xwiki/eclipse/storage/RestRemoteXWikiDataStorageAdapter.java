@@ -169,41 +169,50 @@ public class RestRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStorag
     /**
      * {@inheritDoc}
      * 
+     * @throws XWikiEclipseStorageException
      * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#getServerInfo()
      */
     @Override
-    public XWikiEclipseServerInfo getServerInfo()
+    public XWikiEclipseServerInfo getServerInfo() throws XWikiEclipseStorageException
     {
         XWikiEclipseServerInfo serverInfo = new XWikiEclipseServerInfo();
 
-        Xwiki xwiki = this.restRemoteStorage.getServerInfo();
-        List<Link> links = xwiki.getLinks();
-        String syntaxesUrl = null;
-        for (Link link : links) {
-            if (link.getRel().equals(Relations.SYNTAXES)) {
-                syntaxesUrl = link.getHref();
-                break;
+        Xwiki xwiki;
+        try {
+            xwiki = this.restRemoteStorage.getServerInfo();
+            List<Link> links = xwiki.getLinks();
+            String syntaxesUrl = null;
+            for (Link link : links) {
+                if (link.getRel().equals(Relations.SYNTAXES)) {
+                    syntaxesUrl = link.getHref();
+                    break;
+                }
             }
+
+            Syntaxes syntaxes = this.restRemoteStorage.getSyntaxes(syntaxesUrl);
+
+            List<String> syntaxeList = syntaxes.getSyntaxes();
+            serverInfo.setSyntaxes(syntaxeList);
+
+            String versionStr = xwiki.getVersion(); // e.g., 3.1-rc-1
+            serverInfo.setVersion(versionStr);
+            StringTokenizer tokenizer = new StringTokenizer(versionStr, "-");
+
+            String v = tokenizer.nextToken();
+
+            tokenizer = new StringTokenizer(v, ".");
+            serverInfo.setMajorVersion(Integer.parseInt(tokenizer.nextToken()));
+            serverInfo.setMinorVersion(Integer.parseInt(tokenizer.nextToken()));
+
+            serverInfo.setBaseUrl(endpoint);
+
+            return serverInfo;
+
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            throw new XWikiEclipseStorageException(e);
         }
-
-        Syntaxes syntaxes = this.restRemoteStorage.getSyntaxes(syntaxesUrl);
-
-        List<String> syntaxeList = syntaxes.getSyntaxes();
-        serverInfo.setSyntaxes(syntaxeList);
-
-        String versionStr = xwiki.getVersion(); // e.g., 3.1-rc-1
-        serverInfo.setVersion(versionStr);
-        StringTokenizer tokenizer = new StringTokenizer(versionStr, "-");
-
-        String v = tokenizer.nextToken();
-
-        tokenizer = new StringTokenizer(v, ".");
-        serverInfo.setMajorVersion(Integer.parseInt(tokenizer.nextToken()));
-        serverInfo.setMinorVersion(Integer.parseInt(tokenizer.nextToken()));
-
-        serverInfo.setBaseUrl(endpoint);
-
-        return serverInfo;
     }
 
     /**

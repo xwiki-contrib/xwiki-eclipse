@@ -75,7 +75,7 @@ public class RestRemoteXWikiDataStorage
         }
     }
 
-    public Xwiki getServerInfo()
+    public Xwiki getServerInfo() throws Exception
     {
         return restRemoteClient.getServerInfo();
     }
