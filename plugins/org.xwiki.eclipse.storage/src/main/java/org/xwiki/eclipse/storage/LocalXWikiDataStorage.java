@@ -18,6 +18,8 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
+import org.xwiki.eclipse.model.XWikiEclipsePageHistorySummary;
+import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
 import org.xwiki.eclipse.model.XWikiEclipseSpaceSummary;
 import org.xwiki.eclipse.model.XWikiEclipseWikiSummary;
 import org.xwiki.eclipse.storage.utils.StorageUtils;
@@ -701,7 +703,7 @@ public class LocalXWikiDataStorage
                     space.setWiki(spaceSummary.getWiki());
                     space.setId(spaceSummary.getId());
 
-                    String fileName = getFileNameForWikiSummary(space.getId().replace(":", "."));
+                    String fileName = getFileNameForSpaceSummary(space.getId().replace(":", "."));
                     StorageUtils.writeToJson(baseFolder.getFolder(SPACES_DIRECTORY).getFile(fileName), space);
                 }
             }, null);
@@ -711,5 +713,85 @@ public class LocalXWikiDataStorage
 
         return spaceSummary;
 
+    }
+
+    /**
+     * @param pageSummary
+     */
+    public XWikiEclipsePageSummary storePageSummary(final XWikiEclipsePageSummary pageSummary)
+        throws XWikiEclipseStorageException
+    {
+        try {
+            ResourcesPlugin.getWorkspace().run(new IWorkspaceRunnable()
+            {
+                public void run(IProgressMonitor monitor) throws CoreException
+                {
+                    /* Write the page summary */
+                    XWikiEclipsePageSummary p = new XWikiEclipsePageSummary(pageSummary.getDataManager());
+                    p.setUrl("local");
+                    p.setName(pageSummary.getName());
+                    p.setWiki(pageSummary.getWiki());
+                    p.setSpace(pageSummary.getSpace());
+                    p.setId(pageSummary.getId());
+                    p.setParentId(pageSummary.getParentId());
+                    p.setTitle(pageSummary.getTitle());
+                    p.setSyntax(pageSummary.getSyntax());
+
+                    String fileName = getFileNameForPageSummary(p.getId().replace(":", "."));
+                    StorageUtils.writeToJson(baseFolder.getFolder(PAGES_DIRECTORY).getFile(fileName), p);
+                }
+            }, null);
+        } catch (CoreException e) {
+            throw new XWikiEclipseStorageException(e);
+        }
+
+        return pageSummary;
+
+    }
+
+    /**
+     * @param spaceSummary
+     * @return
+     */
+    public List<XWikiEclipsePageSummary> getPageSummaries(XWikiEclipseSpaceSummary spaceSummary)
+        throws XWikiEclipseStorageException
+    {
+        final List<XWikiEclipsePageSummary> result = new ArrayList<XWikiEclipsePageSummary>();
+
+        try {
+            final IFolder spaceFolder = StorageUtils.createFolder(baseFolder.getFolder(PAGES_DIRECTORY));
+
+            List<IResource> pageFolderResources = getChildResources(spaceFolder, IResource.DEPTH_ONE);
+            for (IResource pageFolderResource : pageFolderResources) {
+                if (pageFolderResource instanceof IFile) {
+                    IFile wikiFile = (IFile) pageFolderResource;
+                    XWikiEclipsePageSummary pageSummary;
+                    try {
+                        pageSummary =
+                            (XWikiEclipsePageSummary) StorageUtils.readFromJSON(wikiFile,
+                                XWikiEclipsePageSummary.class.getCanonicalName());
+                        result.add(pageSummary);
+                    } catch (Exception e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+
+                }
+            }
+        } catch (CoreException e) {
+            throw new XWikiEclipseStorageException(e);
+        }
+
+        return result;
+    }
+
+    /**
+     * @param pageSummary
+     * @return
+     */
+    public List<XWikiEclipsePageHistorySummary> getPageHistorySummaries(XWikiEclipsePageSummary pageSummary)
+    {
+        /* Currently not supported in local storage. */
+        return new ArrayList<XWikiEclipsePageHistorySummary>();
     }
 }

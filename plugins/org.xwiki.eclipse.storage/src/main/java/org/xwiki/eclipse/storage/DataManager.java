@@ -288,8 +288,29 @@ public class DataManager
         List<XWikiEclipsePageSummary> result = null;
         if (isConnected()) {
             result = remoteXWikiDataStorage.getPageSummaries(spaceSummary);
+
+            for (XWikiEclipsePageSummary pageSummary : result) {
+                localXWikiDataStorage.storePageSummary(pageSummary);
+            }
         } else {
-            // FIXME: unimplemented yet, not sure which level to return
+            result = new ArrayList<XWikiEclipsePageSummary>();
+
+            List<XWikiEclipsePageSummary> pageSummaries = localXWikiDataStorage.getPageSummaries(spaceSummary);
+            for (XWikiEclipsePageSummary pageSummary : pageSummaries) {
+
+                XWikiEclipsePageSummary p = new XWikiEclipsePageSummary(this);
+                p.setUrl(pageSummary.getUrl());
+                p.setName(pageSummary.getName());
+                p.setWiki(pageSummary.getWiki());
+                p.setSpace(pageSummary.getSpace());
+                p.setId(pageSummary.getId());
+                p.setParentId(pageSummary.getParentId());
+                p.setTitle(pageSummary.getTitle());
+                p.setSyntax(pageSummary.getSyntax());
+
+                result.add(p);
+            }
+
         }
         return result;
     }
@@ -1050,9 +1071,10 @@ public class DataManager
                 e.printStackTrace();
                 throw e;
             }
+        } else {
+            result = localXWikiDataStorage.getPageHistorySummaries(pageSummary);
+            return result;
         }
-
-        return null;
     }
 
     /**
