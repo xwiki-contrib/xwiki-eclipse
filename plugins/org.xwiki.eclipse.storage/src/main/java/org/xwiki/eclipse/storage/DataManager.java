@@ -103,6 +103,9 @@ public class DataManager
         Assert.isNotNull(project); //$NON-NLS-1$
         this.project = project;
 
+        /* at beginning, does not connect to remote */
+        remoteXWikiDataStorage = null;
+
         /*
          * initialize LocalDataStorage
          */
@@ -212,7 +215,7 @@ public class DataManager
         return remoteXWikiDataStorage != null;
     }
 
-    public void connect() throws XWikiEclipseStorageException, CoreException
+    public void connect() throws CoreException, XWikiEclipseStorageException
     {
         if (isConnected()) {
             return;
@@ -240,6 +243,9 @@ public class DataManager
                 supportedFunctionalities.remove(Functionality.OBJECTS);
                 supportedFunctionalities.remove(Functionality.ALL_PAGES_RETRIEVAL);
             }
+        } catch (XWikiEclipseStorageException e) {
+            /* remote connection error, operate locally */
+            disconnect();
         } catch (Exception e) {
             /* Here we are talking to an XWiki < 1.4. In this case we only support basic functionalities. */
             supportedFunctionalities.clear();
@@ -986,15 +992,37 @@ public class DataManager
         if (isConnected()) {
             try {
                 result = remoteXWikiDataStorage.getWikiSummaries();
+
+                if (result != null) {
+                    for (XWikiEclipseWikiSummary wikiSummary : result) {
+                        localXWikiDataStorage.storeWiki(wikiSummary);
+                    }
+                }
             } catch (XWikiEclipseStorageException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
                 throw e;
             }
             return result;
-        }
+        } else {
+            result = new ArrayList<XWikiEclipseWikiSummary>();
 
-        return null;
+            List<XWikiEclipseWikiSummary> wikiSummaries = localXWikiDataStorage.getWikiSummaries();
+
+            if (wikiSummaries != null) {
+                for (XWikiEclipseWikiSummary wiki : wikiSummaries) {
+                    XWikiEclipseWikiSummary wikiSummary = new XWikiEclipseWikiSummary(this);
+                    wikiSummary.setWikiId(wiki.getWikiId());
+                    wikiSummary.setName(wiki.getName());
+                    wikiSummary.setVersion(wiki.getVersion());
+                    wikiSummary.setBaseUrl(wiki.getBaseUrl());
+                    wikiSummary.setSyntaxes(wiki.getSyntaxes());
+
+                    result.add(wikiSummary);
+                }
+            }
+            return result;
+        }
     }
 
     /**
