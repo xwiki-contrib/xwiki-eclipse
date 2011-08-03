@@ -701,8 +701,8 @@ public class LocalXWikiDataStorage
                     space.setWiki(spaceSummary.getWiki());
                     space.setId(spaceSummary.getId());
 
-                    StorageUtils.writeToJson(
-                        baseFolder.getFolder(SPACES_DIRECTORY).getFile(getFileNameForWikiSummary(space.getId())), space);
+                    String fileName = getFileNameForWikiSummary(space.getId().replace(":", "."));
+                    StorageUtils.writeToJson(baseFolder.getFolder(SPACES_DIRECTORY).getFile(fileName), space);
                 }
             }, null);
         } catch (CoreException e) {
