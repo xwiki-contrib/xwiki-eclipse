@@ -223,32 +223,34 @@ public class DataManager
 
         remoteXWikiDataStorage =
             RemoteXWikiDataStorageFactory.getRemoteXWikiDataStorage(this, getEndpoint(), getUserName(), getPassword());
-        try {
-            XWikiEclipseServerInfo serverInfo = remoteXWikiDataStorage.getServerInfo();
-
-            if (serverInfo.getBaseUrl().contains("xwiki")) {
-                if (serverInfo.getMajorVersion() == 1) {
-                    if (serverInfo.getMinorVersion() < 5) {
-                        supportedFunctionalities.remove(Functionality.RENAME);
-                    }
-
-                    if (serverInfo.getMinorVersion() < 4) {
-                        supportedFunctionalities.remove(Functionality.TRANSLATIONS);
-                        supportedFunctionalities.remove(Functionality.ALL_PAGES_RETRIEVAL);
-                    }
-                }
-            } else {
-                /* We are talking to a confluence server */
-                supportedFunctionalities.remove(Functionality.TRANSLATIONS);
-                supportedFunctionalities.remove(Functionality.OBJECTS);
-                supportedFunctionalities.remove(Functionality.ALL_PAGES_RETRIEVAL);
-            }
-        } catch (XWikiEclipseStorageException e) {
+        if (remoteXWikiDataStorage == null) {
             /* remote connection error, operate locally */
             disconnect();
-        } catch (Exception e) {
-            /* Here we are talking to an XWiki < 1.4. In this case we only support basic functionalities. */
-            supportedFunctionalities.clear();
+        } else {
+            try {
+                XWikiEclipseServerInfo serverInfo = remoteXWikiDataStorage.getServerInfo();
+
+                if (serverInfo.getBaseUrl().contains("xwiki")) {
+                    if (serverInfo.getMajorVersion() == 1) {
+                        if (serverInfo.getMinorVersion() < 5) {
+                            supportedFunctionalities.remove(Functionality.RENAME);
+                        }
+
+                        if (serverInfo.getMinorVersion() < 4) {
+                            supportedFunctionalities.remove(Functionality.TRANSLATIONS);
+                            supportedFunctionalities.remove(Functionality.ALL_PAGES_RETRIEVAL);
+                        }
+                    }
+                } else {
+                    /* We are talking to a confluence server */
+                    supportedFunctionalities.remove(Functionality.TRANSLATIONS);
+                    supportedFunctionalities.remove(Functionality.OBJECTS);
+                    supportedFunctionalities.remove(Functionality.ALL_PAGES_RETRIEVAL);
+                }
+            } catch (Exception e) {
+                /* Here we are talking to an XWiki < 1.4. In this case we only support basic functionalities. */
+                supportedFunctionalities.clear();
+            }
         }
 
         // FIXME: need to work on the sync in the future

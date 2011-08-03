@@ -81,11 +81,17 @@ public class RestRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStorag
      * @param password
      */
     public RestRemoteXWikiDataStorageAdapter(DataManager dataManager, String endpoint, String userName, String password)
+        throws XWikiEclipseStorageException
     {
         this.username = userName;
         this.dataManager = dataManager;
         this.restRemoteStorage = new RestRemoteXWikiDataStorage(endpoint, userName, password);
         this.endpoint = endpoint;
+        try {
+            XWikiEclipseServerInfo serverInfo = getServerInfo();
+        } catch (Exception e) {
+            throw new XWikiEclipseStorageException(e);
+        }
     }
 
     public List<XWikiEclipseWikiSummary> getWikiSummaries() throws XWikiEclipseStorageException
@@ -116,7 +122,7 @@ public class RestRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStorag
 
             return result;
         } catch (Exception e) {
-            e.printStackTrace();
+            // e.printStackTrace();
             throw new XWikiEclipseStorageException(e);
         }
     }

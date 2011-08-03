@@ -46,9 +46,14 @@ public class RemoteXWikiDataStorageFactory
                         new XmlrpcRemoteXWikiDataStorageAdapter(dataManager, endpoint, userName, password);
                     return xmlrpcRemoteStorage;
                 case REST:
-                    IRemoteXWikiDataStorage restRemoteStorage =
-                        new RestRemoteXWikiDataStorageAdapter(dataManager, endpoint, userName, password);
-                    return restRemoteStorage;
+                    IRemoteXWikiDataStorage restRemoteStorage = null;
+                    try {
+                        restRemoteStorage =
+                            new RestRemoteXWikiDataStorageAdapter(dataManager, endpoint, userName, password);
+                        return restRemoteStorage;
+                    } catch (XWikiEclipseStorageException e) {
+                        return null;
+                    }
                 default:
                     break;
             }

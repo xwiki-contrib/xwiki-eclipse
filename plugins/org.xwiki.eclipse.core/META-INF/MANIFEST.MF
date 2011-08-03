@@ -13,3 +13,4 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.xwiki.eclipse.core,
  org.xwiki.eclipse.core.expressions
 Bundle-ClassPath: .
+Bundle-ActivationPolicy: lazy
