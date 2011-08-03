@@ -77,7 +77,11 @@ public class DataManagerAdapter extends WorkbenchAdapter implements IDeferredWor
     {
         if (object instanceof DataManager) {
             DataManager dataManager = (DataManager) object;
-            return dataManager.getName();
+            if (!dataManager.isConnected()) {
+                return dataManager.getName() + " [Local]";
+            } else {
+                return dataManager.getName();
+            }
         }
 
         return super.getLabel(object);
