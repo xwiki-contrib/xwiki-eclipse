@@ -244,6 +244,9 @@ public class StorageUtils
     }
 }
 
+/*
+ * implement the gson ignore policy, ignore DataManager attribute in json serialization/de-serialization
+ */
 class XEclipseExclusionStrategy implements ExclusionStrategy
 {
     private final Class< ? > typeToSkip;
