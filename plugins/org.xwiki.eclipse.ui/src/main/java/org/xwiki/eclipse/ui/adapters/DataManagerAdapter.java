@@ -59,10 +59,10 @@ public class DataManagerAdapter extends WorkbenchAdapter implements IDeferredWor
                     .showMessageDialog(
                         Display.getDefault().getActiveShell(),
                         SWT.ICON_ERROR,
-                        "Error getting spaces.",
-                        "There was a communication error while getting spaces. XWiki Eclipse is taking the connection offline in order to prevent further errors. Please check your remote XWiki status and then try to reconnect.");
+                        "Error getting wiki information.",
+                        "There was a communication error while getting wiki information. XWiki Eclipse is taking the connection offline in order to prevent further errors. Please check your remote XWiki status and then try to reconnect.");
 
-                CoreLog.logError("Error getting spaces.", e);
+                CoreLog.logError("Error getting wiki information.", e);
 
                 dataManager.disconnect();
                 return NO_CHILDREN;
