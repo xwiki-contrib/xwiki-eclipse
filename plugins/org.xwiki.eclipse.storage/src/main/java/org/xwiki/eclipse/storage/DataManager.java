@@ -6,7 +6,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.codehaus.swizzle.confluence.SpaceSummary;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
@@ -310,20 +309,26 @@ public class DataManager
         if (isConnected()) {
             try {
                 result = remoteXWikiDataStorage.getSpaceSummaries(wiki);
+
+                for (XWikiEclipseSpaceSummary spaceSummary : result) {
+                    localXWikiDataStorage.storeSpace(spaceSummary);
+                }
+
             } catch (XWikiEclipseStorageException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         } else {
             result = new ArrayList<XWikiEclipseSpaceSummary>();
-            List<SpaceSummary> spaces;
+            List<XWikiEclipseSpaceSummary> spaces;
             try {
-                spaces = localXWikiDataStorage.getSpaces();
-                for (SpaceSummary spaceSummary : spaces) {
+                spaces = localXWikiDataStorage.getSpaces(wiki);
+                for (XWikiEclipseSpaceSummary spaceSummary : spaces) {
                     XWikiEclipseSpaceSummary space = new XWikiEclipseSpaceSummary(this);
-                    space.setId(spaceSummary.getKey());
+                    space.setId(spaceSummary.getId());
                     space.setName(spaceSummary.getName());
                     space.setUrl(spaceSummary.getUrl());
+                    space.setWiki(spaceSummary.getWiki());
 
                     result.add(space);
                 }
