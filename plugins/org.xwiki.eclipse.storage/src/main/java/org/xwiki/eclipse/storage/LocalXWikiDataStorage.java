@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
+import org.xwiki.eclipse.model.XWikiEclipseWikiSummary;
 import org.xwiki.eclipse.storage.utils.StorageUtils;
 import org.xwiki.xmlrpc.model.XWikiClass;
 import org.xwiki.xmlrpc.model.XWikiClassSummary;
@@ -63,6 +64,10 @@ import org.xwiki.xmlrpc.model.XWikiPageSummary;
  */
 public class LocalXWikiDataStorage
 {
+    private static final String WIKI_SUMMARY_FILE_EXTENSION = "xews"; //$NON-NLS-1$
+
+    private static final String SPACE_SUMMARY_FILE_EXTENSION = "xess"; //$NON-NLS-1$
+
     private static final String PAGE_SUMMARY_FILE_EXTENSION = "xeps"; //$NON-NLS-1$
 
     private static final String PAGE_FILE_EXTENSION = "xep"; //$NON-NLS-1$
@@ -74,6 +79,10 @@ public class LocalXWikiDataStorage
     protected static final Object CLASS_FILE_EXTENSION = "xec"; //$NON-NLS-1$
 
     private IPath INDEX_DIRECTORY = new Path("index"); //$NON-NLS-1$
+
+    private IPath WIKIS_DIRECTORY = new Path("wikis"); //$NON-NLS-1$
+
+    private IPath SPACES_DIRECTORY = new Path("spaces"); //$NON-NLS-1$
 
     private IPath PAGES_DIRECTORY = new Path("pages"); //$NON-NLS-1$
 
@@ -180,6 +189,65 @@ public class LocalXWikiDataStorage
         }
 
         return result;
+    }
+
+    public List<XWikiEclipseWikiSummary> getWikiSummaries() throws XWikiEclipseStorageException
+    {
+        final List<XWikiEclipseWikiSummary> result = new ArrayList<XWikiEclipseWikiSummary>();
+
+        try {
+            final IFolder wikiFolder = StorageUtils.createFolder(baseFolder.getFolder(WIKIS_DIRECTORY));
+
+            List<IResource> wikiFolderResources = getChildResources(wikiFolder, IResource.DEPTH_ONE);
+            for (IResource wikiFolderResource : wikiFolderResources) {
+                if (wikiFolderResource instanceof IFile) {
+                    IFile wikiFile = (IFile) wikiFolderResource;
+                    XWikiEclipseWikiSummary wikiSummary;
+                    try {
+                        wikiSummary =
+                            (XWikiEclipseWikiSummary) StorageUtils.readFromJSON(wikiFile,
+                                XWikiEclipseWikiSummary.class.getCanonicalName());
+                        result.add(wikiSummary);
+                    } catch (Exception e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+
+                }
+            }
+        } catch (CoreException e) {
+            throw new XWikiEclipseStorageException(e);
+        }
+
+        return result;
+
+    }
+
+    public XWikiEclipseWikiSummary storeWiki(final XWikiEclipseWikiSummary wiki) throws XWikiEclipseStorageException
+    {
+        try {
+            ResourcesPlugin.getWorkspace().run(new IWorkspaceRunnable()
+            {
+                public void run(IProgressMonitor monitor) throws CoreException
+                {
+                    /* Write the page summary */
+                    XWikiEclipseWikiSummary wikiSummary = new XWikiEclipseWikiSummary(wiki.getDataManager());
+                    wikiSummary.setBaseUrl("local");
+                    wikiSummary.setName(wiki.getName());
+                    wikiSummary.setSyntaxes(wiki.getSyntaxes());
+                    wikiSummary.setVersion(wiki.getVersion());
+                    wikiSummary.setWikiId(wiki.getWikiId());
+
+                    StorageUtils.writeToJson(
+                        baseFolder.getFolder(WIKIS_DIRECTORY).getFile(getFileNameForWikiSummary(wiki.getWikiId())),
+                        wikiSummary);
+                }
+            }, null);
+        } catch (CoreException e) {
+            throw new XWikiEclipseStorageException(e);
+        }
+
+        return wiki;
     }
 
     public List<SpaceSummary> getSpaces() throws XWikiEclipseStorageException
@@ -466,6 +534,11 @@ public class LocalXWikiDataStorage
         IFile objectFile =
             baseFolder.getFolder(OBJECTS_DIRECTORY).getFile(getFileNameForObject(pageId, className, objectId));
         return objectFile.exists();
+    }
+
+    private String getFileNameForWikiSummary(String wikiId)
+    {
+        return String.format("%s.%s", wikiId, WIKI_SUMMARY_FILE_EXTENSION); //$NON-NLS-1$
     }
 
     private String getFileNameForPageSummary(String pageId)
