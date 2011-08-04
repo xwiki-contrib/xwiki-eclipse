@@ -355,8 +355,8 @@ public class LocalXWikiDataStorage
                     p.setName(page.getName());
                     p.setLanguage(page.getLanguage());
 
-                    /* Write the page */
-                    String fileName = getFileNameForPage(page.getId()).replace(":", ".");
+                    /* Write the page, considering the translation language */
+                    String fileName = getFileNameForPage(page.getId()).replace(":", ".") + "." + p.getLanguage();
                     StorageUtils.writeToJson(baseFolder.getFolder(PAGES_DIRECTORY).getFile(fileName), p);
                 }
             }, null);
@@ -577,9 +577,9 @@ public class LocalXWikiDataStorage
         }
     }
 
-    public boolean exists(String pageId)
+    public boolean exists(String pageId, String language)
     {
-        String fileName = pageId.replace(":", ".");
+        String fileName = pageId.replace(":", ".") + "." + language;
         IFile pageFile = baseFolder.getFolder(PAGES_DIRECTORY).getFile(getFileNameForPage(fileName));
         return pageFile.exists();
     }
@@ -774,6 +774,7 @@ public class LocalXWikiDataStorage
                     /* Write the page summary */
                     XWikiEclipsePageSummary p = new XWikiEclipsePageSummary(pageSummary.getDataManager());
                     p.setUrl("local");
+                    p.setLanguage(pageSummary.getLanguage());
                     p.setName(pageSummary.getName());
                     p.setWiki(pageSummary.getWiki());
                     p.setSpace(pageSummary.getSpace());
@@ -782,7 +783,8 @@ public class LocalXWikiDataStorage
                     p.setTitle(pageSummary.getTitle());
                     p.setSyntax(pageSummary.getSyntax());
 
-                    String fileName = getFileNameForPageSummary(p.getId().replace(":", "."));
+                    String fileName =
+                        getFileNameForPageSummary(p.getId().replace(":", ".") + "." + pageSummary.getLanguage());
                     StorageUtils.writeToJson(baseFolder.getFolder(PAGES_DIRECTORY).getFile(fileName), p);
                 }
             }, null);
