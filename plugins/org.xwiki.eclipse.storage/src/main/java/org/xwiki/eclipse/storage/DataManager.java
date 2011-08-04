@@ -288,10 +288,6 @@ public class DataManager
         List<XWikiEclipsePageSummary> result = null;
         if (isConnected()) {
             result = remoteXWikiDataStorage.getPageSummaries(spaceSummary);
-
-            for (XWikiEclipsePageSummary pageSummary : result) {
-                localXWikiDataStorage.storePageSummary(pageSummary);
-            }
         } else {
             result = new ArrayList<XWikiEclipsePageSummary>();
 
@@ -330,11 +326,6 @@ public class DataManager
         if (isConnected()) {
             try {
                 result = remoteXWikiDataStorage.getSpaceSummaries(wiki);
-
-                for (XWikiEclipseSpaceSummary spaceSummary : result) {
-                    localXWikiDataStorage.storeSpace(spaceSummary);
-                }
-
             } catch (XWikiEclipseStorageException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -1020,12 +1011,6 @@ public class DataManager
         if (isConnected()) {
             try {
                 result = remoteXWikiDataStorage.getWikiSummaries();
-
-                if (result != null) {
-                    for (XWikiEclipseWikiSummary wikiSummary : result) {
-                        localXWikiDataStorage.storeWiki(wikiSummary);
-                    }
-                }
             } catch (XWikiEclipseStorageException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -1088,6 +1073,19 @@ public class DataManager
         if (isConnected()) {
             result = remoteXWikiDataStorage.getPage(o);
 
+            /* store wiki, space, pageSummary and page */
+            if (o instanceof XWikiEclipsePageSummary) {
+                XWikiEclipsePageSummary pageSummary = (XWikiEclipsePageSummary) o;
+
+                localXWikiDataStorage.storePageSummary(pageSummary);
+
+                XWikiEclipseSpaceSummary spaceSummary = pageSummary.getDataManager().getSpace(pageSummary);
+                localXWikiDataStorage.storeSpace(spaceSummary);
+
+                XWikiEclipseWikiSummary wikiSummary = spaceSummary.getDataManager().getWiki(spaceSummary);
+                localXWikiDataStorage.storeWiki(wikiSummary);
+            }
+
             localXWikiDataStorage.storePage(result);
 
             return result;
@@ -1110,6 +1108,22 @@ public class DataManager
                 result.setLanguage(page.getLanguage());
 
                 return result;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @param spaceSummary
+     * @return
+     */
+    public XWikiEclipseWikiSummary getWiki(XWikiEclipseSpaceSummary spaceSummary) throws XWikiEclipseStorageException
+    {
+        List<XWikiEclipseWikiSummary> wikis = getWikis();
+        for (XWikiEclipseWikiSummary wiki : wikis) {
+            if (wiki.getName().equals(spaceSummary.getWiki())) {
+                return wiki;
             }
         }
 

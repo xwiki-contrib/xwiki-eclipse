@@ -216,7 +216,7 @@ public class RestRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStorag
 
         } catch (Exception e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            // e.printStackTrace();
             throw new XWikiEclipseStorageException(e);
         }
     }
