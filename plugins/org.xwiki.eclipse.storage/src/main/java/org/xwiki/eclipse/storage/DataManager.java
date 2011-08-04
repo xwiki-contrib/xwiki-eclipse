@@ -1087,8 +1087,32 @@ public class DataManager
 
         if (isConnected()) {
             result = remoteXWikiDataStorage.getPage(o);
+
+            localXWikiDataStorage.storePage(result);
+
             return result;
+        } else {
+            XWikiEclipsePage page = localXWikiDataStorage.getPage(o);
+
+            if (page != null) {
+                result = new XWikiEclipsePage(this);
+                result.setId(page.getId());
+                result.setParentId(page.getParentId());
+                result.setTitle(page.getTitle());
+                result.setUrl(page.getUrl());
+                result.setContent(page.getContent());
+                result.setSpace(page.getSpace());
+                result.setWiki(page.getWiki());
+                result.setMajorVersion(page.getMajorVersion());
+                result.setMinorVersion(page.getMinorVersion());
+                result.setVersion(page.getVersion());
+                result.setName(page.getName());
+                result.setLanguage(page.getLanguage());
+
+                return result;
+            }
         }
+
         return null;
     }
 
