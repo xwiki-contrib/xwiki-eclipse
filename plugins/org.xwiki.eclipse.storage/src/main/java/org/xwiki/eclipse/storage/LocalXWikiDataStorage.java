@@ -278,7 +278,9 @@ public class LocalXWikiDataStorage
                         spaceSummary =
                             (XWikiEclipseSpaceSummary) StorageUtils.readFromJSON(wikiFile,
                                 XWikiEclipseSpaceSummary.class.getCanonicalName());
-                        result.add(spaceSummary);
+                        if (spaceSummary.getWiki().equals(wiki.getWikiId())) {
+                            result.add(spaceSummary);
+                        }
                     } catch (Exception e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
@@ -813,7 +815,10 @@ public class LocalXWikiDataStorage
                         pageSummary =
                             (XWikiEclipsePageSummary) StorageUtils.readFromJSON(wikiFile,
                                 XWikiEclipsePageSummary.class.getCanonicalName());
-                        result.add(pageSummary);
+                        if (pageSummary.getWiki().equals(spaceSummary.getWiki())
+                            && pageSummary.getSpace().equals(spaceSummary.getName())) {
+                            result.add(pageSummary);
+                        }
                     } catch (Exception e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
