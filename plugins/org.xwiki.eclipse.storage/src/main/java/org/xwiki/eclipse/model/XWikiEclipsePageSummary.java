@@ -66,6 +66,8 @@ public class XWikiEclipsePageSummary extends ModelObject
 
     private String spaceUrl;
 
+    private String language = "default";
+
     public XWikiEclipsePageSummary(DataManager dataManager)
     {
         super(dataManager);
@@ -74,8 +76,9 @@ public class XWikiEclipsePageSummary extends ModelObject
     @Override
     public String getXWikiEclipseId()
     {
-        return String.format(
-            "xwikieclipse://%s/%s/%s/%s/summary", getDataManager().getName(), getWiki(), getSpace(), getId()); //$NON-NLS-1$
+        return String
+            .format(
+                "xwikieclipse://%s/%s/%s/%s/summary/%s", getDataManager().getName(), getWiki(), getSpace(), getId(), getLanguage()); //$NON-NLS-1$
     }
 
     public String getId()
@@ -249,5 +252,15 @@ public class XWikiEclipsePageSummary extends ModelObject
     public void setSpaceUrl(String spaceUrl)
     {
         this.spaceUrl = spaceUrl;
+    }
+
+    public String getLanguage()
+    {
+        return language;
+    }
+
+    public void setLanguage(String language)
+    {
+        this.language = language;
     }
 }
