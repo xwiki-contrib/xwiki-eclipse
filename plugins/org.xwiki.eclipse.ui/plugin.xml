@@ -497,12 +497,16 @@
 	</extension>
 	<extension point="org.eclipse.ui.handlers">
 		<handler class="org.xwiki.eclipse.ui.handlers.DataManagerConnectHandler" commandId="org.xwiki.eclipse.ui.commands.DataManagerConnect">
-			<activeWhen>
-				<iterate operator="and">
-					<test forcePluginActivation="true" property="org.xwiki.eclipse.storage.DataManager.isConnected" value="false">
-               </test>
-				</iterate>
-			</activeWhen>
+     <activeWhen>
+        <iterate
+              operator="and">
+           <test
+                 forcePluginActivation="true"
+                 property="org.xwiki.eclipse.storage.DataManager.isConnected"
+                 value="false">
+           </test>
+        </iterate>
+     </activeWhen>
 		</handler>
 		<handler class="org.xwiki.eclipse.ui.handlers.DataManagerDisconnectHandler" commandId="org.xwiki.eclipse.ui.commands.DataManagerDisconnect">
 			<activeWhen>
