@@ -52,20 +52,6 @@ public class XWikiEclipsePageSummary extends ModelObject
 
     private List<XWikiEclipsePageTranslationSummary> translations;
 
-    private String objectsUrl;
-
-    private String attachmentsUrl;
-
-    private String tagsUrl;
-
-    private String commentsUrl;
-
-    private String historyUrl;
-
-    private String pageUrl;
-
-    private String spaceUrl;
-
     private String language = "";
 
     public XWikiEclipsePageSummary(DataManager dataManager)
@@ -78,7 +64,7 @@ public class XWikiEclipsePageSummary extends ModelObject
     {
         return String
             .format(
-                "xwikieclipse://%s/%s/%s/%s/summary/%s", getDataManager().getName(), getWiki(), getSpace(), getId(), getLanguage() == "" ? "default" : getLanguage()); //$NON-NLS-1$
+                "xwikieclipse://%s/%s/%s/%s/summary/%s", getDataManager().getName(), getWiki(), getSpace(), getId(), getLanguage().equals("") ? "default" : getLanguage()); //$NON-NLS-1$
     }
 
     public String getId()
@@ -141,26 +127,6 @@ public class XWikiEclipsePageSummary extends ModelObject
         this.wiki = wiki;
     }
 
-    public String getObjectsUrl()
-    {
-        return objectsUrl;
-    }
-
-    public void setObjectsUrl(String objectsUrl)
-    {
-        this.objectsUrl = objectsUrl;
-    }
-
-    public String getAttachmentsUrl()
-    {
-        return attachmentsUrl;
-    }
-
-    public void setAttachmentsUrl(String attachmentsUrl)
-    {
-        this.attachmentsUrl = attachmentsUrl;
-    }
-
     public List<XWikiEclipsePageTranslationSummary> getTranslations()
     {
         if (translations == null) {
@@ -202,56 +168,6 @@ public class XWikiEclipsePageSummary extends ModelObject
     public void setSyntax(String syntax)
     {
         this.syntax = syntax;
-    }
-
-    public String getHistoryUrl()
-    {
-        return historyUrl;
-    }
-
-    public void setHistoryUrl(String historyUrl)
-    {
-        this.historyUrl = historyUrl;
-    }
-
-    public String getPageUrl()
-    {
-        return pageUrl;
-    }
-
-    public void setPageUrl(String pageUrl)
-    {
-        this.pageUrl = pageUrl;
-    }
-
-    public String getTagsUrl()
-    {
-        return tagsUrl;
-    }
-
-    public void setTagsUrl(String tagsUrl)
-    {
-        this.tagsUrl = tagsUrl;
-    }
-
-    public String getCommentsUrl()
-    {
-        return commentsUrl;
-    }
-
-    public void setCommentsUrl(String commentsUrl)
-    {
-        this.commentsUrl = commentsUrl;
-    }
-
-    public String getSpaceUrl()
-    {
-        return spaceUrl;
-    }
-
-    public void setSpaceUrl(String spaceUrl)
-    {
-        this.spaceUrl = spaceUrl;
     }
 
     public String getLanguage()
