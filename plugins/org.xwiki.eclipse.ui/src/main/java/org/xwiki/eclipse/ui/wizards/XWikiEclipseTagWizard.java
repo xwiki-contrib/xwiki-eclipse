@@ -87,7 +87,7 @@ public class XWikiEclipseTagWizard extends Wizard implements INewWizard
         this.pageSummary = (XWikiEclipsePageSummary) selectedObjects.iterator().next();
 
         /* fetch all the possible tags in this wiki, populate the proposals */
-        List<XWikiEclipseTag> tagsInWiki = pageSummary.getDataManager().getAllTagsInWiki(pageSummary);
+        List<XWikiEclipseTag> tagsInWiki = pageSummary.getDataManager().getAllTagsInWiki(pageSummary.getWiki());
 
         if (tagsProposals == null) {
             tagsProposals = new String[tagsInWiki.size()];
@@ -160,7 +160,9 @@ public class XWikiEclipseTagWizard extends Wizard implements INewWizard
                             @Override
                             public void run() throws Exception
                             {
-                                XWikiEclipseTag tag = dataManager.addTag(pageSummary, tagStr);
+                                XWikiEclipseTag tag =
+                                    dataManager.addTag(pageSummary.getWiki(), pageSummary.getSpace(),
+                                        pageSummary.getName(), tagStr);
 
                             }
                         });

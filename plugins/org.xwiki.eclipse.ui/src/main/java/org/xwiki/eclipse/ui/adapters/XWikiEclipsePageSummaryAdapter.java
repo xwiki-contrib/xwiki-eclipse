@@ -63,11 +63,17 @@ public class XWikiEclipsePageSummaryAdapter extends WorkbenchAdapter implements 
                 /* fetch objects (including annotations, comments and customized objects), pageClass, tags */
                 DataManager dataManager = pageSummary.getDataManager();
 
-                List<XWikiEclipseObjectSummary> objects = dataManager.getObjectSummaries(pageSummary);
-                List<XWikiEclipseAttachment> attachments = dataManager.getAttachments(pageSummary);
-                XWikiEclipseClass pageClass = dataManager.getClass(pageSummary);
+                List<XWikiEclipseObjectSummary> objects =
+                    dataManager
+                        .getObjectSummaries(pageSummary.getWiki(), pageSummary.getSpace(), pageSummary.getName());
+                List<XWikiEclipseAttachment> attachments =
+                    dataManager.getAttachments(pageSummary.getWiki(), pageSummary.getSpace(), pageSummary.getName());
+
+                XWikiEclipseClass pageClass = dataManager.getClass(pageSummary.getWiki(), pageSummary.getFullName());
+
                 List<XWikiEclipseTag> tags = dataManager.getTags(pageSummary);
-                List<XWikiEclipseComment> comments = dataManager.getComments(pageSummary);
+                List<XWikiEclipseComment> comments =
+                    dataManager.getComments(pageSummary.getWiki(), pageSummary.getSpace(), pageSummary.getName());
 
                 List<ModelObject> result = new ArrayList<ModelObject>();
 
@@ -215,7 +221,7 @@ public class XWikiEclipsePageSummaryAdapter extends WorkbenchAdapter implements 
                 return UIPlugin.getImageDescriptor(UIConstants.PAGE_CONFLICT_ICON);
             }
 
-            if (pageSummary.getDataManager().isLocallyAvailable(pageSummary)) {
+            if (pageSummary.getDataManager().isLocallyAvailable(pageSummary.getId(), pageSummary.getLanguage())) {
                 return UIPlugin.getImageDescriptor(UIConstants.PAGE_LOCALLY_AVAILABLE_ICON);
             } else {
                 return UIPlugin.getImageDescriptor(UIConstants.PAGE_ICON);

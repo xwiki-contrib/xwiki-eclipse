@@ -16,66 +16,40 @@
  * License along with this software; if not, write to the Free
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
- *
  */
-package org.xwiki.eclipse.model;
-
-import org.xwiki.eclipse.storage.DataManager;
+package org.xwiki.eclipse.storage.utils;
 
 /**
- * A class representing a space summary.
- * 
  * @version $Id$
  */
-public class XWikiEclipseSpaceSummary extends ModelObject
+public class PageIdParser
 {
-    private String id;
-
-    private String name;
-
-    private String url;
+    private String pageId;
 
     private String wiki;
 
-    public XWikiEclipseSpaceSummary(DataManager dataManager)
+    private String space;
+
+    private String page;
+
+    public PageIdParser(String pageId)
     {
-        super(dataManager);
+        this.pageId = pageId;
+
+        this.wiki = pageId.split(":")[0];
+        String fullname = pageId.split(":")[1];
+        this.space = fullname.split("\\.")[0];
+        this.page = fullname.split("\\.")[1];
     }
 
-    @Override
-    public String getXWikiEclipseId()
+    public String getPageId()
     {
-        return String.format("xwikieclipse://%s/%s/%s", getDataManager().getName(), getWiki(), getId()); //$NON-NLS-1$
+        return pageId;
     }
 
-    public String getId()
+    public void setPageId(String pageId)
     {
-        return id;
-    }
-
-    public void setId(String id)
-    {
-        this.id = id;
-    }
-
-    public String getName()
-    {
-        return name;
-    }
-
-    public void setName(String name)
-    {
-        this.name = name;
-    }
-
-    public String getUrl()
-    {
-        return url;
-    }
-
-    public void setUrl(String url)
-    {
-        this.url = url;
+        this.pageId = pageId;
     }
 
     public String getWiki()
@@ -86,5 +60,25 @@ public class XWikiEclipseSpaceSummary extends ModelObject
     public void setWiki(String wiki)
     {
         this.wiki = wiki;
+    }
+
+    public String getSpace()
+    {
+        return space;
+    }
+
+    public void setSpace(String space)
+    {
+        this.space = space;
+    }
+
+    public String getPage()
+    {
+        return page;
+    }
+
+    public void setPage(String page)
+    {
+        this.page = page;
     }
 }

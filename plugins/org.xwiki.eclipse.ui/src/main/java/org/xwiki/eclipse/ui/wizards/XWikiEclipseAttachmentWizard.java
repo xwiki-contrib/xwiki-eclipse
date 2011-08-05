@@ -63,6 +63,7 @@ import org.xwiki.eclipse.storage.DataManager;
 import org.xwiki.eclipse.storage.XWikiEclipseStorageException;
 import org.xwiki.eclipse.storage.notification.CoreEvent;
 import org.xwiki.eclipse.storage.notification.NotificationManager;
+import org.xwiki.eclipse.storage.utils.PageIdParser;
 import org.xwiki.eclipse.ui.UIConstants;
 import org.xwiki.eclipse.ui.UIPlugin;
 import org.xwiki.eclipse.ui.utils.XWikiEclipseSafeRunnable;
@@ -129,7 +130,12 @@ public class XWikiEclipseAttachmentWizard extends Wizard implements INewWizard
                 if (selectedObject instanceof XWikiEclipseAttachment) {
                     XWikiEclipseAttachment attachment = (XWikiEclipseAttachment) selectedObject;
                     try {
-                        XWikiEclipsePageSummary pageSummary = attachment.getDataManager().getPageSummary(attachment);
+                        String pageId = attachment.getPageId();
+                        PageIdParser parser = new PageIdParser(pageId);
+
+                        XWikiEclipsePageSummary pageSummary =
+                            attachment.getDataManager().getPageSummary(parser.getWiki(), parser.getSpace(),
+                                parser.getPage(), "");
                         if (!pageMap.containsKey(pageSummary.getId())) {
                             pageMap.put(pageSummary.getId(), pageSummary);
 

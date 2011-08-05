@@ -63,7 +63,9 @@ public class OpenPageHistoryItemAction extends Action
     public void run()
     {
         try {
-            XWikiEclipsePage page = pageHistorySummary.getDataManager().getPage(pageHistorySummary);
+            XWikiEclipsePage page =
+                pageHistorySummary.getDataManager().getPage(pageHistorySummary.getWiki(),
+                    pageHistorySummary.getSpace(), pageHistorySummary.getName(), pageHistorySummary.getLanguage());
 
             if (page == null) {
                 UIUtils

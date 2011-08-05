@@ -42,6 +42,7 @@ import org.xwiki.eclipse.storage.XWikiEclipseStorageException;
 import org.xwiki.eclipse.storage.notification.CoreEvent;
 import org.xwiki.eclipse.storage.notification.ICoreEventListener;
 import org.xwiki.eclipse.storage.notification.NotificationManager;
+import org.xwiki.eclipse.storage.utils.PageIdParser;
 import org.xwiki.eclipse.ui.utils.UIUtils;
 
 /**
@@ -170,6 +171,19 @@ public class NavigatorContentProvider extends BaseWorkbenchContentProvider imple
                 break;
 
             case PAGE_STORED:
+                Display.getDefault().syncExec(new Runnable()
+                {
+                    public void run()
+                    {
+                        XWikiEclipsePageSummary pageSummary = (XWikiEclipsePageSummary) event.getData();
+                        XWikiEclipseSpaceSummary spaceSummary =
+                            pageSummary.getDataManager().getSpace(pageSummary.getWiki(), pageSummary.getSpace());
+
+                        /* refresh the space */
+                        viewer.setExpandedState(spaceSummary, true);
+                        viewer.refresh(spaceSummary);
+                    }
+                });
                 // Display.getDefault().syncExec(new Runnable()
                 // {
                 // public void run()
@@ -229,11 +243,12 @@ public class NavigatorContentProvider extends BaseWorkbenchContentProvider imple
                     public void run()
                     {
                         XWikiEclipsePageSummary pageSummary = (XWikiEclipsePageSummary) event.getData();
-                        XWikiEclipseSpaceSummary space = pageSummary.getDataManager().getSpace(pageSummary);
+                        XWikiEclipseSpaceSummary space =
+                            pageSummary.getDataManager().getSpace(pageSummary.getWiki(), pageSummary.getSpace());
 
                         List<XWikiEclipsePageSummary> pages = null;
                         try {
-                            pages = space.getDataManager().getPageSummaries(space);
+                            pages = space.getDataManager().getPageSummaries(space.getWiki(), space.getName());
                         } catch (XWikiEclipseStorageException e) {
                             CoreLog.logError("Unable to get space pages: " + e.getMessage());
                         }
@@ -323,8 +338,13 @@ public class NavigatorContentProvider extends BaseWorkbenchContentProvider imple
                     {
                         XWikiEclipseAttachment attachment = (XWikiEclipseAttachment) event.getData();
                         try {
+                            String pageId = attachment.getPageId();
+
+                            PageIdParser parser = new PageIdParser(pageId);
+
                             XWikiEclipsePageSummary pageSummary =
-                                attachment.getDataManager().getPageSummary(attachment);
+                                attachment.getDataManager().getPageSummary(parser.getWiki(), parser.getSpace(),
+                                    parser.getPage(), "");
                             viewer.setExpandedState(pageSummary, true);
                             viewer.refresh(pageSummary);
 
@@ -359,7 +379,12 @@ public class NavigatorContentProvider extends BaseWorkbenchContentProvider imple
                         try {
                             XWikiEclipseComment comment = (XWikiEclipseComment) event.getData();
                             XWikiEclipsePageSummary pageSummary;
-                            pageSummary = comment.getDataManager().getPageSummary(comment);
+                            String pageId = comment.getPageId();
+                            PageIdParser parser = new PageIdParser(pageId);
+
+                            pageSummary =
+                                comment.getDataManager().getPageSummary(parser.getWiki(), parser.getSpace(),
+                                    parser.getPage(), "");
 
                             viewer.setExpandedState(pageSummary, true);
 

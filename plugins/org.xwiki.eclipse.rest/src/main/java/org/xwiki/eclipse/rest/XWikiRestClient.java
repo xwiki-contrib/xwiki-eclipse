@@ -80,7 +80,7 @@ import org.xwiki.rest.model.jaxb.Xwiki;
 /**
  * @version $Id$
  */
-public class XWikiRESTClient
+public class XWikiRestClient
 {
 
     private String serverUrl;
@@ -95,7 +95,7 @@ public class XWikiRESTClient
 
     private String password;
 
-    public XWikiRESTClient(String serverUrl, String username, String password)
+    public XWikiRestClient(String serverUrl, String username, String password)
     {
         this.serverUrl = serverUrl;
         this.username = username;
@@ -785,10 +785,6 @@ public class XWikiRESTClient
 
     /**
      * FIXME: need to return different response code so that the UI can respond correspondingly
-     * 
-     * @param attachmentUrl
-     * @param attachmentName
-     * @param fileUrl
      */
     public void uploadAttachment(String attachmentUrl, String attachmentName, URL fileUrl)
     {

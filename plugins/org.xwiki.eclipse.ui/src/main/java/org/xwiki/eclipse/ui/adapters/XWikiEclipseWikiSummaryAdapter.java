@@ -43,7 +43,7 @@ public class XWikiEclipseWikiSummaryAdapter extends WorkbenchAdapter implements 
     {
         if (object instanceof XWikiEclipseWikiSummary) {
             XWikiEclipseWikiSummary wiki = (XWikiEclipseWikiSummary) object;
-            List<XWikiEclipseSpaceSummary> spaces = wiki.getDataManager().getSpaces(wiki);
+            List<XWikiEclipseSpaceSummary> spaces = wiki.getDataManager().getSpaces(wiki.getWikiId());
             return spaces.toArray();
         }
         return super.getChildren(object);

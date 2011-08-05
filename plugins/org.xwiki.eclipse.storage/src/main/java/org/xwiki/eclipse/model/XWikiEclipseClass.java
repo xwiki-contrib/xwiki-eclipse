@@ -34,13 +34,11 @@ public class XWikiEclipseClass extends ModelObject
 {
     public static final String XWIKICLASS_ATTRIBUTE = "xwikiclass";
 
+    private String wiki;
+
     private String id;
 
     private String name;
-
-    private String objectsUrl;
-
-    private String propertiesUrl;
 
     private String url;
 
@@ -80,26 +78,6 @@ public class XWikiEclipseClass extends ModelObject
         this.name = name;
     }
 
-    public String getObjectsUrl()
-    {
-        return objectsUrl;
-    }
-
-    public void setObjectsUrl(String objectsUrl)
-    {
-        this.objectsUrl = objectsUrl;
-    }
-
-    public String getPropertiesUrl()
-    {
-        return propertiesUrl;
-    }
-
-    public void setPropertiesUrl(String propertiesUrl)
-    {
-        this.propertiesUrl = propertiesUrl;
-    }
-
     public String getUrl()
     {
         return url;
@@ -122,5 +100,15 @@ public class XWikiEclipseClass extends ModelObject
     public void setProperties(List<XWikiEclipseObjectProperty> properties)
     {
         this.properties = properties;
+    }
+
+    public String getWiki()
+    {
+        return wiki;
+    }
+
+    public void setWiki(String wiki)
+    {
+        this.wiki = wiki;
     }
 }

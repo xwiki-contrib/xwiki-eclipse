@@ -73,7 +73,9 @@ public class OpenPageHandler extends AbstractHandler
                 XWikiEclipsePageSummary pageSummary = (XWikiEclipsePageSummary) object;
 
                 try {
-                    XWikiEclipsePage page = pageSummary.getDataManager().getPage(pageSummary);
+                    XWikiEclipsePage page =
+                        pageSummary.getDataManager().getPage(pageSummary.getWiki(), pageSummary.getSpace(),
+                            pageSummary.getName(), pageSummary.getLanguage());
 
                     PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
                         .openEditor(new PageEditorInput(page, false), PageEditor.ID);

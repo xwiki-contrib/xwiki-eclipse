@@ -35,8 +35,6 @@ public class XWikiEclipseWikiSummary extends ModelObject
 
     private String baseUrl;
 
-    private String spacesUrl;
-
     private String version;
 
     private List<String> syntaxes;
@@ -78,16 +76,6 @@ public class XWikiEclipseWikiSummary extends ModelObject
     public void setName(String name)
     {
         this.name = name;
-    }
-
-    public String getSpacesUrl()
-    {
-        return spacesUrl;
-    }
-
-    public void setSpacesUrl(String spacesUrl)
-    {
-        this.spacesUrl = spacesUrl;
     }
 
     public String getVersion()

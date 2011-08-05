@@ -44,135 +44,65 @@ import org.xwiki.eclipse.model.XWikiEclipseWikiSummary;
  */
 public interface IRemoteXWikiDataStorage
 {
-    List<XWikiEclipseWikiSummary> getWikiSummaries() throws XWikiEclipseStorageException;
-
-    List<XWikiEclipseSpaceSummary> getSpaceSummaries(XWikiEclipseWikiSummary wiki) throws XWikiEclipseStorageException;
-
     void dispose();
 
+    /* retrieval */
     XWikiEclipseServerInfo getServerInfo() throws XWikiEclipseStorageException;
 
-    /**
-     * @param spaceSummary
-     * @return
-     */
-    List<XWikiEclipsePageSummary> getPageSummaries(XWikiEclipseSpaceSummary spaceSummary);
+    List<XWikiEclipseWikiSummary> getWikiSummaries() throws XWikiEclipseStorageException;
 
-    /**
-     * @param pageSummary
-     * @return
-     */
-    List<XWikiEclipseObjectSummary> getObjectSummaries(XWikiEclipsePageSummary pageSummary);
+    List<XWikiEclipseSpaceSummary> getSpaceSummaries(String wikiId) throws XWikiEclipseStorageException;
 
-    /**
-     * @param pageSummary
-     * @return
-     */
-    List<XWikiEclipseAttachment> getAttachments(XWikiEclipsePageSummary pageSummary);
+    List<XWikiEclipsePageSummary> getPageSummaries(String wiki, String space);
 
-    /**
-     * @param pageSummary
-     * @return
-     */
-    List<XWikiEclipsePageHistorySummary> getPageHistorySummaries(XWikiEclipsePageSummary pageSummary)
+    List<XWikiEclipseObjectSummary> getObjectSummaries(String wiki, String space, String pageName);
+
+    List<XWikiEclipseAttachment> getAttachments(String wiki, String space, String pageName);
+
+    List<XWikiEclipsePageHistorySummary> getPageHistorySummaries(String wiki, String space, String page, String language)
         throws XWikiEclipseStorageException;
 
-    /**
-     * @param pageSummary
-     * @return
-     */
-    XWikiEclipseClass getClass(XWikiEclipsePageSummary pageSummary);
+    XWikiEclipseClass getClass(String wiki, String space, String pageName);
 
-    /**
-     * @param pageSummary
-     * @return
-     */
     List<XWikiEclipseTag> getTags(XWikiEclipsePageSummary pageSummary);
 
-    /**
-     * @param pageSummary
-     * @return
-     */
-    List<XWikiEclipseComment> getComments(XWikiEclipsePageSummary pageSummary);
+    List<XWikiEclipseComment> getComments(String wiki, String space, String pageName);
 
-    /**
-     * @param objectSummary
-     * @return
-     */
-    List<XWikiEclipseObjectProperty> getObjectProperties(XWikiEclipseObjectSummary objectSummary);
+    List<XWikiEclipseObjectProperty> getObjectProperties(String wiki, String space, String pageName, String className,
+        int number);
 
-    /**
-     * @param directory
-     * @param attachment
-     */
-    void download(String directory, XWikiEclipseAttachment attachment);
+    XWikiEclipsePage getPage(String wiki, String space, String pageName, String language);
 
-    XWikiEclipsePage getPage(ModelObject o);
-
-    /**
-     * @param o
-     * @return
-     */
-    XWikiEclipseObject getObject(ModelObject o);
-
-    /**
-     * @param c
-     * @return
-     */
-    XWikiEclipseComment storeComment(XWikiEclipseComment c);
-
-    /**
-     * @param m
-     * @return
-     */
-    XWikiEclipsePageSummary getPageSummary(ModelObject m);
-
-    /**
-     * @param pageSummary
-     * @param fileUrl
-     */
-    void uploadAttachment(XWikiEclipsePageSummary pageSummary, URL fileUrl);
-
-    /**
-     * @param pageSummary
-     * @return
-     */
-    XWikiEclipseSpaceSummary getSpace(XWikiEclipsePageSummary pageSummary);
-
-    /**
-     * @param attachment
-     * @param fileUrl
-     */
-    void updateAttachment(XWikiEclipseAttachment attachment, URL fileUrl);
-
-    /**
-     * @param o
-     * @return
-     */
-    List<XWikiEclipseTag> getAllTagsInWiki(ModelObject o);
-
-    /**
-     * @param pageSummary
-     * @param tagName
-     * @return
-     */
-    XWikiEclipseTag addTag(XWikiEclipsePageSummary pageSummary, String tagName);
+    XWikiEclipseObject getObject(String wiki, String space, String pageName, String className, int number);
 
     /**
      * @param wiki
+     * @param space
+     * @param pageName
+     * @param language translation language for the page
      * @return
      */
+    XWikiEclipsePageSummary getPageSummary(String wiki, String space, String pageName, String language);
+
+    XWikiEclipseSpaceSummary getSpace(String wiki, String space);
+
+    List<XWikiEclipseTag> getAllTagsInWiki(String wiki);
+
     List<XWikiEclipseClass> getClasses(String wiki);
 
-    /**
-     * @param wiki
-     * @param className
-     * @return
-     */
     XWikiEclipseClass getClass(String wiki, String className);
 
-    /**
-     * @param o
-     */
+    /* store */
+    XWikiEclipseTag addTag(String wiki, String space, String pageName, String tagName);
+
+    void download(String directory, XWikiEclipseAttachment attachment);
+
+    XWikiEclipseComment storeComment(XWikiEclipseComment c);
+
+    void uploadAttachment(String wiki, String space, String pageName, URL fileUrl);
+
+    void updateAttachment(String wiki, String space, String pageName, String attachmentName, URL fileUrl);
+
+    /* delete */
     void remove(ModelObject o);
 }

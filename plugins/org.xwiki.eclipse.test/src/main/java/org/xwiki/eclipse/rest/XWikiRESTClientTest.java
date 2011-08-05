@@ -44,6 +44,28 @@ public class XWikiRESTClientTest
     Bundle bundle = Platform.getBundle("org.xwiki.eclipse.test");
 
     @Test
+    public void testGetClassProperties()
+    {
+        String serverUrl = "http://localhost:8080/xwiki/rest";
+
+        String username = "XWiki.Admin";
+        String password = "admin";
+        String className = "AnnotationCode.AnnotationClass";
+
+        XWikiRestClient client = new XWikiRestClient(serverUrl, username, password);
+        String classUrl = serverUrl + "/wikis/xwiki/classes/" + className;
+        try {
+            org.xwiki.rest.model.jaxb.Class clazz = client.getClass(classUrl);
+            Assert.assertNotNull(clazz);
+            Assert.assertTrue(clazz.getProperties().size() > 0);
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+    }
+
+    @Test
     public void testAddTag()
     {
         String serverUrl = "http://localhost:8080/xwiki/rest";
@@ -52,7 +74,7 @@ public class XWikiRESTClientTest
         String username = "XWiki.Admin";
         String password = "admin";
 
-        XWikiRESTClient client = new XWikiRESTClient(serverUrl, username, password);
+        XWikiRestClient client = new XWikiRestClient(serverUrl, username, password);
 
         try {
             String tagName = "TestTagInJunit" + System.currentTimeMillis();
@@ -83,7 +105,7 @@ public class XWikiRESTClientTest
         String username = "XWiki.Admin";
         String password = "admin";
 
-        XWikiRESTClient client = new XWikiRESTClient(serverUrl, username, password);
+        XWikiRestClient client = new XWikiRestClient(serverUrl, username, password);
         try {
             URL url = FileLocator.find(bundle, new Path("src/main/resources/notice.html"), null);
             System.out.println("url = " + url.toString());
@@ -109,7 +131,7 @@ public class XWikiRESTClientTest
         String pagesUrl = "http://localhost:8080/xwiki/rest/wikis/wiki1/spaces/myspace/pages";
         String username = "Admin";
         String password = "admin";
-        XWikiRESTClient client = new XWikiRESTClient(serverUrl, username, password);
+        XWikiRestClient client = new XWikiRestClient(serverUrl, username, password);
         try {
             List<PageSummary> pages = client.getPages(pagesUrl);
             Assert.assertNotNull(pages);
@@ -126,7 +148,7 @@ public class XWikiRESTClientTest
         String spacesUrl = "http://localhost:8080/xwiki/rest/wikis/wiki1/spaces";
         String username = "Admin";
         String password = "admin";
-        XWikiRESTClient client = new XWikiRESTClient(serverUrl, username, password);
+        XWikiRestClient client = new XWikiRestClient(serverUrl, username, password);
         try {
             List<Space> spaces = client.getSpaces(spacesUrl);
             Assert.assertNotNull(spaces);
@@ -142,7 +164,7 @@ public class XWikiRESTClientTest
         String serverUrl = "http://localhost:8080/xwiki/rest";
         String username = "Admin";
         String password = "admin";
-        XWikiRESTClient client = new XWikiRESTClient(serverUrl, username, password);
+        XWikiRestClient client = new XWikiRestClient(serverUrl, username, password);
         try {
             Assert.assertTrue(client.login(username, password));
         } catch (Exception e) {
@@ -157,7 +179,7 @@ public class XWikiRESTClientTest
         String serverUrl = "http://localhost:8080/xwiki/rest";
         String username = "Admin";
         String password = "admin";
-        XWikiRESTClient client = new XWikiRESTClient(serverUrl, username, password);
+        XWikiRestClient client = new XWikiRestClient(serverUrl, username, password);
         try {
             List<Wiki> wikis = client.getWikis(username, password);
             Assert.assertNotNull(wikis);

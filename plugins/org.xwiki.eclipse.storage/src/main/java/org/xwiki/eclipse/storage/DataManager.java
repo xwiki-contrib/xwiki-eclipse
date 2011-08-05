@@ -28,6 +28,7 @@ import org.xwiki.eclipse.model.XWikiEclipseTag;
 import org.xwiki.eclipse.model.XWikiEclipseWikiSummary;
 import org.xwiki.eclipse.storage.notification.CoreEvent;
 import org.xwiki.eclipse.storage.notification.NotificationManager;
+import org.xwiki.eclipse.storage.utils.PageIdParser;
 import org.xwiki.eclipse.storage.utils.PersistentMap;
 import org.xwiki.xmlrpc.model.XWikiObject;
 
@@ -279,22 +280,43 @@ public class DataManager
     }
 
     /**
-     * @param spaceKey
+     * @param wiki
+     * @param space
      * @return
      */
-    public List<XWikiEclipsePageSummary> getPageSummaries(XWikiEclipseSpaceSummary spaceSummary)
+    public List<XWikiEclipsePageSummary> getPageSummaries(String wiki, String space)
         throws XWikiEclipseStorageException
     {
         List<XWikiEclipsePageSummary> result = null;
         if (isConnected()) {
-            result = remoteXWikiDataStorage.getPageSummaries(spaceSummary);
+            result = remoteXWikiDataStorage.getPageSummaries(wiki, space);
+
+            List<XWikiEclipsePageSummary> pageSummaries = localXWikiDataStorage.getPageSummaries(wiki, space);
+            for (XWikiEclipsePageSummary pageSummary : pageSummaries) {
+                if (!pageSummary.getLanguage().equals("default")) {
+
+                    XWikiEclipsePageSummary p = new XWikiEclipsePageSummary(this);
+                    p.setLanguage(pageSummary.getLanguage());
+                    p.setUrl(pageSummary.getUrl());
+                    p.setName(pageSummary.getName());
+                    p.setWiki(pageSummary.getWiki());
+                    p.setSpace(pageSummary.getSpace());
+                    p.setId(pageSummary.getId());
+                    p.setParentId(pageSummary.getParentId());
+                    p.setTitle(pageSummary.getTitle());
+                    p.setSyntax(pageSummary.getSyntax());
+
+                    result.add(p);
+                }
+            }
         } else {
             result = new ArrayList<XWikiEclipsePageSummary>();
 
-            List<XWikiEclipsePageSummary> pageSummaries = localXWikiDataStorage.getPageSummaries(spaceSummary);
+            List<XWikiEclipsePageSummary> pageSummaries = localXWikiDataStorage.getPageSummaries(wiki, space);
             for (XWikiEclipsePageSummary pageSummary : pageSummaries) {
 
                 XWikiEclipsePageSummary p = new XWikiEclipsePageSummary(this);
+                p.setLanguage(pageSummary.getLanguage());
                 p.setUrl(pageSummary.getUrl());
                 p.setName(pageSummary.getName());
                 p.setWiki(pageSummary.getWiki());
@@ -319,13 +341,13 @@ public class DataManager
      * @param wiki
      * @return
      */
-    public List<XWikiEclipseSpaceSummary> getSpaces(XWikiEclipseWikiSummary wiki)
+    public List<XWikiEclipseSpaceSummary> getSpaces(String wikiId)
     {
         List<XWikiEclipseSpaceSummary> result = null;
 
         if (isConnected()) {
             try {
-                result = remoteXWikiDataStorage.getSpaceSummaries(wiki);
+                result = remoteXWikiDataStorage.getSpaceSummaries(wikiId);
             } catch (XWikiEclipseStorageException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -334,7 +356,7 @@ public class DataManager
             result = new ArrayList<XWikiEclipseSpaceSummary>();
             List<XWikiEclipseSpaceSummary> spaces;
             try {
-                spaces = localXWikiDataStorage.getSpaces(wiki);
+                spaces = localXWikiDataStorage.getSpaces(wikiId);
                 for (XWikiEclipseSpaceSummary spaceSummary : spaces) {
                     XWikiEclipseSpaceSummary space = new XWikiEclipseSpaceSummary(this);
                     space.setId(spaceSummary.getId());
@@ -358,22 +380,23 @@ public class DataManager
     /**
      * FXIME: implement xmlrpc and rest getObjects() method
      * 
-     * @param pageSummary
      * @return
      */
-    public List<XWikiEclipseObjectSummary> getObjectSummaries(XWikiEclipsePageSummary pageSummary)
+    public List<XWikiEclipseObjectSummary> getObjectSummaries(String wiki, String space, String page)
         throws XWikiEclipseStorageException
     {
         List<XWikiEclipseObjectSummary> result = null;
 
         if (isConnected()) {
-            result = remoteXWikiDataStorage.getObjectSummaries(pageSummary);
+            result = remoteXWikiDataStorage.getObjectSummaries(wiki, space, page);
         }
 
         return result;
     }
 
     /**
+     * FIXME: consider the local storage
+     * 
      * @param id
      * @return
      */
@@ -387,29 +410,14 @@ public class DataManager
      * @param pageSummary
      * @return
      */
-    public boolean isLocallyAvailable(XWikiEclipsePageSummary pageSummary)
+    public boolean isLocallyAvailable(String pageId, String language)
     {
-        return localXWikiDataStorage.exists(pageSummary.getId());
+        return localXWikiDataStorage.exists(pageId, language);
     }
 
-    /**
-     * @param spaceKey
-     * @return
-     */
-    public List<XWikiEclipsePageSummary> getPages(String spaceKey) throws XWikiEclipseStorageException
+    public boolean isLocallyAvailable(String pageId, String className, int number)
     {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /**
-     * @param objectSummary
-     * @return
-     */
-    public boolean isLocallyAvailable(XWikiEclipseObjectSummary objectSummary)
-    {
-        return localXWikiDataStorage.exists(objectSummary.getPageId(), objectSummary.getClassName(),
-            objectSummary.getId());
+        return localXWikiDataStorage.exists(pageId, className, number);
     }
 
     private String getCompactIdForObject(XWikiObject object)
@@ -417,584 +425,19 @@ public class DataManager
         return String.format("%s/%s/%d", object.getPageId(), object.getClassName(), object.getId());
     }
 
-    //
-    // /*
-    // * Page retrieval
-    // */
-    // public List<XWikiEclipsePageSummary> getPages(final String spaceKey) throws XWikiEclipseException
-    // {
-    // List<XWikiPageSummary> pageSummaries;
-    //
-    // if (isConnected()) {
-    // pageSummaries = remoteXWikiDataStorage.getPages(spaceKey);
-    // } else {
-    // pageSummaries = localXWikiDataStorage.getPages(spaceKey);
-    // }
-    //
-    // List<XWikiEclipsePageSummary> result = new ArrayList<XWikiEclipsePageSummary>();
-    // for (XWikiPageSummary pageSummary : pageSummaries) {
-    // result.add(new XWikiEclipsePageSummary(this, pageSummary));
-    // }
-    //
-    // return result;
-    // }
-    //
-    // public XWikiEclipsePage getPage(String pageId) throws XWikiEclipseException
-    // {
-    // XWikiPage page = null;
-    //
-    // page = localXWikiDataStorage.getPage(pageId);
-    // if (page != null) {
-    // String pageStatus = pageToStatusMap.get(pageId);
-    // /* If our local page is either dirty or in conflict then return it */
-    // if (pageStatus != null) {
-    // return new XWikiEclipsePage(this, page);
-    // }
-    // }
-    //
-    // /*
-    // * If we are here either there is no cached page, or the cached page is not dirty and not in conflict, so we can
-    // * grab the latest version of the page and store it in the local storage.
-    // */
-    // if (isConnected()) {
-    // page = remoteXWikiDataStorage.getPage(pageId);
-    //
-    // localXWikiDataStorage.storePage(page);
-    //
-    // /* Write an additional copy of the page that can be useful for performing 3-way diffs */
-    // lastRetrievedPagesDataStorage.storePage(page);
-    //
-    // XWikiEclipsePage result = new XWikiEclipsePage(this, page);
-    //
-    // /* Fire the stored notification to communicate that the page has been stored in the local storage */
-    // NotificationManager.getDefault().fireCoreEvent(CoreEvent.Type.PAGE_STORED, this, result);
-    //
-    // return result;
-    // }
-    //
-    // /* If we are here we are not connected so we can return the page that we have retrieved at the beginning */
-    // return new XWikiEclipsePage(this, page);
-    // }
-    //
-    // public XWikiEclipsePage storePage(XWikiEclipsePage page) throws XWikiEclipseException
-    // {
-    // Assert.isNotNull(page);
-    //
-    // XWikiPage storedPage = localXWikiDataStorage.storePage(page.getData());
-    //
-    // /*
-    // * Set the dirty flag only if the page has no status. In fact it might be already dirty (should not be possible
-    // * though) or in conflict
-    // */
-    // if (pageToStatusMap.get(page.getData().getId()) == null) {
-    // pageToStatusMap.put(page.getData().getId(), DIRTY_STATUS);
-    // }
-    //
-    // page = new XWikiEclipsePage(this, synchronize(storedPage));
-    //
-    // NotificationManager.getDefault().fireCoreEvent(CoreEvent.Type.PAGE_STORED, this, page);
-    //
-    // return page;
-    // }
-    //
-    // private XWikiPage synchronize(XWikiPage page) throws XWikiEclipseException
-    // {
-    // /* If we are not connected then do nothing */
-    // if (!isConnected()) {
-    // return page;
-    // }
-    //
-    // /*
-    // * If the page is not dirty (i.e., is in conflict or has no status associated) then do nothing
-    // */
-    // if (!DIRTY_STATUS.equals(pageToStatusMap.get(page.getId()))) {
-    // return page;
-    // }
-    //
-    // Assert.isTrue(isConnected());
-    // Assert.isTrue(DIRTY_STATUS.equals(pageToStatusMap.get(page.getId())));
-    //
-    // XWikiPage remotePage = null;
-    // try {
-    // remotePage = remoteXWikiDataStorage.getPage(page.getId());
-    //
-    // if (remotePage.getLanguage() != null && !remotePage.getLanguage().equals(page.getLanguage())) {
-    // /*
-    // * The requested translation has not been found, so we are creating a new translation. We set the
-    // * remotePage to null in order to force the page creation
-    // */
-    // remotePage = null;
-    // }
-    // } catch (XWikiEclipseException e) {
-    // /*
-    // * This can fail if the remote page does not yet exist. So ignore the exception here and handle the
-    // * condition later: remotePage will be null if we are here.
-    // */
-    // }
-    //
-    // if (remotePage == null) {
-    // /* If we are here the page or its translation don't exist. Create it! */
-    // page = remoteXWikiDataStorage.storePage(page);
-    //
-    // localXWikiDataStorage.storePage(page);
-    //
-    // clearPageStatus(page.getId());
-    // } else if (page.getVersion() == remotePage.getVersion()) {
-    // /* This might be a rename */
-    // if (remotePage.getTitle().equals(page.getTitle())) {
-    // /* If the local and remote content are equals, no need to re-store remotely the page. */
-    // if (remotePage.getContent().equals(page.getContent())) {
-    // page = remotePage;
-    // } else {
-    // page = remoteXWikiDataStorage.storePage(page);
-    // }
-    // } else {
-    // page = remoteXWikiDataStorage.storePage(page);
-    // }
-    //
-    // localXWikiDataStorage.storePage(page);
-    //
-    // clearPageStatus(page.getId());
-    // } else {
-    // pageToStatusMap.put(page.getId(), CONFLICTING_STATUS);
-    // conflictingPagesDataStorage.storePage(remotePage);
-    // }
-    //
-    // return page;
-    // }
-    //
-    // public void clearConflictingStatus(String pageId) throws XWikiEclipseException
-    // {
-    // conflictingPagesDataStorage.removePage(pageId);
-    // pageToStatusMap.put(pageId, DIRTY_STATUS);
-    // }
-    //
-    // public void clearPageStatus(String pageId) throws XWikiEclipseException
-    // {
-    // conflictingPagesDataStorage.removePage(pageId);
-    // pageToStatusMap.remove(pageId);
-    // }
-    //
-    // public boolean isInConflict(String pageId)
-    // {
-    // return CONFLICTING_STATUS.equals(pageToStatusMap.get(pageId));
-    // }
-    //
-    // public XWikiEclipsePage getConflictingPage(String pageId) throws XWikiEclipseException
-    // {
-    // return new XWikiEclipsePage(this, conflictingPagesDataStorage.getPage(pageId));
-    // }
-    //
-    // public XWikiEclipsePage getConflictAncestorPage(String pageId) throws XWikiEclipseException
-    // {
-    // XWikiPage ancestorPage = lastRetrievedPagesDataStorage.getPage(pageId);
-    // return ancestorPage != null ? new XWikiEclipsePage(this, ancestorPage) : null;
-    // }
-    //
-    // /*
-    // * Objects
-    // */
-    //
-    // public List<XWikiEclipseObjectSummary> getObjects(String pageId) throws XWikiEclipseException
-    // {
-    // List<XWikiEclipseObjectSummary> result = new ArrayList<XWikiEclipseObjectSummary>();
-    //
-    // if (!supportedFunctionalities.contains(Functionality.OBJECTS)) {
-    // return result;
-    // }
-    //
-    // XWikiEclipsePageSummary xwikiPageSummary = getPageSummary(pageId);
-    //
-    // if (isConnected()) {
-    // List<XWikiObjectSummary> objects = remoteXWikiDataStorage.getObjects(pageId);
-    //
-    // for (XWikiObjectSummary object : objects) {
-    // result.add(new XWikiEclipseObjectSummary(this, object, xwikiPageSummary.getData()));
-    // }
-    // } else {
-    // List<XWikiObjectSummary> objects = localXWikiDataStorage.getObjects(pageId);
-    //
-    // for (XWikiObjectSummary object : objects) {
-    // result.add(new XWikiEclipseObjectSummary(this, object, xwikiPageSummary.getData()));
-    // }
-    // }
-    //
-    // return result;
-    // }
-    //
-    // public XWikiEclipseObject getObject(String pageId, String className, int id) throws XWikiEclipseException
-    // {
-    // if (isConnected()) {
-    // XWikiClass xwikiClass = remoteXWikiDataStorage.getClass(className);
-    // XWikiObject xwikiObject = remoteXWikiDataStorage.getObject(pageId, className, id);
-    // XWikiPageSummary xwikiPageSummary = remoteXWikiDataStorage.getPageSummary(pageId);
-    //
-    // localXWikiDataStorage.storeObject(xwikiObject);
-    // localXWikiDataStorage.storeClass(xwikiClass);
-    //
-    // XWikiEclipseObject result = new XWikiEclipseObject(this, xwikiObject, xwikiClass, xwikiPageSummary);
-    //
-    // /* Fire the stored notification to communicate that the object has been stored in the local storage */
-    // NotificationManager.getDefault().fireCoreEvent(CoreEvent.Type.OBJECT_STORED, this, result);
-    //
-    // return result;
-    // } else {
-    // XWikiClass xwikiClass = localXWikiDataStorage.getClass(className);
-    // XWikiPageSummary xwikiPageSummary = localXWikiDataStorage.getPageSummary(pageId);
-    //
-    // return new XWikiEclipseObject(this, localXWikiDataStorage.getObject(pageId, className, id), xwikiClass,
-    // xwikiPageSummary);
-    // }
-    // }
-    //
-    // public XWikiEclipseClass getClass(String classId) throws XWikiEclipseException
-    // {
-    // if (isConnected()) {
-    // return new XWikiEclipseClass(this, remoteXWikiDataStorage.getClass(classId));
-    //
-    // } else {
-    // return new XWikiEclipseClass(this, localXWikiDataStorage.getClass(classId));
-    // }
-    // }
-    //
-    // public XWikiEclipsePageSummary getPageSummary(String pageId) throws XWikiEclipseException
-    // {
-    // if (isConnected()) {
-    // return new XWikiEclipsePageSummary(this, remoteXWikiDataStorage.getPageSummary(pageId));
-    //
-    // } else {
-    // return new XWikiEclipsePageSummary(this, localXWikiDataStorage.getPageSummary(pageId));
-    // }
-    // }
-    //
-    // public XWikiEclipseObject storeObject(XWikiEclipseObject object) throws XWikiEclipseException
-    // {
-    // localXWikiDataStorage.storeObject(object.getData());
-    //
-    // objectToStatusMap.put(getCompactIdForObject(object.getData()), DIRTY_STATUS);
-    //
-    // object =
-    // new XWikiEclipseObject(this, synchronize(object.getData()), object.getXWikiClass(), object.getPageSummary());
-    //
-    // NotificationManager.getDefault().fireCoreEvent(CoreEvent.Type.OBJECT_STORED, this, object);
-    //
-    // return object;
-    // }
-    //
-    // private XWikiObject synchronize(XWikiObject object) throws XWikiEclipseException
-    // {
-    // /* If we are not connected then do nothing */
-    // if (!isConnected()) {
-    // return object;
-    // }
-    //
-    // /*
-    // * If the page is not dirty (i.e., is in conflict or has no status associated) then do nothing
-    // */
-    // if (!DIRTY_STATUS.equals(objectToStatusMap.get(getCompactIdForObject(object)))) {
-    // return object;
-    // }
-    //
-    // Assert.isTrue(isConnected());
-    // Assert.isTrue(DIRTY_STATUS.equals(objectToStatusMap.get(getCompactIdForObject(object))));
-    //
-    // if (object.getId() == -1) {
-    // /*
-    // * If we are here we are synchronizing an object that has been created locally and does not exist remotely.
-    // */
-    //
-    // /*
-    // * We save the current object because its id will be assigned when the object is stored remotely. In this
-    // * way, we will be able to cleanup all the references to the locally created object with the -1 id from the
-    // * status map, index and local storage.
-    // */
-    // XWikiObject previousObject = object;
-    //
-    // object = remoteXWikiDataStorage.storeObject(object);
-    // localXWikiDataStorage.storeObject(object);
-    // objectToStatusMap.remove(getCompactIdForObject(object));
-    //
-    // /* Cleanup */
-    // localXWikiDataStorage.removeObject(previousObject.getPageId(), previousObject.getClassName(),
-    // previousObject.getId());
-    // objectToStatusMap.remove(getCompactIdForObject(previousObject));
-    // } else {
-    // object = remoteXWikiDataStorage.storeObject(object);
-    // localXWikiDataStorage.storeObject(object);
-    //
-    // objectToStatusMap.remove(getCompactIdForObject(object));
-    // }
-    //
-    // return object;
-    // }
-    //
-    // private void synchronizePages(Set<String> pageIds) throws XWikiEclipseException
-    // {
-    // for (String pageId : pageIds) {
-    // XWikiPage page = localXWikiDataStorage.getPage(pageId);
-    // if (page != null) {
-    // synchronize(page);
-    // }
-    // }
-    // }
-    //
-    // private void synchronizeObjects(Set<String> objectCompactIds) throws XWikiEclipseException
-    // {
-    // for (String objectCompactId : objectCompactIds) {
-    // XWikiObject object = getObjectByCompactId(localXWikiDataStorage, objectCompactId);
-    // if (object != null) {
-    // synchronize(object);
-    // }
-    // }
-    // }
-    //
-    //
-    // private XWikiObject getObjectByCompactId(IDataStorage storage, String compactId) throws NumberFormatException,
-    // XWikiEclipseException
-    // {
-    // String[] components = compactId.split("/");
-    // return storage.getObject(components[0], components[1], Integer.parseInt(components[2]));
-    // }
-    //
-    // public XWikiEclipsePage createPage(String spaceKey, String name, String title, String content)
-    // throws XWikiEclipseException
-    // {
-    // return createPage(spaceKey, name, title, null, content);
-    // }
-    //
-    // public XWikiEclipsePage createPage(String spaceKey, String name, String title, String language, String content)
-    // throws XWikiEclipseException
-    // {
-    // XWikiPage xwikiPage = new XWikiPage();
-    // xwikiPage.setSpace(spaceKey);
-    // xwikiPage.setTitle(title);
-    // if (language != null) {
-    // xwikiPage.setId(String.format("%s.%s?language=%s", spaceKey, name, language));
-    // } else {
-    // xwikiPage.setId(String.format("%s.%s", spaceKey, name));
-    // }
-    // xwikiPage.setContent(content);
-    // xwikiPage.setVersion(1);
-    // xwikiPage.setMinorVersion(1);
-    // xwikiPage.setContentStatus("");
-    // xwikiPage.setCreated(new Date());
-    // xwikiPage.setCreator("");
-    // if (language != null) {
-    // xwikiPage.setLanguage(language);
-    // } else {
-    // xwikiPage.setLanguage("");
-    // }
-    // xwikiPage.setModified(new Date());
-    // xwikiPage.setModifier("");
-    // xwikiPage.setParentId("");
-    // xwikiPage.setTranslations(new ArrayList<String>());
-    // xwikiPage.setUrl("");
-    //
-    // XWikiEclipsePage page = new XWikiEclipsePage(this, xwikiPage);
-    //
-    // return storePage(page);
-    // }
-    //
-    // public XWikiEclipseObject createObject(String pageId, String className) throws XWikiEclipseException
-    // {
-    // XWikiObject xwikiObject = new XWikiObject();
-    // xwikiObject.setClassName(className);
-    // xwikiObject.setPageId(pageId);
-    // xwikiObject.setId(-1);
-    // xwikiObject.setPrettyName(String.format("%s[NEW]", className));
-    //
-    // XWikiEclipseClass xwikiClass = getClass(className);
-    // XWikiEclipsePageSummary xwikiPageSummary = getPageSummary(pageId);
-    //
-    // XWikiEclipseObject object =
-    // new XWikiEclipseObject(this, xwikiObject, xwikiClass.getData(), xwikiPageSummary.getData());
-    //
-    // object = storeObject(object);
-    //
-    // return object;
-    // }
-    //
-    // public List<XWikiEclipseClassSummary> getClasses() throws XWikiEclipseException
-    // {
-    // List<XWikiClassSummary> classSummaries;
-    //
-    // if (isConnected()) {
-    // classSummaries = remoteXWikiDataStorage.getClasses();
-    // } else {
-    // classSummaries = localXWikiDataStorage.getClasses();
-    // }
-    //
-    // List<XWikiEclipseClassSummary> result = new ArrayList<XWikiEclipseClassSummary>();
-    // for (XWikiClassSummary classSummary : classSummaries) {
-    // result.add(new XWikiEclipseClassSummary(this, classSummary));
-    // }
-    //
-    // return result;
-    // }
-    //
-    // public void removePage(String pageId) throws XWikiEclipseException
-    // {
-    // XWikiPage page = null;
-    //
-    // if (isConnected()) {
-    // page = remoteXWikiDataStorage.getPage(pageId);
-    // remoteXWikiDataStorage.removePage(pageId);
-    // } else {
-    // page = localXWikiDataStorage.getPage(pageId);
-    // }
-    //
-    // localXWikiDataStorage.removePage(pageId);
-    //
-    // String spaceKey = page.getSpace();
-    //
-    // List<XWikiEclipsePageSummary> pages = null;
-    // try {
-    // pages = getPages(spaceKey);
-    // } catch (XWikiEclipseException e) {
-    // CoreLog.logError("Unable to get space pages: " + e.getMessage());
-    // }
-    //
-    // if (pages != null && pages.size() == 0) {
-    // // The space is left with no pages so it has to be removed.
-    // localXWikiDataStorage.removeSpace(spaceKey);
-    // }
-    //
-    // NotificationManager.getDefault().fireCoreEvent(CoreEvent.Type.PAGE_REMOVED, this,
-    // new XWikiEclipsePage(this, page));
-    // }
-    //
-    // public void removeSpace(String spaceKey) throws XWikiEclipseException
-    // {
-    // XWikiEclipseSpaceSummary space = getSpaceSummary(spaceKey);
-    //
-    // if (space != null) {
-    // remoteXWikiDataStorage.removeSpace(spaceKey);
-    // localXWikiDataStorage.removeSpace(spaceKey);
-    //
-    // NotificationManager.getDefault().fireCoreEvent(CoreEvent.Type.SPACE_REMOVED, this, space);
-    // }
-    // }
-    //
-    // public void removeObject(String pageId, String className, int objectId) throws XWikiEclipseException
-    // {
-    // XWikiObject object = null;
-    //
-    // if (isConnected()) {
-    // object = remoteXWikiDataStorage.getObject(pageId, className, objectId);
-    // remoteXWikiDataStorage.removeObject(pageId, className, objectId);
-    // } else {
-    // object = localXWikiDataStorage.getObject(pageId, className, objectId);
-    // }
-    //
-    // localXWikiDataStorage.removeObject(pageId, className, objectId);
-    //
-    // NotificationManager.getDefault().fireCoreEvent(
-    // CoreEvent.Type.OBJECT_REMOVED,
-    // this,
-    // new XWikiEclipseObject(this, object, getClass(object.getClassName()).getData(), getPageSummary(
-    // object.getPageId()).getData()));
-    // }
-    //
-    // public boolean renamePage(String pageId, String newSpace, String newPageName) throws XWikiEclipseException
-    // {
-    // if (!supportedFunctionalities.contains(Functionality.RENAME)) {
-    // return false;
-    //
-    // }
-    // XWikiEclipsePage page = getPage(pageId);
-    // page.getData().setSpace(newSpace);
-    // page.getData().setTitle(newPageName);
-    // storePage(page);
-    //
-    // /* Remove the old page from the cache */
-    // clearPageStatus(pageId);
-    // localXWikiDataStorage.removePage(pageId);
-    //
-    // /* Retrieve the new page for caching it */
-    // XWikiEclipsePage newPage;
-    // if (pageId.indexOf('.') != -1) {
-    // newPage = getPage(String.format("%s.%s", newSpace, newPageName));
-    // } else {
-    // newPage = getPage(pageId);
-    // }
-    //
-    // XWikiEclipsePage pages[] = new XWikiEclipsePage[] {page, newPage};
-    // NotificationManager.getDefault().fireCoreEvent(CoreEvent.Type.PAGE_RENAMED, this, pages);
-    //
-    // return true;
-    // }
-    //
-    // public List<XWikiEclipsePageHistorySummary> getPageHistory(String pageId) throws XWikiEclipseException
-    // {
-    // List<XWikiEclipsePageHistorySummary> result = new ArrayList<XWikiEclipsePageHistorySummary>();
-    // List<XWikiPageHistorySummary> pageHistory = null;
-    //
-    // if (isConnected()) {
-    // pageHistory = remoteXWikiDataStorage.getPageHistory(pageId);
-    //
-    // } else {
-    // pageHistory = localXWikiDataStorage.getPageHistory(pageId);
-    // }
-    //
-    // for (XWikiPageHistorySummary pageHistorySummary : pageHistory) {
-    // result.add(new XWikiEclipsePageHistorySummary(this, pageHistorySummary));
-    // }
-    //
-    // return result;
-    // }
-    //
-    // public String getXWikiEclipseId()
-    // {
-    //        return String.format("xwikieclipse://%s", getName()); //$NON-NLS-1$
-    // }
-    //
-    // public List<XWikiEclipsePageSummary> getAllPageIds() throws XWikiEclipseException
-    // {
-    // List<XWikiEclipsePageSummary> result = new ArrayList<XWikiEclipsePageSummary>();
-    //
-    // if (isConnected()) {
-    // if (supportedFunctionalities.contains(Functionality.ALL_PAGES_RETRIEVAL)) {
-    // List<XWikiPageSummary> pageSummaries = remoteXWikiDataStorage.getAllPageIds();
-    // for (XWikiPageSummary pageSummary : pageSummaries) {
-    // result.add(new XWikiEclipsePageSummary(this, pageSummary));
-    // }
-    // } else {
-    // List<SpaceSummary> spaces = remoteXWikiDataStorage.getSpaces();
-    // for (SpaceSummary spaceSummary : spaces) {
-    // List<XWikiPageSummary> pages = remoteXWikiDataStorage.getPages(spaceSummary.getKey());
-    // for (XWikiPageSummary pageSummary : pages) {
-    // result.add(new XWikiEclipsePageSummary(this, pageSummary));
-    // }
-    // }
-    // }
-    // } else {
-    // List<XWikiPageSummary> pageSummaries = localXWikiDataStorage.getAllPageIds();
-    // for (XWikiPageSummary pageSummary : pageSummaries) {
-    // result.add(new XWikiEclipsePageSummary(this, pageSummary));
-    // }
-    // }
-    //
-    // return result;
-    // }
-    //
-    // public boolean exists(String pageId)
-    // {
-    // if (isConnected()) {
-    // return remoteXWikiDataStorage.exists(pageId);
-    // }
-    //
-    // return localXWikiDataStorage.exists(pageId);
-    // }
-
     /**
      * @param pageSummary
      * @return
      */
-    public List<XWikiEclipseAttachment> getAttachments(XWikiEclipsePageSummary pageSummary)
+    public List<XWikiEclipseAttachment> getAttachments(String wiki, String space, String pageName)
     {
+        Assert.isNotNull(wiki);
+        Assert.isNotNull(space);
+        Assert.isNotNull(pageName);
+
         List<XWikiEclipseAttachment> result = null;
         if (isConnected()) {
-            result = remoteXWikiDataStorage.getAttachments(pageSummary);
+            result = remoteXWikiDataStorage.getAttachments(wiki, space, pageName);
             return result;
         }
 
@@ -1042,14 +485,14 @@ public class DataManager
      * @param pageSummary
      * @return
      */
-    public List<XWikiEclipsePageHistorySummary> getPageHistory(XWikiEclipsePageSummary pageSummary)
-        throws XWikiEclipseStorageException
+    public List<XWikiEclipsePageHistorySummary> getPageHistory(String wiki, String space, String pageName,
+        String language) throws XWikiEclipseStorageException
     {
         List<XWikiEclipsePageHistorySummary> result = null;
 
         if (isConnected()) {
             try {
-                result = remoteXWikiDataStorage.getPageHistorySummaries(pageSummary);
+                result = remoteXWikiDataStorage.getPageHistorySummaries(wiki, space, pageName, language);
                 return result;
             } catch (XWikiEclipseStorageException e) {
                 // TODO Auto-generated catch block
@@ -1057,7 +500,7 @@ public class DataManager
                 throw e;
             }
         } else {
-            result = localXWikiDataStorage.getPageHistorySummaries(pageSummary);
+            result = localXWikiDataStorage.getPageHistorySummaries(wiki, space, pageName, language);
             return result;
         }
     }
@@ -1066,31 +509,53 @@ public class DataManager
      * @param o
      * @return
      */
-    public XWikiEclipsePage getPage(ModelObject o) throws XWikiEclipseStorageException
+    public XWikiEclipsePage getPage(String wiki, String space, String pageName, String language)
+        throws XWikiEclipseStorageException
     {
         XWikiEclipsePage result = null;
 
         if (isConnected()) {
-            result = remoteXWikiDataStorage.getPage(o);
+            result = remoteXWikiDataStorage.getPage(wiki, space, pageName, language);
 
-            /* store wiki, space, pageSummary and page */
-            if (o instanceof XWikiEclipsePageSummary) {
-                XWikiEclipsePageSummary pageSummary = (XWikiEclipsePageSummary) o;
+            /* store pageSummary */
+            if (language != "") {
+                /* default langugae */
+                XWikiEclipsePageSummary pageSummary = getPageSummary(wiki, space, pageName, language);
 
                 localXWikiDataStorage.storePageSummary(pageSummary);
 
-                XWikiEclipseSpaceSummary spaceSummary = pageSummary.getDataManager().getSpace(pageSummary);
-                localXWikiDataStorage.storeSpace(spaceSummary);
+            } else {
 
-                XWikiEclipseWikiSummary wikiSummary = spaceSummary.getDataManager().getWiki(spaceSummary);
-                localXWikiDataStorage.storeWiki(wikiSummary);
+                /* translation page */
+                /* create a pageSummary instance, as well as space and wiki */
+                XWikiEclipsePageSummary pageSummary = new XWikiEclipsePageSummary(this);
+                /* set the translation language */
+                pageSummary.setLanguage(language);
+                pageSummary.setUrl(result.getUrl());
+                pageSummary.setName(result.getName());
+                pageSummary.setWiki(result.getWiki());
+                pageSummary.setSpace(result.getSpace());
+                pageSummary.setId(result.getId());
+                pageSummary.setParentId(result.getParentId());
+                pageSummary.setTitle(result.getTitle());
+                pageSummary.setSyntax(result.getSyntax());
+
+                localXWikiDataStorage.storePageSummary(pageSummary);
+                NotificationManager.getDefault().fireCoreEvent(CoreEvent.Type.PAGE_STORED, this, pageSummary);
             }
+
+            /* store wiki, space and page */
+            XWikiEclipseSpaceSummary spaceSummary = getSpace(wiki, space);
+            localXWikiDataStorage.storeSpace(spaceSummary);
+
+            XWikiEclipseWikiSummary wikiSummary = getWiki(wiki);
+            localXWikiDataStorage.storeWiki(wikiSummary);
 
             localXWikiDataStorage.storePage(result);
 
             return result;
         } else {
-            XWikiEclipsePage page = localXWikiDataStorage.getPage(o);
+            XWikiEclipsePage page = localXWikiDataStorage.getPage(wiki, space, pageName, language);
 
             if (page != null) {
                 result = new XWikiEclipsePage(this);
@@ -1118,12 +583,12 @@ public class DataManager
      * @param spaceSummary
      * @return
      */
-    public XWikiEclipseWikiSummary getWiki(XWikiEclipseSpaceSummary spaceSummary) throws XWikiEclipseStorageException
+    public XWikiEclipseWikiSummary getWiki(String wiki) throws XWikiEclipseStorageException
     {
         List<XWikiEclipseWikiSummary> wikis = getWikis();
-        for (XWikiEclipseWikiSummary wiki : wikis) {
-            if (wiki.getName().equals(spaceSummary.getWiki())) {
-                return wiki;
+        for (XWikiEclipseWikiSummary wikiSummary : wikis) {
+            if (wikiSummary.getName().equals(wiki)) {
+                return wikiSummary;
             }
         }
 
@@ -1134,11 +599,11 @@ public class DataManager
      * @param pageSummary
      * @return
      */
-    public XWikiEclipseClass getClass(XWikiEclipsePageSummary pageSummary)
+    public XWikiEclipseClass getClass(String wiki, String space, String pageName)
     {
         XWikiEclipseClass result = null;
         if (isConnected()) {
-            result = remoteXWikiDataStorage.getClass(pageSummary);
+            result = remoteXWikiDataStorage.getClass(wiki, space, pageName);
             return result;
         }
 
@@ -1164,28 +629,25 @@ public class DataManager
      * @param pageSummary
      * @return
      */
-    public List<XWikiEclipseComment> getComments(XWikiEclipsePageSummary pageSummary)
+    public List<XWikiEclipseComment> getComments(String wiki, String space, String pageName)
     {
         List<XWikiEclipseComment> result = null;
 
         if (isConnected()) {
-            result = remoteXWikiDataStorage.getComments(pageSummary);
+            result = remoteXWikiDataStorage.getComments(wiki, space, pageName);
             return result;
         }
 
         return null;
     }
 
-    /**
-     * @param objectSummary
-     * @return
-     */
-    public List<XWikiEclipseObjectProperty> getObjectProperties(XWikiEclipseObjectSummary objectSummary)
+    public List<XWikiEclipseObjectProperty> getObjectProperties(String wiki, String space, String pageName,
+        String className, int number)
     {
         List<XWikiEclipseObjectProperty> result = null;
 
         if (isConnected()) {
-            result = remoteXWikiDataStorage.getObjectProperties(objectSummary);
+            result = remoteXWikiDataStorage.getObjectProperties(wiki, space, pageName, className, number);
             return result;
         }
 
@@ -1201,12 +663,13 @@ public class DataManager
         remoteXWikiDataStorage.download(directory, attachment);
     }
 
-    public XWikiEclipsePageSummary getPageSummary(ModelObject m) throws XWikiEclipseStorageException
+    public XWikiEclipsePageSummary getPageSummary(String wiki, String space, String pageName, String language)
+        throws XWikiEclipseStorageException
     {
         XWikiEclipsePageSummary result = null;
 
         if (isConnected()) {
-            result = remoteXWikiDataStorage.getPageSummary(m);
+            result = remoteXWikiDataStorage.getPageSummary(wiki, space, pageName, language);
         }
 
         return result;
@@ -1216,12 +679,13 @@ public class DataManager
      * @param o
      * @return
      */
-    public XWikiEclipseObject getObject(ModelObject o) throws XWikiEclipseStorageException
+    public XWikiEclipseObject getObject(String wiki, String space, String pageName, String className, int number)
+        throws XWikiEclipseStorageException
     {
         XWikiEclipseObject result = null;
 
         if (isConnected()) {
-            result = remoteXWikiDataStorage.getObject(o);
+            result = remoteXWikiDataStorage.getObject(wiki, space, pageName, className, number);
         }
 
         return result;
@@ -1266,21 +730,18 @@ public class DataManager
     public void uploadAttachment(XWikiEclipsePageSummary pageSummary, URL fileUrl)
     {
         if (isConnected()) {
-            remoteXWikiDataStorage.uploadAttachment(pageSummary, fileUrl);
+            remoteXWikiDataStorage.uploadAttachment(pageSummary.getWiki(), pageSummary.getSpace(),
+                pageSummary.getName(), fileUrl);
         }
 
     }
 
-    /**
-     * @param pageSummary
-     * @return
-     */
-    public XWikiEclipseSpaceSummary getSpace(XWikiEclipsePageSummary pageSummary)
+    public XWikiEclipseSpaceSummary getSpace(String wiki, String space)
     {
         XWikiEclipseSpaceSummary result = null;
 
         if (isConnected()) {
-            result = remoteXWikiDataStorage.getSpace(pageSummary);
+            result = remoteXWikiDataStorage.getSpace(wiki, space);
         }
 
         return result;
@@ -1293,7 +754,10 @@ public class DataManager
     public void updateAttachment(XWikiEclipseAttachment attachment, URL fileUrl)
     {
         if (isConnected()) {
-            remoteXWikiDataStorage.updateAttachment(attachment, fileUrl);
+            String pageId = attachment.getPageId();
+            PageIdParser parser = new PageIdParser(pageId);
+            remoteXWikiDataStorage.updateAttachment(parser.getWiki(), parser.getSpace(), parser.getPage(),
+                attachment.getName(), fileUrl);
         }
 
     }
@@ -1302,13 +766,9 @@ public class DataManager
      * @param o
      * @return
      */
-    public List<XWikiEclipseTag> getAllTagsInWiki(ModelObject o)
+    public List<XWikiEclipseTag> getAllTagsInWiki(String wiki)
     {
-        List<XWikiEclipseTag> result = null;
-
-        if (o instanceof XWikiEclipsePageSummary) {
-            result = remoteXWikiDataStorage.getAllTagsInWiki(o);
-        }
+        List<XWikiEclipseTag> result = remoteXWikiDataStorage.getAllTagsInWiki(wiki);
         return result;
     }
 
@@ -1316,11 +776,11 @@ public class DataManager
      * @param pageSummary
      * @param tag
      */
-    public XWikiEclipseTag addTag(XWikiEclipsePageSummary pageSummary, String tag)
+    public XWikiEclipseTag addTag(String wiki, String space, String pageName, String tag)
     {
         XWikiEclipseTag result = null;
         if (isConnected()) {
-            result = remoteXWikiDataStorage.addTag(pageSummary, tag);
+            result = remoteXWikiDataStorage.addTag(wiki, space, pageName, tag);
         }
 
         return result;
@@ -1404,26 +864,6 @@ public class DataManager
      * @return
      */
     public XWikiEclipsePage createPage(String wiki, String space, String name, String title, String string)
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /**
-     * @param wiki
-     * @return
-     */
-    public List<XWikiEclipseSpaceSummary> getSpaces(String wiki)
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /**
-     * @param format
-     * @return
-     */
-    public XWikiEclipsePage getPage(String format) throws XWikiEclipseStorageException
     {
         // TODO Auto-generated method stub
         return null;

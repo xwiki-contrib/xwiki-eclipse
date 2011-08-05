@@ -88,7 +88,6 @@ public class XmlrpcRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStor
 
         xwiki.setBaseUrl(serverInfo.getBaseUrl());
         xwiki.setName("xwiki"); // by default, it is xwiki
-        xwiki.setSpacesUrl("N/A"); // by default, it does not know about rest urls
         xwiki.setSyntaxes(serverInfo.getSyntaxes());
         xwiki.setVersion(serverInfo.getVersion());
         xwiki.setWikiId("xwiki"); // by default, it is xwiki
@@ -104,7 +103,7 @@ public class XmlrpcRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStor
      * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#getSpaces()
      */
     @Override
-    public List<XWikiEclipseSpaceSummary> getSpaceSummaries(XWikiEclipseWikiSummary wiki)
+    public List<XWikiEclipseSpaceSummary> getSpaceSummaries(String wikiId)
     {
         List<XWikiEclipseSpaceSummary> result = new ArrayList<XWikiEclipseSpaceSummary>();
 
@@ -177,12 +176,12 @@ public class XmlrpcRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStor
      * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#getPageSummaries(org.xwiki.eclipse.model.XWikiEclipseSpaceSummary)
      */
     @Override
-    public List<XWikiEclipsePageSummary> getPageSummaries(XWikiEclipseSpaceSummary spaceSummary)
+    public List<XWikiEclipsePageSummary> getPageSummaries(String wiki, String space)
     {
         try {
             List<XWikiEclipsePageSummary> result = new ArrayList<XWikiEclipsePageSummary>();
 
-            List<XWikiPageSummary> pages = xmlrpcRemoteDataStorage.getPages(spaceSummary.getId());
+            List<XWikiPageSummary> pages = xmlrpcRemoteDataStorage.getPages(space);
             for (XWikiPageSummary pageSummary : pages) {
                 XWikiEclipsePageSummary page = new XWikiEclipsePageSummary(dataManager);
                 page.setId(pageSummary.getId());
@@ -214,7 +213,6 @@ public class XmlrpcRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStor
      * 
      * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#getObjectSummaries(org.xwiki.eclipse.model.XWikiEclipsePageSummary)
      */
-    @Override
     public List<XWikiEclipseObjectSummary> getObjectSummaries(XWikiEclipsePageSummary pageSummary)
     {
         List<XWikiEclipseObjectSummary> result = new ArrayList<XWikiEclipseObjectSummary>();
@@ -241,20 +239,8 @@ public class XmlrpcRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStor
     /**
      * {@inheritDoc}
      * 
-     * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#getAttachments(org.xwiki.eclipse.model.XWikiEclipsePageSummary)
-     */
-    @Override
-    public List<XWikiEclipseAttachment> getAttachments(XWikiEclipsePageSummary pageSummary)
-    {
-        return null;
-    }
-
-    /**
-     * {@inheritDoc}
-     * 
      * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#getPageHistorySummaries(org.xwiki.eclipse.model.XWikiEclipsePageSummary)
      */
-    @Override
     public List<XWikiEclipsePageHistorySummary> getPageHistorySummaries(XWikiEclipsePageSummary pageSummary)
         throws XWikiEclipseStorageException
     {
@@ -290,18 +276,6 @@ public class XmlrpcRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStor
     /**
      * {@inheritDoc}
      * 
-     * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#getClass(org.xwiki.eclipse.model.XWikiEclipsePageSummary)
-     */
-    @Override
-    public XWikiEclipseClass getClass(XWikiEclipsePageSummary pageSummary)
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /**
-     * {@inheritDoc}
-     * 
      * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#getTags(org.xwiki.eclipse.model.XWikiEclipsePageSummary)
      */
     @Override
@@ -314,21 +288,8 @@ public class XmlrpcRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStor
     /**
      * {@inheritDoc}
      * 
-     * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#getComments(org.xwiki.eclipse.model.XWikiEclipsePageSummary)
-     */
-    @Override
-    public List<XWikiEclipseComment> getComments(XWikiEclipsePageSummary pageSummary)
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /**
-     * {@inheritDoc}
-     * 
      * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#getObjectProperties(org.xwiki.eclipse.model.XWikiEclipseObjectSummary)
      */
-    @Override
     public List<XWikiEclipseObjectProperty> getObjectProperties(XWikiEclipseObjectSummary objectSummary)
     {
         // TODO Auto-generated method stub
@@ -351,21 +312,8 @@ public class XmlrpcRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStor
     /**
      * {@inheritDoc}
      * 
-     * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#getPage(org.xwiki.eclipse.model.ModelObject)
-     */
-    @Override
-    public XWikiEclipsePage getPage(ModelObject o)
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /**
-     * {@inheritDoc}
-     * 
      * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#getObject(org.xwiki.eclipse.model.ModelObject)
      */
-    @Override
     public XWikiEclipseObject getObject(ModelObject o)
     {
         // TODO Auto-generated method stub
@@ -379,81 +327,6 @@ public class XmlrpcRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStor
      */
     @Override
     public XWikiEclipseComment storeComment(XWikiEclipseComment c)
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#getPageSummary(org.xwiki.eclipse.model.ModelObject)
-     */
-    @Override
-    public XWikiEclipsePageSummary getPageSummary(ModelObject m)
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#uploadAttachment(org.xwiki.eclipse.model.XWikiEclipsePageSummary,
-     *      java.net.URL)
-     */
-    @Override
-    public void uploadAttachment(XWikiEclipsePageSummary pageSummary, URL fileUrl)
-    {
-        // TODO Auto-generated method stub
-
-    }
-
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#getSpace(org.xwiki.eclipse.model.XWikiEclipsePageSummary)
-     */
-    @Override
-    public XWikiEclipseSpaceSummary getSpace(XWikiEclipsePageSummary pageSummary)
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#updateAttachment(org.xwiki.eclipse.model.XWikiEclipseAttachment,
-     *      java.net.URL)
-     */
-    @Override
-    public void updateAttachment(XWikiEclipseAttachment attachment, URL fileUrl)
-    {
-        // TODO Auto-generated method stub
-
-    }
-
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#getAllTagsInWiki(org.xwiki.eclipse.model.ModelObject)
-     */
-    @Override
-    public List<XWikiEclipseTag> getAllTagsInWiki(ModelObject o)
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#addTag(org.xwiki.eclipse.model.XWikiEclipsePageSummary,
-     *      java.lang.String)
-     */
-    @Override
-    public XWikiEclipseTag addTag(XWikiEclipsePageSummary pageSummary, String tagName)
     {
         // TODO Auto-generated method stub
         return null;
@@ -490,6 +363,188 @@ public class XmlrpcRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStor
      */
     @Override
     public void remove(ModelObject o)
+    {
+        // TODO Auto-generated method stub
+
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#getObjectSummaries(java.lang.String, java.lang.String,
+     *      java.lang.String)
+     */
+    @Override
+    public List<XWikiEclipseObjectSummary> getObjectSummaries(String wiki, String space, String pageName)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#getAttachments(java.lang.String, java.lang.String,
+     *      java.lang.String)
+     */
+    @Override
+    public List<XWikiEclipseAttachment> getAttachments(String wiki, String space, String pageName)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#getPageHistorySummaries(java.lang.String,
+     *      java.lang.String, java.lang.String, java.lang.String)
+     */
+    @Override
+    public List<XWikiEclipsePageHistorySummary> getPageHistorySummaries(String wiki, String space, String page,
+        String language) throws XWikiEclipseStorageException
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#getClass(java.lang.String, java.lang.String,
+     *      java.lang.String)
+     */
+    @Override
+    public XWikiEclipseClass getClass(String wiki, String space, String pageName)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#getComments(java.lang.String, java.lang.String,
+     *      java.lang.String)
+     */
+    @Override
+    public List<XWikiEclipseComment> getComments(String wiki, String space, String pageName)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#getObjectProperties(java.lang.String, java.lang.String,
+     *      java.lang.String, java.lang.String, int)
+     */
+    @Override
+    public List<XWikiEclipseObjectProperty> getObjectProperties(String wiki, String space, String pageName,
+        String className, int number)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#getPage(java.lang.String, java.lang.String,
+     *      java.lang.String, java.lang.String)
+     */
+    @Override
+    public XWikiEclipsePage getPage(String wiki, String space, String pageName, String language)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#getObject(java.lang.String, java.lang.String,
+     *      java.lang.String, java.lang.String, int)
+     */
+    @Override
+    public XWikiEclipseObject getObject(String wiki, String space, String pageName, String className, int number)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#getPageSummary(java.lang.String, java.lang.String,
+     *      java.lang.String, java.lang.String)
+     */
+    @Override
+    public XWikiEclipsePageSummary getPageSummary(String wiki, String space, String pageName, String language)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#getSpace(java.lang.String, java.lang.String)
+     */
+    @Override
+    public XWikiEclipseSpaceSummary getSpace(String wiki, String space)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#getAllTagsInWiki(java.lang.String)
+     */
+    @Override
+    public List<XWikiEclipseTag> getAllTagsInWiki(String wiki)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#addTag(java.lang.String, java.lang.String,
+     *      java.lang.String, java.lang.String)
+     */
+    @Override
+    public XWikiEclipseTag addTag(String wiki, String space, String pageName, String tagName)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#uploadAttachment(java.lang.String, java.lang.String,
+     *      java.lang.String, java.net.URL)
+     */
+    @Override
+    public void uploadAttachment(String wiki, String space, String pageName, URL fileUrl)
+    {
+        // TODO Auto-generated method stub
+
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#updateAttachment(java.lang.String, java.lang.String,
+     *      java.lang.String, java.lang.String, java.net.URL)
+     */
+    @Override
+    public void updateAttachment(String wiki, String space, String pageName, String attachmentName, URL fileUrl)
     {
         // TODO Auto-generated method stub
 

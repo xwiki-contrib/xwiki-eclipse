@@ -72,7 +72,9 @@ public class OpenXWikiModelObjectAction extends Action
                 final XWikiEclipsePageSummary pageSummary = (XWikiEclipsePageSummary) object;
 
                 try {
-                    XWikiEclipsePage page = pageSummary.getDataManager().getPage(pageSummary);
+                    XWikiEclipsePage page =
+                        pageSummary.getDataManager().getPage(pageSummary.getWiki(), pageSummary.getSpace(),
+                            pageSummary.getName(), pageSummary.getLanguage());
 
                     if (page == null) {
                         UIUtils
@@ -116,7 +118,9 @@ public class OpenXWikiModelObjectAction extends Action
                 final XWikiEclipseObjectSummary objectSummary = (XWikiEclipseObjectSummary) object;
 
                 try {
-                    XWikiEclipseObject xwikiObject = objectSummary.getDataManager().getObject(objectSummary);
+                    XWikiEclipseObject xwikiObject =
+                        objectSummary.getDataManager().getObject(objectSummary.getWiki(), objectSummary.getSpace(),
+                            objectSummary.getPageName(), objectSummary.getClassName(), objectSummary.getNumber());
 
                     PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
                         .openEditor(new ObjectEditorInput(xwikiObject), ObjectEditor.ID);

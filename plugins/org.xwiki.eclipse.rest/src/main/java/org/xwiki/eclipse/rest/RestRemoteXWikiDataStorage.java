@@ -42,7 +42,9 @@ import org.xwiki.rest.model.jaxb.Xwiki;
  */
 public class RestRemoteXWikiDataStorage
 {
-    private XWikiRESTClient restRemoteClient;
+    private XWikiRestClient restRemoteClient;
+
+    private RestUrlBuilder urlBuilder;
 
     private String endpoint;
 
@@ -55,7 +57,8 @@ public class RestRemoteXWikiDataStorage
         this.endpoint = endpoint;
         this.username = username;
         this.password = password;
-        this.restRemoteClient = new XWikiRESTClient(endpoint, username, password);
+        this.restRemoteClient = new XWikiRestClient(endpoint, username, password);
+        this.urlBuilder = new RestUrlBuilder(endpoint);
     }
 
     /**
@@ -80,8 +83,9 @@ public class RestRemoteXWikiDataStorage
         return restRemoteClient.getServerInfo();
     }
 
-    public List<Space> getSpaces(String spacesUrl)
+    public List<Space> getSpaces(String wikiId)
     {
+        String spacesUrl = urlBuilder.getSpacesUrl(wikiId);
         try {
             return restRemoteClient.getSpaces(spacesUrl);
         } catch (Exception e) {
@@ -98,8 +102,9 @@ public class RestRemoteXWikiDataStorage
      * @param password
      * @return
      */
-    public List<PageSummary> getPages(String pagesUrl)
+    public List<PageSummary> getPages(String wiki, String space)
     {
+        String pagesUrl = urlBuilder.getPagesUrl(wiki, space);
         List<PageSummary> result = restRemoteClient.getPages(pagesUrl);
         return result;
     }
@@ -107,8 +112,9 @@ public class RestRemoteXWikiDataStorage
     /**
      * @param pageSummary
      */
-    public List<ObjectSummary> getObjects(String objectsUrl)
+    public List<ObjectSummary> getObjectSummaries(String wiki, String space, String pageName)
     {
+        String objectsUrl = urlBuilder.getObjectsUrl(wiki, space, pageName);
         List<ObjectSummary> result = this.restRemoteClient.getObjects(objectsUrl);
         return result;
     }
@@ -119,8 +125,9 @@ public class RestRemoteXWikiDataStorage
      * @param password
      * @return
      */
-    public List<Attachment> getAttachments(String attachmentsUrl)
+    public List<Attachment> getAttachments(String wiki, String space, String pageName)
     {
+        String attachmentsUrl = urlBuilder.getAttachmentsUrl(wiki, space, pageName);
         if (attachmentsUrl != null) {
             List<Attachment> result = this.restRemoteClient.getAttachments(attachmentsUrl);
             return result;
@@ -141,8 +148,9 @@ public class RestRemoteXWikiDataStorage
      * @param pageId
      * @return
      */
-    public List<HistorySummary> getPageHistory(String historyUrl)
+    public List<HistorySummary> getPageHistories(String wiki, String space, String pageName, String language)
     {
+        String historyUrl = urlBuilder.getHistoryUrl(wiki, space, pageName, language);
         if (historyUrl != null) {
             List<HistorySummary> result = this.restRemoteClient.getPageHistory(historyUrl);
             return result;
@@ -151,8 +159,9 @@ public class RestRemoteXWikiDataStorage
         return null;
     }
 
-    public Page getPage(String pageUrl)
+    public Page getPage(String wiki, String space, String pageName, String language)
     {
+        String pageUrl = urlBuilder.getPageUrl(wiki, space, pageName, language);
         try {
             return this.restRemoteClient.getPage(pageUrl);
         } catch (Exception e) {
@@ -163,12 +172,9 @@ public class RestRemoteXWikiDataStorage
         return null;
     }
 
-    /**
-     * @param pageSummary
-     * @return
-     */
-    public org.xwiki.rest.model.jaxb.Class getClass(String classUrl)
+    public org.xwiki.rest.model.jaxb.Class getClass(String wiki, String className)
     {
+        String classUrl = urlBuilder.getclassUrl(wiki, className);
         try {
             return this.restRemoteClient.getClass(classUrl);
         } catch (Exception e) {
@@ -199,9 +205,9 @@ public class RestRemoteXWikiDataStorage
      * @param commentsUrl
      * @return
      */
-    public List<Comment> getComments(String commentsUrl)
+    public List<Comment> getComments(String wiki, String space, String pageName)
     {
-
+        String commentsUrl = urlBuilder.getCommentsUrl(wiki, space, pageName);
         try {
             return this.restRemoteClient.getComments(commentsUrl);
         } catch (Exception e) {
@@ -216,8 +222,9 @@ public class RestRemoteXWikiDataStorage
      * @param propertiesUrl
      * @return
      */
-    public List<Property> getObjectProperties(String propertiesUrl)
+    public List<Property> getObjectProperties(String wiki, String space, String pageName, String className, int number)
     {
+        String propertiesUrl = urlBuilder.getObjectPropertiesUrl(wiki, space, pageName, className, number);
         try {
             return this.restRemoteClient.getObjectProperties(propertiesUrl);
         } catch (Exception e) {
@@ -241,8 +248,9 @@ public class RestRemoteXWikiDataStorage
      * @param objectUrl
      * @return
      */
-    public Object getObject(String objectUrl)
+    public Object getObject(String wiki, String space, String pageName, String className, int number)
     {
+        String objectUrl = urlBuilder.getObjectUrl(wiki, space, pageName, className, number);
         try {
             return this.restRemoteClient.getObject(objectUrl);
         } catch (Exception e) {
@@ -253,17 +261,13 @@ public class RestRemoteXWikiDataStorage
         return null;
     }
 
-    /**
-     * @param spaceUrl
-     * @return
-     */
-    public Space getSpace(String spaceUrl)
+    public Space getSpace(String wiki, String space)
     {
-        try {
-            return this.restRemoteClient.getSpace(spaceUrl);
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        List<Space> spaces = getSpaces(wiki);
+        for (Space s : spaces) {
+            if (s.getName().equals(space)) {
+                return s;
+            }
         }
 
         return null;
@@ -303,8 +307,9 @@ public class RestRemoteXWikiDataStorage
      * @param attachmentsUrl
      * @param fileUrl
      */
-    public void uploadAttachment(String attachmentUrl, String attachmentName, URL fileUrl)
+    public void uploadAttachment(String wiki, String space, String pageName, String attachmentName, URL fileUrl)
     {
+        String attachmentUrl = urlBuilder.getAttachmentUrl(wiki, space, pageName, attachmentName);
         this.restRemoteClient.uploadAttachment(attachmentUrl, attachmentName, fileUrl);
     }
 
@@ -332,8 +337,9 @@ public class RestRemoteXWikiDataStorage
      * @param tagName
      * @return
      */
-    public List<Tag> addTag(String tagsUrl, String tagName)
+    public List<Tag> addTag(String wiki, String space, String pageName, String tagName)
     {
+        String tagsUrl = urlBuilder.getTagUrl(wiki, space, pageName);
         List<Tag> result;
         try {
             result = this.restRemoteClient.addTag(tagsUrl, tagName);
@@ -387,6 +393,166 @@ public class RestRemoteXWikiDataStorage
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
+        }
+    }
+
+    class RestUrlBuilder
+    {
+        private String endpoint;
+
+        public RestUrlBuilder(String endpoint)
+        {
+            this.endpoint = endpoint;
+        }
+
+        /**
+         * @param wiki
+         * @param className
+         * @return
+         */
+        public String getclassUrl(String wiki, String className)
+        {
+            return endpoint + "/wikis/" + wiki + "/classes/" + className;
+        }
+
+        /**
+         * @param wiki
+         * @param space
+         * @param pageName
+         * @return
+         */
+        public String getTagUrl(String wiki, String space, String pageName)
+        {
+            return endpoint + "/wikis/" + wiki + "/spaces/" + space + "/pages" + pageName + "/tags";
+        }
+
+        /**
+         * @param wiki
+         * @param space
+         * @param pageName
+         * @param className
+         * @param number
+         * @return
+         */
+        public String getObjectUrl(String wiki, String space, String pageName, String className, int number)
+        {
+            return endpoint + "/wikis/" + wiki + "/spaces/" + space + "/pages" + pageName + "/objects/" + className
+                + "/" + number;
+        }
+
+        /**
+         * @param wiki
+         * @param space
+         * @param pageName
+         * @param language
+         * @return
+         */
+        public String getPageUrl(String wiki, String space, String pageName, String language)
+        {
+            if (language != "") {
+                return endpoint + "/wikis/" + wiki + "/spaces/" + space + "/pages" + pageName + "/translations/"
+                    + language;
+            }
+            return endpoint + "/wikis/" + wiki + "/spaces/" + space + "/pages" + pageName;
+        }
+
+        /**
+         * @param wiki
+         * @param space
+         * @param pageName
+         * @param className
+         * @param number
+         * @return
+         */
+        public String getObjectPropertiesUrl(String wiki, String space, String pageName, String className, int number)
+        {
+            return endpoint + "/wikis/" + wiki + "/spaces/" + space + "/pages" + pageName + "/objects/" + className
+                + "/" + number + "/properties";
+        }
+
+        /**
+         * @param wiki
+         * @param space
+         * @param pageName
+         * @return
+         */
+        public String getCommentsUrl(String wiki, String space, String pageName)
+        {
+            return endpoint + "/wikis/" + wiki + "/spaces/" + space + "/pages" + pageName + "/comments";
+        }
+
+        /**
+         * @param wiki
+         * @param space
+         * @param pageName
+         * @param language
+         * @return
+         */
+        public String getHistoryUrl(String wiki, String space, String pageName, String language)
+        {
+            if (language != "") {
+                return endpoint + "/wikis/" + wiki + "/spaces/" + space + "/pages/" + pageName + "/translations/"
+                    + language + "/history";
+            }
+            return endpoint + "/wikis/" + wiki + "/spaces/" + space + "/pages/" + pageName + "/history";
+        }
+
+        /**
+         * @param wiki
+         * @param space
+         * @param pageName
+         * @return
+         */
+        public String getAttachmentUrl(String wiki, String space, String pageName, String attachmentName)
+        {
+            return endpoint + "/wikis/" + wiki + "/spaces/" + space + "/pages" + pageName + "/attachments/"
+                + attachmentName;
+        }
+
+        public String getAttachmentsUrl(String wiki, String space, String pageName)
+        {
+            return endpoint + "/wikis/" + wiki + "/spaces/" + space + "/pages" + pageName + "/attachments";
+        }
+
+        /**
+         * @param wiki
+         * @param space
+         * @param pageName
+         * @return
+         */
+        public String getObjectsUrl(String wiki, String space, String pageName)
+        {
+            return endpoint + "/wikis/" + wiki + "/spaces/" + space + "/pages" + pageName + "/objects";
+        }
+
+        /**
+         * @param wiki
+         * @param space
+         * @return
+         */
+        public String getPagesUrl(String wiki, String space)
+        {
+            return endpoint + "/wikis/" + wiki + "/spaces/" + space + "/pages";
+        }
+
+        public String getRootUrl()
+        {
+            return endpoint;
+        }
+
+        public String getWikisUrl()
+        {
+            return endpoint + "/wikis";
+        }
+
+        public String getSyntaxesUrl()
+        {
+            return endpoint + "/syntaxes";
+        }
+
+        public String getSpacesUrl(String wikiId)
+        {
+            return endpoint + "/wikis/" + wikiId + "/spaces";
         }
     }
 }

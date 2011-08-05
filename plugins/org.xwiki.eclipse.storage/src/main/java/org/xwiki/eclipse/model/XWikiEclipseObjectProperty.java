@@ -32,6 +32,16 @@ import org.xwiki.eclipse.storage.DataManager;
  */
 public class XWikiEclipseObjectProperty extends ModelObject
 {
+    private String wiki;
+
+    private String space;
+
+    private String page;
+
+    private String className;
+
+    private int number;
+
     private String name;
 
     private String type;
@@ -39,8 +49,6 @@ public class XWikiEclipseObjectProperty extends ModelObject
     private String value;
 
     private Map<String, String> attributes;
-
-    private String objectUrl;
 
     /**
      * @param dataManager
@@ -109,13 +117,53 @@ public class XWikiEclipseObjectProperty extends ModelObject
         return getAttribute("prettyName");
     }
 
-    public String getObjectUrl()
+    public String getWiki()
     {
-        return objectUrl;
+        return wiki;
     }
 
-    public void setObjectUrl(String objectUrl)
+    public void setWiki(String wiki)
     {
-        this.objectUrl = objectUrl;
+        this.wiki = wiki;
+    }
+
+    public String getSpace()
+    {
+        return space;
+    }
+
+    public void setSpace(String space)
+    {
+        this.space = space;
+    }
+
+    public String getPage()
+    {
+        return page;
+    }
+
+    public void setPage(String page)
+    {
+        this.page = page;
+    }
+
+    public String getClassName()
+    {
+        return className;
+    }
+
+    public void setClassName(String className)
+    {
+        this.className = className;
+    }
+
+    public int getNumber()
+    {
+        return number;
+    }
+
+    public void setNumber(int number)
+    {
+        this.number = number;
     }
 }

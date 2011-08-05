@@ -90,7 +90,9 @@ public class TextAreaPropertyEditorDialog extends Dialog
         toolkit.decorateFormHeading(form);
         XWikiEclipseObject object;
         try {
-            object = property.getDataManager().getObject(property);
+            object =
+                property.getDataManager().getObject(property.getWiki(), property.getSpace(), property.getPage(),
+                    property.getClassName(), property.getNumber());
             form.setText(String.format("Property %s of object %s on page %s", property.getPrettyName(),
                 object.getName(), object.getPageId()));
         } catch (XWikiEclipseStorageException e1) {

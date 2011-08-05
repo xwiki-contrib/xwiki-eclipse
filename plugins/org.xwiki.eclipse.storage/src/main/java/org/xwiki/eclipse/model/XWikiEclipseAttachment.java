@@ -28,10 +28,6 @@ import org.xwiki.eclipse.storage.DataManager;
  */
 public class XWikiEclipseAttachment extends ModelObject
 {
-    private String pageUrl;
-
-    private String attachmentUrl;
-
     private String id;
 
     private String name;
@@ -67,26 +63,6 @@ public class XWikiEclipseAttachment extends ModelObject
     public String getXWikiEclipseId()
     {
         return String.format("xwikieclipse://%s/%s/attachment/%s", getDataManager().getName(), getPageId(), getId()); //$NON-NLS-1$
-    }
-
-    public String getPageUrl()
-    {
-        return pageUrl;
-    }
-
-    public void setPageUrl(String pageUrl)
-    {
-        this.pageUrl = pageUrl;
-    }
-
-    public String getAttachmentUrl()
-    {
-        return attachmentUrl;
-    }
-
-    public void setAttachmentUrl(String attachmentUrl)
-    {
-        this.attachmentUrl = attachmentUrl;
     }
 
     public String getId()

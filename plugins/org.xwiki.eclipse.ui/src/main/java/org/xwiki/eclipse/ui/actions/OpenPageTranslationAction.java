@@ -55,7 +55,9 @@ public class OpenPageTranslationAction extends Action
     public void run()
     {
         try {
-            XWikiEclipsePage page = pageSummary.getDataManager().getPage(translation);
+            XWikiEclipsePage page =
+                pageSummary.getDataManager().getPage(pageSummary.getWiki(), pageSummary.getSpace(),
+                    pageSummary.getName(), translation.getLanguage());
 
             if (page == null) {
                 UIUtils

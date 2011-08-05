@@ -22,7 +22,7 @@ package org.xwiki.eclipse.storage;
 import java.net.MalformedURLException;
 
 import org.apache.xmlrpc.XmlRpcException;
-import org.xwiki.eclipse.rest.XWikiRESTClient;
+import org.xwiki.eclipse.rest.XWikiRestClient;
 import org.xwiki.eclipse.storage.utils.StorageUtils;
 import org.xwiki.xmlrpc.XWikiXmlRpcClient;
 
@@ -33,7 +33,7 @@ public class XWikiClient
 {
     private XWikiXmlRpcClient xmlrpcClient = null;
 
-    private XWikiRESTClient restClient = null;
+    private XWikiRestClient restClient = null;
 
     public XWikiClient(String serverUrl, String username, String password)
     {
@@ -46,7 +46,7 @@ public class XWikiClient
                     this.xmlrpcClient = new XWikiXmlRpcClient(serverUrl);
                     break;
                 case REST:
-                    this.restClient = new XWikiRESTClient(serverUrl, username, password);
+                    this.restClient = new XWikiRestClient(serverUrl, username, password);
                     break;
                 default:
                     break;
