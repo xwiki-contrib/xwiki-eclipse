@@ -189,8 +189,9 @@ public class RestRemoteXWikiDataStorage
      * @param pageSummary
      * @return
      */
-    public List<Tag> getTags(String tagsUrl)
+    public List<Tag> getTags(String wiki, String space, String pageName)
     {
+        String tagsUrl = urlBuilder.getTagsUrl(wiki, space, pageName);
         try {
             return this.restRemoteClient.getTags(tagsUrl);
         } catch (Exception e) {
@@ -339,7 +340,7 @@ public class RestRemoteXWikiDataStorage
      */
     public List<Tag> addTag(String wiki, String space, String pageName, String tagName)
     {
-        String tagsUrl = urlBuilder.getTagUrl(wiki, space, pageName);
+        String tagsUrl = urlBuilder.getTagsUrl(wiki, space, pageName);
         List<Tag> result;
         try {
             result = this.restRemoteClient.addTag(tagsUrl, tagName);
@@ -421,9 +422,9 @@ public class RestRemoteXWikiDataStorage
          * @param pageName
          * @return
          */
-        public String getTagUrl(String wiki, String space, String pageName)
+        public String getTagsUrl(String wiki, String space, String pageName)
         {
-            return endpoint + "/wikis/" + wiki + "/spaces/" + space + "/pages" + pageName + "/tags";
+            return endpoint + "/wikis/" + wiki + "/spaces/" + space + "/pages/" + pageName + "/tags";
         }
 
         /**
@@ -436,7 +437,7 @@ public class RestRemoteXWikiDataStorage
          */
         public String getObjectUrl(String wiki, String space, String pageName, String className, int number)
         {
-            return endpoint + "/wikis/" + wiki + "/spaces/" + space + "/pages" + pageName + "/objects/" + className
+            return endpoint + "/wikis/" + wiki + "/spaces/" + space + "/pages/" + pageName + "/objects/" + className
                 + "/" + number;
         }
 
@@ -449,11 +450,11 @@ public class RestRemoteXWikiDataStorage
          */
         public String getPageUrl(String wiki, String space, String pageName, String language)
         {
-            if (language != "") {
-                return endpoint + "/wikis/" + wiki + "/spaces/" + space + "/pages" + pageName + "/translations/"
+            if (language != null && !language.equals("")) {
+                return endpoint + "/wikis/" + wiki + "/spaces/" + space + "/pages/" + pageName + "/translations/"
                     + language;
             }
-            return endpoint + "/wikis/" + wiki + "/spaces/" + space + "/pages" + pageName;
+            return endpoint + "/wikis/" + wiki + "/spaces/" + space + "/pages/" + pageName;
         }
 
         /**
@@ -466,7 +467,7 @@ public class RestRemoteXWikiDataStorage
          */
         public String getObjectPropertiesUrl(String wiki, String space, String pageName, String className, int number)
         {
-            return endpoint + "/wikis/" + wiki + "/spaces/" + space + "/pages" + pageName + "/objects/" + className
+            return endpoint + "/wikis/" + wiki + "/spaces/" + space + "/pages/" + pageName + "/objects/" + className
                 + "/" + number + "/properties";
         }
 
@@ -478,7 +479,7 @@ public class RestRemoteXWikiDataStorage
          */
         public String getCommentsUrl(String wiki, String space, String pageName)
         {
-            return endpoint + "/wikis/" + wiki + "/spaces/" + space + "/pages" + pageName + "/comments";
+            return endpoint + "/wikis/" + wiki + "/spaces/" + space + "/pages/" + pageName + "/comments";
         }
 
         /**
@@ -490,7 +491,7 @@ public class RestRemoteXWikiDataStorage
          */
         public String getHistoryUrl(String wiki, String space, String pageName, String language)
         {
-            if (language != "") {
+            if (language != null && !language.equals("")) {
                 return endpoint + "/wikis/" + wiki + "/spaces/" + space + "/pages/" + pageName + "/translations/"
                     + language + "/history";
             }
@@ -505,13 +506,13 @@ public class RestRemoteXWikiDataStorage
          */
         public String getAttachmentUrl(String wiki, String space, String pageName, String attachmentName)
         {
-            return endpoint + "/wikis/" + wiki + "/spaces/" + space + "/pages" + pageName + "/attachments/"
+            return endpoint + "/wikis/" + wiki + "/spaces/" + space + "/pages/" + pageName + "/attachments/"
                 + attachmentName;
         }
 
         public String getAttachmentsUrl(String wiki, String space, String pageName)
         {
-            return endpoint + "/wikis/" + wiki + "/spaces/" + space + "/pages" + pageName + "/attachments";
+            return endpoint + "/wikis/" + wiki + "/spaces/" + space + "/pages/" + pageName + "/attachments";
         }
 
         /**
@@ -522,7 +523,7 @@ public class RestRemoteXWikiDataStorage
          */
         public String getObjectsUrl(String wiki, String space, String pageName)
         {
-            return endpoint + "/wikis/" + wiki + "/spaces/" + space + "/pages" + pageName + "/objects";
+            return endpoint + "/wikis/" + wiki + "/spaces/" + space + "/pages/" + pageName + "/objects";
         }
 
         /**
