@@ -23,6 +23,9 @@ package org.xwiki.eclipse.ui.actions;
 import org.eclipse.jface.action.Action;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.xwiki.eclipse.core.CoreLog;
@@ -63,9 +66,7 @@ public class OpenPageHistoryItemAction extends Action
     public void run()
     {
         try {
-            XWikiEclipsePage page =
-                pageHistorySummary.getDataManager().getPage(pageHistorySummary.getWiki(),
-                    pageHistorySummary.getSpace(), pageHistorySummary.getName(), pageHistorySummary.getLanguage());
+            XWikiEclipsePage page = pageHistorySummary.getDataManager().getPageHistory(pageHistorySummary);
 
             if (page == null) {
                 UIUtils
@@ -77,8 +78,13 @@ public class OpenPageHistoryItemAction extends Action
                 return;
             }
 
-            PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
-                .openEditor(new PageEditorInput(page, true), PageEditor.ID);
+            IWorkbenchPage workbenchPage = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+            IEditorInput input = new PageEditorInput(page, false);
+            IEditorPart editor = workbenchPage.findEditor(input);
+            if (editor != null) {
+                workbenchPage.closeEditor(editor, true);
+            }
+            workbenchPage.openEditor(input, PageEditor.ID);
         } catch (XWikiEclipseStorageException e) {
             UIUtils
                 .showMessageDialog(
