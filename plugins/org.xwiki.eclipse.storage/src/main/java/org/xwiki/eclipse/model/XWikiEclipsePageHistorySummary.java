@@ -51,8 +51,6 @@ public class XWikiEclipsePageHistorySummary extends ModelObject
 
     private Calendar modified;
 
-    private String pageUrl;
-
     public XWikiEclipsePageHistorySummary(DataManager dataManager)
     {
         super(dataManager);
@@ -63,7 +61,7 @@ public class XWikiEclipsePageHistorySummary extends ModelObject
     {
         return String
             .format(
-                "xwikieclipse://%s/%s/%d/%d", getDataManager().getName(), getPageId(), getMajorVersion(), getMinorVersion()); //$NON-NLS-1$
+                "xwikieclipse://%s/%s/%s/%d/%d", getDataManager().getName(), getPageId(), getLanguage(), getMajorVersion(), getMinorVersion()); //$NON-NLS-1$
     }
 
     public int getMinorVersion()
@@ -164,15 +162,5 @@ public class XWikiEclipsePageHistorySummary extends ModelObject
     public void setVersion(String version)
     {
         this.version = version;
-    }
-
-    public String getPageUrl()
-    {
-        return pageUrl;
-    }
-
-    public void setPageUrl(String pageUrl)
-    {
-        this.pageUrl = pageUrl;
     }
 }

@@ -554,6 +554,26 @@ public class RestRemoteXWikiDataStorage
         {
             return endpoint + "/wikis/" + wikiId + "/spaces";
         }
+
+        /**
+         * @param wiki
+         * @param space
+         * @param name
+         * @param language
+         * @param majorVersion
+         * @param minorVersion
+         * @return
+         */
+        public String getPageHistoryUrl(String wiki, String space, String name, String language, int majorVersion,
+            int minorVersion)
+        {
+            if (!language.equals("")) {
+                return endpoint + "/wikis/" + wiki + "/spaces/" + space + "/pages/" + name + "/translations/"
+                    + language + "/history/" + majorVersion + "." + minorVersion;
+            }
+            return endpoint + "/wikis/" + wiki + "/spaces/" + space + "/pages/" + name + "/history/" + majorVersion
+                + "." + minorVersion;
+        }
     }
 
     /**
@@ -573,5 +593,22 @@ public class RestRemoteXWikiDataStorage
         }
 
         return null;
+    }
+
+    /**
+     * @param wiki
+     * @param space
+     * @param name
+     * @param language
+     * @param majorVersion
+     * @param minorVersion
+     * @return
+     * @throws Exception
+     */
+    public Page getPageHistory(String wiki, String space, String name, String language, int majorVersion,
+        int minorVersion) throws Exception
+    {
+        String pageUrl = urlBuilder.getPageHistoryUrl(wiki, space, name, language, majorVersion, minorVersion);
+        return this.restRemoteClient.getPage(pageUrl);
     }
 }
