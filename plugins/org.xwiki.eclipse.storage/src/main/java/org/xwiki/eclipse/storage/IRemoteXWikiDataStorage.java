@@ -71,7 +71,8 @@ public interface IRemoteXWikiDataStorage
     List<XWikiEclipseObjectProperty> getObjectProperties(String wiki, String space, String pageName, String className,
         int number);
 
-    XWikiEclipsePage getPage(String wiki, String space, String pageName, String language);
+    XWikiEclipsePage getPage(String wiki, String space, String pageName, String language)
+        throws XWikiEclipseStorageException;
 
     XWikiEclipseObject getObject(String wiki, String space, String pageName, String className, int number);
 
@@ -105,4 +106,12 @@ public interface IRemoteXWikiDataStorage
 
     /* delete */
     void remove(ModelObject o);
+
+    boolean exists(String wiki, String space, String pageName, String language);
+
+    /**
+     * @param page
+     * @return
+     */
+    XWikiEclipsePage storePage(XWikiEclipsePage page);
 }

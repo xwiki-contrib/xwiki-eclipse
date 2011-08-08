@@ -218,73 +218,34 @@ public class RestRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStorag
         List<XWikiEclipsePageSummary> result = new ArrayList<XWikiEclipsePageSummary>();
 
         List<PageSummary> pages = this.restRemoteStorage.getPages(wiki, space);
-        for (PageSummary pageSummary : pages) {
-            XWikiEclipsePageSummary page = new XWikiEclipsePageSummary(dataManager);
-            page.setId(pageSummary.getId());
-            page.setName(pageSummary.getName());
-            page.setFullName(pageSummary.getFullName());
+        if (pages != null) {
 
-            page.setParentId(pageSummary.getParentId());
-            page.setSpace(pageSummary.getSpace());
-            page.setTitle(pageSummary.getTitle());
-            page.setUrl(pageSummary.getXwikiAbsoluteUrl());
-            page.setWiki(pageSummary.getWiki());
-            page.setSyntax(pageSummary.getSyntax());
+            for (PageSummary pageSummary : pages) {
+                XWikiEclipsePageSummary page = new XWikiEclipsePageSummary(dataManager);
+                page.setId(pageSummary.getId());
+                page.setName(pageSummary.getName());
+                page.setFullName(pageSummary.getFullName());
 
-            String defaultLanguage = pageSummary.getTranslations().getDefault();
-            List<Translation> translations = pageSummary.getTranslations().getTranslations();
-            if (translations != null && translations.size() > 0) {
-                for (Translation translation : translations) {
-                    XWikiEclipsePageTranslationSummary t = new XWikiEclipsePageTranslationSummary(dataManager);
-                    t.setLanguage(translation.getLanguage());
-                    t.setDefaultLanguage(defaultLanguage);
+                page.setParentId(pageSummary.getParentId());
+                page.setSpace(pageSummary.getSpace());
+                page.setTitle(pageSummary.getTitle());
+                page.setUrl(pageSummary.getXwikiAbsoluteUrl());
+                page.setWiki(pageSummary.getWiki());
+                page.setSyntax(pageSummary.getSyntax());
 
-                    List<Link> links = translation.getLinks();
-                    for (Link link : links) {
-                        if (link.getRel().equals(Relations.PAGE)) {
-                            t.setPageUrl(link.getHref());
-                        }
-                        if (link.getRel().equals(Relations.HISTORY)) {
-                            t.setHistoryUrl(link.getHref());
-                        }
+                String defaultLanguage = pageSummary.getTranslations().getDefault();
+                List<Translation> translations = pageSummary.getTranslations().getTranslations();
+                if (translations != null && translations.size() > 0) {
+                    for (Translation translation : translations) {
+                        XWikiEclipsePageTranslationSummary t = new XWikiEclipsePageTranslationSummary(dataManager);
+                        t.setLanguage(translation.getLanguage());
+                        t.setDefaultLanguage(defaultLanguage);
+                        page.getTranslations().add(t);
                     }
-
-                    page.getTranslations().add(t);
                 }
+
+                result.add(page);
             }
-
-            List<Link> links = pageSummary.getLinks();
-            for (Link link : links) {
-                if (link.getRel().equals(Relations.OBJECTS)) {
-                    page.setObjectsUrl(link.getHref());
-                }
-
-                if (link.getRel().equals(Relations.ATTACHMENTS)) {
-                    page.setAttachmentsUrl(link.getHref());
-                }
-
-                if (link.getRel().equals(Relations.HISTORY)) {
-                    page.setHistoryUrl(link.getHref());
-                }
-
-                if (link.getRel().equals(Relations.PAGE)) {
-                    page.setPageUrl(link.getHref());
-                }
-
-                if (link.getRel().equals(Relations.COMMENTS)) {
-                    page.setCommentsUrl(link.getHref());
-                }
-
-                if (link.getRel().equals(Relations.TAGS)) {
-                    page.setTagsUrl(link.getHref());
-                }
-
-                if (link.getRel().equals(Relations.SPACE)) {
-                    page.setSpaceUrl(link.getHref());
-                }
-            }
-
-            result.add(page);
         }
 
         return result;
@@ -461,7 +422,8 @@ public class RestRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStorag
     {
         List<XWikiEclipseTag> result = new ArrayList<XWikiEclipseTag>();
 
-        List<Tag> tags = this.restRemoteStorage.getTags(pageSummary.getTagsUrl());
+        List<Tag> tags =
+            this.restRemoteStorage.getTags(pageSummary.getWiki(), pageSummary.getSpace(), pageSummary.getName());
 
         if (tags != null) {
             for (Tag tag : tags) {
@@ -581,50 +543,43 @@ public class RestRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStorag
      */
     @Override
     public XWikiEclipsePage getPage(String wiki, String space, String pageName, String language)
+        throws XWikiEclipseStorageException
     {
+        Page page;
+        try {
+            page = restRemoteStorage.getPage(wiki, space, pageName, language);
+            XWikiEclipsePage result = new XWikiEclipsePage(dataManager);
+            result.setFullName(page.getFullName());
+            result.setId(page.getId());
+            result.setName(page.getName());
+            result.setSpace(page.getSpace());
+            result.setSyntax(page.getSyntax());
+            result.setTitle(page.getTitle());
+            result.setWiki(page.getWiki());
+            result.setContent(page.getContent());
+            result.setCreated(page.getCreated());
+            result.setCreator(page.getCreator());
+            result.setLanguage(page.getLanguage());
+            result.setMajorVersion(page.getMajorVersion());
+            result.setMinorVersion(page.getMinorVersion());
+            result.setModified(page.getModified());
+            result.setModifier(page.getModifier());
+            result.setParentId(page.getParentId());
+            result.setVersion(page.getVersion());
 
-        Page page = restRemoteStorage.getPage(wiki, space, pageName, language);
-        XWikiEclipsePage result = new XWikiEclipsePage(dataManager);
-        result.setFullName(page.getFullName());
-        result.setId(page.getId());
-        result.setName(page.getName());
-        result.setParentId(page.getParentId());
-        result.setSpace(page.getSpace());
-        result.setSyntax(page.getSyntax());
-        result.setTitle(page.getTitle());
-        result.setWiki(page.getWiki());
-        result.setContent(page.getContent());
-        result.setCreated(page.getCreated());
-        result.setCreator(page.getCreator());
-        result.setLanguage(page.getLanguage());
-        result.setMajorVersion(page.getMajorVersion());
-        result.setMinorVersion(page.getMinorVersion());
-        result.setModified(page.getModified());
-        result.setModifier(page.getModifier());
-        result.setParentId(page.getParentId());
-        result.setVersion(page.getVersion());
-        if (language != null) {
-            result.setUrl(page.getXwikiAbsoluteUrl() + "?language=" + language);
-        } else {
-            result.setUrl(page.getXwikiAbsoluteUrl() + "?language=default");
+            if (language != null && !language.equals("")) {
+                result.setUrl(page.getXwikiAbsoluteUrl() + "?language=" + language);
+            } else {
+                result.setUrl(page.getXwikiAbsoluteUrl() + "?language=default");
+            }
+
+            return result;
+
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            // e.printStackTrace();
+            throw new XWikiEclipseStorageException(e);
         }
-
-        List<Link> links = page.getLinks();
-        for (Link link : links) {
-            if (link.getRel().equals(Relations.CLASS)) {
-                result.setClassUrl(link.getHref());
-            }
-
-            if (link.getRel().equals(Relations.SPACE)) {
-                result.setSpaceUrl(link.getHref());
-            }
-
-            if (link.getRel().equals(Relations.SELF)) {
-                result.setPageUrl(link.getHref());
-            }
-        }
-
-        return result;
     }
 
     /**
@@ -923,28 +878,97 @@ public class RestRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStorag
     @Override
     public void remove(ModelObject o)
     {
-        String url = null;
-        if (o instanceof XWikiEclipseObjectSummary) {
-            url = ((XWikiEclipseObjectSummary) o).getObjectUrl();
-        }
+        // String url = null;
+        // if (o instanceof XWikiEclipseObjectSummary) {
+        // url = ((XWikiEclipseObjectSummary) o).getObjectUrl();
+        // }
 
-        if (o instanceof XWikiEclipsePageSummary) {
-            url = ((XWikiEclipsePageSummary) o).getPageUrl();
-        }
+        // if (o instanceof XWikiEclipsePageSummary) {
+        // url = ((XWikiEclipsePageSummary) o).getPageUrl();
+        // }
 
-        if (o instanceof XWikiEclipseComment) {
-            XWikiEclipseComment comment = (XWikiEclipseComment) o;
-            String pageUrl = comment.getPageUrl();
-
-            url = pageUrl + "/objects/XWiki.XWikiComments/" + comment.getId();
-        }
+        // if (o instanceof XWikiEclipseComment) {
+        // XWikiEclipseComment comment = (XWikiEclipseComment) o;
+        // String pageUrl = comment.getPageUrl();
+        //
+        // url = pageUrl + "/objects/XWiki.XWikiComments/" + comment.getId();
+        // }
 
         // if (o instanceof XWikiEclipseAttachment) {
         // url = ((XWikiEclipseAttachment) o).getAttachmentUrl();
         // }
 
-        if (url != null) {
-            restRemoteStorage.remove(url);
+        // if (url != null) {
+        // restRemoteStorage.remove(url);
+        // }
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#exists(java.lang.String, java.lang.String,
+     *      java.lang.String)
+     */
+    @Override
+    public boolean exists(String wiki, String space, String pageName, String language)
+    {
+        XWikiEclipsePageSummary pageSummary = getPageSummary(wiki, space, pageName, language);
+        if (pageSummary != null) {
+            return true;
         }
+
+        return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#storePage(org.xwiki.eclipse.model.XWikiEclipsePage)
+     */
+    @Override
+    public XWikiEclipsePage storePage(XWikiEclipsePage page)
+    {
+        Page pageToBeStored = new Page();
+        pageToBeStored.setContent(page.getContent());
+        pageToBeStored.setCreated(page.getCreated());
+        pageToBeStored.setCreator(page.getCreator());
+        pageToBeStored.setFullName(page.getFullName());
+        pageToBeStored.setId(page.getId());
+        pageToBeStored.setLanguage(page.getLanguage());
+        pageToBeStored.setMajorVersion(page.getMajorVersion());
+        pageToBeStored.setMinorVersion(page.getMinorVersion());
+        pageToBeStored.setModified(page.getModified());
+        pageToBeStored.setModifier(page.getModifier());
+        pageToBeStored.setName(page.getName());
+        pageToBeStored.setParentId(page.getParentId());
+        pageToBeStored.setSpace(page.getSpace());
+        pageToBeStored.setSyntax(page.getSyntax());
+        pageToBeStored.setTitle(page.getTitle());
+        pageToBeStored.setVersion(page.getVersion());
+        pageToBeStored.setWiki(page.getWiki());
+
+        Page storedPage = restRemoteStorage.storePage(pageToBeStored);
+
+        XWikiEclipsePage result = new XWikiEclipsePage(dataManager);
+        result.setContent(storedPage.getContent());
+        result.setCreated(storedPage.getCreated());
+        result.setCreator(storedPage.getCreator());
+        result.setFullName(storedPage.getFullName());
+        result.setId(storedPage.getId());
+        result.setLanguage(storedPage.getLanguage());
+        result.setMajorVersion(storedPage.getMajorVersion());
+        result.setMinorVersion(storedPage.getMinorVersion());
+        result.setModified(storedPage.getModified());
+        result.setModifier(storedPage.getModifier());
+        result.setName(storedPage.getName());
+        result.setParentId(storedPage.getParentId());
+        result.setSpace(storedPage.getSpace());
+        result.setSyntax(storedPage.getSyntax());
+        result.setTitle(storedPage.getTitle());
+        result.setVersion(storedPage.getVersion());
+        result.setWiki(storedPage.getWiki());
+        result.setUrl(storedPage.getXwikiAbsoluteUrl());
+
+        return result;
     }
 }

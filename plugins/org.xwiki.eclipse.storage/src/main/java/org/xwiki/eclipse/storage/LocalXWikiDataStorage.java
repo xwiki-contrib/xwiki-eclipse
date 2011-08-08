@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.codehaus.swizzle.confluence.SpaceSummary;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -17,12 +16,12 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Status;
 import org.xwiki.eclipse.model.XWikiEclipsePage;
 import org.xwiki.eclipse.model.XWikiEclipsePageHistorySummary;
 import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
 import org.xwiki.eclipse.model.XWikiEclipseSpaceSummary;
 import org.xwiki.eclipse.model.XWikiEclipseWikiSummary;
+import org.xwiki.eclipse.storage.utils.PageIdProcessor;
 import org.xwiki.eclipse.storage.utils.StorageUtils;
 import org.xwiki.xmlrpc.model.XWikiClass;
 import org.xwiki.xmlrpc.model.XWikiClassSummary;
@@ -112,9 +111,7 @@ public class LocalXWikiDataStorage
         try {
             IFolder pageFolder = StorageUtils.createFolder(baseFolder.getFolder(PAGES_DIRECTORY));
 
-            String pageId = wiki + "." + space + "." + pageName + "." + language;
-
-            IFile pageFile = pageFolder.getFile(getFileNameForPage(pageId)); //$NON-NLS-1$
+            IFile pageFile = pageFolder.getFile(getFileNameForPage(wiki, space, pageName, language)); //$NON-NLS-1$
             if (pageFile.exists()) {
                 XWikiEclipsePage result =
                     (XWikiEclipsePage) StorageUtils.readFromJSON(pageFile, XWikiEclipsePage.class.getCanonicalName());
@@ -238,17 +235,17 @@ public class LocalXWikiDataStorage
             {
                 public void run(IProgressMonitor monitor) throws CoreException
                 {
-                    /* Write the page summary */
-                    XWikiEclipseWikiSummary wikiSummary = new XWikiEclipseWikiSummary(wiki.getDataManager());
-                    wikiSummary.setBaseUrl("local");
-                    wikiSummary.setName(wiki.getName());
-                    wikiSummary.setSyntaxes(wiki.getSyntaxes());
-                    wikiSummary.setVersion(wiki.getVersion());
-                    wikiSummary.setWikiId(wiki.getWikiId());
+                    /* Write the wiki summary */
+                    // XWikiEclipseWikiSummary wikiSummary = new XWikiEclipseWikiSummary(wiki.getDataManager());
+                    // wikiSummary.setBaseUrl("local");
+                    // wikiSummary.setName(wiki.getName());
+                    // wikiSummary.setSyntaxes(wiki.getSyntaxes());
+                    // wikiSummary.setVersion(wiki.getVersion());
+                    // wikiSummary.setWikiId(wiki.getWikiId());
 
                     StorageUtils.writeToJson(
                         baseFolder.getFolder(WIKIS_DIRECTORY).getFile(getFileNameForWikiSummary(wiki.getWikiId())),
-                        wikiSummary);
+                        wiki);
                 }
             }, null);
         } catch (CoreException e) {
@@ -292,43 +289,32 @@ public class LocalXWikiDataStorage
         return result;
     }
 
-    public SpaceSummary getSpaceSumary(String spaceKey) throws XWikiEclipseStorageException
-    {
-        // List<SpaceSummary> spaces = getSpaces();
-        // for (SpaceSummary space : spaces) {
-        // if (space.getKey().equals(spaceKey))
-        // return space;
-        // }
-
-        return null;
-    }
-
-    public void removeSpace(String spaceKey) throws XWikiEclipseStorageException
-    {
-        // Delete pages
-        List<XWikiPageSummary> pages = getPages(spaceKey);
-        for (XWikiPageSummary page : pages) {
-            removePage(page.getId());
-        }
-
-        // Delete space directory
-        try {
-            final IFolder indexFolder = StorageUtils.createFolder(baseFolder.getFolder(INDEX_DIRECTORY));
-
-            List<IResource> indexFolderResources = getChildResources(indexFolder, IResource.DEPTH_ONE);
-            for (IResource indexFolderResource : indexFolderResources) {
-                if (indexFolderResource instanceof IFolder) {
-                    IFolder folder = (IFolder) indexFolderResource;
-                    if (folder.getName().equals(spaceKey)) {
-                        folder.delete(true, null);
-                        break;
-                    }
-                }
-            }
-        } catch (CoreException e) {
-            throw new XWikiEclipseStorageException(e);
-        }
-    }
+    // public void removeSpace(String spaceKey) throws XWikiEclipseStorageException
+    // {
+    // // Delete pages
+    // List<XWikiPageSummary> pages = getPages(spaceKey);
+    // for (XWikiPageSummary page : pages) {
+    // removePage(page.getId());
+    // }
+    //
+    // // Delete space directory
+    // try {
+    // final IFolder indexFolder = StorageUtils.createFolder(baseFolder.getFolder(INDEX_DIRECTORY));
+    //
+    // List<IResource> indexFolderResources = getChildResources(indexFolder, IResource.DEPTH_ONE);
+    // for (IResource indexFolderResource : indexFolderResources) {
+    // if (indexFolderResource instanceof IFolder) {
+    // IFolder folder = (IFolder) indexFolderResource;
+    // if (folder.getName().equals(spaceKey)) {
+    // folder.delete(true, null);
+    // break;
+    // }
+    // }
+    // }
+    // } catch (CoreException e) {
+    // throw new XWikiEclipseStorageException(e);
+    // }
+    // }
 
     public XWikiEclipsePage storePage(final XWikiEclipsePage page) throws XWikiEclipseStorageException
     {
@@ -337,24 +323,26 @@ public class LocalXWikiDataStorage
             {
                 public void run(IProgressMonitor monitor) throws CoreException
                 {
-                    XWikiEclipsePage p = new XWikiEclipsePage(page.getDataManager());
-
-                    p.setId(page.getId());
-                    p.setParentId(page.getParentId());
-                    p.setTitle(page.getTitle());
-                    p.setUrl(page.getUrl());
-                    p.setContent(page.getContent());
-                    p.setSpace(page.getSpace());
-                    p.setWiki(page.getWiki());
-                    p.setMajorVersion(page.getMajorVersion());
-                    p.setMinorVersion(page.getMinorVersion());
-                    p.setVersion(page.getVersion());
-                    p.setName(page.getName());
-                    p.setLanguage(page.getLanguage());
+                    // XWikiEclipsePage p = new XWikiEclipsePage(page.getDataManager());
+                    //
+                    // p.setId(page.getId());
+                    // p.setParentId(page.getParentId());
+                    // p.setTitle(page.getTitle());
+                    // p.setUrl(page.getUrl());
+                    // p.setContent(page.getContent());
+                    // p.setSpace(page.getSpace());
+                    // p.setWiki(page.getWiki());
+                    // p.setSpace(page.getSpace());
+                    // p.setMajorVersion(page.getMajorVersion());
+                    // p.setMinorVersion(page.getMinorVersion());
+                    // p.setVersion(page.getVersion());
+                    // p.setName(page.getName());
+                    // p.setLanguage(page.getLanguage());
 
                     /* Write the page, considering the translation language */
-                    String fileName = getFileNameForPage(page.getId()).replace(":", ".") + "." + p.getLanguage();
-                    StorageUtils.writeToJson(baseFolder.getFolder(PAGES_DIRECTORY).getFile(fileName), p);
+                    String fileName =
+                        getFileNameForPage(page.getWiki(), page.getSpace(), page.getName(), page.getLanguage());
+                    StorageUtils.writeToJson(baseFolder.getFolder(PAGES_DIRECTORY).getFile(fileName), page);
                 }
             }, null);
         } catch (CoreException e) {
@@ -364,84 +352,102 @@ public class LocalXWikiDataStorage
         return page;
     }
 
-    public XWikiPage storePage(final XWikiPage page) throws XWikiEclipseStorageException
+    /**
+     * @param wiki
+     * @param space
+     * @return
+     * @throws XWikiEclipseStorageException
+     */
+    public XWikiEclipseSpaceSummary getSpace(String wiki, String space) throws XWikiEclipseStorageException
     {
-        try {
-            ResourcesPlugin.getWorkspace().run(new IWorkspaceRunnable()
-            {
-                public void run(IProgressMonitor monitor) throws CoreException
-                {
-                    /* Write the page summary */
-                    XWikiPageSummary pageSummary = new XWikiPageSummary();
-                    pageSummary.setId(page.getId());
-                    pageSummary.setLocks(page.getLocks());
-                    pageSummary.setParentId(page.getParentId());
-                    pageSummary.setTitle(page.getTitle());
-                    pageSummary.setTranslations(page.getTranslations() != null ? page.getTranslations()
-                        : new ArrayList());
-                    pageSummary.setUrl(page.getUrl());
-                    StorageUtils.writeDataToXML(baseFolder.getFolder(INDEX_DIRECTORY).getFolder(page.getSpace())
-                        .getFolder(page.getId()).getFile(getFileNameForPageSummary(pageSummary.getId())), //$NON-NLS-1$
-                        pageSummary.toRawMap());
-
-                    /* Write the page */
-                    StorageUtils.writeDataToXML(
-                        baseFolder.getFolder(PAGES_DIRECTORY).getFile(getFileNameForPage(page.getId())), page //$NON-NLS-1$
-                            .toRawMap());
-                }
-            }, null);
-        } catch (CoreException e) {
-            throw new XWikiEclipseStorageException(e);
+        List<XWikiEclipseSpaceSummary> spaces = getSpaces(wiki);
+        for (XWikiEclipseSpaceSummary s : spaces) {
+            if (s.getName().equals(space)) {
+                return s;
+            }
         }
 
-        return page;
+        return null;
     }
 
-    public boolean removePage(final String pageId) throws XWikiEclipseStorageException
-    {
-        try {
-            ResourcesPlugin.getWorkspace().run(new IWorkspaceRunnable()
-            {
-                public void run(IProgressMonitor monitor) throws CoreException
-                {
-                    try {
-                        XWikiPage page = null;// getPage(pageId);
-                        if (page == null) {
-                            return;
-                        }
+    // public XWikiPage storePage(final XWikiPage page) throws XWikiEclipseStorageException
+    // {
+    // try {
+    // ResourcesPlugin.getWorkspace().run(new IWorkspaceRunnable()
+    // {
+    // public void run(IProgressMonitor monitor) throws CoreException
+    // {
+    // /* Write the page summary */
+    // XWikiPageSummary pageSummary = new XWikiPageSummary();
+    // pageSummary.setId(page.getId());
+    // pageSummary.setLocks(page.getLocks());
+    // pageSummary.setParentId(page.getParentId());
+    // pageSummary.setTitle(page.getTitle());
+    // pageSummary.setTranslations(page.getTranslations() != null ? page.getTranslations()
+    // : new ArrayList());
+    // pageSummary.setUrl(page.getUrl());
+    // // StorageUtils.writeDataToXML(baseFolder.getFolder(INDEX_DIRECTORY).getFolder(page.getSpace())
+    //                    //                        .getFolder(page.getId()).getFile(getFileNameForPageSummary(pageSummary.getId())), //$NON-NLS-1$
+    // // pageSummary.toRawMap());
+    //
+    // /* Write the page */
+    // StorageUtils.writeDataToXML(
+    //                        baseFolder.getFolder(PAGES_DIRECTORY).getFile(getFileNameForPage(page.getId())), page //$NON-NLS-1$
+    // .toRawMap());
+    // }
+    // }, null);
+    // } catch (CoreException e) {
+    // throw new XWikiEclipseStorageException(e);
+    // }
+    //
+    // return page;
+    // }
 
-                        /* Remove page objects */
-                        List<XWikiObjectSummary> objects = getObjects(pageId);
-                        for (XWikiObjectSummary object : objects) {
-                            removeObject(pageId, object.getClassName(), object.getId());
-                        }
-
-                        /*
-                         * Remove the index page folder with all the information (page and object summaries)
-                         */
-                        IFolder indexPageFolder =
-                            baseFolder.getFolder(INDEX_DIRECTORY).getFolder(page.getSpace()).getFolder(pageId);
-                        if (indexPageFolder.exists()) {
-                            indexPageFolder.delete(true, null);
-                        }
-
-                        /* Remove page */
-                        IFolder pageFolder = StorageUtils.createFolder(baseFolder.getFolder(PAGES_DIRECTORY));
-                        IFile pageFile = pageFolder.getFile(getFileNameForPage(pageId)); //$NON-NLS-1$
-                        if (pageFile.exists()) {
-                            pageFile.delete(true, null);
-                        }
-                    } catch (XWikiEclipseStorageException e) {
-                        throw new CoreException(new Status(Status.ERROR, StoragePlugin.PLUGIN_ID, "Error", e));
-                    }
-                }
-            }, null);
-
-            return true;
-        } catch (CoreException e) {
-            throw new XWikiEclipseStorageException(e);
-        }
-    }
+    // public boolean removePage(final String pageId) throws XWikiEclipseStorageException
+    // {
+    // try {
+    // ResourcesPlugin.getWorkspace().run(new IWorkspaceRunnable()
+    // {
+    // public void run(IProgressMonitor monitor) throws CoreException
+    // {
+    // try {
+    // XWikiPage page = null;// getPage(pageId);
+    // if (page == null) {
+    // return;
+    // }
+    //
+    // /* Remove page objects */
+    // List<XWikiObjectSummary> objects = getObjects(pageId);
+    // for (XWikiObjectSummary object : objects) {
+    // removeObject(pageId, object.getClassName(), object.getId());
+    // }
+    //
+    // /*
+    // * Remove the index page folder with all the information (page and object summaries)
+    // */
+    // IFolder indexPageFolder =
+    // baseFolder.getFolder(INDEX_DIRECTORY).getFolder(page.getSpace()).getFolder(pageId);
+    // if (indexPageFolder.exists()) {
+    // indexPageFolder.delete(true, null);
+    // }
+    //
+    // /* Remove page */
+    // IFolder pageFolder = StorageUtils.createFolder(baseFolder.getFolder(PAGES_DIRECTORY));
+    //                        IFile pageFile = pageFolder.getFile(getFileNameForPage(pageId)); //$NON-NLS-1$
+    // if (pageFile.exists()) {
+    // pageFile.delete(true, null);
+    // }
+    // } catch (XWikiEclipseStorageException e) {
+    // throw new CoreException(new Status(Status.ERROR, StoragePlugin.PLUGIN_ID, "Error", e));
+    // }
+    // }
+    // }, null);
+    //
+    // return true;
+    // } catch (CoreException e) {
+    // throw new XWikiEclipseStorageException(e);
+    // }
+    // }
 
     public List<XWikiObjectSummary> getObjects(String pageId) throws XWikiEclipseStorageException
     {
@@ -492,6 +498,7 @@ public class LocalXWikiDataStorage
         return null;
     }
 
+    // FIXME: not yet implemented
     public XWikiClass getClass(String classId) throws XWikiEclipseStorageException
     {
         try {
@@ -509,6 +516,7 @@ public class LocalXWikiDataStorage
         return null;
     }
 
+    // FIXME: not yet implemented
     public XWikiObject storeObject(final XWikiObject object) throws XWikiEclipseStorageException
     {
         try {
@@ -556,6 +564,7 @@ public class LocalXWikiDataStorage
         return object;
     }
 
+    // FIXME: not yet implemented
     public void storeClass(final XWikiClass xwikiClass) throws XWikiEclipseStorageException
     {
         try {
@@ -574,23 +583,38 @@ public class LocalXWikiDataStorage
         }
     }
 
-    public boolean exists(String pageId, String language)
+    /**
+     * @param wiki
+     * @return
+     */
+    public boolean wikiExists(String wiki)
     {
-        String fileName = pageId.replace(":", ".") + "." + language;
-        IFile pageFile = baseFolder.getFolder(PAGES_DIRECTORY).getFile(getFileNameForPage(fileName));
+        IFile wikiFile = baseFolder.getFolder(WIKIS_DIRECTORY).getFile(getFileNameForWikiSummary(wiki));
+        return wikiFile.exists();
+    }
+
+    public boolean spaceExists(String wiki, String space)
+    {
+        IFile spaceFile = baseFolder.getFolder(SPACES_DIRECTORY).getFile(getFileNameForSpaceSummary(wiki, space));
+        return spaceFile.exists();
+    }
+
+    public boolean pageExists(String wiki, String space, String page, String language)
+    {
+        IFile pageFile = baseFolder.getFolder(PAGES_DIRECTORY).getFile(getFileNameForPage(wiki, space, page, language));
         return pageFile.exists();
     }
 
-    public boolean exists(String pageId, String className, int number)
+    public boolean objectExists(String pageId, String className, int number)
     {
         IFile objectFile =
             baseFolder.getFolder(OBJECTS_DIRECTORY).getFile(getFileNameForObject(pageId, className, number));
         return objectFile.exists();
     }
 
-    private String getFileNameForSpaceSummary(String spaceKey)
+    private String getFileNameForSpaceSummary(String wiki, String space)
     {
-        return String.format("%s.%s", spaceKey, SPACE_SUMMARY_FILE_EXTENSION); //$NON-NLS-1$
+        return String.format("%s.%s.%s", wiki, space, SPACE_SUMMARY_FILE_EXTENSION); //$NON-NLS-1$
     }
 
     private String getFileNameForWikiSummary(String wikiId)
@@ -598,14 +622,23 @@ public class LocalXWikiDataStorage
         return String.format("%s.%s", wikiId, WIKI_SUMMARY_FILE_EXTENSION); //$NON-NLS-1$
     }
 
-    private String getFileNameForPageSummary(String pageId)
+    private String getFileNameForPageSummary(String wiki, String space, String page, String language)
     {
-        return String.format("%s.%s", pageId, PAGE_SUMMARY_FILE_EXTENSION); //$NON-NLS-1$
+        if (language != null && !language.equals("")) {
+            return String.format("%s.%s.%s.%s.%s", wiki, space, page, language, PAGE_SUMMARY_FILE_EXTENSION); //$NON-NLS-1$
+        } else {
+            return String.format("%s.%s.%s.%s", wiki, space, page, PAGE_SUMMARY_FILE_EXTENSION); //$NON-NLS-1$    
+        }
+
     }
 
-    private String getFileNameForPage(String pageId)
+    private String getFileNameForPage(String wiki, String space, String page, String language)
     {
-        return String.format("%s.%s", pageId, PAGE_FILE_EXTENSION); //$NON-NLS-1$
+        if (language != null && !language.equals("")) {
+            return String.format("%s.%s.%s.%s.%s", wiki, space, page, language, PAGE_FILE_EXTENSION); //$NON-NLS-1$
+        } else {
+            return String.format("%s.%s.%s.%s", wiki, space, page, PAGE_FILE_EXTENSION); //$NON-NLS-1$    
+        }
     }
 
     private String getFileNameForObjectSummary(String pageId, String className, int id)
@@ -623,6 +656,7 @@ public class LocalXWikiDataStorage
         return String.format("%s.%s", id, CLASS_FILE_EXTENSION); //$NON-NLS-1$
     }
 
+    // FIXME: not yet implemented
     public List<XWikiClassSummary> getClasses() throws XWikiEclipseStorageException
     {
         List<XWikiClassSummary> result = new ArrayList<XWikiClassSummary>();
@@ -649,6 +683,7 @@ public class LocalXWikiDataStorage
         return result;
     }
 
+    // FIXME: not yet implemented
     public boolean removeObject(final String pageId, final String className, final int number)
         throws XWikiEclipseStorageException
     {
@@ -738,15 +773,15 @@ public class LocalXWikiDataStorage
             {
                 public void run(IProgressMonitor monitor) throws CoreException
                 {
-                    /* Write the page summary */
-                    XWikiEclipseSpaceSummary space = new XWikiEclipseSpaceSummary(spaceSummary.getDataManager());
-                    space.setUrl("local");
-                    space.setName(spaceSummary.getName());
-                    space.setWiki(spaceSummary.getWiki());
-                    space.setId(spaceSummary.getId());
+                    /* Write the space summary */
+                    // XWikiEclipseSpaceSummary space = new XWikiEclipseSpaceSummary(spaceSummary.getDataManager());
+                    // space.setUrl("local");
+                    // space.setName(spaceSummary.getName());
+                    // space.setWiki(spaceSummary.getWiki());
+                    // space.setId(spaceSummary.getId());
 
-                    String fileName = getFileNameForSpaceSummary(space.getId().replace(":", "."));
-                    StorageUtils.writeToJson(baseFolder.getFolder(SPACES_DIRECTORY).getFile(fileName), space);
+                    String fileName = getFileNameForSpaceSummary(spaceSummary.getWiki(), spaceSummary.getName());
+                    StorageUtils.writeToJson(baseFolder.getFolder(SPACES_DIRECTORY).getFile(fileName), spaceSummary);
                 }
             }, null);
         } catch (CoreException e) {
@@ -769,20 +804,22 @@ public class LocalXWikiDataStorage
                 public void run(IProgressMonitor monitor) throws CoreException
                 {
                     /* Write the page summary */
-                    XWikiEclipsePageSummary p = new XWikiEclipsePageSummary(pageSummary.getDataManager());
-                    p.setUrl("local");
-                    p.setLanguage(pageSummary.getLanguage());
-                    p.setName(pageSummary.getName());
-                    p.setWiki(pageSummary.getWiki());
-                    p.setSpace(pageSummary.getSpace());
-                    p.setId(pageSummary.getId());
-                    p.setParentId(pageSummary.getParentId());
-                    p.setTitle(pageSummary.getTitle());
-                    p.setSyntax(pageSummary.getSyntax());
+                    // XWikiEclipsePageSummary p = new XWikiEclipsePageSummary(pageSummary.getDataManager());
+                    // p.setUrl(pageSummary.getUrl());
+                    // p.setLanguage(pageSummary.getLanguage());
+                    // p.setName(pageSummary.getName());
+                    // p.setWiki(pageSummary.getWiki());
+                    // p.setSpace(pageSummary.getSpace());
+                    // p.setId(pageSummary.getId());
+                    // p.setParentId(pageSummary.getParentId());
+                    // p.setTitle(pageSummary.getTitle());
+                    // p.setSyntax(pageSummary.getSyntax());
 
                     String fileName =
-                        getFileNameForPageSummary(p.getId().replace(":", ".") + "." + pageSummary.getLanguage());
-                    StorageUtils.writeToJson(baseFolder.getFolder(PAGES_DIRECTORY).getFile(fileName), p);
+                        getFileNameForPageSummary(pageSummary.getWiki(), pageSummary.getSpace(), pageSummary.getName(),
+                            pageSummary.getLanguage());
+
+                    StorageUtils.writeToJson(baseFolder.getFolder(PAGES_DIRECTORY).getFile(fileName), pageSummary);
                 }
             }, null);
         } catch (CoreException e) {
@@ -840,5 +877,43 @@ public class LocalXWikiDataStorage
     {
         /* Currently not supported in local storage. */
         return new ArrayList<XWikiEclipsePageHistorySummary>();
+    }
+
+    /**
+     * @param pageId
+     * @throws CoreException
+     */
+    public void removePage(final String pageId) throws CoreException
+    {
+
+        ResourcesPlugin.getWorkspace().run(new IWorkspaceRunnable()
+        {
+
+            @Override
+            public void run(IProgressMonitor monitor) throws CoreException
+            {
+                PageIdProcessor parser = new PageIdProcessor(pageId);
+                IFolder pageFolder;
+                pageFolder = StorageUtils.createFolder(baseFolder.getFolder(PAGES_DIRECTORY));
+
+                IFile pageFile =
+                    pageFolder.getFile(getFileNameForPage(parser.getWiki(), parser.getSpace(), parser.getPage(),
+                        parser.getLanguage())); //$NON-NLS-1$
+                if (pageFile.exists()) {
+                    pageFile.delete(true, null);
+                }
+
+                IFile pageSummaryFile =
+                    pageFolder.getFile(getFileNameForPageSummary(parser.getWiki(), parser.getSpace(), parser.getPage(),
+                        parser.getLanguage())); //$NON-NLS-1$
+                if (pageSummaryFile.exists()) {
+                    pageSummaryFile.delete(true, null);
+                }
+
+                // FIXME: remove the objects of this page as well
+
+            }
+        }, null);
+
     }
 }

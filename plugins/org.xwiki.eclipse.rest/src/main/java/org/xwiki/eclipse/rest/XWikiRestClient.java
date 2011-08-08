@@ -607,7 +607,7 @@ public class XWikiRestClient
             return result;
         } catch (Exception e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            // e.printStackTrace();
             throw e;
         }
     }
@@ -894,6 +894,26 @@ public class XWikiRestClient
             response = executeGet(classesUrl, username, password);
             Classes clazzes = (Classes) unmarshaller.unmarshal(response.getEntity().getContent());
             return clazzes.getClazzs();
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+    /**
+     * @param pageUrl
+     * @param page
+     * @return
+     */
+    public Page storePage(String pageUrl, Page page) throws Exception
+    {
+        HttpResponse response;
+        try {
+
+            response = executePutXml(pageUrl, page);
+            Page result = (Page) unmarshaller.unmarshal(response.getEntity().getContent());
+            return result;
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

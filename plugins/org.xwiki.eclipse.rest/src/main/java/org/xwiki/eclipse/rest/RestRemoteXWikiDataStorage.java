@@ -102,7 +102,7 @@ public class RestRemoteXWikiDataStorage
      * @param password
      * @return
      */
-    public List<PageSummary> getPages(String wiki, String space)
+    public synchronized List<PageSummary> getPages(String wiki, String space)
     {
         String pagesUrl = urlBuilder.getPagesUrl(wiki, space);
         List<PageSummary> result = restRemoteClient.getPages(pagesUrl);
@@ -159,17 +159,16 @@ public class RestRemoteXWikiDataStorage
         return null;
     }
 
-    public Page getPage(String wiki, String space, String pageName, String language)
+    public Page getPage(String wiki, String space, String pageName, String language) throws Exception
     {
         String pageUrl = urlBuilder.getPageUrl(wiki, space, pageName, language);
         try {
             return this.restRemoteClient.getPage(pageUrl);
         } catch (Exception e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            // e.printStackTrace();
+            throw e;
         }
-
-        return null;
     }
 
     public org.xwiki.rest.model.jaxb.Class getClass(String wiki, String className)
@@ -555,5 +554,24 @@ public class RestRemoteXWikiDataStorage
         {
             return endpoint + "/wikis/" + wikiId + "/spaces";
         }
+    }
+
+    /**
+     * @param page
+     * @return
+     */
+    public Page storePage(Page page)
+    {
+        String pageUrl = urlBuilder.getPageUrl(page.getWiki(), page.getSpace(), page.getName(), page.getLanguage());
+        Page result;
+        try {
+            result = restRemoteClient.storePage(pageUrl, page);
+            return result;
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        return null;
     }
 }
