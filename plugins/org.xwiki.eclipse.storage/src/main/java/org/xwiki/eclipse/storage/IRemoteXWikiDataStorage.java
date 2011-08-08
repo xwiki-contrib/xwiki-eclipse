@@ -114,4 +114,16 @@ public interface IRemoteXWikiDataStorage
      * @return
      */
     XWikiEclipsePage storePage(XWikiEclipsePage page);
+
+    /**
+     * @param wiki
+     * @param space
+     * @param name
+     * @param language
+     * @param majorVersion
+     * @param minorVersion
+     * @return
+     */
+    XWikiEclipsePage getPageHistory(String wiki, String space, String name, String language, int majorVersion,
+        int minorVersion) throws XWikiEclipseStorageException;
 }

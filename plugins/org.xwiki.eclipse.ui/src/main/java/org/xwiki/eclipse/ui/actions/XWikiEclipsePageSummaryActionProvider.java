@@ -143,7 +143,7 @@ public class XWikiEclipsePageSummaryActionProvider extends CommonActionProvider
 
                 try {
                     List<XWikiEclipsePageHistorySummary> pageHistory =
-                        pageSummary.getDataManager().getPageHistory(pageSummary.getWiki(), pageSummary.getSpace(),
+                        pageSummary.getDataManager().getPageHistories(pageSummary.getWiki(), pageSummary.getSpace(),
                             pageSummary.getName(), pageSummary.getLanguage());
                     for (XWikiEclipsePageHistorySummary pageHistorySummary : pageHistory) {
                         menuManager.add(new OpenPageHistoryItemAction(pageHistorySummary));

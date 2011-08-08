@@ -348,7 +348,7 @@ public class RestRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStorag
             for (HistorySummary historySummary : history) {
                 XWikiEclipsePageHistorySummary h = new XWikiEclipsePageHistorySummary(dataManager);
                 h.setPageId(historySummary.getPageId());
-                h.setLanguage(historySummary.getLanguage());
+                h.setLanguage(language);
                 h.setMajorVersion(historySummary.getMajorVersion());
                 h.setMinorVersion(historySummary.getMinorVersion());
                 h.setModified(historySummary.getModified());
@@ -357,13 +357,6 @@ public class RestRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStorag
                 h.setSpace(historySummary.getSpace());
                 h.setVersion(historySummary.getVersion());
                 h.setWiki(historySummary.getWiki());
-                List<Link> links = historySummary.getLinks();
-                for (Link link : links) {
-                    if (link.getRel().equals(Relations.PAGE)) {
-                        h.setPageUrl(link.getHref());
-                        break;
-                    }
-                }
 
                 result.add(h);
             }
@@ -970,5 +963,48 @@ public class RestRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStorag
         result.setUrl(storedPage.getXwikiAbsoluteUrl());
 
         return result;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#getPageHistory(java.lang.String, java.lang.String,
+     *      java.lang.String, java.lang.String, int, int)
+     */
+    @Override
+    public XWikiEclipsePage getPageHistory(String wiki, String space, String name, String language, int majorVersion,
+        int minorVersion) throws XWikiEclipseStorageException
+    {
+        Page page;
+        try {
+            page = restRemoteStorage.getPageHistory(wiki, space, name, language, majorVersion, minorVersion);
+            XWikiEclipsePage result = new XWikiEclipsePage(dataManager);
+            result.setContent(page.getContent());
+            result.setCreated(page.getCreated());
+            result.setCreator(page.getCreator());
+            result.setFullName(page.getFullName());
+            result.setId(page.getId());
+            result.setLanguage(page.getLanguage());
+            result.setMajorVersion(page.getMajorVersion());
+            result.setMinorVersion(page.getMinorVersion());
+            result.setModified(page.getModified());
+            result.setModifier(page.getModifier());
+            result.setName(page.getName());
+            result.setParentId(page.getParentId());
+            result.setSpace(page.getSpace());
+            result.setSyntax(page.getSyntax());
+            result.setTitle(page.getTitle());
+            result.setVersion(page.getVersion());
+            result.setWiki(page.getWiki());
+            result.setUrl(page.getXwikiAbsoluteUrl());
+
+            return result;
+
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            throw new XWikiEclipseStorageException(e);
+        }
+
     }
 }

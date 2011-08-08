@@ -477,7 +477,7 @@ public class DataManager
      * @param pageSummary
      * @return
      */
-    public List<XWikiEclipsePageHistorySummary> getPageHistory(String wiki, String space, String pageName,
+    public List<XWikiEclipsePageHistorySummary> getPageHistories(String wiki, String space, String pageName,
         String language) throws XWikiEclipseStorageException
     {
         List<XWikiEclipsePageHistorySummary> result = null;
@@ -1047,5 +1047,25 @@ public class DataManager
                 parser.getLanguage());
         return ancestorPage != null ? ancestorPage : null;
 
+    }
+
+    /**
+     * @param wiki
+     * @param space
+     * @param name
+     * @param language
+     * @param majorVersion
+     * @param minorVersion
+     * @return
+     */
+    public XWikiEclipsePage getPageHistory(XWikiEclipsePageHistorySummary pageHistory)
+        throws XWikiEclipseStorageException
+    {
+        if (isConnected()) {
+            return remoteXWikiDataStorage.getPageHistory(pageHistory.getWiki(), pageHistory.getSpace(),
+                pageHistory.getName(), pageHistory.getLanguage(), pageHistory.getMajorVersion(),
+                pageHistory.getMinorVersion());
+        }
+        return null;
     }
 }
