@@ -47,7 +47,7 @@ import org.xwiki.eclipse.ui.utils.UIUtils;
  */
 public class OpenPageHandler extends AbstractHandler
 {
-    public Object execute(ExecutionEvent event) throws ExecutionException
+    public ModelObject execute(ExecutionEvent event) throws ExecutionException
     {
         ISelection selection = HandlerUtil.getCurrentSelection(event);
         DataManager dataManager = null;
