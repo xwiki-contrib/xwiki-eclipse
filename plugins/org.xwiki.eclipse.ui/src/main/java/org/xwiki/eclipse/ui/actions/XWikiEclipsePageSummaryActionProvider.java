@@ -23,6 +23,7 @@ package org.xwiki.eclipse.ui.actions;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
@@ -32,6 +33,7 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.menus.CommandContributionItem;
 import org.eclipse.ui.menus.CommandContributionItemParameter;
@@ -39,12 +41,15 @@ import org.eclipse.ui.navigator.CommonActionProvider;
 import org.eclipse.ui.navigator.ICommonActionConstants;
 import org.eclipse.ui.navigator.ICommonActionExtensionSite;
 import org.eclipse.ui.navigator.ICommonMenuConstants;
+import org.xwiki.eclipse.model.XWikiEclipsePage;
 import org.xwiki.eclipse.model.XWikiEclipsePageHistorySummary;
 import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
 import org.xwiki.eclipse.model.XWikiEclipsePageTranslationSummary;
 import org.xwiki.eclipse.storage.Functionality;
 import org.xwiki.eclipse.storage.XWikiEclipseStorageException;
 import org.xwiki.eclipse.ui.UIConstants;
+import org.xwiki.eclipse.ui.editors.PageEditor;
+import org.xwiki.eclipse.ui.editors.PageEditorInput;
 import org.xwiki.eclipse.ui.utils.UIUtils;
 
 /**
@@ -190,21 +195,21 @@ public class XWikiEclipsePageSummaryActionProvider extends CommonActionProvider
 
                             if (inputDialog.getReturnCode() == InputDialog.OK) {
                                 if (!inputDialog.getValue().equals("")) {
-                                    String[] components = pageSummary.getId().split("\\.");
-
-                                    // try {
-                                    // XWikiEclipsePage page =
-                                    // pageSummary.getDataManager().createPage(components[0], components[1],
-                                    // pageSummary.getTitle(), inputDialog.getValue(),
-                                    // "Write translation here");
-                                    // PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
-                                    // .openEditor(new PageEditorInput(page, false), PageEditor.ID);
-                                    // } catch (XWikiEclipseStorageException e) {
-                                    // e.printStackTrace();
-                                    // } catch (PartInitException e) {
-                                    //
-                                    // e.printStackTrace();
-                                    // }
+                                    try {
+                                        XWikiEclipsePage page =
+                                            pageSummary.getDataManager().createPage(pageSummary.getWiki(),
+                                                pageSummary.getSpace(), pageSummary.getName(), pageSummary.getTitle(),
+                                                inputDialog.getValue(), "Write translation here");
+                                        PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+                                            .openEditor(new PageEditorInput(page, false), PageEditor.ID);
+                                    } catch (XWikiEclipseStorageException e) {
+                                        e.printStackTrace();
+                                    } catch (PartInitException e) {
+                                        e.printStackTrace();
+                                    } catch (CoreException e) {
+                                        // TODO Auto-generated catch block
+                                        e.printStackTrace();
+                                    }
                                 }
                             }
                         }
