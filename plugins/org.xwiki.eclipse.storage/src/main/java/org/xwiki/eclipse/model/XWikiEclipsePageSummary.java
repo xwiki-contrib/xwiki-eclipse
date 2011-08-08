@@ -64,7 +64,7 @@ public class XWikiEclipsePageSummary extends ModelObject
     {
         return String
             .format(
-                "xwikieclipse://%s/%s/%s/%s/summary/%s", getDataManager().getName(), getWiki(), getSpace(), getId(), getLanguage().equals("") ? "default" : getLanguage()); //$NON-NLS-1$
+                "xwikieclipse://%s/%s/%s/%s/summary/%s", getDataManager().getName(), getWiki(), getSpace(), getName(), getLanguage().equals("") ? "default" : getLanguage()); //$NON-NLS-1$
     }
 
     public String getId()
