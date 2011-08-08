@@ -59,7 +59,9 @@ public class PageEditorInput implements IEditorInput
 
     public String getName()
     {
-        String name = page.getName() + (page.getLanguage().equals("") ? "" : "[" + page.getLanguage() + "]");
+        String name =
+            page.getName() + "[" + page.getVersion() + "]"
+                + (page.getLanguage().equals("") ? "" : "[" + page.getLanguage() + "]");
         return name;
     }
 
