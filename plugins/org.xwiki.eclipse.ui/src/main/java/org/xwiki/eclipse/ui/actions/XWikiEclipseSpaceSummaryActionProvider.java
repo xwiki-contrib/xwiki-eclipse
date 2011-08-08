@@ -25,13 +25,13 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.swt.SWT;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.menus.CommandContributionItem;
+import org.eclipse.ui.menus.CommandContributionItemParameter;
 import org.eclipse.ui.navigator.CommonActionProvider;
 import org.eclipse.ui.navigator.ICommonActionExtensionSite;
 import org.eclipse.ui.navigator.ICommonMenuConstants;
 import org.xwiki.eclipse.ui.UIConstants;
 
 /**
- * 
  * @version $Id$
  */
 public class XWikiEclipseSpaceSummaryActionProvider extends CommonActionProvider
@@ -42,21 +42,16 @@ public class XWikiEclipseSpaceSummaryActionProvider extends CommonActionProvider
 
     public void init(final ICommonActionExtensionSite aSite)
     {
-        // CommandContributionItemParameter contributionItemParameter =
-        // new CommandContributionItemParameter(PlatformUI.getWorkbench(),
-        // UIConstants.NEW_PAGE_COMMAND,
-        // UIConstants.NEW_PAGE_COMMAND,
-        // 0);
-        // newPage = new CommandContributionItem(contributionItemParameter);
+        CommandContributionItemParameter ccip =
+            new CommandContributionItemParameter(PlatformUI.getWorkbench(), UIConstants.NEW_PAGE_COMMAND,
+                UIConstants.NEW_PAGE_COMMAND, SWT.NONE);
+        newPage = new CommandContributionItem(ccip);
 
-        newPage =
-            new CommandContributionItem(PlatformUI.getWorkbench(), null, UIConstants.NEW_PAGE_COMMAND, null, null,
-                null, null, null, null, null, SWT.NONE);
+        ccip =
+            new CommandContributionItemParameter(PlatformUI.getWorkbench(), UIConstants.GRAB_SPACE_COMMAND,
+                UIConstants.GRAB_SPACE_COMMAND, SWT.NONE);
 
-        grabSpace =
-            new CommandContributionItem(PlatformUI.getWorkbench(), null, UIConstants.GRAB_SPACE_COMMAND, null, null,
-                null, null, null, null, null, SWT.NONE);
-
+        grabSpace = new CommandContributionItem(ccip);
     }
 
     public void fillContextMenu(IMenuManager menu)
