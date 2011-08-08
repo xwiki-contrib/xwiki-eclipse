@@ -67,8 +67,7 @@ public class NewCommentHandler extends AbstractHandler
                 try {
                     XWikiEclipseComment comment = new XWikiEclipseComment(pageSummary.getDataManager());
                     comment.setAuthor(pageSummary.getDataManager().getUserName());
-                    /* must set up pageUrl */
-                    comment.setPageUrl(pageSummary.getPageUrl());
+
                     comment.setPageId(pageSummary.getId());
 
                     PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
