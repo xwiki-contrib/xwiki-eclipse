@@ -52,7 +52,14 @@ public class PersistentMap
         this.file = file;
 
         if (file.exists()) {
-            map = (Map<String, String>) StorageUtils.readDataFromXML(file);
+            try {
+                map =
+                    (HashMap<String, String>) StorageUtils.readFromJSON(file, new HashMap<String, String>().getClass()
+                        .getCanonicalName());
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
         } else {
             map = new HashMap<String, String>();
             synchronize();
@@ -85,13 +92,15 @@ public class PersistentMap
         return map.keySet();
     }
 
-    private void synchronize()
+    private synchronized void synchronize()
     {
         try {
-            StorageUtils.writeDataToXML(file, map);
+            StorageUtils.writeToJson(file, map);
         } catch (CoreException e) {
-        	e.printStackTrace();
-        	IStatus status = new Status(IStatus.ERROR, StoragePlugin.PLUGIN_ID, IStatus.OK, "Unable to synchronize persistent map", e);
+            e.printStackTrace();
+            IStatus status =
+                new Status(IStatus.ERROR, StoragePlugin.PLUGIN_ID, IStatus.OK, "Unable to synchronize persistent map",
+                    e);
             StoragePlugin.getDefault().getLog().log(status);
         }
     }

@@ -33,7 +33,6 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.xwiki.eclipse.model.ModelObject;
 import org.xwiki.eclipse.storage.BackendType;
 import org.xwiki.eclipse.storage.DataManager;
 import org.xwiki.eclipse.storage.XWikiEclipseStorageException;
@@ -147,7 +146,7 @@ public class StorageUtils
      * @return The de-serialized object (client should type-cast to the actual type).
      * @throws CoreException
      */
-    public static ModelObject readFromJSON(IFile file, String classType) throws Exception
+    public static Object readFromJSON(IFile file, String classType) throws Exception
     {
         Gson gson = getGson();
 
@@ -241,6 +240,16 @@ public class StorageUtils
         }
 
         return result;
+    }
+
+    /**
+     * @param pageId
+     * @param language
+     * @return
+     */
+    public static String getExtendedPageId(String pageId, String language)
+    {
+        return pageId + (language.equals("") ? "" : "." + language);
     }
 }
 

@@ -22,7 +22,7 @@ package org.xwiki.eclipse.storage.utils;
 /**
  * @version $Id$
  */
-public class PageIdParser
+public class PageIdProcessor
 {
     private String pageId;
 
@@ -32,14 +32,42 @@ public class PageIdParser
 
     private String page;
 
-    public PageIdParser(String pageId)
+    private String language = "";
+
+    public PageIdProcessor(String pageId)
     {
         this.pageId = pageId;
 
         this.wiki = pageId.split(":")[0];
         String fullname = pageId.split(":")[1];
-        this.space = fullname.split("\\.")[0];
-        this.page = fullname.split("\\.")[1];
+        String[] extendedIdParts = fullname.split("\\.");
+        if (extendedIdParts.length == 3) {
+            this.space = extendedIdParts[0];
+            this.page = extendedIdParts[1];
+            this.language = extendedIdParts[2];
+        } else if (extendedIdParts.length == 2) {
+            this.space = extendedIdParts[0];
+            this.page = extendedIdParts[1];
+        }
+    }
+
+    public PageIdProcessor(String wiki, String space, String page, String language)
+    {
+        super();
+        this.wiki = wiki;
+        this.space = space;
+        this.page = page;
+        this.language = language;
+        this.pageId = wiki + ":" + space + "." + page + "." + language;
+    }
+
+    public PageIdProcessor(String wiki, String space, String page)
+    {
+        super();
+        this.wiki = wiki;
+        this.space = space;
+        this.page = page;
+        this.pageId = wiki + ":" + space + "." + page;
     }
 
     public String getPageId()
@@ -80,5 +108,15 @@ public class PageIdParser
     public void setPage(String page)
     {
         this.page = page;
+    }
+
+    public String getLanguage()
+    {
+        return language;
+    }
+
+    public void setLanguage(String language)
+    {
+        this.language = language;
     }
 }
