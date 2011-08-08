@@ -575,4 +575,18 @@ public class XmlrpcRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStor
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#getPageHistory(java.lang.String, java.lang.String,
+     *      java.lang.String, java.lang.String, int, int)
+     */
+    @Override
+    public XWikiEclipsePage getPageHistory(String wiki, String space, String name, String language, int majorVersion,
+        int minorVersion) throws XWikiEclipseStorageException
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
 }
