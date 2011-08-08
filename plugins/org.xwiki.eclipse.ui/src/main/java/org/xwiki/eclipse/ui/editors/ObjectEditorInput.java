@@ -83,7 +83,7 @@ public class ObjectEditorInput implements IEditorInput
         return getName();
     }
 
-    public Object getAdapter(Class adapter)
+    public ModelObject getAdapter(Class adapter)
     {
         // TODO Auto-generated method stub
         return null;

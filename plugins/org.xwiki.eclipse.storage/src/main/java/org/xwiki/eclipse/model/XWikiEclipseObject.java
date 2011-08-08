@@ -80,7 +80,7 @@ public class XWikiEclipseObject extends ModelObject
      * @param propertyName
      * @param value
      */
-    public void setProperty(String propertyName, Object value)
+    public void setProperty(String propertyName, ModelObject value)
     {
 
     }
@@ -90,7 +90,7 @@ public class XWikiEclipseObject extends ModelObject
      * @param attributeName
      * @return
      */
-    public Object getPropertyAttribute(String propertyName, String attributeName)
+    public ModelObject getPropertyAttribute(String propertyName, String attributeName)
     {
         return null;
     }
