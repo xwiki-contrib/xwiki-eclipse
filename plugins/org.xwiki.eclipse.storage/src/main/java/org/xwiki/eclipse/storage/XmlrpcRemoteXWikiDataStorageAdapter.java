@@ -550,4 +550,29 @@ public class XmlrpcRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStor
 
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#exists(java.lang.String, java.lang.String,
+     *      java.lang.String, java.lang.String)
+     */
+    @Override
+    public boolean exists(String wiki, String space, String pageName, String language)
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#storePage(org.xwiki.eclipse.model.XWikiEclipsePage)
+     */
+    @Override
+    public XWikiEclipsePage storePage(XWikiEclipsePage page)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
 }
