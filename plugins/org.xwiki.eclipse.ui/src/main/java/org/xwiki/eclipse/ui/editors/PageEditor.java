@@ -25,6 +25,7 @@ import java.util.ResourceBundle;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.Action;
@@ -51,6 +52,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
 import org.eclipse.ui.texteditor.TextOperationAction;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
+import org.xwiki.eclipse.core.CoreLog;
 import org.xwiki.eclipse.core.CorePlugin;
 import org.xwiki.eclipse.model.XWikiEclipseObject;
 import org.xwiki.eclipse.model.XWikiEclipsePage;
@@ -58,9 +60,11 @@ import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
 import org.xwiki.eclipse.model.XWikiEclipseSpaceSummary;
 import org.xwiki.eclipse.model.XWikiExtendedId;
 import org.xwiki.eclipse.storage.DataManager;
+import org.xwiki.eclipse.storage.XWikiEclipseStorageException;
 import org.xwiki.eclipse.storage.notification.CoreEvent;
 import org.xwiki.eclipse.storage.notification.ICoreEventListener;
 import org.xwiki.eclipse.storage.notification.NotificationManager;
+import org.xwiki.eclipse.storage.utils.StorageUtils;
 import org.xwiki.eclipse.ui.UIConstants;
 import org.xwiki.eclipse.ui.UIPlugin;
 import org.xwiki.eclipse.ui.dialogs.PageConflictDialog;
@@ -290,7 +294,8 @@ public class PageEditor extends TextEditor implements ICoreEventListener
                 }
             }
 
-            if (input.getPage().getDataManager().isInConflict(input.getPage().getId())) {
+            String pageId = StorageUtils.getExtendedPageId(input.getPage().getId(), input.getPage().getLanguage());
+            if (input.getPage().getDataManager().isInConflict(pageId)) {
                 boolean editConlictActionFound = false;
                 for (IContributionItem contributionItem : form.getToolBarManager().getItems()) {
                     if (contributionItem instanceof ActionContributionItem) {
@@ -322,53 +327,48 @@ public class PageEditor extends TextEditor implements ICoreEventListener
         XWikiEclipsePage currentPage = input.getPage();
         DataManager dataManager = currentPage.getDataManager();
 
-        if (dataManager.isInConflict(currentPage.getId())) {
-            // try {
-            XWikiEclipsePage conflictingPage = dataManager.getConflictingPage(currentPage.getId());
+        String pageId = StorageUtils.getExtendedPageId(currentPage.getId(), currentPage.getLanguage());
+        if (dataManager.isInConflict(pageId)) {
+            try {
+                XWikiEclipsePage conflictingPage = dataManager.getConflictingPage(pageId);
 
-            XWikiEclipsePage conflictAncestorPage = dataManager.getConflictAncestorPage(currentPage.getId());
+                XWikiEclipsePage conflictAncestorPage = dataManager.getConflictAncestorPage(pageId);
 
-            PageConflictDialog compareDialog =
-                new PageConflictDialog(Display.getDefault().getActiveShell(), currentPage, conflictingPage,
-                    conflictAncestorPage);
-            int result = compareDialog.open();
+                PageConflictDialog compareDialog =
+                    new PageConflictDialog(Display.getDefault().getActiveShell(), currentPage, conflictingPage,
+                        conflictAncestorPage);
+                int result = compareDialog.open();
 
-            conflictDialogDisplayed = true;
+                conflictDialogDisplayed = true;
 
-            switch (result) {
-                case PageConflictDialog.ID_USE_LOCAL:
+                switch (result) {
+                    case PageConflictDialog.ID_USE_LOCAL:
+                        XWikiEclipsePage newPage = conflictingPage;
+                        newPage.setContent(currentPage.getContent());
+                        dataManager.clearConflictingStatus(pageId);
+                        setInput(new PageEditorInput(newPage, input.isReadOnly()));
 
-                    // XWikiEclipsePage newPage =
-                    // dataManager
-                    // .createPage(conflictingPage.getSpace(), conflictingPage.getName(),
-                    // conflictingPage.getTitle(), conflictingPage.getLanguage(),
-                    // conflictingPage.getContent());
-                    // newPage.setContent(currentPage.getContent());
-                    // // XWikiPage newPage = new XWikiPage(conflictingPage.getData().toRawMap());
-                    // // newPage.setContent(currentPage.getContent());
-                    // dataManager.clearConflictingStatus(newPage.getId());
-                    // setInput(new PageEditorInput(newPage, input.isReadOnly()));
-                    //
-                    // doSave(new NullProgressMonitor());
+                        doSave(new NullProgressMonitor());
 
-                    break;
-                case PageConflictDialog.ID_USE_REMOTE:
-                    // dataManager.clearConflictingStatus(conflictingPage.getId());
-                    // setInput(new PageEditorInput(conflictingPage, input.isReadOnly()));
-                    //
-                    // doSave(new NullProgressMonitor());
+                        break;
+                    case PageConflictDialog.ID_USE_REMOTE:
 
-                    break;
+                        dataManager.clearConflictingStatus(pageId);
+                        setInput(new PageEditorInput(conflictingPage, input.isReadOnly()));
 
-                default:
-                    return;
+                        doSave(new NullProgressMonitor());
+
+                        break;
+
+                    default:
+                        return;
+                }
+
+                conflictDialogDisplayed = false;
+
+            } catch (Exception e) {
+                CoreLog.logError("Error while handling conflict", e);
             }
-
-            conflictDialogDisplayed = false;
-
-            // } catch (XWikiEclipseStorageException e) {
-            // CoreLog.logError("Error while handling conflict", e);
-            // }
         }
     }
 
@@ -481,11 +481,12 @@ public class PageEditor extends TextEditor implements ICoreEventListener
                             return;
                         }
 
-                        // try {
-                        // page.getDataManager().clearPageStatus(page.getId());
-                        // } catch (Exception ex) {
-                        // // ignore
-                        // }
+                        try {
+                            page.getDataManager().clearPageStatus(
+                                StorageUtils.getExtendedPageId(page.getId(), page.getLanguage()));
+                        } catch (Exception ex) {
+                            // ignore
+                        }
 
                         // we are here if the user said no
                     }
@@ -528,46 +529,48 @@ public class PageEditor extends TextEditor implements ICoreEventListener
                 break;
         }
 
-        // try {
-        if (updatePage) {
-            if (!isDirty()) {
-                // final XWikiEclipsePage newPage = page.getDataManager().getPage(page.getId());
+        try {
+            if (updatePage) {
+                if (!isDirty()) {
+                    final XWikiEclipsePage newPage =
+                        page.getDataManager().getPage(page.getWiki(), page.getSpace(), page.getName(),
+                            page.getLanguage());
 
-                // if (page.getVersion() != newPage.getVersion()) {
-                // /*
-                // * If we are here then the editor is not dirty and the page versions differ. So we update the
-                // * page being edited. This may happen when an object associated to a page is stored or when
-                // * pages are synchronized when a data manager is connected.
-                // */
-                // final ISourceViewer sourceViewer = getSourceViewer();
-                // if (sourceViewer != null) {
-                // Display.getDefault().syncExec(new Runnable()
-                // {
-                // public void run()
-                // {
-                // int caretOffset = sourceViewer.getTextWidget().getCaretOffset();
-                // int topPixel = sourceViewer.getTextWidget().getTopPixel();
-                // try {
-                // doSetInput(new PageEditorInput(newPage, input.isReadOnly()));
-                // } catch (CoreException e) {
-                // CoreLog.logError("Error while handling XWiki Eclipse event", e);
-                // }
-                // sourceViewer.getTextWidget().setCaretOffset(caretOffset);
-                // sourceViewer.getTextWidget().setTopPixel(topPixel);
-                // updateInfo();
-                // doSave(new NullProgressMonitor());
-                // }
-                //
-                // });
-                //
-                // }
-                //
-                // }
+                    if (page.getMajorVersion() != newPage.getMajorVersion()) {
+                        /*
+                         * If we are here then the editor is not dirty and the page versions differ. So we update the
+                         * page being edited. This may happen when an object associated to a page is stored or when
+                         * pages are synchronized when a data manager is connected.
+                         */
+                        final ISourceViewer sourceViewer = getSourceViewer();
+                        if (sourceViewer != null) {
+                            Display.getDefault().syncExec(new Runnable()
+                            {
+                                public void run()
+                                {
+                                    int caretOffset = sourceViewer.getTextWidget().getCaretOffset();
+                                    int topPixel = sourceViewer.getTextWidget().getTopPixel();
+                                    try {
+                                        doSetInput(new PageEditorInput(newPage, input.isReadOnly()));
+                                    } catch (CoreException e) {
+                                        CoreLog.logError("Error while handling XWiki Eclipse event", e);
+                                    }
+                                    sourceViewer.getTextWidget().setCaretOffset(caretOffset);
+                                    sourceViewer.getTextWidget().setTopPixel(topPixel);
+                                    updateInfo();
+                                    doSave(new NullProgressMonitor());
+                                }
+
+                            });
+
+                        }
+
+                    }
+                }
             }
+        } catch (XWikiEclipseStorageException e) {
+            CoreLog.logError("Error while handling XWiki Eclipse event", e);
         }
-        // } catch (XWikiEclipseStorageException e) {
-        // CoreLog.logError("Error while handling XWiki Eclipse event", e);
-        // }
 
     }
 

@@ -47,11 +47,14 @@ public class NewPageWizard extends Wizard implements INewWizard
 
     private DataManager dataManager;
 
-    public NewPageWizard(DataManager dataManager, String spaceKey)
+    public NewPageWizard(DataManager dataManager, NewPageWizardState state)
     {
         super();
         newPageWizardState = new NewPageWizardState();
-        newPageWizardState.setSpace(spaceKey);
+
+        newPageWizardState.setWiki(state.getWiki());
+        newPageWizardState.setSpace(state.getSpace());
+
         this.dataManager = dataManager;
         setNeedsProgressMonitor(true);
     }
@@ -59,6 +62,15 @@ public class NewPageWizard extends Wizard implements INewWizard
     @Override
     public boolean performFinish()
     {
+
+        boolean exists =
+            dataManager.exists(newPageWizardState.getWiki(), newPageWizardState.getSpace(),
+                newPageWizardState.getName(), "");
+        if (exists) {
+            ((WizardPage) getContainer().getCurrentPage()).setErrorMessage("That page already exists.");
+            return false;
+        }
+
         try {
             getContainer().run(true, false, new IRunnableWithProgress()
             {
@@ -68,7 +80,7 @@ public class NewPageWizard extends Wizard implements INewWizard
                         monitor.beginTask("Creating page...", IProgressMonitor.UNKNOWN);
                         final XWikiEclipsePage page =
                             dataManager.createPage(newPageWizardState.getWiki(), newPageWizardState.getSpace(),
-                                newPageWizardState.getName(), newPageWizardState.getTitle(), "Write here content");
+                                newPageWizardState.getName(), newPageWizardState.getTitle(), "", "Write here content");
 
                         Display.getDefault().syncExec(new Runnable()
                         {

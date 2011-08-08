@@ -29,9 +29,11 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.xwiki.eclipse.model.XWikiEclipseSpaceSummary;
+import org.xwiki.eclipse.model.XWikiEclipseWikiSummary;
 import org.xwiki.eclipse.storage.DataManager;
 import org.xwiki.eclipse.ui.utils.UIUtils;
 import org.xwiki.eclipse.ui.wizards.NewPageWizard;
+import org.xwiki.eclipse.ui.wizards.NewPageWizardState;
 
 /**
  * @version $Id$
@@ -40,8 +42,9 @@ public class NewPageHandler extends AbstractHandler
 {
     public Object execute(ExecutionEvent event) throws ExecutionException
     {
-        String spaceKey = null;
         DataManager dataManager = null;
+        NewPageWizardState state = new NewPageWizardState();
+
         ISelection selection = HandlerUtil.getCurrentSelection(event);
 
         Set selectedObjects = UIUtils.getSelectedObjectsFromSelection(selection);
@@ -50,7 +53,14 @@ public class NewPageHandler extends AbstractHandler
             if (selectedObject instanceof XWikiEclipseSpaceSummary) {
                 XWikiEclipseSpaceSummary spaceSummary = (XWikiEclipseSpaceSummary) selectedObject;
                 dataManager = spaceSummary.getDataManager();
-                spaceKey = spaceSummary.getId();
+                state.setSpace(spaceSummary.getName());
+                state.setWiki(spaceSummary.getWiki());
+            }
+
+            if (selectedObject instanceof XWikiEclipseWikiSummary) {
+                XWikiEclipseWikiSummary wikiSummary = (XWikiEclipseWikiSummary) selectedObject;
+                state.setWiki(wikiSummary.getName());
+                dataManager = wikiSummary.getDataManager();
             }
 
             if (selectedObject instanceof DataManager) {
@@ -59,7 +69,7 @@ public class NewPageHandler extends AbstractHandler
         }
 
         if (dataManager != null) {
-            NewPageWizard wizard = new NewPageWizard(dataManager, spaceKey);
+            NewPageWizard wizard = new NewPageWizard(dataManager, state);
 
             WizardDialog dialog = new WizardDialog(HandlerUtil.getActiveWorkbenchWindow(event).getShell(), wizard);
             dialog.create();

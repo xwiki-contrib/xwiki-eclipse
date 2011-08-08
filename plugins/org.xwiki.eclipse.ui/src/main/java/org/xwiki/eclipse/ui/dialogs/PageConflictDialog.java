@@ -49,11 +49,11 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.xwiki.eclipse.model.XWikiEclipsePage;
+import org.xwiki.eclipse.storage.utils.StorageUtils;
 import org.xwiki.eclipse.ui.UIConstants;
 import org.xwiki.eclipse.ui.UIPlugin;
 
 /**
- * 
  * @version $Id$
  */
 public class PageConflictDialog extends TitleAreaDialog
@@ -209,12 +209,15 @@ public class PageConflictDialog extends TitleAreaDialog
 
         CompareConfiguration cc = new CompareConfiguration();
 
+        /* use the extended page id */
+        String pageId = StorageUtils.getExtendedPageId(page.getId(), page.getLanguage());
+
         if (ancestorPage != null) {
-            cc.setAncestorLabel(String.format("%s (Original)", ancestorPage.getId()));
+            cc.setAncestorLabel(String.format("%s (Original)", pageId));
         }
 
-        cc.setLeftLabel(String.format("%s (Local)", page.getId()));
-        cc.setRightLabel(String.format("%s (Conflicting)", conflictingPage.getId()));
+        cc.setLeftLabel(String.format("%s (Local)", pageId));
+        cc.setRightLabel(String.format("%s (Conflicting)", pageId));
         viewer = new TextMergeViewer(pane, cc);
         pane.setContent(viewer.getControl());
         GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, true).applyTo(viewer.getControl());

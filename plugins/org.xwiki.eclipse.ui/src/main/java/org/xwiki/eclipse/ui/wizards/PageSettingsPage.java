@@ -167,15 +167,7 @@ public class PageSettingsPage extends WizardPage
             return false;
         }
 
-        String pageId = wikiTextString + ":" + spaceTextString + "." + nameTextString;
-        boolean exists = ((NewPageWizard) getWizard()).getDataManager().exists(pageId);
-        if (exists) {
-            setErrorMessage("That page already exists.");
-            return false;
-        }
-
         setErrorMessage(null);
         return true;
     }
-
 }
