@@ -35,6 +35,7 @@ import org.xwiki.eclipse.core.DataManagerRegistry;
 import org.xwiki.eclipse.model.XWikiEclipseAttachment;
 import org.xwiki.eclipse.model.XWikiEclipseComment;
 import org.xwiki.eclipse.model.XWikiEclipseObjectSummary;
+import org.xwiki.eclipse.model.XWikiEclipsePage;
 import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
 import org.xwiki.eclipse.model.XWikiEclipseSpaceSummary;
 import org.xwiki.eclipse.storage.DataManager;
@@ -42,7 +43,7 @@ import org.xwiki.eclipse.storage.XWikiEclipseStorageException;
 import org.xwiki.eclipse.storage.notification.CoreEvent;
 import org.xwiki.eclipse.storage.notification.ICoreEventListener;
 import org.xwiki.eclipse.storage.notification.NotificationManager;
-import org.xwiki.eclipse.storage.utils.PageIdParser;
+import org.xwiki.eclipse.storage.utils.PageIdProcessor;
 import org.xwiki.eclipse.ui.utils.UIUtils;
 
 /**
@@ -175,9 +176,19 @@ public class NavigatorContentProvider extends BaseWorkbenchContentProvider imple
                 {
                     public void run()
                     {
-                        XWikiEclipsePageSummary pageSummary = (XWikiEclipsePageSummary) event.getData();
-                        XWikiEclipseSpaceSummary spaceSummary =
-                            pageSummary.getDataManager().getSpace(pageSummary.getWiki(), pageSummary.getSpace());
+                        XWikiEclipseSpaceSummary spaceSummary = null;
+
+                        Object obj = event.getData();
+                        if (obj instanceof XWikiEclipsePage) {
+                            XWikiEclipsePage page = (XWikiEclipsePage) obj;
+                            spaceSummary = page.getDataManager().getSpace(page.getWiki(), page.getSpace());
+                        }
+
+                        if (obj instanceof XWikiEclipsePageSummary) {
+                            XWikiEclipsePageSummary pageSummary = (XWikiEclipsePageSummary) obj;
+                            spaceSummary =
+                                pageSummary.getDataManager().getSpace(pageSummary.getWiki(), pageSummary.getSpace());
+                        }
 
                         /* refresh the space */
                         viewer.setExpandedState(spaceSummary, true);
@@ -340,7 +351,7 @@ public class NavigatorContentProvider extends BaseWorkbenchContentProvider imple
                         try {
                             String pageId = attachment.getPageId();
 
-                            PageIdParser parser = new PageIdParser(pageId);
+                            PageIdProcessor parser = new PageIdProcessor(pageId);
 
                             XWikiEclipsePageSummary pageSummary =
                                 attachment.getDataManager().getPageSummary(parser.getWiki(), parser.getSpace(),
@@ -380,7 +391,7 @@ public class NavigatorContentProvider extends BaseWorkbenchContentProvider imple
                             XWikiEclipseComment comment = (XWikiEclipseComment) event.getData();
                             XWikiEclipsePageSummary pageSummary;
                             String pageId = comment.getPageId();
-                            PageIdParser parser = new PageIdParser(pageId);
+                            PageIdProcessor parser = new PageIdProcessor(pageId);
 
                             pageSummary =
                                 comment.getDataManager().getPageSummary(parser.getWiki(), parser.getSpace(),

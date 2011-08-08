@@ -39,7 +39,7 @@ import org.eclipse.ui.dialogs.PropertyPage;
 import org.xwiki.eclipse.model.XWikiEclipseAttachment;
 import org.xwiki.eclipse.model.XWikiEclipsePage;
 import org.xwiki.eclipse.storage.XWikiEclipseStorageException;
-import org.xwiki.eclipse.storage.utils.PageIdParser;
+import org.xwiki.eclipse.storage.utils.PageIdProcessor;
 
 /**
  * @version $Id$
@@ -63,7 +63,7 @@ public class XWikiEclipseAttachmentPropertiesPage extends PropertyPage
         XWikiEclipsePage page = null;
         try {
             String pageId = attachment.getPageId();
-            PageIdParser parser = new PageIdParser(pageId);
+            PageIdProcessor parser = new PageIdProcessor(pageId);
             page = attachment.getDataManager().getPage(parser.getWiki(), parser.getSpace(), parser.getPage(), "");
         } catch (XWikiEclipseStorageException e1) {
             // TODO Auto-generated catch block

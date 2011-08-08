@@ -38,7 +38,7 @@ import org.xwiki.eclipse.storage.XWikiEclipseStorageException;
 import org.xwiki.eclipse.storage.notification.CoreEvent;
 import org.xwiki.eclipse.storage.notification.ICoreEventListener;
 import org.xwiki.eclipse.storage.notification.NotificationManager;
-import org.xwiki.eclipse.storage.utils.PageIdParser;
+import org.xwiki.eclipse.storage.utils.PageIdProcessor;
 import org.xwiki.eclipse.ui.utils.UIUtils;
 
 /**
@@ -291,7 +291,7 @@ public class PagePreview extends ViewPart implements ISelectionListener, ICoreEv
 
             try {
                 String pageId = xwikiObject.getPageId();
-                PageIdParser parser = new PageIdParser(pageId);
+                PageIdProcessor parser = new PageIdProcessor(pageId);
                 update(
                     xwikiObject.getDataManager().getPageSummary(parser.getWiki(), parser.getSpace(), parser.getPage(),
                         "") != null ? xwikiObject.getDataManager()
