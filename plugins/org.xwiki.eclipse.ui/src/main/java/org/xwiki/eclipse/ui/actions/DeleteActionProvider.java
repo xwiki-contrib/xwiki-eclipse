@@ -21,16 +21,17 @@
 package org.xwiki.eclipse.ui.actions;
 
 import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.swt.SWT;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.menus.CommandContributionItem;
+import org.eclipse.ui.menus.CommandContributionItemParameter;
 import org.eclipse.ui.navigator.CommonActionProvider;
 import org.eclipse.ui.navigator.ICommonActionExtensionSite;
 import org.eclipse.ui.navigator.ICommonMenuConstants;
 import org.xwiki.eclipse.ui.UIConstants;
 
 /**
- * 
  * @version $Id$
  */
 public class DeleteActionProvider extends CommonActionProvider
@@ -39,22 +40,17 @@ public class DeleteActionProvider extends CommonActionProvider
 
     public void init(final ICommonActionExtensionSite aSite)
     {
-        /* This is for Eclipse 3.4 */
-        // CommandContributionItemParameter contributionItemParameter =
-        // new CommandContributionItemParameter(PlatformUI.getWorkbench(),
-        // UIConstants.DELETE_COMMAND,
-        // UIConstants.DELETE_COMMAND,
-        // 0);
-        // delete = new CommandContributionItem(contributionItemParameter);
-        delete =
-            new CommandContributionItem(PlatformUI.getWorkbench(), null, UIConstants.DELETE_COMMAND, null, null, null,
-                null, null, null, null, SWT.NONE);
-
+        CommandContributionItemParameter contributionItemParameter =
+            new CommandContributionItemParameter(PlatformUI.getWorkbench(), UIConstants.DELETE_COMMAND,
+                UIConstants.DELETE_COMMAND, SWT.NONE);
+        delete = new CommandContributionItem(contributionItemParameter);
     }
 
     public void fillContextMenu(IMenuManager menu)
     {
         super.fillContextMenu(menu);
-        menu.appendToGroup(ICommonMenuConstants.GROUP_EDIT, delete);
+        menu.appendToGroup(ICommonMenuConstants.GROUP_ADDITIONS, new Separator());
+        menu.appendToGroup(ICommonMenuConstants.GROUP_ADDITIONS, delete);
+        menu.appendToGroup(ICommonMenuConstants.GROUP_ADDITIONS, new Separator());
     }
 }
