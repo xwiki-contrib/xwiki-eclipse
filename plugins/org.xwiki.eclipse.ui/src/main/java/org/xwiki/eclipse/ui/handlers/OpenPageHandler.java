@@ -28,6 +28,8 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.HandlerUtil;
@@ -77,8 +79,9 @@ public class OpenPageHandler extends AbstractHandler
                         pageSummary.getDataManager().getPage(pageSummary.getWiki(), pageSummary.getSpace(),
                             pageSummary.getName(), pageSummary.getLanguage());
 
-                    PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
-                        .openEditor(new PageEditorInput(page, false), PageEditor.ID);
+                    IWorkbenchPage workbenchPage = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+                    IEditorInput input = new PageEditorInput(page, false);
+                    workbenchPage.openEditor(input, PageEditor.ID);
                 } catch (XWikiEclipseStorageException e) {
                     UIUtils
                         .showMessageDialog(
