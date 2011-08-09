@@ -30,6 +30,8 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.xwiki.eclipse.storage.StoragePlugin;
 
+import com.google.gson.reflect.TypeToken;
+
 /**
  * A class that implements a Map from strings to strings, that saves its content to the disk.
  * 
@@ -53,9 +55,9 @@ public class PersistentMap
 
         if (file.exists()) {
             try {
-                map =
-                    (HashMap<String, String>) StorageUtils.readFromJSON(file, new HashMap<String, String>().getClass()
-                        .getCanonicalName());
+                map = (Map<String, String>) StorageUtils.readFromJson(file, new TypeToken<Map<String, String>>()
+                {
+                }.getType());
             } catch (Exception e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
