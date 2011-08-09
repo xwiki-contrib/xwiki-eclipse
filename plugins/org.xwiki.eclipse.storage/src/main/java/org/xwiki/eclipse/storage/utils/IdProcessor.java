@@ -22,7 +22,7 @@ package org.xwiki.eclipse.storage.utils;
 /**
  * @version $Id$
  */
-public class PageIdProcessor
+public class IdProcessor
 {
     private String pageId;
 
@@ -34,24 +34,50 @@ public class PageIdProcessor
 
     private String language = "";
 
-    public PageIdProcessor(String pageId)
-    {
-        this.pageId = pageId;
+    private String className;
 
-        this.wiki = pageId.split(":")[0];
-        String fullname = pageId.split(":")[1];
+    private int number;
+
+    private String objectId;
+
+    public IdProcessor(String id)
+    {
+        this.pageId = id;
+
+        this.wiki = id.split(":")[0];
+        String fullname = id.split(":")[1];
         String[] extendedIdParts = fullname.split("\\.");
+
         if (extendedIdParts.length == 3) {
+            /* extended page id */
             this.space = extendedIdParts[0];
             this.page = extendedIdParts[1];
             this.language = extendedIdParts[2];
         } else if (extendedIdParts.length == 2) {
+            /* page id */
             this.space = extendedIdParts[0];
             this.page = extendedIdParts[1];
+        } else if (extendedIdParts.length == 4) {
+            /* object id */
+            this.space = extendedIdParts[0];
+            this.page = extendedIdParts[1];
+            this.className = extendedIdParts[2];
+            this.number = Integer.parseInt(extendedIdParts[3]);
         }
     }
 
-    public PageIdProcessor(String wiki, String space, String page, String language)
+    public IdProcessor(String wiki, String space, String page, String className, int number)
+    {
+        super();
+        this.wiki = wiki;
+        this.space = space;
+        this.page = page;
+        this.className = className;
+        this.number = number;
+        this.objectId = wiki + ":" + space + "." + page + "." + className + "." + number;
+    }
+
+    public IdProcessor(String wiki, String space, String page, String language)
     {
         super();
         this.wiki = wiki;
@@ -61,7 +87,7 @@ public class PageIdProcessor
         this.pageId = wiki + ":" + space + "." + page + "." + language;
     }
 
-    public PageIdProcessor(String wiki, String space, String page)
+    public IdProcessor(String wiki, String space, String page)
     {
         super();
         this.wiki = wiki;
@@ -73,11 +99,6 @@ public class PageIdProcessor
     public String getPageId()
     {
         return pageId;
-    }
-
-    public void setPageId(String pageId)
-    {
-        this.pageId = pageId;
     }
 
     public String getWiki()
@@ -118,5 +139,46 @@ public class PageIdProcessor
     public void setLanguage(String language)
     {
         this.language = language;
+    }
+
+    public String getClassName()
+    {
+        return className;
+    }
+
+    public void setClassName(String className)
+    {
+        this.className = className;
+    }
+
+    public int getNumber()
+    {
+        return number;
+    }
+
+    public void setNumber(int number)
+    {
+        this.number = number;
+    }
+
+    public String getObjectId()
+    {
+        return objectId;
+    }
+
+    /**
+     * @param pageId original page id
+     * @param language
+     * @return
+     */
+    public static String getExtendedPageId(String pageId, String language)
+    {
+        return pageId + (language.equals("") ? "" : "." + language);
+    }
+
+    public static String getExtendedObjectId(String pageId, String className, int number)
+    {
+        IdProcessor parser = new IdProcessor(pageId);
+        return new IdProcessor(parser.getWiki(), parser.getSpace(), parser.getPage(), className, number).getObjectId();
     }
 }
