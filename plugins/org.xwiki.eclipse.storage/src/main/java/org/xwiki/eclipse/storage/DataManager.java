@@ -699,11 +699,27 @@ public class DataManager
 
     }
 
-    public void remove(ModelObject o)
+    public void removePage(XWikiEclipsePageSummary pageSummary) throws XWikiEclipseStorageException
+    {
+        if (isConnected()) {
+            remoteXWikiDataStorage.remove(pageSummary);
+        }
+
+        String pageId = StorageUtils.getExtendedPageId(pageSummary.getId(), pageSummary.getLanguage());
+        try {
+            localXWikiDataStorage.removePage(pageId);
+        } catch (CoreException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
+    public void remove(ModelObject o) throws XWikiEclipseStorageException
     {
         if (isConnected()) {
             remoteXWikiDataStorage.remove(o);
         }
+
     }
 
     /**

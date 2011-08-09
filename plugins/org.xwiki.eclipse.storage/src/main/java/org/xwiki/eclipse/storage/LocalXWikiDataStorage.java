@@ -912,6 +912,7 @@ public class LocalXWikiDataStorage
 
                 // FIXME: remove the objects of this page as well
 
+                // FIXME: if the space does not contain any page, remove the space as well
             }
         }, null);
 

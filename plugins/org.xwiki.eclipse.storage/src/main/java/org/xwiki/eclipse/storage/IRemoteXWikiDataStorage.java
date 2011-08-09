@@ -105,7 +105,7 @@ public interface IRemoteXWikiDataStorage
     void updateAttachment(String wiki, String space, String pageName, String attachmentName, URL fileUrl);
 
     /* delete */
-    void remove(ModelObject o);
+    void remove(ModelObject o) throws XWikiEclipseStorageException;
 
     boolean exists(String wiki, String space, String pageName, String language);
 

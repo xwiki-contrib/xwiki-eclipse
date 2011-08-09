@@ -81,11 +81,10 @@ public class DeleteXWikiElementHandler extends AbstractHandler
             protected IStatus run(final IProgressMonitor monitor)
             {
 
-                monitor.beginTask("Deleting...", 100);
+                monitor.beginTask("Deleting...", objectsToBeRemoved.size());
                 if (monitor.isCanceled()) {
                     return Status.CANCEL_STATUS;
                 }
-                final int work = 100 / objectsToBeRemoved.size();
 
                 for (Object selectedObject : selectedObjects) {
                     if (objectsToBeRemoved.contains(selectedObject)) {
@@ -101,12 +100,14 @@ public class DeleteXWikiElementHandler extends AbstractHandler
                             {
                                 public void run() throws Exception
                                 {
-                                    pageSummary.getDataManager().remove(pageSummary);
-                                    monitor.worked(work);
+                                    pageSummary.getDataManager().removePage(pageSummary);
+                                    monitor.worked(1);
                                     Thread.sleep(2000);
                                 }
                             });
 
+                            NotificationManager.getDefault().fireCoreEvent(CoreEvent.Type.PAGE_REMOVED, this,
+                                toBeRefreshed);
                         }
 
                         if (selectedObject instanceof XWikiEclipseObjectSummary) {
@@ -138,7 +139,7 @@ public class DeleteXWikiElementHandler extends AbstractHandler
                                     DataManagerRegistry.getDefault().unregister(dataManager);
                                     dataManager.getProject().delete(true, null);
                                     ResourcesPlugin.getWorkspace().save(true, new NullProgressMonitor());
-                                    monitor.worked(work);
+                                    monitor.worked(1);
                                     Thread.sleep(2000);
                                 }
                             });
@@ -170,7 +171,7 @@ public class DeleteXWikiElementHandler extends AbstractHandler
                                 public void run() throws Exception
                                 {
                                     comment.getDataManager().remove(comment);
-                                    monitor.worked(work);
+                                    monitor.worked(1);
                                     Thread.sleep(2000);
                                 }
                             });
@@ -188,7 +189,7 @@ public class DeleteXWikiElementHandler extends AbstractHandler
                                 public void run() throws Exception
                                 {
                                     attachment.getDataManager().remove(attachment);
-                                    monitor.worked(work);
+                                    monitor.worked(1);
                                     Thread.sleep(2000);
                                 }
                             });
@@ -197,10 +198,6 @@ public class DeleteXWikiElementHandler extends AbstractHandler
                 }
 
                 monitor.done();
-
-                if (coreEvent != null) {
-                    NotificationManager.getDefault().fireCoreEvent(coreEvent, this, toBeRefreshed);
-                }
 
                 return Status.OK_STATUS;
             }

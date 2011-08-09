@@ -497,11 +497,25 @@ public class PageEditor extends TextEditor implements ICoreEventListener
                 break;
 
             case PAGE_REMOVED:
-                XWikiEclipsePage aPage = (XWikiEclipsePage) event.getData();
+                String aXwikiEclipseId = null;
+                Object o = event.getData();
 
-                if (aPage.getXWikiEclipseId().equals(page.getXWikiEclipseId())) {
-                    // The page being edited has been deleted.
-                    this.close(false);
+                if (o instanceof XWikiEclipsePage) {
+                    aXwikiEclipseId = ((XWikiEclipsePage) o).getXWikiEclipseId();
+                    if (aXwikiEclipseId != null && aXwikiEclipseId.equals(page.getXWikiEclipseId())) {
+                        // The page being edited has been deleted.
+                        this.close(false);
+                    }
+                }
+
+                if (o instanceof XWikiEclipsePageSummary) {
+                    XWikiEclipsePageSummary pageSummary = (XWikiEclipsePageSummary) o;
+                    if (pageSummary.getWiki().equals(page.getWiki()) && pageSummary.getSpace().equals(page.getSpace())
+                        && pageSummary.getName().equals(page.getName())
+                        && pageSummary.getLanguage().equals(page.getLanguage())) {
+                        // The page being edited has been deleted.
+                        this.close(false);
+                    }
                 }
 
                 break;

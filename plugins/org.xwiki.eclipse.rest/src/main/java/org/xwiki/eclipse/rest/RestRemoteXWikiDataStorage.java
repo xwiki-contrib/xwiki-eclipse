@@ -370,32 +370,6 @@ public class RestRemoteXWikiDataStorage
         return null;
     }
 
-    /**
-     * @param pageUrl
-     */
-    public void removePage(String pageUrl)
-    {
-        try {
-            this.restRemoteClient.executeDelete(pageUrl);
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * @param url
-     */
-    public void remove(String url)
-    {
-        try {
-            this.restRemoteClient.executeDelete(url);
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-    }
-
     class RestUrlBuilder
     {
         private String endpoint;
@@ -610,5 +584,17 @@ public class RestRemoteXWikiDataStorage
     {
         String pageUrl = urlBuilder.getPageHistoryUrl(wiki, space, name, language, majorVersion, minorVersion);
         return this.restRemoteClient.getPage(pageUrl);
+    }
+
+    /**
+     * @param wiki
+     * @param space
+     * @param name
+     * @param language
+     */
+    public void removePage(String wiki, String space, String name, String language) throws Exception
+    {
+        String pageUrl = urlBuilder.getPageUrl(wiki, space, name, language);
+        this.restRemoteClient.executeDelete(pageUrl);
     }
 }
