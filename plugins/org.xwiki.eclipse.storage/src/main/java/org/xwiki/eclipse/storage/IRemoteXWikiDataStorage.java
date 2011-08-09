@@ -107,7 +107,7 @@ public interface IRemoteXWikiDataStorage
     /* delete */
     void remove(ModelObject o) throws XWikiEclipseStorageException;
 
-    boolean exists(String wiki, String space, String pageName, String language);
+    boolean pageExists(String wiki, String space, String pageName, String language);
 
     /**
      * @param page
@@ -126,4 +126,10 @@ public interface IRemoteXWikiDataStorage
      */
     XWikiEclipsePage getPageHistory(String wiki, String space, String name, String language, int majorVersion,
         int minorVersion) throws XWikiEclipseStorageException;
+
+    /**
+     * @param object
+     * @return
+     */
+    XWikiEclipseObject storeObject(XWikiEclipseObject object);
 }

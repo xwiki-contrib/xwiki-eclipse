@@ -221,7 +221,7 @@ public class XWikiEclipsePageSummaryAdapter extends WorkbenchAdapter implements 
                 return UIPlugin.getImageDescriptor(UIConstants.PAGE_CONFLICT_ICON);
             }
 
-            if (pageSummary.getDataManager().isLocallyAvailable(pageSummary.getId(), pageSummary.getLanguage())) {
+            if (pageSummary.getDataManager().isPageLocallyAvailable(pageSummary.getId(), pageSummary.getLanguage())) {
                 return UIPlugin.getImageDescriptor(UIConstants.PAGE_LOCALLY_AVAILABLE_ICON);
             } else {
                 return UIPlugin.getImageDescriptor(UIConstants.PAGE_ICON);

@@ -120,7 +120,7 @@ public class XWikiEclipseObjectSummaryAdapter extends WorkbenchAdapter
                 return UIPlugin.getImageDescriptor(UIConstants.PAGE_ANNOTATION_ICON);
             }
 
-            if (objectSummary.getDataManager().isLocallyAvailable(objectSummary.getPageId(),
+            if (objectSummary.getDataManager().isObjectLocallyAvailable(objectSummary.getPageId(),
                 objectSummary.getClassName(), objectSummary.getNumber())) {
                 return UIPlugin.getImageDescriptor(UIConstants.OBJECT_LOCALLY_AVAILABLE_ICON);
             } else {

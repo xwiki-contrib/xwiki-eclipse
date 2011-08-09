@@ -224,7 +224,8 @@ public class XmlrpcRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStor
                 o.setClassName(objectSummary.getClassName());
                 o.setId(Integer.toString(objectSummary.getId()));
                 o.setPageId(pageSummary.getParentId());
-                o.setPrettyName(objectSummary.getPrettyName());
+                o.setWiki(pageSummary.getWiki());
+                o.setSpace(pageSummary.getSpace());
 
                 result.add(o);
             }
@@ -553,11 +554,11 @@ public class XmlrpcRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStor
     /**
      * {@inheritDoc}
      * 
-     * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#exists(java.lang.String, java.lang.String,
+     * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#pageExists(java.lang.String, java.lang.String,
      *      java.lang.String, java.lang.String)
      */
     @Override
-    public boolean exists(String wiki, String space, String pageName, String language)
+    public boolean pageExists(String wiki, String space, String pageName, String language)
     {
         // TODO Auto-generated method stub
         return false;
@@ -584,6 +585,18 @@ public class XmlrpcRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStor
     @Override
     public XWikiEclipsePage getPageHistory(String wiki, String space, String name, String language, int majorVersion,
         int minorVersion) throws XWikiEclipseStorageException
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#storeObject(org.xwiki.eclipse.model.XWikiEclipseObject)
+     */
+    @Override
+    public XWikiEclipseObject storeObject(XWikiEclipseObject object)
     {
         // TODO Auto-generated method stub
         return null;

@@ -64,7 +64,7 @@ public class NewPageWizard extends Wizard implements INewWizard
     {
 
         boolean exists =
-            dataManager.exists(newPageWizardState.getWiki(), newPageWizardState.getSpace(),
+            dataManager.pageExists(newPageWizardState.getWiki(), newPageWizardState.getSpace(),
                 newPageWizardState.getName(), "");
         if (exists) {
             ((WizardPage) getContainer().getCurrentPage()).setErrorMessage("That page already exists.");
