@@ -597,4 +597,46 @@ public class RestRemoteXWikiDataStorage
         String pageUrl = urlBuilder.getPageUrl(wiki, space, name, language);
         this.restRemoteClient.executeDelete(pageUrl);
     }
+
+    /**
+     * @param o
+     * @return
+     */
+    public Object storeObject(Object o)
+    {
+
+        String objectUrl = null;
+        if (o.getNumber() == -1) {
+            /* newly created object */
+            objectUrl = urlBuilder.getObjectsUrl(o.getWiki(), o.getSpace(), o.getPageName());
+        } else {
+            objectUrl =
+                urlBuilder.getObjectUrl(o.getWiki(), o.getSpace(), o.getPageName(), o.getClassName(), o.getNumber());
+        }
+
+        Object result;
+        try {
+            result = restRemoteClient.storeObject(objectUrl, o);
+            return result;
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    /**
+     * @param wiki
+     * @param space
+     * @param pageName
+     * @param className
+     * @param number
+     * @throws Exception
+     */
+    public void removeObject(String wiki, String space, String pageName, String className, int number) throws Exception
+    {
+        String objectUrl = urlBuilder.getObjectUrl(wiki, space, pageName, className, number);
+        restRemoteClient.executeDelete(objectUrl);
+    }
 }

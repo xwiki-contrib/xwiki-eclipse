@@ -230,8 +230,7 @@ public class XWikiRestClient
         return spaces.getSpaces();
     }
 
-    protected HttpResponse executePostXml(String uri, java.lang.Object object, String userName, String password)
-        throws Exception
+    protected HttpResponse executePostXml(String uri, java.lang.Object object) throws Exception
     {
         DefaultHttpClient httpClient = new DefaultHttpClient();
 
@@ -773,7 +772,7 @@ public class XWikiRestClient
     {
         HttpResponse response;
         try {
-            response = executePostXml(commentsUrl, comment, username, password);
+            response = executePostXml(commentsUrl, comment);
             Comment result = (Comment) unmarshaller.unmarshal(response.getEntity().getContent());
             return result;
         } catch (Exception e) {
@@ -918,6 +917,38 @@ public class XWikiRestClient
             // TODO Auto-generated catch block
             e.printStackTrace();
             throw e;
+        }
+    }
+
+    /**
+     * @param objectUrl
+     * @param o
+     * @return
+     */
+    public Object storeObject(String objectUrl, Object o) throws Exception
+    {
+        HttpResponse response;
+
+        if (o.getNumber() == -1) {
+            try {
+                response = executePostXml(objectUrl, o);
+                Object result = (Object) unmarshaller.unmarshal(response.getEntity().getContent());
+                return result;
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+                throw e;
+            }
+        } else {
+            try {
+                response = executePutXml(objectUrl, o);
+                Object result = (Object) unmarshaller.unmarshal(response.getEntity().getContent());
+                return result;
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+                throw e;
+            }
         }
     }
 }
