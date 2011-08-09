@@ -105,9 +105,6 @@ public class DeleteXWikiElementHandler extends AbstractHandler
                                     Thread.sleep(2000);
                                 }
                             });
-
-                            NotificationManager.getDefault().fireCoreEvent(CoreEvent.Type.PAGE_REMOVED, this,
-                                toBeRefreshed);
                         }
 
                         if (selectedObject instanceof XWikiEclipseObjectSummary) {
@@ -123,8 +120,11 @@ public class DeleteXWikiElementHandler extends AbstractHandler
                                 public void run() throws Exception
                                 {
                                     objectSummary.getDataManager().remove(objectSummary);
+                                    monitor.worked(1);
+                                    Thread.sleep(2000);
                                 }
                             });
+
                         }
 
                         if (selectedObject instanceof DataManager) {
@@ -194,6 +194,8 @@ public class DeleteXWikiElementHandler extends AbstractHandler
                                 }
                             });
                         }
+
+                        NotificationManager.getDefault().fireCoreEvent(coreEvent, this, toBeRefreshed);
                     }
                 }
 
