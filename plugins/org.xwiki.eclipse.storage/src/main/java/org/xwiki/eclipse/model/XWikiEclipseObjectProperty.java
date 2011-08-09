@@ -20,6 +20,7 @@
  */
 package org.xwiki.eclipse.model;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.xwiki.eclipse.storage.DataManager;
@@ -104,6 +105,9 @@ public class XWikiEclipseObjectProperty extends ModelObject
 
     public Map<String, String> getAttributes()
     {
+        if (attributes == null) {
+            attributes = new HashMap<String, String>();
+        }
         return attributes;
     }
 

@@ -37,17 +37,11 @@ public class XWikiEclipseObjectSummary extends ModelObject
 
     private String id;
 
-    private String prettyName;
-
     private String space;
 
     private String wiki;
 
     private int number;
-
-    private String propertiesUrl;
-
-    private String objectUrl;
 
     public XWikiEclipseObjectSummary(DataManager dataManager)
     {
@@ -91,16 +85,6 @@ public class XWikiEclipseObjectSummary extends ModelObject
         this.id = id;
     }
 
-    public String getPrettyName()
-    {
-        return prettyName;
-    }
-
-    public void setPrettyName(String prettyName)
-    {
-        this.prettyName = prettyName;
-    }
-
     public String getSpace()
     {
         return space;
@@ -139,25 +123,5 @@ public class XWikiEclipseObjectSummary extends ModelObject
     public void setNumber(int number)
     {
         this.number = number;
-    }
-
-    public String getPropertiesUrl()
-    {
-        return propertiesUrl;
-    }
-
-    public void setPropertiesUrl(String propertiesUrl)
-    {
-        this.propertiesUrl = propertiesUrl;
-    }
-
-    public String getObjectUrl()
-    {
-        return objectUrl;
-    }
-
-    public void setObjectUrl(String objectUrl)
-    {
-        this.objectUrl = objectUrl;
     }
 }

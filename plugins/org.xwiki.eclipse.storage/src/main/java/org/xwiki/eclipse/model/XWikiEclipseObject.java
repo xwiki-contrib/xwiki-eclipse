@@ -45,11 +45,15 @@ public class XWikiEclipseObject extends ModelObject
 
     private String pageId;
 
+    private String pageName;
+
     private String space;
 
     private String wiki;
 
     private String className;
+
+    private int number;
 
     public XWikiEclipseObject(DataManager dataManager)
     {
@@ -166,5 +170,25 @@ public class XWikiEclipseObject extends ModelObject
     public void setId(String id)
     {
         this.id = id;
+    }
+
+    public String getPageName()
+    {
+        return pageName;
+    }
+
+    public void setPageName(String pageName)
+    {
+        this.pageName = pageName;
+    }
+
+    public int getNumber()
+    {
+        return number;
+    }
+
+    public void setNumber(int number)
+    {
+        this.number = number;
     }
 }
