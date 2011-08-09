@@ -58,6 +58,7 @@ public class NewObjectWizard extends Wizard implements INewWizard
         newObjectWizardState = new NewObjectWizardState();
 
         newObjectWizardState.setPageId(pageSummary.getId());
+        newObjectWizardState.setPageName(pageSummary.getName());
         newObjectWizardState.setSpace(pageSummary.getSpace());
         newObjectWizardState.setWiki(pageSummary.getWiki());
         this.dataManager = pageSummary.getDataManager();
@@ -74,16 +75,10 @@ public class NewObjectWizard extends Wizard implements INewWizard
                 {
                     try {
                         monitor.beginTask("Creating object...", IProgressMonitor.UNKNOWN);
-                        // final XWikiEclipseObject object =
-                        // dataManager.createObject(newObjectWizardState.getPageId(),
-                        // newObjectWizardState.getClassName());
+                        final XWikiEclipseObject object =
+                            dataManager.createObject(newObjectWizardState.getPageId(),
+                                newObjectWizardState.getClassName());
 
-                        final XWikiEclipseObject object = new XWikiEclipseObject(dataManager);
-                        object.setClassName(newObjectWizardState.getClassName());
-                        object.setName(String.format("%s[NEW]", newObjectWizardState.getClassName()));
-                        object.setPageId(newObjectWizardState.getPageId());
-                        object.setSpace(newObjectWizardState.getSpace());
-                        object.setWiki(newObjectWizardState.getWiki());
                         XWikiEclipseClass clazz =
                             dataManager.getClass(newObjectWizardState.getWiki(), newObjectWizardState.getClassName());
                         object.setProperties(clazz.getProperties());

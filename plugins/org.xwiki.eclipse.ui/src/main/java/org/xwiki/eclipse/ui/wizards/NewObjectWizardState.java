@@ -29,6 +29,8 @@ public class NewObjectWizardState
 
     private String pageId;
 
+    private String pageName;
+
     private String space;
 
     private String wiki;
@@ -71,5 +73,15 @@ public class NewObjectWizardState
     public void setWiki(String wiki)
     {
         this.wiki = wiki;
+    }
+
+    public String getPageName()
+    {
+        return pageName;
+    }
+
+    public void setPageName(String pageName)
+    {
+        this.pageName = pageName;
     }
 }
