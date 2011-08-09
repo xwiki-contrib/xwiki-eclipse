@@ -29,10 +29,8 @@ import org.xwiki.eclipse.model.XWikiEclipseTag;
 import org.xwiki.eclipse.model.XWikiEclipseWikiSummary;
 import org.xwiki.eclipse.storage.notification.CoreEvent;
 import org.xwiki.eclipse.storage.notification.NotificationManager;
-import org.xwiki.eclipse.storage.utils.PageIdProcessor;
+import org.xwiki.eclipse.storage.utils.IdProcessor;
 import org.xwiki.eclipse.storage.utils.PersistentMap;
-import org.xwiki.eclipse.storage.utils.StorageUtils;
-import org.xwiki.xmlrpc.model.XWikiObject;
 
 /**
  * DataManager is a class that manages remote and local storages and handles their initialization. Basically, it's the
@@ -204,11 +202,6 @@ public class DataManager
         return String.format("xwikieclipse://%s", getName()); //$NON-NLS-1$
     }
 
-    protected String getCompactIdForObject(XWikiEclipseObject object)
-    {
-        return String.format("%s/%s/%d", object.getPageId(), object.getClassName(), object.getId());
-    }
-
     /*
      * Connection management
      */
@@ -257,8 +250,27 @@ public class DataManager
 
         // FIXME: need to work on the sync in the future
         /* When connected synchronize all the pages and objects */
-        // synchronizePages(new HashSet<String>(pageToStatusMap.keySet()));
+        synchronizePages(new HashSet<String>(pageToStatusMap.keySet()));
         // synchronizeObjects(new HashSet<String>(objectToStatusMap.keySet()));
+    }
+
+    /**
+     * @param hashSet
+     * @throws XWikiEclipseStorageException
+     * @throws CoreException
+     */
+    private void synchronizePages(HashSet<String> pageIds) throws XWikiEclipseStorageException, CoreException
+    {
+        for (String pageId : pageIds) {
+            IdProcessor parser = new IdProcessor(pageId);
+            XWikiEclipsePage page =
+                localXWikiDataStorage.getPage(parser.getWiki(), parser.getSpace(), parser.getPage(),
+                    parser.getLanguage());
+            if (page != null) {
+                synchronize(page);
+            }
+        }
+
     }
 
     public void disconnect()
@@ -397,24 +409,17 @@ public class DataManager
         return result;
     }
 
-    /**
-     * @param pageSummary
-     * @return
-     */
-    public boolean isLocallyAvailable(String pageId, String language)
+    public boolean isPageLocallyAvailable(String pageId, String language)
     {
-        PageIdProcessor parser = new PageIdProcessor(pageId);
+        IdProcessor parser = new IdProcessor(pageId);
         return localXWikiDataStorage.pageExists(parser.getWiki(), parser.getSpace(), parser.getPage(), language);
     }
 
-    public boolean isLocallyAvailable(String pageId, String className, int number)
+    public boolean isObjectLocallyAvailable(String pageId, String className, int number)
     {
-        return localXWikiDataStorage.objectExists(pageId, className, number);
-    }
-
-    private String getCompactIdForObject(XWikiObject object)
-    {
-        return String.format("%s/%s/%d", object.getPageId(), object.getClassName(), object.getId());
+        IdProcessor parser = new IdProcessor(pageId);
+        return localXWikiDataStorage.objectExists(parser.getWiki(), parser.getSpace(), parser.getPage(), className,
+            number);
     }
 
     /**
@@ -504,11 +509,12 @@ public class DataManager
 
         XWikiEclipsePage page = localXWikiDataStorage.getPage(wiki, space, pageName, language);
         if (page != null) {
-            String pageStatus = pageToStatusMap.get(StorageUtils.getExtendedPageId(page.getId(), page.getLanguage()));
+            String pageStatus = pageToStatusMap.get(IdProcessor.getExtendedPageId(page.getId(), page.getLanguage()));
             /* If our local page is either dirty or in conflict then return it */
             if (pageStatus != null) {
                 result = new XWikiEclipsePage(this);
                 result.setId(page.getId());
+                result.setFullName(page.getFullName());
                 result.setParentId(page.getParentId());
                 result.setTitle(page.getTitle());
                 result.setUrl(page.getUrl());
@@ -575,7 +581,28 @@ public class DataManager
             return result;
         }
 
-        return page;
+        /* must set the DataManager field */
+        if (page != null) {
+            result = new XWikiEclipsePage(this);
+            result.setId(page.getId());
+            result.setFullName(page.getFullName());
+            result.setParentId(page.getParentId());
+            result.setTitle(page.getTitle());
+            result.setUrl(page.getUrl());
+            result.setContent(page.getContent());
+            result.setSpace(page.getSpace());
+            result.setWiki(page.getWiki());
+            result.setMajorVersion(page.getMajorVersion());
+            result.setMinorVersion(page.getMinorVersion());
+            result.setVersion(page.getVersion());
+            result.setName(page.getName());
+            result.setLanguage(page.getLanguage());
+
+            return result;
+
+        }
+
+        return null;
     }
 
     /**
@@ -705,7 +732,7 @@ public class DataManager
             remoteXWikiDataStorage.remove(pageSummary);
         }
 
-        String pageId = StorageUtils.getExtendedPageId(pageSummary.getId(), pageSummary.getLanguage());
+        String pageId = IdProcessor.getExtendedPageId(pageSummary.getId(), pageSummary.getLanguage());
         try {
             localXWikiDataStorage.removePage(pageId);
         } catch (CoreException e) {
@@ -750,12 +777,20 @@ public class DataManager
 
     }
 
-    public XWikiEclipseSpaceSummary getSpace(String wiki, String space)
+    public XWikiEclipseSpaceSummary getSpace(String wiki, String space) throws XWikiEclipseStorageException
     {
         XWikiEclipseSpaceSummary result = null;
 
         if (isConnected()) {
             result = remoteXWikiDataStorage.getSpace(wiki, space);
+        } else {
+            XWikiEclipseSpaceSummary spaceSummary = localXWikiDataStorage.getSpace(wiki, space);
+
+            result = new XWikiEclipseSpaceSummary(this);
+            result.setId(spaceSummary.getId());
+            result.setName(spaceSummary.getName());
+            result.setUrl(spaceSummary.getUrl());
+            result.setWiki(spaceSummary.getWiki());
         }
 
         return result;
@@ -769,7 +804,7 @@ public class DataManager
     {
         if (isConnected()) {
             String pageId = attachment.getPageId();
-            PageIdProcessor parser = new PageIdProcessor(pageId);
+            IdProcessor parser = new IdProcessor(pageId);
             remoteXWikiDataStorage.updateAttachment(parser.getWiki(), parser.getSpace(), parser.getPage(),
                 attachment.getName(), fileUrl);
         }
@@ -839,10 +874,10 @@ public class DataManager
      * @param pageId
      * @return
      */
-    public boolean exists(String wiki, String space, String pageName, String language)
+    public boolean pageExists(String wiki, String space, String pageName, String language)
     {
         if (isConnected()) {
-            return remoteXWikiDataStorage.exists(wiki, space, pageName, language);
+            return remoteXWikiDataStorage.pageExists(wiki, space, pageName, language);
         }
 
         return localXWikiDataStorage.pageExists(wiki, space, pageName, language);
@@ -867,7 +902,7 @@ public class DataManager
         xwikiPage.setTitle(title);
         xwikiPage.setLanguage(language);
         xwikiPage.setContent(content);
-        PageIdProcessor processor = new PageIdProcessor(wiki, space, name, language);
+        IdProcessor processor = new IdProcessor(wiki, space, name, language);
         xwikiPage.setId(processor.getPageId());
 
         xwikiPage.setMajorVersion(1);
@@ -915,7 +950,7 @@ public class DataManager
          * Set the dirty flag only if the page has no status. In fact it might be already dirty (should not be possible
          * though) or in conflict
          */
-        String extendedPageId = StorageUtils.getExtendedPageId(xwikiPage.getId(), xwikiPage.getLanguage());
+        String extendedPageId = IdProcessor.getExtendedPageId(xwikiPage.getId(), xwikiPage.getLanguage());
         if (pageToStatusMap.get(extendedPageId) == null) {
             pageToStatusMap.put(extendedPageId, DIRTY_STATUS);
         }
@@ -937,7 +972,7 @@ public class DataManager
         /*
          * If the page is not dirty (i.e., is in conflict or has no status associated) then do nothing
          */
-        String extendedPageId = StorageUtils.getExtendedPageId(page.getId(), page.getLanguage());
+        String extendedPageId = IdProcessor.getExtendedPageId(page.getId(), page.getLanguage());
         if (!DIRTY_STATUS.equals(pageToStatusMap.get(extendedPageId))) {
             return page;
         }
@@ -1023,7 +1058,7 @@ public class DataManager
      */
     public XWikiEclipsePage getConflictingPage(String pageId) throws XWikiEclipseStorageException
     {
-        PageIdProcessor parser = new PageIdProcessor(pageId);
+        IdProcessor parser = new IdProcessor(pageId);
         XWikiEclipsePage page =
             conflictingPagesDataStorage.getPage(parser.getWiki(), parser.getSpace(), parser.getPage(),
                 parser.getLanguage());
@@ -1057,7 +1092,7 @@ public class DataManager
      */
     public XWikiEclipsePage getConflictAncestorPage(String pageId) throws XWikiEclipseStorageException
     {
-        PageIdProcessor parser = new PageIdProcessor(pageId);
+        IdProcessor parser = new IdProcessor(pageId);
         XWikiEclipsePage ancestorPage =
             lastRetrievedPagesDataStorage.getPage(parser.getWiki(), parser.getSpace(), parser.getPage(),
                 parser.getLanguage());
@@ -1083,5 +1118,106 @@ public class DataManager
                 pageHistory.getMinorVersion());
         }
         return null;
+    }
+
+    /**
+     * @param object
+     * @throws XWikiEclipseStorageException
+     */
+    public void storeObject(ModelObject object) throws XWikiEclipseStorageException
+    {
+        if (object instanceof XWikiEclipseObject) {
+            XWikiEclipseObject o = (XWikiEclipseObject) object;
+
+            localXWikiDataStorage.storeObject(o);
+
+            String objectId = IdProcessor.getExtendedObjectId(o.getPageId(), o.getClassName(), o.getNumber());
+            objectToStatusMap.put(objectId, DIRTY_STATUS);
+
+            o = synchronize(o);
+
+            NotificationManager.getDefault().fireCoreEvent(CoreEvent.Type.OBJECT_STORED, this, o);
+
+        }
+
+    }
+
+    /**
+     * @param object
+     * @return
+     * @throws XWikiEclipseStorageException
+     */
+    private XWikiEclipseObject synchronize(XWikiEclipseObject object) throws XWikiEclipseStorageException
+    {
+        /* If we are not connected then do nothing */
+        if (!isConnected()) {
+            return object;
+        }
+
+        /*
+         * If the page is not dirty (i.e., is in conflict or has no status associated) then do nothing
+         */
+        String objectId =
+            IdProcessor.getExtendedObjectId(object.getPageId(), object.getClassName(), object.getNumber());
+        if (!DIRTY_STATUS.equals(objectToStatusMap.get(objectId))) {
+            return object;
+        }
+
+        Assert.isTrue(isConnected());
+        Assert.isTrue(DIRTY_STATUS.equals(objectToStatusMap.get(objectId)));
+
+        if (object.getNumber() == -1) {
+            /*
+             * If we are here we are synchronizing an object that has been created locally and does not exist remotely.
+             */
+
+            /*
+             * We save the current object because its id will be assigned when the object is stored remotely. In this
+             * way, we will be able to cleanup all the references to the locally created object with the -1 id from the
+             * status map, index and local storage.
+             */
+            XWikiEclipseObject previousObject = object;
+
+            object = remoteXWikiDataStorage.storeObject(object);
+            localXWikiDataStorage.storeObject(object);
+            objectToStatusMap.remove(objectId);
+
+            /* Cleanup */
+            String previousObjectId =
+                IdProcessor.getExtendedObjectId(previousObject.getPageId(), previousObject.getClassName(),
+                    previousObject.getNumber());
+            IdProcessor parser = new IdProcessor(previousObject.getPageId());
+            localXWikiDataStorage.removeObject(parser.getWiki(), parser.getSpace(), parser.getPage(),
+                previousObject.getClassName(), previousObject.getNumber());
+            objectToStatusMap.remove(previousObjectId);
+        } else {
+            object = remoteXWikiDataStorage.storeObject(object);
+            localXWikiDataStorage.storeObject(object);
+
+            objectToStatusMap.remove(objectId);
+        }
+
+        return object;
+    }
+
+    /**
+     * @param pageId
+     * @param className
+     * @return
+     */
+    public XWikiEclipseObject createObject(String pageId, String className)
+    {
+        final XWikiEclipseObject result = new XWikiEclipseObject(this);
+        result.setClassName(className);
+        result.setName(String.format("%s[NEW]", className));
+        result.setPageId(pageId);
+        IdProcessor parser = new IdProcessor(pageId);
+        result.setSpace(parser.getSpace());
+        result.setWiki(parser.getWiki());
+        result.setPageName(parser.getPage());
+        /* set the default number to -1 */
+        result.setNumber(-1);
+
+        return result;
     }
 }
