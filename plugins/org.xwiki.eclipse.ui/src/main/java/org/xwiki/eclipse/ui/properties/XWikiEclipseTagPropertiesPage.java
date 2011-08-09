@@ -22,6 +22,7 @@ package org.xwiki.eclipse.ui.properties;
 
 import java.net.URL;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.util.SafeRunnable;
@@ -63,31 +64,43 @@ public class XWikiEclipseTagPropertiesPage extends PropertyPage
         value.setText(tag.getName() == null ? "" : tag.getName());
 
         property = new Label(composite, SWT.NONE);
-        property.setText("Url:");
+        property.setText("Wiki:");
+        value = new Label(composite, SWT.NONE);
+        value.setText(tag.getWiki() == null ? "" : tag.getWiki());
+
+        property = new Label(composite, SWT.NONE);
+        property.setText("Url");
+
         Link link = new Link(composite, SWT.NONE);
-        link.setText(tag.getUrl() == null ? "" : String.format("<a>%s</a>", tag.getUrl()));
-        link.addSelectionListener(new SelectionListener()
-        {
-
-            public void widgetDefaultSelected(SelectionEvent e)
+        String tagUrl;
+        try {
+            tagUrl = tag.getDataManager().getEndpoint() + "/wikis/" + tag.getWiki() + "/tags/" + tag.getName();
+            link.setText(String.format("<a>%s</a>", tagUrl));
+            link.addSelectionListener(new SelectionListener()
             {
-                // TODO Auto-generated method stub
-            }
 
-            public void widgetSelected(final SelectionEvent e)
-            {
-                SafeRunner.run(new SafeRunnable()
+                public void widgetDefaultSelected(SelectionEvent e)
                 {
-                    public void run() throws Exception
-                    {
-                        IWorkbenchBrowserSupport browserSupport = PlatformUI.getWorkbench().getBrowserSupport();
-                        IWebBrowser browser = browserSupport.createBrowser("XWiki Eclipse");
-                        browser.openURL(new URL(e.text));
-                    }
-                });
-            }
+                    // TODO Auto-generated method stub
+                }
 
-        });
+                public void widgetSelected(final SelectionEvent e)
+                {
+                    SafeRunner.run(new SafeRunnable()
+                    {
+                        public void run() throws Exception
+                        {
+                            IWorkbenchBrowserSupport browserSupport = PlatformUI.getWorkbench().getBrowserSupport();
+                            IWebBrowser browser = browserSupport.createBrowser("XWiki Eclipse");
+                            browser.openURL(new URL(e.text));
+                        }
+                    });
+                }
+            });
+        } catch (CoreException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
 
         return composite;
     }
