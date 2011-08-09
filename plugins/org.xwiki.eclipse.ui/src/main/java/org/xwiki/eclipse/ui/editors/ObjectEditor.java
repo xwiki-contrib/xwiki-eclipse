@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -63,6 +64,7 @@ import org.xwiki.eclipse.ui.editors.propertyeditors.NumberPropertyEditor;
 import org.xwiki.eclipse.ui.editors.propertyeditors.PasswordPropertyEditor;
 import org.xwiki.eclipse.ui.editors.propertyeditors.StringPropertyEditor;
 import org.xwiki.eclipse.ui.editors.propertyeditors.TextAreaPropertyEditor;
+import org.xwiki.eclipse.ui.utils.XWikiEclipseSafeRunnable;
 
 class ListContentProvider implements IStructuredContentProvider
 {
@@ -112,13 +114,13 @@ public class ObjectEditor extends EditorPart
     {
         final ObjectEditorInput input = (ObjectEditorInput) getEditorInput();
 
-        // SafeRunner.run(new XWikiEclipseSafeRunnable()
-        // {
-        // public void run() throws Exception
-        // {
-        // input.getObject().getDataManager().storeObject(input.getObject());
-        // }
-        // });
+        SafeRunner.run(new XWikiEclipseSafeRunnable()
+        {
+            public void run() throws Exception
+            {
+                input.getObject().getDataManager().storeObject(input.getObject());
+            }
+        });
 
         setDirty(false);
     }
