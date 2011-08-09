@@ -248,10 +248,22 @@ public class DataManager
             }
         }
 
-        // FIXME: need to work on the sync in the future
         /* When connected synchronize all the pages and objects */
         synchronizePages(new HashSet<String>(pageToStatusMap.keySet()));
-        // synchronizeObjects(new HashSet<String>(objectToStatusMap.keySet()));
+        synchronizeObjects(new HashSet<String>(objectToStatusMap.keySet()));
+    }
+
+    private void synchronizeObjects(Set<String> objectIds) throws XWikiEclipseStorageException
+    {
+        for (String objectId : objectIds) {
+            IdProcessor parser = new IdProcessor(objectId);
+            XWikiEclipseObject object =
+                localXWikiDataStorage.getObject(parser.getWiki(), parser.getSpace(), parser.getPage(),
+                    parser.getClassName(), parser.getNumber());
+            if (object != null) {
+                synchronize(object);
+            }
+        }
     }
 
     /**

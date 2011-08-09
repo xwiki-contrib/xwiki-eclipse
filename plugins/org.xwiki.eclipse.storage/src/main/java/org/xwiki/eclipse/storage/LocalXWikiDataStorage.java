@@ -431,7 +431,7 @@ public class LocalXWikiDataStorage
     }
 
     public XWikiEclipseObject getObject(String wiki, String space, String page, String className, int number)
-        throws Exception
+        throws XWikiEclipseStorageException
     {
         try {
             IFolder objectsFolder = StorageUtils.createFolder(baseFolder.getFolder(OBJECTS_DIRECTORY));
@@ -444,7 +444,7 @@ public class LocalXWikiDataStorage
                 return result;
             }
         } catch (Exception e) {
-            throw e;
+            throw new XWikiEclipseStorageException(e);
         }
 
         return null;
