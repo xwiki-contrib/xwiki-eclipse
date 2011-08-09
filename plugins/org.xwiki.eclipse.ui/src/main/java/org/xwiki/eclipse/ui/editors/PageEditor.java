@@ -64,7 +64,7 @@ import org.xwiki.eclipse.storage.XWikiEclipseStorageException;
 import org.xwiki.eclipse.storage.notification.CoreEvent;
 import org.xwiki.eclipse.storage.notification.ICoreEventListener;
 import org.xwiki.eclipse.storage.notification.NotificationManager;
-import org.xwiki.eclipse.storage.utils.StorageUtils;
+import org.xwiki.eclipse.storage.utils.IdProcessor;
 import org.xwiki.eclipse.ui.UIConstants;
 import org.xwiki.eclipse.ui.UIPlugin;
 import org.xwiki.eclipse.ui.dialogs.PageConflictDialog;
@@ -209,7 +209,10 @@ public class PageEditor extends TextEditor implements ICoreEventListener
             // Editor has just been created.
             super.doSetInput(newPageEditorInput);
 
-            if (newPageEditorInput.getPage().getDataManager().isInConflict(newPageEditorInput.getPage().getId())) {
+            String pageId =
+                IdProcessor.getExtendedPageId(newPageEditorInput.getPage().getId(), newPageEditorInput.getPage()
+                    .getLanguage());
+            if (newPageEditorInput.getPage().getDataManager().isInConflict(pageId)) {
                 UIUtils
                     .showMessageDialog(
                         getSite().getShell(),
@@ -294,7 +297,7 @@ public class PageEditor extends TextEditor implements ICoreEventListener
                 }
             }
 
-            String pageId = StorageUtils.getExtendedPageId(input.getPage().getId(), input.getPage().getLanguage());
+            String pageId = IdProcessor.getExtendedPageId(input.getPage().getId(), input.getPage().getLanguage());
             if (input.getPage().getDataManager().isInConflict(pageId)) {
                 boolean editConlictActionFound = false;
                 for (IContributionItem contributionItem : form.getToolBarManager().getItems()) {
@@ -327,7 +330,7 @@ public class PageEditor extends TextEditor implements ICoreEventListener
         XWikiEclipsePage currentPage = input.getPage();
         DataManager dataManager = currentPage.getDataManager();
 
-        String pageId = StorageUtils.getExtendedPageId(currentPage.getId(), currentPage.getLanguage());
+        String pageId = IdProcessor.getExtendedPageId(currentPage.getId(), currentPage.getLanguage());
         if (dataManager.isInConflict(pageId)) {
             try {
                 XWikiEclipsePage conflictingPage = dataManager.getConflictingPage(pageId);
@@ -483,7 +486,7 @@ public class PageEditor extends TextEditor implements ICoreEventListener
 
                         try {
                             page.getDataManager().clearPageStatus(
-                                StorageUtils.getExtendedPageId(page.getId(), page.getLanguage()));
+                                IdProcessor.getExtendedPageId(page.getId(), page.getLanguage()));
                         } catch (Exception ex) {
                             // ignore
                         }

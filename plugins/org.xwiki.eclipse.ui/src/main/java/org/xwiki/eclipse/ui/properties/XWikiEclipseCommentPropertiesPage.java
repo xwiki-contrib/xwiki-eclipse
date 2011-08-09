@@ -29,7 +29,7 @@ import org.eclipse.ui.dialogs.PropertyPage;
 import org.xwiki.eclipse.model.XWikiEclipseComment;
 import org.xwiki.eclipse.model.XWikiEclipsePage;
 import org.xwiki.eclipse.storage.XWikiEclipseStorageException;
-import org.xwiki.eclipse.storage.utils.PageIdProcessor;
+import org.xwiki.eclipse.storage.utils.IdProcessor;
 
 /**
  * @version $Id$
@@ -52,7 +52,7 @@ public class XWikiEclipseCommentPropertiesPage extends PropertyPage
         XWikiEclipsePage page = null;
         try {
             String pageId = comment.getPageId();
-            PageIdProcessor parser = new PageIdProcessor(pageId);
+            IdProcessor parser = new IdProcessor(pageId);
             page = comment.getDataManager().getPage(parser.getWiki(), parser.getSpace(), parser.getPage(), "");
         } catch (XWikiEclipseStorageException e1) {
             // TODO Auto-generated catch block

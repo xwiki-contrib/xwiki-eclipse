@@ -49,7 +49,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.xwiki.eclipse.model.XWikiEclipsePage;
-import org.xwiki.eclipse.storage.utils.StorageUtils;
+import org.xwiki.eclipse.storage.utils.IdProcessor;
 import org.xwiki.eclipse.ui.UIConstants;
 import org.xwiki.eclipse.ui.UIPlugin;
 
@@ -210,7 +210,7 @@ public class PageConflictDialog extends TitleAreaDialog
         CompareConfiguration cc = new CompareConfiguration();
 
         /* use the extended page id */
-        String pageId = StorageUtils.getExtendedPageId(page.getId(), page.getLanguage());
+        String pageId = IdProcessor.getExtendedPageId(page.getId(), page.getLanguage());
 
         if (ancestorPage != null) {
             cc.setAncestorLabel(String.format("%s (Original)", pageId));

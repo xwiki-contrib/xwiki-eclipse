@@ -63,7 +63,7 @@ import org.xwiki.eclipse.storage.DataManager;
 import org.xwiki.eclipse.storage.XWikiEclipseStorageException;
 import org.xwiki.eclipse.storage.notification.CoreEvent;
 import org.xwiki.eclipse.storage.notification.NotificationManager;
-import org.xwiki.eclipse.storage.utils.PageIdProcessor;
+import org.xwiki.eclipse.storage.utils.IdProcessor;
 import org.xwiki.eclipse.ui.UIConstants;
 import org.xwiki.eclipse.ui.UIPlugin;
 import org.xwiki.eclipse.ui.utils.XWikiEclipseSafeRunnable;
@@ -131,7 +131,7 @@ public class XWikiEclipseAttachmentWizard extends Wizard implements INewWizard
                     XWikiEclipseAttachment attachment = (XWikiEclipseAttachment) selectedObject;
                     try {
                         String pageId = attachment.getPageId();
-                        PageIdProcessor parser = new PageIdProcessor(pageId);
+                        IdProcessor parser = new IdProcessor(pageId);
 
                         XWikiEclipsePageSummary pageSummary =
                             attachment.getDataManager().getPageSummary(parser.getWiki(), parser.getSpace(),

@@ -139,6 +139,15 @@ public class StorageUtils
         return file;
     }
 
+    public static Object readFromJson(IFile file, java.lang.reflect.Type type) throws Exception
+    {
+        Gson gson = getGson();
+
+        file.refreshLocal(1, null);
+        JsonReader reader = new JsonReader(new InputStreamReader(file.getContents()));
+        return gson.fromJson(reader, type);
+    }
+
     /**
      * Read the JSON serialization from a file.
      * 
@@ -240,16 +249,6 @@ public class StorageUtils
         }
 
         return result;
-    }
-
-    /**
-     * @param pageId
-     * @param language
-     * @return
-     */
-    public static String getExtendedPageId(String pageId, String language)
-    {
-        return pageId + (language.equals("") ? "" : "." + language);
     }
 }
 
