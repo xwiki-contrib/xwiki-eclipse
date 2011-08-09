@@ -28,7 +28,7 @@ public class XWikiEclipseTag extends ModelObject
 {
     private String name;
 
-    private String url;
+    private String wiki;
 
     /**
      * @param dataManager
@@ -46,7 +46,7 @@ public class XWikiEclipseTag extends ModelObject
     @Override
     public String getXWikiEclipseId()
     {
-        return String.format("xwikieclipse://%s/tag/%s", getDataManager().getName(), getName()); //$NON-NLS-1$
+        return String.format("xwikieclipse://%s/%s/tag/%s", getDataManager().getName(), getWiki(), getName()); //$NON-NLS-1$
     }
 
     public String getName()
@@ -59,13 +59,13 @@ public class XWikiEclipseTag extends ModelObject
         this.name = name;
     }
 
-    public String getUrl()
+    public String getWiki()
     {
-        return url;
+        return wiki;
     }
 
-    public void setUrl(String pagesUrl)
+    public void setWiki(String wiki)
     {
-        this.url = pagesUrl;
+        this.wiki = wiki;
     }
 }
