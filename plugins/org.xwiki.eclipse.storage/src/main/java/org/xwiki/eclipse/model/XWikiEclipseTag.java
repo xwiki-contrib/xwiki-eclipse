@@ -30,6 +30,10 @@ public class XWikiEclipseTag extends ModelObject
 
     private String wiki;
 
+    private String space;
+
+    private String page;
+
     /**
      * @param dataManager
      */
@@ -67,5 +71,25 @@ public class XWikiEclipseTag extends ModelObject
     public void setWiki(String wiki)
     {
         this.wiki = wiki;
+    }
+
+    public String getSpace()
+    {
+        return space;
+    }
+
+    public void setSpace(String space)
+    {
+        this.space = space;
+    }
+
+    public String getPage()
+    {
+        return page;
+    }
+
+    public void setPage(String page)
+    {
+        this.page = page;
     }
 }
