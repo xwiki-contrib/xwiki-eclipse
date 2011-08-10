@@ -42,8 +42,6 @@ import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonReader;
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.xml.DomDriver;
 
 /**
  * A class containing utility methods.
@@ -52,8 +50,6 @@ import com.thoughtworks.xstream.io.xml.DomDriver;
  */
 public class StorageUtils
 {
-    private static XStream xstream = null;
-
     private static Gson gson = null;
 
     /**
@@ -162,73 +158,6 @@ public class StorageUtils
         file.refreshLocal(1, null);
         JsonReader reader = new JsonReader(new InputStreamReader(file.getContents()));
         return gson.fromJson(reader, Class.forName(classType));
-    }
-
-    /**
-     * Write an XML serialization of the given object to a file. Overwrites the previous file content is the file
-     * already exists.
-     * 
-     * @param file The file where the serialization should be written to.
-     * @param data
-     * @return
-     * @throws CoreException
-     */
-    public static IFile writeDataToXML(IFile file, Object data) throws CoreException
-    {
-        XStream xstream = getXStream();
-
-        if (file.getParent() instanceof IFolder) {
-            IFolder parentFolder = (IFolder) file.getParent();
-            createFolder(parentFolder);
-        }
-
-        byte[] bytes = null;
-
-        try {
-            // We must use UTF-8 since the reader always assumes UTF-8, but getBytes uses the JVM encoding by default
-            bytes = xstream.toXML(data).getBytes("UTF-8");
-        } catch (UnsupportedEncodingException e1) {
-            // ignore, UTF-8 is always available
-        }
-
-        InputStream is = new ByteArrayInputStream(bytes);
-        if (!file.exists()) {
-            file.create(is, true, null);
-        } else {
-            file.setContents(is, true, false, null);
-        }
-
-        try {
-            is.close();
-        } catch (IOException e) {
-            // Ignore
-        }
-
-        return file;
-    }
-
-    /**
-     * Read the XML serialization from a file.
-     * 
-     * @param file
-     * @return The de-serialized object (client should type-cast to the actual type).
-     * @throws CoreException
-     */
-    public static Object readDataFromXML(IFile file) throws CoreException
-    {
-        XStream xstream = getXStream();
-
-        file.refreshLocal(1, null);
-        return xstream.fromXML(file.getContents());
-    }
-
-    private static XStream getXStream()
-    {
-        if (xstream == null) {
-            xstream = new XStream(new DomDriver());
-        }
-
-        return xstream;
     }
 
     public static BackendType getBackend(String serverUrl) throws XWikiEclipseStorageException
