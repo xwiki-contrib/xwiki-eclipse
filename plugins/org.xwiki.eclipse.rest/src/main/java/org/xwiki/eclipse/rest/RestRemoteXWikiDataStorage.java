@@ -112,7 +112,7 @@ public class RestRemoteXWikiDataStorage
     /**
      * @param pageSummary
      */
-    public List<ObjectSummary> getObjectSummaries(String wiki, String space, String pageName)
+    public synchronized List<ObjectSummary> getObjectSummaries(String wiki, String space, String pageName)
     {
         String objectsUrl = urlBuilder.getObjectsUrl(wiki, space, pageName);
         List<ObjectSummary> result = this.restRemoteClient.getObjects(objectsUrl);
