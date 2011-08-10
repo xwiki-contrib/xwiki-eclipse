@@ -39,6 +39,7 @@ import org.xwiki.eclipse.model.XWikiEclipseObjectSummary;
 import org.xwiki.eclipse.model.XWikiEclipsePage;
 import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
 import org.xwiki.eclipse.model.XWikiEclipseSpaceSummary;
+import org.xwiki.eclipse.model.XWikiEclipseTag;
 import org.xwiki.eclipse.storage.DataManager;
 import org.xwiki.eclipse.storage.XWikiEclipseStorageException;
 import org.xwiki.eclipse.storage.notification.CoreEvent;
@@ -331,11 +332,19 @@ public class NavigatorContentProvider extends BaseWorkbenchContentProvider imple
                 {
                     public void run()
                     {
-                        XWikiEclipsePageSummary pageSummary = (XWikiEclipsePageSummary) event.getData();
+                        XWikiEclipseTag tag = (XWikiEclipseTag) event.getData();
 
-                        /* refresh the page */
-                        viewer.setExpandedState(pageSummary, true);
-                        viewer.refresh(pageSummary);
+                        try {
+                            XWikiEclipsePageSummary pageSummary =
+                                tag.getDataManager().getPageSummary(tag.getWiki(), tag.getSpace(), tag.getPage(), "");
+                            /* refresh the page */
+                            viewer.setExpandedState(pageSummary, true);
+                            viewer.refresh(pageSummary);
+                        } catch (XWikiEclipseStorageException e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
+
                     }
                 });
                 break;
@@ -419,11 +428,10 @@ public class NavigatorContentProvider extends BaseWorkbenchContentProvider imple
 
                         try {
                             XWikiEclipseComment comment = (XWikiEclipseComment) event.getData();
-                            XWikiEclipsePageSummary pageSummary;
                             String pageId = comment.getPageId();
                             IdProcessor parser = new IdProcessor(pageId);
 
-                            pageSummary =
+                            XWikiEclipsePageSummary pageSummary =
                                 comment.getDataManager().getPageSummary(parser.getWiki(), parser.getSpace(),
                                     parser.getPage(), "");
 
