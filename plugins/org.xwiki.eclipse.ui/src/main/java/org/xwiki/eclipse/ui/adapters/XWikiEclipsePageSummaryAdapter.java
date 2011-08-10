@@ -80,7 +80,9 @@ public class XWikiEclipsePageSummaryAdapter extends WorkbenchAdapter implements 
                 String pageId = pageSummary.getId();
 
                 /* add pageClass */
-                result.add(pageClass);
+                if (pageClass != null) {
+                    result.add(pageClass);
+                }
 
                 /* add attachments */
                 if (attachments != null && attachments.size() > 0) {
@@ -205,7 +207,7 @@ public class XWikiEclipsePageSummaryAdapter extends WorkbenchAdapter implements 
                 title = pageSummary.getId();
             }
 
-            return title;
+            return title + (pageSummary.getLanguage().equals("") ? "" : "[" + pageSummary.getLanguage() + "]");
         }
 
         return super.getLabel(object);
