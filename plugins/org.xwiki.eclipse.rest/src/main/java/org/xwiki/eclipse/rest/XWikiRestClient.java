@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.xml.bind.JAXBContext;
@@ -950,5 +951,37 @@ public class XWikiRestClient
                 throw e;
             }
         }
+    }
+
+    /**
+     * @param tagsUrl
+     * @param tagName
+     */
+    public void removeTag(String tagsUrl, String tagName) throws Exception
+    {
+        HttpResponse response;
+        try {
+
+            List<Tag> tags = getAllTags(tagsUrl);
+
+            for (Iterator iterator = tags.iterator(); iterator.hasNext();) {
+                Tag tag = (Tag) iterator.next();
+                if (tag.getName().equals(tagName)) {
+                    iterator.remove();
+                }
+            }
+
+            Tags tagsElement = new Tags();
+            tagsElement.withTags(tags);
+
+            response = executePutXml(tagsUrl, tagsElement);
+            // Tags tagsResponse = (Tags) unmarshaller.unmarshal(response.getEntity().getContent());
+
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            throw e;
+        }
+
     }
 }
