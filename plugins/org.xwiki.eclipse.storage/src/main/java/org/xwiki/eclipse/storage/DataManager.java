@@ -656,7 +656,8 @@ public class DataManager
     {
         List<XWikiEclipseTag> result = null;
         if (isConnected()) {
-            result = remoteXWikiDataStorage.getTags(pageSummary);
+            result =
+                remoteXWikiDataStorage.getTags(pageSummary.getWiki(), pageSummary.getSpace(), pageSummary.getName());
             return result;
         }
 
