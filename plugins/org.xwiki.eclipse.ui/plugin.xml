@@ -204,6 +204,9 @@
            <instanceof
                  value="org.xwiki.eclipse.model.XWikiEclipseAttachment">
            </instanceof>
+           <instanceof
+                 value="org.xwiki.eclipse.model.XWikiEclipseTag">
+           </instanceof>
         </or>
      </enablement>
   </actionProvider>
