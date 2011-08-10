@@ -20,13 +20,9 @@
  */
 package org.xwiki.eclipse.ui.adapters;
 
-import java.util.List;
-
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.model.WorkbenchAdapter;
-import org.xwiki.eclipse.model.XWikiEclipseObjectProperty;
 import org.xwiki.eclipse.model.XWikiEclipseObjectSummary;
-import org.xwiki.eclipse.storage.XWikiEclipseStorageException;
 import org.xwiki.eclipse.ui.UIConstants;
 import org.xwiki.eclipse.ui.UIPlugin;
 
@@ -43,67 +39,71 @@ public class XWikiEclipseObjectSummaryAdapter extends WorkbenchAdapter
 
             int number = objectSummary.getNumber();
             /*
-             * display the property name and value, the priority: author -> name or title -> the first stringClass ->
-             * the first non-textarea class
+             * FIXME: Fetching all the properties when loading object summary will invoke getObject() method, which
+             * stores all the object and class file locally. This would cause additional overhead, therefore, only
+             * display the number or id at current phase.
+             * 
+             * display the property name and value, the priority: author ->
+             * name or title -> the first stringClass -> the first non-textarea class
              */
-            String label = "[" + number + "] : ";
-            List<XWikiEclipseObjectProperty> objectProperties;
-            try {
-                objectProperties =
-                    objectSummary
-                        .getDataManager()
-                        .getObject(objectSummary.getWiki(), objectSummary.getSpace(), objectSummary.getPageName(),
-                            objectSummary.getClassName(), objectSummary.getNumber()).getProperties();
-                boolean findNameAndTitle = false, foundStringProperty = false;
-                for (XWikiEclipseObjectProperty property : objectProperties) {
-                    /* look for author first */
-                    String propertyName = property.getName().toLowerCase();
-                    if (propertyName.indexOf("author") >= 0 && property.getValue().length() > 0) {
-                        label += property.getValue();
-                        return label;
-                    }
-                }
-                for (XWikiEclipseObjectProperty property : objectProperties) {
-                    String propertyName = property.getName().toLowerCase();
+            String label = "[" + number + "]";
+            // List<XWikiEclipseObjectProperty> objectProperties;
+            // try {
+            // objectProperties =
+            // objectSummary
+            // .getDataManager()
+            // .getObject(objectSummary.getWiki(), objectSummary.getSpace(), objectSummary.getPageName(),
+            // objectSummary.getClassName(), objectSummary.getNumber()).getProperties();
+            // boolean findNameAndTitle = false, foundStringProperty = false;
+            // for (XWikiEclipseObjectProperty property : objectProperties) {
+            // /* look for author first */
+            // String propertyName = property.getName().toLowerCase();
+            // if (propertyName.indexOf("author") >= 0 && property.getValue().length() > 0) {
+            // label += property.getValue();
+            // return label;
+            // }
+            // }
+            // for (XWikiEclipseObjectProperty property : objectProperties) {
+            // String propertyName = property.getName().toLowerCase();
+            //
+            // if (propertyName.indexOf("name") >= 0 || propertyName.indexOf("title") >= 0) {
+            // if (property.getValue().length() > 0) {
+            // /* look for name and title */
+            // findNameAndTitle = true;
+            // label += property.getValue();
+            // return label;
+            // }
+            // }
+            // }
+            //
+            // for (XWikiEclipseObjectProperty property : objectProperties) {
+            // if (!findNameAndTitle) {
+            // if (property.getType().indexOf("StringClass") >= 0 && !foundStringProperty) {
+            // if (property.getValue().length() > 0) {
+            // foundStringProperty = true;
+            // label += property.getValue();
+            // return label;
+            // }
+            // }
+            // }
+            // }
+            //
+            // for (XWikiEclipseObjectProperty property : objectProperties) {
+            // if (!findNameAndTitle && !foundStringProperty) {
+            // if (!(property.getType().indexOf("TextAreaClass") >= 0) && !foundStringProperty) {
+            // if (property.getValue().length() > 0) {
+            // label += property.getValue();
+            // return label;
+            // }
+            // }
+            // }
+            // }
 
-                    if (propertyName.indexOf("name") >= 0 || propertyName.indexOf("title") >= 0) {
-                        if (property.getValue().length() > 0) {
-                            /* look for name and title */
-                            findNameAndTitle = true;
-                            label += property.getValue();
-                            return label;
-                        }
-                    }
-                }
-
-                for (XWikiEclipseObjectProperty property : objectProperties) {
-                    if (!findNameAndTitle) {
-                        if (property.getType().indexOf("StringClass") >= 0 && !foundStringProperty) {
-                            if (property.getValue().length() > 0) {
-                                foundStringProperty = true;
-                                label += property.getValue();
-                                return label;
-                            }
-                        }
-                    }
-                }
-
-                for (XWikiEclipseObjectProperty property : objectProperties) {
-                    if (!findNameAndTitle && !foundStringProperty) {
-                        if (!(property.getType().indexOf("TextAreaClass") >= 0) && !foundStringProperty) {
-                            if (property.getValue().length() > 0) {
-                                label += property.getValue();
-                                return label;
-                            }
-                        }
-                    }
-                }
-
-                return label;
-            } catch (XWikiEclipseStorageException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
+            return label;
+            // } catch (XWikiEclipseStorageException e) {
+            // // TODO Auto-generated catch block
+            // e.printStackTrace();
+            // }
 
         }
 
