@@ -41,6 +41,7 @@ import org.xwiki.eclipse.model.XWikiEclipseComment;
 import org.xwiki.eclipse.model.XWikiEclipseObjectSummary;
 import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
 import org.xwiki.eclipse.model.XWikiEclipseSpaceSummary;
+import org.xwiki.eclipse.model.XWikiEclipseTag;
 import org.xwiki.eclipse.storage.DataManager;
 import org.xwiki.eclipse.storage.notification.CoreEvent;
 import org.xwiki.eclipse.storage.notification.NotificationManager;
@@ -171,6 +172,26 @@ public class DeleteXWikiElementHandler extends AbstractHandler
                                 public void run() throws Exception
                                 {
                                     comment.getDataManager().remove(comment);
+                                    monitor.worked(1);
+                                    Thread.sleep(2000);
+                                }
+                            });
+
+                        }
+
+                        if (selectedObject instanceof XWikiEclipseTag) {
+                            final XWikiEclipseTag tag = (XWikiEclipseTag) selectedObject;
+
+                            toBeRefreshed = tag;
+                            coreEvent = CoreEvent.Type.TAG_STORED;
+
+                            monitor.setTaskName("Deleting " + tag.getName());
+
+                            SafeRunner.run(new XWikiEclipseSafeRunnable()
+                            {
+                                public void run() throws Exception
+                                {
+                                    tag.getDataManager().remove(tag);
                                     monitor.worked(1);
                                     Thread.sleep(2000);
                                 }
