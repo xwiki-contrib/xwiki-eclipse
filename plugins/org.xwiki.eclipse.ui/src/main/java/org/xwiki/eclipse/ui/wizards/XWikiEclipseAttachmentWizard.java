@@ -196,17 +196,16 @@ public class XWikiEclipseAttachmentWizard extends Wizard implements INewWizard
                 protected IStatus run(IProgressMonitor monitor)
                 {
 
-                    monitor.beginTask("Downloading", 100);
+                    monitor.beginTask("Downloading", attachments.size());
                     if (monitor.isCanceled()) {
                         return Status.CANCEL_STATUS;
                     }
-                    int work = 100 / attachments.size();
 
                     for (XWikiEclipseAttachment attachment : attachments) {
                         DataManager dataManager = attachment.getDataManager();
                         monitor.setTaskName("Downloading " + attachment.getName());
                         dataManager.download(dir, attachment);
-                        monitor.worked(work);
+                        monitor.worked(1);
                         try {
                             Thread.sleep(2000);
                         } catch (InterruptedException e) {
@@ -238,15 +237,13 @@ public class XWikiEclipseAttachmentWizard extends Wizard implements INewWizard
             {
 
                 @Override
-                protected IStatus run(IProgressMonitor monitor)
+                protected IStatus run(final IProgressMonitor monitor)
                 {
 
-                    monitor.beginTask("Uploading", 100);
+                    monitor.beginTask("Uploading", filesToBeUploaded.size());
                     if (monitor.isCanceled()) {
                         return Status.CANCEL_STATUS;
                     }
-
-                    int work = 100 / filesToBeUploaded.size();
 
                     for (int i = 0; i < filesToBeUploaded.size(); i++) {
 
@@ -262,17 +259,10 @@ public class XWikiEclipseAttachmentWizard extends Wizard implements INewWizard
                                 String path = filesToBeUploaded.get(idx);
                                 dataManager.uploadAttachment(pageSummaryOfUploadingAttachment, new File(path).toURI()
                                     .toURL());
+                                monitor.worked(1);
+                                Thread.sleep(2000);
                             }
                         });
-
-                        monitor.worked(work);
-                        try {
-                            Thread.sleep(2000);
-                        } catch (InterruptedException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                        }
-
                     }
 
                     monitor.done();
@@ -295,15 +285,13 @@ public class XWikiEclipseAttachmentWizard extends Wizard implements INewWizard
                 {
 
                     @Override
-                    protected IStatus run(IProgressMonitor monitor)
+                    protected IStatus run(final IProgressMonitor monitor)
                     {
 
-                        monitor.beginTask("Updating", 100);
+                        monitor.beginTask("Updating", attachmentUpdateMap.size());
                         if (monitor.isCanceled()) {
                             return Status.CANCEL_STATUS;
                         }
-
-                        int work = 100 / attachmentUpdateMap.size();
 
                         for (final XWikiEclipseAttachment attachment : attachmentUpdateMap.keySet()) {
 
@@ -320,18 +308,11 @@ public class XWikiEclipseAttachmentWizard extends Wizard implements INewWizard
                                     {
                                         String path = filePath;
                                         dataManager.updateAttachment(attachment, new File(path).toURI().toURL());
+                                        monitor.worked(1);
+                                        Thread.sleep(2000);
                                     }
                                 });
                             }
-
-                            monitor.worked(work);
-                            try {
-                                Thread.sleep(2000);
-                            } catch (InterruptedException e) {
-                                // TODO Auto-generated catch block
-                                e.printStackTrace();
-                            }
-
                         }
 
                         monitor.done();
