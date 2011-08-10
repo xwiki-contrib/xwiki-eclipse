@@ -1033,7 +1033,7 @@ public class RestRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStorag
         object.setPageId(o.getPageId());
         /* if the number is -1, use the /objects url. otherwise, use the url of /objects/classname/number */
         object.setNumber(o.getNumber());
-
+        
         List<XWikiEclipseObjectProperty> properties = o.getProperties();
         for (XWikiEclipseObjectProperty prop : properties) {
             Property p = new Property();
