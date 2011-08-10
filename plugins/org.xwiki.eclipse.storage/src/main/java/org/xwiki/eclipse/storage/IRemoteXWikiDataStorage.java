@@ -64,7 +64,7 @@ public interface IRemoteXWikiDataStorage
 
     XWikiEclipseClass getClass(String wiki, String space, String pageName);
 
-    List<XWikiEclipseTag> getTags(XWikiEclipsePageSummary pageSummary);
+    List<XWikiEclipseTag> getTags(String wiki, String space, String page);
 
     List<XWikiEclipseComment> getComments(String wiki, String space, String pageName);
 
