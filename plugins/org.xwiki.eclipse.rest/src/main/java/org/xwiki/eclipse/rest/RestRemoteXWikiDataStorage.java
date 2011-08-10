@@ -274,11 +274,15 @@ public class RestRemoteXWikiDataStorage
     }
 
     /**
+     * @param wiki
+     * @param space
+     * @param page
      * @param comment
      * @return
      */
-    public Comment storeComment(String commentsUrl, Comment comment)
+    public Comment storeComment(String wiki, String space, String page, Comment comment)
     {
+        String commentsUrl = urlBuilder.getCommentsUrl(wiki, space, page);
         try {
             return this.restRemoteClient.storeComment(commentsUrl, comment);
         } catch (Exception e) {
@@ -287,20 +291,6 @@ public class RestRemoteXWikiDataStorage
         }
 
         return null;
-    }
-
-    /**
-     * @param attachmentUrl
-     */
-    public void removeAttachment(String attachmentUrl)
-    {
-        try {
-            this.restRemoteClient.executeDelete(attachmentUrl);
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
     }
 
     /**
@@ -638,5 +628,29 @@ public class RestRemoteXWikiDataStorage
     {
         String objectUrl = urlBuilder.getObjectUrl(wiki, space, pageName, className, number);
         restRemoteClient.executeDelete(objectUrl);
+    }
+
+    /**
+     * @param wiki
+     * @param space
+     * @param page
+     * @param name
+     */
+    public void removeAttachment(String wiki, String space, String page, String attachmentName) throws Exception
+    {
+        String attachmentUrl = urlBuilder.getAttachmentUrl(wiki, space, page, attachmentName);
+        this.restRemoteClient.executeDelete(attachmentUrl);
+    }
+
+    /**
+     * @param wiki
+     * @param space
+     * @param page
+     * @param tagName
+     */
+    public void removeTag(String wiki, String space, String page, String tagName) throws Exception
+    {
+        String tagsUrl = urlBuilder.getTagsUrl(wiki, space, page);
+        this.restRemoteClient.removeTag(tagsUrl, tagName);
     }
 }
