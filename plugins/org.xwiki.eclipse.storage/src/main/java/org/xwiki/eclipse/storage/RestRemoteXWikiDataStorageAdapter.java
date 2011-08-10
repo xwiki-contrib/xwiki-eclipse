@@ -45,6 +45,7 @@ import org.xwiki.eclipse.model.XWikiEclipseTag;
 import org.xwiki.eclipse.model.XWikiEclipseWikiSummary;
 import org.xwiki.eclipse.rest.Relations;
 import org.xwiki.eclipse.rest.RestRemoteXWikiDataStorage;
+import org.xwiki.eclipse.storage.utils.IdProcessor;
 import org.xwiki.rest.model.jaxb.Attachment;
 import org.xwiki.rest.model.jaxb.Attribute;
 import org.xwiki.rest.model.jaxb.Comment;
@@ -393,18 +394,19 @@ public class RestRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStorag
      * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#getTags(org.xwiki.eclipse.model.XWikiEclipsePageSummary)
      */
     @Override
-    public List<XWikiEclipseTag> getTags(XWikiEclipsePageSummary pageSummary)
+    public List<XWikiEclipseTag> getTags(String wiki, String space, String page)
     {
         List<XWikiEclipseTag> result = new ArrayList<XWikiEclipseTag>();
 
-        List<Tag> tags =
-            this.restRemoteStorage.getTags(pageSummary.getWiki(), pageSummary.getSpace(), pageSummary.getName());
+        List<Tag> tags = this.restRemoteStorage.getTags(wiki, space, page);
 
         if (tags != null) {
             for (Tag tag : tags) {
                 XWikiEclipseTag t = new XWikiEclipseTag(dataManager);
                 t.setName(tag.getName());
-                t.setWiki(pageSummary.getWiki());
+                t.setWiki(wiki);
+                t.setSpace(space);
+                t.setPage(page);
 
                 result.add(t);
             }
@@ -432,7 +434,12 @@ public class RestRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStorag
                 c.setHighlight(comment.getHighlight());
                 c.setId(comment.getId());
                 c.setText(comment.getText());
-                c.setPageId(comment.getPageId());
+
+                /* current implementation of REST API does not return pageid */
+                // c.setPageId(comment.getPageId());
+                IdProcessor idBuilder = new IdProcessor(wiki, space, pageName);
+                c.setPageId(idBuilder.getPageId());
+
                 c.setReplyTo(comment.getReplyTo());
 
                 result.add(c);
@@ -602,8 +609,8 @@ public class RestRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStorag
         comment.setReplyTo(c.getReplyTo());
         comment.setText(c.getText());
 
-        String commentsUrl = c.getPageUrl() + "/comments";
-        Comment stored = restRemoteStorage.storeComment(commentsUrl, comment);
+        IdProcessor parser = new IdProcessor(c.getPageId());
+        Comment stored = restRemoteStorage.storeComment(parser.getWiki(), parser.getSpace(), parser.getPage(), comment);
 
         XWikiEclipseComment result = new XWikiEclipseComment(dataManager);
         result.setAuthor(stored.getAuthor());
@@ -611,16 +618,10 @@ public class RestRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStorag
         result.setHighlight(stored.getHighlight());
         result.setId(stored.getId());
         result.setText(stored.getText());
-        result.setPageId(stored.getPageId());
+        /* current implementation of rest API does not return pageid */
+        // result.setPageId(stored.getPageId());
+        result.setPageId(c.getPageId());
         result.setReplyTo(stored.getReplyTo());
-
-        /* add pageUrl attribute */
-        List<Link> links = stored.getLinks();
-        for (Link link : links) {
-            if (link.getRel().equals(Relations.PAGE)) {
-                result.setPageUrl(link.getHref());
-            }
-        }
 
         return result;
     }
@@ -834,7 +835,6 @@ public class RestRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStorag
     @Override
     public void remove(ModelObject o) throws XWikiEclipseStorageException
     {
-        // String url = null;
         if (o instanceof XWikiEclipseObjectSummary) {
             XWikiEclipseObjectSummary objectSummary = (XWikiEclipseObjectSummary) o;
             try {
@@ -858,16 +858,47 @@ public class RestRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStorag
             }
         }
 
-        // if (o instanceof XWikiEclipseComment) {
-        // XWikiEclipseComment comment = (XWikiEclipseComment) o;
-        // String pageUrl = comment.getPageUrl();
-        //
-        // url = pageUrl + "/objects/XWiki.XWikiComments/" + comment.getId();
-        // }
+        if (o instanceof XWikiEclipseComment) {
+            /* current REST API does not provide a Url for comment deletion, use the object Url instead */
+            XWikiEclipseComment comment = (XWikiEclipseComment) o;
+            String commentClassName = "XWiki.XWikiComments";
+            IdProcessor parser = new IdProcessor(comment.getPageId());
+            try {
+                restRemoteStorage.removeObject(parser.getWiki(), parser.getSpace(), parser.getPage(), commentClassName,
+                    comment.getId());
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+                throw new XWikiEclipseStorageException(e);
+            }
+        }
 
-        // if (o instanceof XWikiEclipseAttachment) {
-        // url = ((XWikiEclipseAttachment) o).getAttachmentUrl();
-        // }
+        if (o instanceof XWikiEclipseTag) {
+            /*
+             * current REST API does not provide a Url for tag deletion
+             */
+            XWikiEclipseTag tag = (XWikiEclipseTag) o;
+            try {
+                restRemoteStorage.removeTag(tag.getWiki(), tag.getSpace(), tag.getPage(), tag.getName());
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+                throw new XWikiEclipseStorageException(e);
+            }
+        }
+
+        if (o instanceof XWikiEclipseAttachment) {
+            XWikiEclipseAttachment attachment = (XWikiEclipseAttachment) o;
+            IdProcessor parser = new IdProcessor(attachment.getPageId());
+            try {
+                restRemoteStorage.removeAttachment(parser.getWiki(), parser.getSpace(), parser.getPage(),
+                    attachment.getName());
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+                throw new XWikiEclipseStorageException(e);
+            }
+        }
 
         // if (url != null) {
         // restRemoteStorage.remove(url);
