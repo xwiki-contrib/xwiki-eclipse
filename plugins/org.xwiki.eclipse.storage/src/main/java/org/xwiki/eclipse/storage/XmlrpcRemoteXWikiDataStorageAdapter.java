@@ -277,18 +277,6 @@ public class XmlrpcRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStor
     /**
      * {@inheritDoc}
      * 
-     * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#getTags(org.xwiki.eclipse.model.XWikiEclipsePageSummary)
-     */
-    @Override
-    public List<XWikiEclipseTag> getTags(XWikiEclipsePageSummary pageSummary)
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /**
-     * {@inheritDoc}
-     * 
      * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#getObjectProperties(org.xwiki.eclipse.model.XWikiEclipseObjectSummary)
      */
     public List<XWikiEclipseObjectProperty> getObjectProperties(XWikiEclipseObjectSummary objectSummary)
@@ -597,6 +585,19 @@ public class XmlrpcRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStor
      */
     @Override
     public XWikiEclipseObject storeObject(XWikiEclipseObject object)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#getTags(java.lang.String, java.lang.String,
+     *      java.lang.String)
+     */
+    @Override
+    public List<XWikiEclipseTag> getTags(String wiki, String space, String page)
     {
         // TODO Auto-generated method stub
         return null;
