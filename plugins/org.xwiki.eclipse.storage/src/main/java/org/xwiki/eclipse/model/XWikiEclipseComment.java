@@ -42,8 +42,6 @@ public class XWikiEclipseComment extends ModelObject
 
     private Integer replyTo;
 
-    private String pageUrl;
-
     /**
      * @param dataManager
      */
@@ -123,16 +121,6 @@ public class XWikiEclipseComment extends ModelObject
     public void setReplyTo(Integer replyTo)
     {
         this.replyTo = replyTo;
-    }
-
-    public String getPageUrl()
-    {
-        return pageUrl;
-    }
-
-    public void setPageUrl(String pageUrl)
-    {
-        this.pageUrl = pageUrl;
     }
 
     public String getPageId()

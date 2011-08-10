@@ -100,9 +100,7 @@ public class NewCommentHandler extends AbstractHandler
                      * different input
                      */
                     replyToComment.setDate(Calendar.getInstance());
-                    /* must set up pageURl */
                     replyToComment.setPageId(comment.getPageId());
-                    replyToComment.setPageUrl(comment.getPageUrl());
 
                     PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
                         .openEditor(new CommentEditorInput(replyToComment, command), CommentEditor.ID);

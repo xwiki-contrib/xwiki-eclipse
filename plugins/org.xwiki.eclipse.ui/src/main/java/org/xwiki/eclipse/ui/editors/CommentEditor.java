@@ -194,13 +194,13 @@ public class CommentEditor extends EditorPart
                     c.setAuthor(author.getText());
                     c.setHighlight(highlight.getText());
                     c.setText(commentText.getText());
+                    c.setPageId(comment.getPageId());
                     String replyToIdStr = replyTo.getText();
                     c.setReplyTo(replyToIdStr.equals("") ? null : Integer.parseInt(replyToIdStr));
                     Calendar d = Calendar.getInstance();
                     d.set(date.getYear(), date.getMonth(), date.getDay(), time.getHours(), time.getMinutes(),
                         time.getSeconds());
                     c.setDate(d);
-                    c.setPageUrl(comment.getPageUrl());
 
                     /* store the comment via REST API */
                     Job storeJob = new Job(String.format("Storing Comment %s", c.getAuthor()))
