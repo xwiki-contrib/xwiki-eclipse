@@ -80,7 +80,7 @@ public class UIUtils
     {
         ProgressMonitorDialog dialog = new ProgressMonitorDialog(shell);
         dialog.setCancelable(cancelable);
-        dialog.run(true, false, operation);
+        dialog.run(true, cancelable, operation);
     }
 
     public static void showMessageDialog(Shell shell, String title, String message)
