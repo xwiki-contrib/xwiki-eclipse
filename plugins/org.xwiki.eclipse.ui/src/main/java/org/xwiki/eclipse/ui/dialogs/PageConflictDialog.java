@@ -224,6 +224,7 @@ public class PageConflictDialog extends TitleAreaDialog
 
         CompareElement left = new CompareElement(page, true);
         CompareElement right = new CompareElement(conflictingPage, false);
+
         if (ancestorPage != null) {
             CompareElement ancestor = new CompareElement(ancestorPage, false);
 
