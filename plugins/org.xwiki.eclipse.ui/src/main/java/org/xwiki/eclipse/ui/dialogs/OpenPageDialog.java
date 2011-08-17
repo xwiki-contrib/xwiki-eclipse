@@ -78,7 +78,8 @@ public class OpenPageDialog extends FilteredItemsSelectionDialog
         {
             if (element instanceof XWikiEclipsePageSummary) {
                 XWikiEclipsePageSummary xwikiPage = (XWikiEclipsePageSummary) element;
-                return String.format("%s (%s)", xwikiPage.getId(), xwikiPage.getDataManager().getName());
+                return String.format("%s %s (%s)", xwikiPage.getId(), (xwikiPage.getLanguage().equals("") ? "" : "["
+                    + xwikiPage.getLanguage() + "]"), xwikiPage.getDataManager().getName());
             }
 
             return super.getText(element);
