@@ -24,13 +24,13 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.menus.CommandContributionItem;
+import org.eclipse.ui.menus.CommandContributionItemParameter;
 import org.eclipse.ui.navigator.CommonActionProvider;
 import org.eclipse.ui.navigator.ICommonActionExtensionSite;
 import org.eclipse.ui.navigator.ICommonMenuConstants;
 import org.xwiki.eclipse.ui.UIConstants;
 
 /**
- * 
  * @version $Id$
  */
 public class RefreshActionProvider extends CommonActionProvider
@@ -40,16 +40,10 @@ public class RefreshActionProvider extends CommonActionProvider
     public void init(final ICommonActionExtensionSite aSite)
     {
         /* This is the preferred way for creating a command contribution item in Eclipse 3.4 */
-        // CommandContributionItemParameter contributionItemParameter =
-        // new CommandContributionItemParameter(PlatformUI.getWorkbench(),
-        // UIConstants.REFRESH_COMMAND,
-        // UIConstants.REFRESH_COMMAND,
-        // 0);
-        // refresh = new CommandContributionItem(contributionItemParameter);
-        refresh =
-            new CommandContributionItem(PlatformUI.getWorkbench(), null, UIConstants.REFRESH_COMMAND, null, null, null,
-                null, null, null, null, SWT.NONE);
-
+        CommandContributionItemParameter contributionItemParameter =
+            new CommandContributionItemParameter(PlatformUI.getWorkbench(), UIConstants.REFRESH_COMMAND,
+                UIConstants.REFRESH_COMMAND, SWT.NONE);
+        refresh = new CommandContributionItem(contributionItemParameter);
     }
 
     public void fillContextMenu(IMenuManager menu)

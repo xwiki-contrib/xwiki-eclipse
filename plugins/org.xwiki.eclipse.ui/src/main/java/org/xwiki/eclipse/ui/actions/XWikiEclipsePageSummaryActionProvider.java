@@ -77,18 +77,13 @@ public class XWikiEclipsePageSummaryActionProvider extends CommonActionProvider
 
         open = new OpenXWikiModelObjectAction(selectionProvider);
 
-        // CommandContributionItemParameter contributionItemParameter =
-        // new CommandContributionItemParameter(PlatformUI.getWorkbench(),
-        // UIConstants.NEW_OBJECT_COMMAND,
-        // UIConstants.NEW_OBJECT_COMMAND,
-        // 0);
-        // newObject = new CommandContributionItem(contributionItemParameter);
-
-        newObject =
-            new CommandContributionItem(PlatformUI.getWorkbench(), null, UIConstants.NEW_OBJECT_COMMAND, null, null,
-                null, null, null, null, null, SWT.NONE);
-
         CommandContributionItemParameter ccip =
+            new CommandContributionItemParameter(PlatformUI.getWorkbench().getActiveWorkbenchWindow(),
+                UIConstants.NEW_OBJECT_COMMAND, UIConstants.NEW_OBJECT_COMMAND, SWT.NONE);
+
+        newObject = new CommandContributionItem(ccip);
+
+        ccip =
             new CommandContributionItemParameter(PlatformUI.getWorkbench().getActiveWorkbenchWindow(),
                 UIConstants.NEW_COMMENT_COMMAND, UIConstants.NEW_COMMENT_COMMAND, SWT.NONE);
 
@@ -106,10 +101,11 @@ public class XWikiEclipsePageSummaryActionProvider extends CommonActionProvider
 
         newTag = new CommandContributionItem(ccip);
 
-        renamePage =
-            new CommandContributionItem(PlatformUI.getWorkbench(), null, UIConstants.RENAME_PAGE_COMMAND, null, null,
-                null, null, null, null, null, SWT.NONE);
+        ccip =
+            new CommandContributionItemParameter(PlatformUI.getWorkbench().getActiveWorkbenchWindow(),
+                UIConstants.RENAME_PAGE_COMMAND, UIConstants.RENAME_PAGE_COMMAND, SWT.NONE);
 
+        renamePage = new CommandContributionItem(ccip);
     }
 
     public void fillContextMenu(IMenuManager menu)
