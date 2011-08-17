@@ -142,12 +142,10 @@ public class XWikiEclipseTagWizard extends Wizard implements INewWizard
                 protected IStatus run(IProgressMonitor monitor)
                 {
 
-                    monitor.beginTask("Adding", 100);
+                    monitor.beginTask("Adding", tagsToAdd.size());
                     if (monitor.isCanceled()) {
                         return Status.CANCEL_STATUS;
                     }
-
-                    int work = 100 / tagsToAdd.size();
 
                     for (int i = 0; i < tagsToAdd.size(); i++) {
                         final String tagStr = tagsToAdd.get(i);
@@ -167,7 +165,7 @@ public class XWikiEclipseTagWizard extends Wizard implements INewWizard
                             }
                         });
 
-                        monitor.worked(work);
+                        monitor.worked(1);
                         try {
                             Thread.sleep(2000);
                         } catch (InterruptedException e) {
