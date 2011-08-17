@@ -75,8 +75,6 @@ public class XWikiEclipseAttachmentWizard extends Wizard implements INewWizard
 {
     private Command command;
 
-    private Set selectedObjects;
-
     private final List<Button> selectedButtons = new ArrayList<Button>();
 
     private DownloadAttachmentState downloadState;
@@ -98,7 +96,6 @@ public class XWikiEclipseAttachmentWizard extends Wizard implements INewWizard
     {
         super();
         this.command = command;
-        this.selectedObjects = selectedObjects;
         setNeedsProgressMonitor(true);
         if (command.getId().equals(UIConstants.DOWNLOAD_ATTACHMENT_COMMAND)) {
             downloadState = new DownloadAttachmentState();
