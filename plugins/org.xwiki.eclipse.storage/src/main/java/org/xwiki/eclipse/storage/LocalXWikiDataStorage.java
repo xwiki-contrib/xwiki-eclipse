@@ -25,7 +25,6 @@ import org.xwiki.eclipse.model.XWikiEclipseWikiSummary;
 import org.xwiki.eclipse.storage.utils.IdProcessor;
 import org.xwiki.eclipse.storage.utils.StorageUtils;
 import org.xwiki.xmlrpc.model.XWikiPageHistorySummary;
-import org.xwiki.xmlrpc.model.XWikiPageSummary;
 
 /**
  * This class implements a local data storage for XWiki elements that uses the Eclipse resource component. The local
@@ -33,23 +32,18 @@ import org.xwiki.xmlrpc.model.XWikiPageSummary;
  * 
  * <pre>
  * Root 
- * + index
- *   + Space1 (directory having its name equals to the space key)
- *     + Page1 (directory having its name equals to the page id)
- *       |- Page1.xeps (containing the page summary)
- *       |- Object1.xeos (object summaries)
- *       |- ...
- *       |- ObjectN.xeos
- *     + Page2
- *       |- Page2.xeps
- *       |- ...
- *     + ...
- *   + Space2
- *     +...
+ * + wikis
+ *   |- wiki1.xews (wiki summary)
+ *   |- wiki2.xews
+ * + spaces
+ *   |- space1.xess (space summary)
+ *   |- space2.xess  
  * + pages
+ *   |- Page1.xeps (containing the page summary)
  *   |- Page1.xep (the actual page information)
  *   |- ...
  * + objects
+ *   |- Object1.xeos (object summaries)
  *   |- Object1.xeo (the actual object information)
  *   |- ...
  * + classes
@@ -57,7 +51,7 @@ import org.xwiki.xmlrpc.model.XWikiPageSummary;
  *   |- ...
  * </pre>
  * 
- * All xe* files contains an XML serialization of the corresponding XWiki Eclipse elements.
+ * All xe* files contains an JSON serialization of the corresponding XWiki Eclipse elements.
  * 
  * @version $Id$
  */
@@ -231,32 +225,26 @@ public class LocalXWikiDataStorage
         return result;
     }
 
-    // public void removeSpace(String spaceKey) throws XWikiEclipseStorageException
-    // {
-    // // Delete pages
-    // List<XWikiPageSummary> pages = getPages(spaceKey);
-    // for (XWikiPageSummary page : pages) {
-    // removePage(page.getId());
-    // }
-    //
-    // // Delete space directory
-    // try {
-    // final IFolder indexFolder = StorageUtils.createFolder(baseFolder.getFolder(INDEX_DIRECTORY));
-    //
-    // List<IResource> indexFolderResources = getChildResources(indexFolder, IResource.DEPTH_ONE);
-    // for (IResource indexFolderResource : indexFolderResources) {
-    // if (indexFolderResource instanceof IFolder) {
-    // IFolder folder = (IFolder) indexFolderResource;
-    // if (folder.getName().equals(spaceKey)) {
-    // folder.delete(true, null);
-    // break;
-    // }
-    // }
-    // }
-    // } catch (CoreException e) {
-    // throw new XWikiEclipseStorageException(e);
-    // }
-    // }
+    public void removeSpace(String wiki, String space) throws XWikiEclipseStorageException
+    {
+        // Delete space summary file
+        try {
+            final IFolder spaceFolder = StorageUtils.createFolder(baseFolder.getFolder(SPACES_DIRECTORY));
+
+            List<IResource> spacesFolderResources = getChildResources(spaceFolder, IResource.DEPTH_ONE);
+            for (IResource spacesFolderResource : spacesFolderResources) {
+                if (spacesFolderResource instanceof IFile) {
+                    IFile spaceFile = (IFile) spacesFolderResource;
+                    if (spaceFile.getName().equals(getFileNameForSpaceSummary(wiki, space))) {
+                        spaceFile.delete(true, null);
+                        break;
+                    }
+                }
+            }
+        } catch (CoreException e) {
+            throw new XWikiEclipseStorageException(e);
+        }
+    }
 
     public XWikiEclipsePage storePage(final XWikiEclipsePage page) throws XWikiEclipseStorageException
     {
@@ -311,85 +299,6 @@ public class LocalXWikiDataStorage
 
         return null;
     }
-
-    // public XWikiPage storePage(final XWikiPage page) throws XWikiEclipseStorageException
-    // {
-    // try {
-    // ResourcesPlugin.getWorkspace().run(new IWorkspaceRunnable()
-    // {
-    // public void run(IProgressMonitor monitor) throws CoreException
-    // {
-    // /* Write the page summary */
-    // XWikiPageSummary pageSummary = new XWikiPageSummary();
-    // pageSummary.setId(page.getId());
-    // pageSummary.setLocks(page.getLocks());
-    // pageSummary.setParentId(page.getParentId());
-    // pageSummary.setTitle(page.getTitle());
-    // pageSummary.setTranslations(page.getTranslations() != null ? page.getTranslations()
-    // : new ArrayList());
-    // pageSummary.setUrl(page.getUrl());
-    // // StorageUtils.writeDataToXML(baseFolder.getFolder(INDEX_DIRECTORY).getFolder(page.getSpace())
-    //                    //                        .getFolder(page.getId()).getFile(getFileNameForPageSummary(pageSummary.getId())), //$NON-NLS-1$
-    // // pageSummary.toRawMap());
-    //
-    // /* Write the page */
-    // StorageUtils.writeDataToXML(
-    //                        baseFolder.getFolder(PAGES_DIRECTORY).getFile(getFileNameForPage(page.getId())), page //$NON-NLS-1$
-    // .toRawMap());
-    // }
-    // }, null);
-    // } catch (CoreException e) {
-    // throw new XWikiEclipseStorageException(e);
-    // }
-    //
-    // return page;
-    // }
-
-    // public boolean removePage(final String pageId) throws XWikiEclipseStorageException
-    // {
-    // try {
-    // ResourcesPlugin.getWorkspace().run(new IWorkspaceRunnable()
-    // {
-    // public void run(IProgressMonitor monitor) throws CoreException
-    // {
-    // try {
-    // XWikiPage page = null;// getPage(pageId);
-    // if (page == null) {
-    // return;
-    // }
-    //
-    // /* Remove page objects */
-    // List<XWikiObjectSummary> objects = getObjects(pageId);
-    // for (XWikiObjectSummary object : objects) {
-    // removeObject(pageId, object.getClassName(), object.getId());
-    // }
-    //
-    // /*
-    // * Remove the index page folder with all the information (page and object summaries)
-    // */
-    // IFolder indexPageFolder =
-    // baseFolder.getFolder(INDEX_DIRECTORY).getFolder(page.getSpace()).getFolder(pageId);
-    // if (indexPageFolder.exists()) {
-    // indexPageFolder.delete(true, null);
-    // }
-    //
-    // /* Remove page */
-    // IFolder pageFolder = StorageUtils.createFolder(baseFolder.getFolder(PAGES_DIRECTORY));
-    //                        IFile pageFile = pageFolder.getFile(getFileNameForPage(pageId)); //$NON-NLS-1$
-    // if (pageFile.exists()) {
-    // pageFile.delete(true, null);
-    // }
-    // } catch (XWikiEclipseStorageException e) {
-    // throw new CoreException(new Status(Status.ERROR, StoragePlugin.PLUGIN_ID, "Error", e));
-    // }
-    // }
-    // }, null);
-    //
-    // return true;
-    // } catch (CoreException e) {
-    // throw new XWikiEclipseStorageException(e);
-    // }
-    // }
 
     public XWikiEclipseObject getObject(String wiki, String space, String page, String className, int number)
         throws XWikiEclipseStorageException
@@ -577,22 +486,6 @@ public class LocalXWikiDataStorage
         return new ArrayList<XWikiPageHistorySummary>();
     }
 
-    // FIXME
-    public List<XWikiPageSummary> getAllPageIds() throws XWikiEclipseStorageException
-    {
-        List<XWikiPageSummary> result = new ArrayList<XWikiPageSummary>();
-
-        // List<SpaceSummary> spaces = getSpaces();
-        // for (SpaceSummary spaceSummary : spaces) {
-        // List<XWikiPageSummary> pages = getPages(spaceSummary.getKey());
-        // for (XWikiPageSummary pageSummary : pages) {
-        // result.add(pageSummary);
-        // }
-        // }
-
-        return result;
-    }
-
     /**
      * @param spaceSummary
      */
@@ -743,9 +636,27 @@ public class LocalXWikiDataStorage
                     pageSummaryFile.delete(true, null);
                 }
 
-                // FIXME: remove the objects of this page as well
+                try {
+                    // remove the objects of this page as well
+                    List<XWikiEclipseObjectSummary> objects =
+                        getObjectSummaries(parser.getWiki(), parser.getSpace(), parser.getPage());
+                    for (XWikiEclipseObjectSummary o : objects) {
+                        removeObject(parser.getWiki(), parser.getSpace(), parser.getPage(), o.getClassName(),
+                            o.getNumber());
+                    }
 
-                // FIXME: if the space does not contain any page, remove the space as well
+                    // if the space does not contain any page, remove the space as well
+                    List<XWikiEclipsePageSummary> remainingPages =
+                        getPageSummaries(parser.getWiki(), parser.getSpace());
+                    if (remainingPages != null && remainingPages.size() == 0) {
+                        removeSpace(parser.getWiki(), parser.getSpace());
+                    }
+
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+
             }
         }, null);
 
