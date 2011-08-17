@@ -77,8 +77,6 @@ public class LocalXWikiDataStorage
 
     protected static final Object CLASS_FILE_EXTENSION = "xec"; //$NON-NLS-1$
 
-    private IPath INDEX_DIRECTORY = new Path("index"); //$NON-NLS-1$
-
     private IPath WIKIS_DIRECTORY = new Path("wikis"); //$NON-NLS-1$
 
     private IPath SPACES_DIRECTORY = new Path("spaces"); //$NON-NLS-1$
@@ -810,9 +808,10 @@ public class LocalXWikiDataStorage
                 XWikiEclipseObjectSummary objectSummary =
                     (XWikiEclipseObjectSummary) StorageUtils.readFromJSON(objectSummaryFile,
                         XWikiEclipseObjectSummary.class.getCanonicalName());
-                if (objectSummary.getWiki().equals(wiki) && objectSummary.getSpace().equals(space) && objectSummary.getPageName().equals(page)) {
-                    result.add(objectSummary);    
-                }                
+                if (objectSummary.getWiki().equals(wiki) && objectSummary.getSpace().equals(space)
+                    && objectSummary.getPageName().equals(page)) {
+                    result.add(objectSummary);
+                }
             }
         }
 
@@ -825,7 +824,7 @@ public class LocalXWikiDataStorage
      * @param pageName
      * @param language
      * @return
-     * @throws Exception 
+     * @throws Exception
      */
     public XWikiEclipsePageSummary getPageSummary(String wiki, String space, String pageName, String language)
         throws Exception
