@@ -984,4 +984,18 @@ public class XWikiRestClient
         }
 
     }
+
+    /**
+     * @param pageUrl
+     * @param sourcePageToBeCopied
+     * @return
+     * @throws Exception
+     */
+    public Page renamePage(String pageUrl, Page sourcePageToBeCopied) throws Exception
+    {
+        HttpResponse response = executePutXml(pageUrl, sourcePageToBeCopied);
+        Page result = (Page) unmarshaller.unmarshal(response.getEntity().getContent());
+
+        return result;
+    }
 }

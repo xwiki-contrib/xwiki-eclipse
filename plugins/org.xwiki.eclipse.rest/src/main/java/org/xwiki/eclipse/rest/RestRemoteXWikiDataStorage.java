@@ -538,6 +538,32 @@ public class RestRemoteXWikiDataStorage
             return endpoint + "/wikis/" + wiki + "/spaces/" + space + "/pages/" + name + "/history/" + majorVersion
                 + "." + minorVersion;
         }
+
+        /**
+         * @param sourcePageId
+         * @param newWiki
+         * @param newSpace
+         * @param newPageName
+         * @return
+         */
+        public String getCopyPageUrl(String sourcePageId, String newWiki, String newSpace, String newPageName)
+        {
+            return endpoint + "/wikis/" + newWiki + "/spaces/" + newSpace + "/pages/" + newPageName + "?copyFrom="
+                + sourcePageId;
+        }
+
+        /**
+         * @param sourcePageId
+         * @param newWiki
+         * @param newSpace
+         * @param newPageName
+         * @return
+         */
+        public String getMovePageUrl(String sourcePageId, String newWiki, String newSpace, String newPageName)
+        {
+            return endpoint + "/wikis/" + newWiki + "/spaces/" + newSpace + "/pages/" + newPageName + "?moveFrom="
+                + sourcePageId;
+        }
     }
 
     /**
@@ -652,5 +678,34 @@ public class RestRemoteXWikiDataStorage
     {
         String tagsUrl = urlBuilder.getTagsUrl(wiki, space, page);
         this.restRemoteClient.removeTag(tagsUrl, tagName);
+    }
+
+    /**
+     * @param sourcePageId
+     * @param newWiki
+     * @param newSpace
+     * @param newPageName
+     * @return
+     * @throws Exception
+     */
+    public Page copyPage(Page sourcePageToBeCopied, String newWiki, String newSpace, String newPageName)
+        throws Exception
+    {
+        String pageUrl = urlBuilder.getCopyPageUrl(sourcePageToBeCopied.getId(), newWiki, newSpace, newPageName);
+        return restRemoteClient.renamePage(pageUrl, sourcePageToBeCopied);
+    }
+
+    /**
+     * @param sourcePageToBeMoved
+     * @param newWiki
+     * @param newSpace
+     * @param newPageName
+     * @return
+     */
+    public Page movePage(Page sourcePageToBeMoved, String newWiki, String newSpace, String newPageName)
+        throws Exception
+    {
+        String pageUrl = urlBuilder.getMovePageUrl(sourcePageToBeMoved.getId(), newWiki, newSpace, newPageName);
+        return restRemoteClient.renamePage(pageUrl, sourcePageToBeMoved);
     }
 }

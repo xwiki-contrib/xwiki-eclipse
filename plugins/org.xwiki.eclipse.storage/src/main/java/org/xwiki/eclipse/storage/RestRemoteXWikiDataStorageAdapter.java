@@ -1084,4 +1084,127 @@ public class RestRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStorag
 
         return result;
     }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @throws Exception
+     * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#copyPage(org.xwiki.eclipse.model.XWikiEclipsePageSummary,
+     *      java.lang.String, java.lang.String, java.lang.String)
+     */
+    @Override
+    public XWikiEclipsePage copyPage(XWikiEclipsePage sourcePage, String newWiki, String newSpace, String newPageName)
+        throws XWikiEclipseStorageException
+    {
+
+        Page sourcePageToBeCopied = new Page();
+        sourcePageToBeCopied.setCreated(sourcePage.getCreated());
+        sourcePageToBeCopied.setCreator(sourcePage.getCreator());
+        sourcePageToBeCopied.setFullName(sourcePage.getFullName());
+        sourcePageToBeCopied.setId(sourcePage.getId());
+        sourcePageToBeCopied.setLanguage(sourcePage.getLanguage());
+        sourcePageToBeCopied.setMajorVersion(sourcePage.getMajorVersion());
+        sourcePageToBeCopied.setMinorVersion(sourcePage.getMinorVersion());
+        sourcePageToBeCopied.setModified(sourcePage.getModified());
+        sourcePageToBeCopied.setModifier(sourcePage.getModifier());
+        sourcePageToBeCopied.setName(sourcePage.getName());
+        sourcePageToBeCopied.setParentId(sourcePage.getParentId());
+        sourcePageToBeCopied.setSpace(sourcePage.getSpace());
+        sourcePageToBeCopied.setSyntax(sourcePage.getSyntax());
+        sourcePageToBeCopied.setTitle(sourcePage.getTitle());
+        sourcePageToBeCopied.setVersion(sourcePage.getVersion());
+        sourcePageToBeCopied.setWiki(sourcePage.getWiki());
+
+        try {
+            Page page = restRemoteStorage.copyPage(sourcePageToBeCopied, newWiki, newSpace, newPageName);
+
+            XWikiEclipsePage result = new XWikiEclipsePage(dataManager);
+            result.setContent(page.getContent());
+            result.setCreated(page.getCreated());
+            result.setCreator(page.getCreator());
+            result.setFullName(page.getFullName());
+            result.setId(page.getId());
+            result.setLanguage(page.getLanguage());
+            result.setMajorVersion(page.getMajorVersion());
+            result.setMinorVersion(page.getMinorVersion());
+            result.setModified(page.getModified());
+            result.setModifier(page.getModifier());
+            result.setName(page.getName());
+            result.setParentId(page.getParentId());
+            result.setSpace(page.getSpace());
+            result.setSyntax(page.getSyntax());
+            result.setTitle(page.getTitle());
+            result.setVersion(page.getVersion());
+            result.setWiki(page.getWiki());
+            result.setUrl(page.getXwikiAbsoluteUrl());
+
+            return result;
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            throw new XWikiEclipseStorageException(e);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#movePage(org.xwiki.eclipse.model.XWikiEclipsePageSummary,
+     *      java.lang.String, java.lang.String, java.lang.String)
+     */
+    @Override
+    public XWikiEclipsePage movePage(XWikiEclipsePage sourcePage, String newWiki, String newSpace, String newPageName)
+        throws XWikiEclipseStorageException
+    {
+        Page sourcePageToBeMoved = new Page();
+        sourcePageToBeMoved.setCreated(sourcePage.getCreated());
+        sourcePageToBeMoved.setCreator(sourcePage.getCreator());
+        sourcePageToBeMoved.setFullName(sourcePage.getFullName());
+        sourcePageToBeMoved.setId(sourcePage.getId());
+        sourcePageToBeMoved.setLanguage(sourcePage.getLanguage());
+        sourcePageToBeMoved.setMajorVersion(sourcePage.getMajorVersion());
+        sourcePageToBeMoved.setMinorVersion(sourcePage.getMinorVersion());
+        sourcePageToBeMoved.setModified(sourcePage.getModified());
+        sourcePageToBeMoved.setModifier(sourcePage.getModifier());
+        sourcePageToBeMoved.setName(sourcePage.getName());
+        sourcePageToBeMoved.setParentId(sourcePage.getParentId());
+        sourcePageToBeMoved.setSpace(sourcePage.getSpace());
+        sourcePageToBeMoved.setSyntax(sourcePage.getSyntax());
+        sourcePageToBeMoved.setTitle(sourcePage.getTitle());
+        sourcePageToBeMoved.setVersion(sourcePage.getVersion());
+        sourcePageToBeMoved.setWiki(sourcePage.getWiki());
+
+        try {
+            Page page = restRemoteStorage.movePage(sourcePageToBeMoved, newWiki, newSpace, newPageName);
+            if (page != null) {
+                XWikiEclipsePage result = new XWikiEclipsePage(dataManager);
+                result.setContent(page.getContent());
+                result.setCreated(page.getCreated());
+                result.setCreator(page.getCreator());
+                result.setFullName(page.getFullName());
+                result.setId(page.getId());
+                result.setLanguage(page.getLanguage());
+                result.setMajorVersion(page.getMajorVersion());
+                result.setMinorVersion(page.getMinorVersion());
+                result.setModified(page.getModified());
+                result.setModifier(page.getModifier());
+                result.setName(page.getName());
+                result.setParentId(page.getParentId());
+                result.setSpace(page.getSpace());
+                result.setSyntax(page.getSyntax());
+                result.setTitle(page.getTitle());
+                result.setVersion(page.getVersion());
+                result.setWiki(page.getWiki());
+                result.setUrl(page.getXwikiAbsoluteUrl());
+
+                return result;
+            }
+
+            return null;
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            throw new XWikiEclipseStorageException(e);
+        }
+    }
 }

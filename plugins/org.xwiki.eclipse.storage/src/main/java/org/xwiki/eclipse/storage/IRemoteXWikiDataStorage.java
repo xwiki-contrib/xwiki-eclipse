@@ -132,4 +132,24 @@ public interface IRemoteXWikiDataStorage
      * @return
      */
     XWikiEclipseObject storeObject(XWikiEclipseObject object);
+
+    /**
+     * @param sourcePage
+     * @param newWiki
+     * @param newSpace
+     * @param newPageName
+     * @return
+     */
+    XWikiEclipsePage copyPage(XWikiEclipsePage sourcePage, String newWiki, String newSpace, String newPageName)
+        throws XWikiEclipseStorageException;
+
+    /**
+     * @param sourcePage
+     * @param newWiki
+     * @param newSpace
+     * @param newPageName
+     * @return
+     */
+    XWikiEclipsePage movePage(XWikiEclipsePage sourcePage, String newWiki, String newSpace, String newPageName)
+        throws XWikiEclipseStorageException;
 }

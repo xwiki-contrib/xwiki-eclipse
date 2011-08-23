@@ -20,6 +20,7 @@
  */
 package org.xwiki.eclipse.ui.dialogs;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.SafeRunner;
@@ -42,6 +43,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
@@ -49,6 +51,8 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
 import org.xwiki.eclipse.model.XWikiEclipseSpaceSummary;
+import org.xwiki.eclipse.model.XWikiEclipseWikiSummary;
+import org.xwiki.eclipse.storage.XWikiEclipseStorageException;
 import org.xwiki.eclipse.ui.utils.XWikiEclipseSafeRunnableWithResult;
 
 /**
@@ -57,6 +61,10 @@ import org.xwiki.eclipse.ui.utils.XWikiEclipseSafeRunnableWithResult;
 public class RenamePageDialog extends TitleAreaDialog
 {
     private XWikiEclipsePageSummary pageSummary;
+
+    private String action;
+
+    private String newWiki;
 
     private String newSpace;
 
@@ -85,8 +93,8 @@ public class RenamePageDialog extends TitleAreaDialog
     @Override
     protected void createButtonsForButtonBar(Composite parent)
     {
-        Button button = createButton(parent, IDialogConstants.OK_ID, "Rename", true);
-        button.addSelectionListener(new SelectionListener()
+        Button OKButton = createButton(parent, IDialogConstants.OK_ID, "Rename", true);
+        OKButton.addSelectionListener(new SelectionListener()
         {
 
             public void widgetDefaultSelected(SelectionEvent e)
@@ -123,6 +131,81 @@ public class RenamePageDialog extends TitleAreaDialog
         GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, true).applyTo(composite);
 
         Label label = new Label(composite, SWT.NONE);
+        label.setText("Action:");
+
+        final Combo actionCombo = new Combo(composite, SWT.READ_ONLY | SWT.DROP_DOWN);
+        final String[] actionItems = new String[] {"copy", "move"};
+        actionCombo.setItems(actionItems);
+        actionCombo.select(0);
+        actionCombo.addSelectionListener(new SelectionListener()
+        {
+
+            @Override
+            public void widgetSelected(SelectionEvent e)
+            {
+                if ("copy".equals(actionItems[actionCombo.getSelectionIndex()])) {
+                    action = "copyFrom";
+                }
+
+                if ("move".equals(actionItems[actionCombo.getSelectionIndex()])) {
+                    action = "moveFrom";
+                }
+            }
+
+            @Override
+            public void widgetDefaultSelected(SelectionEvent e)
+            {
+            }
+        });
+
+        label = new Label(composite, SWT.NONE);
+        label.setText("Wiki:");
+
+        final Combo combo = new Combo(composite, SWT.READ_ONLY | SWT.DROP_DOWN);
+        List<XWikiEclipseWikiSummary> wikis = new ArrayList<XWikiEclipseWikiSummary>();
+        try {
+            wikis = pageSummary.getDataManager().getWikis();
+        } catch (XWikiEclipseStorageException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
+        final String[] items = new String[wikis.size()];
+        for (int i = 0; i < items.length; i++) {
+            String wiki = wikis.get(i).getName();
+            items[i] = wiki;
+            if (wiki.equals(pageSummary.getWiki())) {
+                combo.select(i);
+            }
+        }
+        combo.setItems(items);
+
+        for (int i = 0; i < items.length; i++) {
+            String wiki = wikis.get(i).getName();
+            if (wiki.equals(pageSummary.getWiki())) {
+                combo.select(i);
+                newWiki = pageSummary.getWiki();
+            }
+        }
+
+        combo.addSelectionListener(new SelectionListener()
+        {
+
+            @Override
+            public void widgetSelected(SelectionEvent e)
+            {
+                // TODO Auto-generated method stub
+                newWiki = items[((Combo) e.getSource()).getSelectionIndex()];
+            }
+
+            @Override
+            public void widgetDefaultSelected(SelectionEvent e)
+            {
+                // TODO Auto-generated method stub
+
+            }
+        });
+
+        label = new Label(composite, SWT.NONE);
         label.setText("New space:");
 
         final ComboViewer comboViewer = new ComboViewer(composite, SWT.BORDER);
@@ -147,7 +230,7 @@ public class RenamePageDialog extends TitleAreaDialog
                     String[] elements = new String[runnable.getResult().size()];
                     int i = 0;
                     for (XWikiEclipseSpaceSummary spaceSummary : runnable.getResult()) {
-                        elements[i] = spaceSummary.getId();
+                        elements[i] = spaceSummary.getName();
                         i++;
                     }
 
@@ -228,4 +311,13 @@ public class RenamePageDialog extends TitleAreaDialog
         return newPageName;
     }
 
+    public String getNewWiki()
+    {
+        return newWiki;
+    }
+
+    public String getAction()
+    {
+        return action;
+    }
 }

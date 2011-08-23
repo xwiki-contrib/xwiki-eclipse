@@ -1350,4 +1350,47 @@ public class DataManager
 
         return result;
     }
+
+    /**
+     * @param pageSummary
+     * @param newWiki
+     * @param newSpace
+     * @param newPageName
+     * @throws CoreException
+     * @throws XWikiEclipseStorageException
+     */
+    public void copyPage(XWikiEclipsePageSummary pageSummary, String newWiki, String newSpace, String newPageName)
+        throws XWikiEclipseStorageException, CoreException
+    {
+        XWikiEclipsePage sourcePage =
+            getPage(pageSummary.getWiki(), pageSummary.getSpace(), pageSummary.getName(), pageSummary.getLanguage());
+        if (isConnected()) {
+            XWikiEclipsePage page = remoteXWikiDataStorage.copyPage(sourcePage, newWiki, newSpace, newPageName);
+            storePage(page);
+        }
+
+    }
+
+    /**
+     * @param pageSummary
+     * @param newWiki
+     * @param newSpace
+     * @param newPageName
+     * @throws CoreException
+     * @throws XWikiEclipseStorageException
+     */
+    public void movePage(XWikiEclipsePageSummary pageSummary, String newWiki, String newSpace, String newPageName)
+        throws XWikiEclipseStorageException, CoreException
+    {
+        XWikiEclipsePage sourcePage =
+            getPage(pageSummary.getWiki(), pageSummary.getSpace(), pageSummary.getName(), pageSummary.getLanguage());
+
+        if (isConnected()) {
+            XWikiEclipsePage page = remoteXWikiDataStorage.movePage(sourcePage, newWiki, newSpace, newPageName);
+            storePage(page);
+            /* the source page has been deleted in remote server, so remove the local copy as well */
+            localXWikiDataStorage.removePage(pageSummary.getId());
+        }
+
+    }
 }

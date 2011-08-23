@@ -25,7 +25,11 @@ import java.util.Set;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.SafeRunner;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.widgets.Display;
@@ -62,15 +66,45 @@ public class RenamePageHandler extends AbstractHandler
                 dialog.open();
 
                 if (dialog.getReturnCode() == IDialogConstants.OK_ID) {
-                    SafeRunner.run(new XWikiEclipseSafeRunnable()
+                    Job renameJob = new Job("Renaming...")
                     {
-                        public void run() throws Exception
+                        @Override
+                        protected IStatus run(IProgressMonitor monitor)
                         {
-                            pageSummary.getDataManager().renamePage(pageSummary, dialog.getNewSpace(),
-                                dialog.getNewPageName());
-                        }
-                    });
+                            monitor.beginTask("Renaming " + pageSummary.getId(), IProgressMonitor.UNKNOWN);
+                            if (monitor.isCanceled()) {
+                                return Status.CANCEL_STATUS;
+                            }
 
+                            if (dialog.getAction().equalsIgnoreCase("copyFrom")) {
+                                SafeRunner.run(new XWikiEclipseSafeRunnable()
+                                {
+                                    public void run() throws Exception
+                                    {
+                                        pageSummary.getDataManager().copyPage(pageSummary, dialog.getNewWiki(),
+                                            dialog.getNewSpace(), dialog.getNewPageName());
+                                    }
+                                });
+                            }
+
+                            if (dialog.getAction().equalsIgnoreCase("moveFrom")) {
+                                SafeRunner.run(new XWikiEclipseSafeRunnable()
+                                {
+                                    public void run() throws Exception
+                                    {
+                                        pageSummary.getDataManager().movePage(pageSummary, dialog.getNewWiki(),
+                                            dialog.getNewSpace(), dialog.getNewPageName());
+                                    }
+                                });
+                            }
+
+                            monitor.done();
+                            return Status.OK_STATUS;
+                        }
+                    };
+
+                    renameJob.setUser(true);
+                    renameJob.schedule();
                 }
             }
         }
