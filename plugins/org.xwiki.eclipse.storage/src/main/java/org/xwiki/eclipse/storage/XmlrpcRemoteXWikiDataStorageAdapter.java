@@ -603,4 +603,29 @@ public class XmlrpcRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStor
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#copyPage(org.xwiki.eclipse.model.XWikiEclipsePage,
+     *      java.lang.String, java.lang.String, java.lang.String)
+     */
+    @Override
+    public XWikiEclipsePage copyPage(XWikiEclipsePage sourcePage, String newWiki, String newSpace, String newPageName)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#movePage(org.xwiki.eclipse.model.XWikiEclipsePage,
+     *      java.lang.String, java.lang.String, java.lang.String)
+     */
+    @Override
+    public XWikiEclipsePage movePage(XWikiEclipsePage sourcePage, String newWiki, String newSpace, String newPageName)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }
