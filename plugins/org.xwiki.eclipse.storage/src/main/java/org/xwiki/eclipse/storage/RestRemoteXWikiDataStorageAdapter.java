@@ -511,7 +511,7 @@ public class RestRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStorag
      * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#getPage(org.xwiki.eclipse.model.ModelObject)
      */
     @Override
-    public XWikiEclipsePage getPage(String wiki, String space, String pageName, String language)
+    public synchronized XWikiEclipsePage getPage(String wiki, String space, String pageName, String language)
         throws XWikiEclipseStorageException
     {
         Page page;
