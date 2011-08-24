@@ -69,6 +69,8 @@ public class XWikiEclipsePageSummaryActionProvider extends CommonActionProvider
 
     private CommandContributionItem renamePage;
 
+    private CommandContributionItem copyPage;
+
     private ISelectionProvider selectionProvider;
 
     public void init(final ICommonActionExtensionSite aSite)
@@ -106,6 +108,12 @@ public class XWikiEclipsePageSummaryActionProvider extends CommonActionProvider
                 UIConstants.RENAME_PAGE_COMMAND, UIConstants.RENAME_PAGE_COMMAND, SWT.NONE);
 
         renamePage = new CommandContributionItem(ccip);
+
+        ccip =
+            new CommandContributionItemParameter(PlatformUI.getWorkbench().getActiveWorkbenchWindow(),
+                UIConstants.COPY_PAGE_COMMAND, UIConstants.COPY_PAGE_COMMAND, SWT.NONE);
+
+        copyPage = new CommandContributionItem(ccip);
     }
 
     public void fillContextMenu(IMenuManager menu)
@@ -123,7 +131,7 @@ public class XWikiEclipsePageSummaryActionProvider extends CommonActionProvider
         menu.appendToGroup(ICommonMenuConstants.GROUP_ADDITIONS, uploadAttachment);
         menu.appendToGroup(ICommonMenuConstants.GROUP_ADDITIONS, new Separator());
         menu.appendToGroup(ICommonMenuConstants.GROUP_ADDITIONS, renamePage);
-
+        menu.appendToGroup(ICommonMenuConstants.GROUP_ADDITIONS, copyPage);
     }
 
     private IMenuManager getHistoryMenu()

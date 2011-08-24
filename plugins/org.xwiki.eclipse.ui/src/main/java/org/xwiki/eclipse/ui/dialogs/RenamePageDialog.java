@@ -70,17 +70,18 @@ public class RenamePageDialog extends TitleAreaDialog
 
     private String newPageName;
 
-    public RenamePageDialog(Shell parentShell, XWikiEclipsePageSummary pageSummary)
+    public RenamePageDialog(Shell parentShell, XWikiEclipsePageSummary pageSummary, String action)
     {
         super(parentShell);
         setShellStyle(getShellStyle() | SWT.RESIZE | SWT.MAX);
         this.pageSummary = pageSummary;
+        this.action = action;
     }
 
     protected void configureShell(Shell newShell)
     {
         super.configureShell(newShell);
-        newShell.setText("Rename page");
+        newShell.setText(action.equals("copyFrom") ? "Copy Page" : "Rename page");
     }
 
     @Override
@@ -93,7 +94,8 @@ public class RenamePageDialog extends TitleAreaDialog
     @Override
     protected void createButtonsForButtonBar(Composite parent)
     {
-        Button OKButton = createButton(parent, IDialogConstants.OK_ID, "Rename", true);
+        Button OKButton =
+            createButton(parent, IDialogConstants.OK_ID, action.equals("copyFrom") ? "Copy" : "Rename", true);
         OKButton.addSelectionListener(new SelectionListener()
         {
 
@@ -115,7 +117,7 @@ public class RenamePageDialog extends TitleAreaDialog
     {
         Control contents = super.createContents(parent);
 
-        setTitle("Rename page");
+        setTitle(action.equals("copyFrom") ? "Copy Page" : "Rename page");
 
         return contents;
     }
@@ -131,34 +133,6 @@ public class RenamePageDialog extends TitleAreaDialog
         GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, true).applyTo(composite);
 
         Label label = new Label(composite, SWT.NONE);
-        label.setText("Action:");
-
-        final Combo actionCombo = new Combo(composite, SWT.READ_ONLY | SWT.DROP_DOWN);
-        final String[] actionItems = new String[] {"copy", "move"};
-        actionCombo.setItems(actionItems);
-        actionCombo.select(0);
-        actionCombo.addSelectionListener(new SelectionListener()
-        {
-
-            @Override
-            public void widgetSelected(SelectionEvent e)
-            {
-                if ("copy".equals(actionItems[actionCombo.getSelectionIndex()])) {
-                    action = "copyFrom";
-                }
-
-                if ("move".equals(actionItems[actionCombo.getSelectionIndex()])) {
-                    action = "moveFrom";
-                }
-            }
-
-            @Override
-            public void widgetDefaultSelected(SelectionEvent e)
-            {
-            }
-        });
-
-        label = new Label(composite, SWT.NONE);
         label.setText("Wiki:");
 
         final Combo combo = new Combo(composite, SWT.READ_ONLY | SWT.DROP_DOWN);

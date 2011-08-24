@@ -506,6 +506,11 @@
         id="org.xwiki.eclipse.ui.commands.NewTag"
         name="New Tag">
   </command>
+  <command
+        categoryId="org.xwiki.eclipse"
+        id="org.xwiki.eclipse.ui.commands.CopyPage"
+        name="Copy">
+  </command>
 	</extension>
 	<extension point="org.eclipse.ui.handlers">
 		<handler class="org.xwiki.eclipse.ui.handlers.DataManagerConnectHandler" commandId="org.xwiki.eclipse.ui.commands.DataManagerConnect">
@@ -621,6 +626,18 @@
   <handler
         class="org.xwiki.eclipse.ui.handlers.XWikiEclipseTagHandler"
         commandId="org.xwiki.eclipse.ui.commands.NewTag">
+  </handler>
+  <handler
+        class="org.xwiki.eclipse.ui.handlers.CopyPageHandler"
+        commandId="org.xwiki.eclipse.ui.commands.CopyPage">
+     <activeWhen>
+        <iterate
+              operator="and">
+           <instanceof
+                 value="org.xwiki.eclipse.model.XWikiEclipsePageSummary">
+           </instanceof>
+        </iterate>
+     </activeWhen>
   </handler>
 	</extension>
  <extension

@@ -97,6 +97,8 @@ public class UIConstants
 
     public static final String RENAME_PAGE_COMMAND = "org.xwiki.eclipse.ui.commands.RenamePage";
 
+    public static final String COPY_PAGE_COMMAND = "org.xwiki.eclipse.ui.commands.CopyPage";
+
     public static final String GRAB_SPACE_COMMAND = "org.xwiki.eclipse.ui.commands.GrabSpace";
 
     public static final String NAVIGATOR_VIEW_ID = "org.xwiki.eclipse.ui.views.Navigator";

@@ -43,7 +43,7 @@ import org.xwiki.eclipse.ui.utils.XWikiEclipseSafeRunnable;
 /**
  * @version $Id$
  */
-public class RenamePageHandler extends AbstractHandler
+public class CopyPageHandler extends AbstractHandler
 {
     public Object execute(ExecutionEvent event) throws ExecutionException
     {
@@ -63,26 +63,26 @@ public class RenamePageHandler extends AbstractHandler
                 }
 
                 final RenamePageDialog dialog =
-                    new RenamePageDialog(HandlerUtil.getActiveShell(event), pageSummary, "moveFrom");
+                    new RenamePageDialog(HandlerUtil.getActiveShell(event), pageSummary, "copyFrom");
                 dialog.open();
 
                 if (dialog.getReturnCode() == IDialogConstants.OK_ID) {
-                    Job renameJob = new Job("Renaming...")
+                    Job renameJob = new Job("Copying...")
                     {
                         @Override
                         protected IStatus run(IProgressMonitor monitor)
                         {
-                            monitor.beginTask("Renaming " + pageSummary.getId(), IProgressMonitor.UNKNOWN);
+                            monitor.beginTask("Copying " + pageSummary.getId(), IProgressMonitor.UNKNOWN);
                             if (monitor.isCanceled()) {
                                 return Status.CANCEL_STATUS;
                             }
 
-                            if (dialog.getAction().equalsIgnoreCase("moveFrom")) {
+                            if (dialog.getAction().equalsIgnoreCase("copyFrom")) {
                                 SafeRunner.run(new XWikiEclipseSafeRunnable()
                                 {
                                     public void run() throws Exception
                                     {
-                                        pageSummary.getDataManager().movePage(pageSummary, dialog.getNewWiki(),
+                                        pageSummary.getDataManager().copyPage(pageSummary, dialog.getNewWiki(),
                                             dialog.getNewSpace(), dialog.getNewPageName());
                                     }
                                 });
