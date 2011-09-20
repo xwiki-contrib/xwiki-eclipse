@@ -48,7 +48,7 @@ if not, write to the Free Software Foundation, Inc.,
    </license>
 
    <requires>
-      <import plugin="org.xwiki.eclipse.xmlrpc" version="1.4.0" match="greaterOrEqual"/>
+      <import plugin="org.xwiki.eclipse.xmlrpc" version="1.2.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.runtime" version="3.6.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.resources" version="3.6.1" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.expressions" version="3.4.200" match="greaterOrEqual"/>

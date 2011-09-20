@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.xwiki.eclipse.core;singleton:=true
 Bundle-Version: 1.2.0.qualifier
 Bundle-Activator: org.xwiki.eclipse.core.CorePlugin
 Bundle-Vendor: XWiki
-Require-Bundle: org.xwiki.eclipse.xmlrpc;bundle-version="1.4.0",
+Require-Bundle: org.xwiki.eclipse.xmlrpc;bundle-version="1.2.0",
  org.eclipse.core.runtime;bundle-version="3.6.0",
  org.eclipse.core.resources;bundle-version="3.6.1",
  org.eclipse.core.expressions;bundle-version="3.4.200"
