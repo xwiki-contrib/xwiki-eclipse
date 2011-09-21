@@ -20,7 +20,6 @@ Building XEclipse
 ===========================
 
 0) Install Maven 3.0.3+ and JDK 6.0.
-0.5) Build and install tycho 0.13.0-SNAPSHOT (see https://docs.sonatype.org/display/TYCHO/BuildingTycho) as it is not publicly available from maven repository
 1) Checkout the master branch: https://github.com/junhan/xwiki-eclipse.
 2) cd to xwiki-eclipse/.
 3) Do a "mvn clean install".

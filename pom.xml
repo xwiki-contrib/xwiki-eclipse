@@ -37,7 +37,7 @@
   </prerequisites>
 
   <properties>
-    <tycho-version>0.13.0-SNAPSHOT</tycho-version>
+    <tycho-version>0.13.0</tycho-version>
   </properties>
   <repositories>
     <!-- configure p2 repository to resolve against -->
@@ -45,6 +45,10 @@
       <id>indigo</id>
       <layout>p2</layout>
       <url>http://download.eclipse.org/releases/indigo</url>
+    </repository>
+    <repository>
+      <id>tycho-repository-site</id>
+      <url>http://repository.sonatype.org/content/groups/sonatype-public-grid/</url>
     </repository>
     <!-- SWTbot is not part of the helios update site -->
 <!--
