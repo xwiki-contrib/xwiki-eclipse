@@ -384,12 +384,9 @@ public class RestRemoteXWikiDataStorage
                         + URLEncoder.encode(className, "UTF-8");
                 return url;
             } catch (UnsupportedEncodingException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                // This should never happen, UTF-8 is always available
             }
             return null;
-
-            // return endpoint + "/wikis/" + wiki + "/classes/" + className;
         }
 
         /**
@@ -407,11 +404,9 @@ public class RestRemoteXWikiDataStorage
                         + "/tags";
                 return url;
             } catch (UnsupportedEncodingException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                // This should never happen, UTF-8 is always available
             }
             return null;
-            // return endpoint + "/wikis/" + wiki + "/spaces/" + space + "/pages/" + pageName + "/tags";
         }
 
         /**
@@ -431,12 +426,9 @@ public class RestRemoteXWikiDataStorage
                         + "/objects/" + URLEncoder.encode(className, "UTF-8") + "/" + number;
                 return url;
             } catch (UnsupportedEncodingException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                // This should never happen, UTF-8 is always available
             }
             return null;
-            // return endpoint + "/wikis/" + wiki + "/spaces/" + space + "/pages/" + pageName + "/objects/" + className
-            // + "/" + number;
         }
 
         /**
@@ -463,15 +455,9 @@ public class RestRemoteXWikiDataStorage
                 }
                 return url;
             } catch (UnsupportedEncodingException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                // This should never happen, UTF-8 is always available
             }
             return null;
-            // if (language != null && !language.equals("")) {
-            // return endpoint + "/wikis/" + wiki + "/spaces/" + space + "/pages/" + pageName + "/translations/"
-            // + language;
-            // }
-            // return endpoint + "/wikis/" + wiki + "/spaces/" + space + "/pages/" + pageName;
         }
 
         /**
@@ -491,12 +477,9 @@ public class RestRemoteXWikiDataStorage
                         + "/objects/" + URLEncoder.encode(className, "UTF-8") + "/" + number + "/properties";
                 return url;
             } catch (UnsupportedEncodingException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                // This should never happen, UTF-8 is always available
             }
             return null;
-            // return endpoint + "/wikis/" + wiki + "/spaces/" + space + "/pages/" + pageName + "/objects/" + className
-            // + "/" + number + "/properties";
         }
 
         /**
@@ -514,11 +497,9 @@ public class RestRemoteXWikiDataStorage
                         + "/comments";
                 return url;
             } catch (UnsupportedEncodingException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                // This should never happen, UTF-8 is always available
             }
             return null;
-            // return endpoint + "/wikis/" + wiki + "/spaces/" + space + "/pages/" + pageName + "/comments";
         }
 
         /**
@@ -545,16 +526,9 @@ public class RestRemoteXWikiDataStorage
                 }
                 return url;
             } catch (UnsupportedEncodingException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                // This should never happen, UTF-8 is always available
             }
             return null;
-
-            // if (language != null && !language.equals("")) {
-            // return endpoint + "/wikis/" + wiki + "/spaces/" + space + "/pages/" + pageName + "/translations/"
-            // + language + "/history";
-            // }
-            // return endpoint + "/wikis/" + wiki + "/spaces/" + space + "/pages/" + pageName + "/history";
         }
 
         /**
@@ -572,12 +546,9 @@ public class RestRemoteXWikiDataStorage
                         + "/attachments/" + URLEncoder.encode(attachmentName, "UTF-8");
                 return url;
             } catch (UnsupportedEncodingException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                // This should never happen, UTF-8 is always available
             }
             return null;
-            // return endpoint + "/wikis/" + wiki + "/spaces/" + space + "/pages/" + pageName + "/attachments/"
-            // + attachmentName;
         }
 
         public String getAttachmentsUrl(String wiki, String space, String pageName)
@@ -589,11 +560,9 @@ public class RestRemoteXWikiDataStorage
                         + "/attachments";
                 return url;
             } catch (UnsupportedEncodingException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                // This should never happen, UTF-8 is always available
             }
             return null;
-            // return endpoint + "/wikis/" + wiki + "/spaces/" + space + "/pages/" + pageName + "/attachments";
         }
 
         /**
@@ -611,11 +580,9 @@ public class RestRemoteXWikiDataStorage
                         + "/objects";
                 return url;
             } catch (UnsupportedEncodingException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                // This should never happen, UTF-8 is always available
             }
             return null;
-            // return endpoint + "/wikis/" + wiki + "/spaces/" + space + "/pages/" + pageName + "/objects";
         }
 
         /**
@@ -631,11 +598,9 @@ public class RestRemoteXWikiDataStorage
                         + URLEncoder.encode(space, "UTF-8") + "/pages";
                 return url;
             } catch (UnsupportedEncodingException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                // This should never happen, UTF-8 is always available
             }
             return null;
-            // return endpoint + "/wikis/" + wiki + "/spaces/" + space + "/pages";
         }
 
         public String getRootUrl()
@@ -659,11 +624,9 @@ public class RestRemoteXWikiDataStorage
                 String url = endpoint + "/wikis/" + URLEncoder.encode(wikiId, "UTF-8") + "/spaces";
                 return url;
             } catch (UnsupportedEncodingException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                // This should never happen, UTF-8 is always available
             }
             return null;
-            // return endpoint + "/wikis/" + wikiId + "/spaces";
         }
 
         /**
@@ -678,12 +641,25 @@ public class RestRemoteXWikiDataStorage
         public String getPageHistoryUrl(String wiki, String space, String name, String language, int majorVersion,
             int minorVersion)
         {
-            if (!language.equals("")) {
-                return endpoint + "/wikis/" + wiki + "/spaces/" + space + "/pages/" + name + "/translations/"
-                    + language + "/history/" + majorVersion + "." + minorVersion;
+            try {
+                String url = null;
+
+                if (!language.equals("")) {
+                    url =
+                        endpoint + "/wikis/" + URLEncoder.encode(wiki, "UTF-8") + "/spaces/"
+                            + URLEncoder.encode(space, "UTF-8") + "/pages/" + URLEncoder.encode(name, "UTF-8")
+                            + "/translations/" + language + "/history/" + majorVersion + "." + minorVersion;
+                } else {
+                    url =
+                        endpoint + "/wikis/" + URLEncoder.encode(wiki, "UTF-8") + "/spaces/"
+                            + URLEncoder.encode(space, "UTF-8") + "/pages/" + URLEncoder.encode(name, "UTF-8")
+                            + "/history/" + majorVersion + "." + minorVersion;
+                }
+                return url;
+            } catch (UnsupportedEncodingException e) {
+                // This should never happen, UTF-8 is always available
             }
-            return endpoint + "/wikis/" + wiki + "/spaces/" + space + "/pages/" + name + "/history/" + majorVersion
-                + "." + minorVersion;
+            return null;
         }
 
         /**
@@ -702,12 +678,9 @@ public class RestRemoteXWikiDataStorage
                         + "?copyFrom=" + URLEncoder.encode(sourcePageId, "UTF-8");
                 return url;
             } catch (UnsupportedEncodingException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                // This should never happen, UTF-8 is always available
             }
             return null;
-            // return endpoint + "/wikis/" + newWiki + "/spaces/" + newSpace + "/pages/" + newPageName + "?copyFrom="
-            // + sourcePageId;
         }
 
         /**
@@ -726,12 +699,9 @@ public class RestRemoteXWikiDataStorage
                         + "?moveFrom=" + URLEncoder.encode(sourcePageId, "UTF-8");
                 return url;
             } catch (UnsupportedEncodingException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                // This should never happen, UTF-8 is always available
             }
             return null;
-            // return endpoint + "/wikis/" + newWiki + "/spaces/" + newSpace + "/pages/" + newPageName + "?moveFrom="
-            // + sourcePageId;
         }
     }
 
