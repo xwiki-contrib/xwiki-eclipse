@@ -19,9 +19,9 @@
  */
 package org.xwiki.eclipse.rest;
 
-import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.util.List;
 
 import org.xwiki.rest.model.jaxb.Attachment;
@@ -74,7 +74,6 @@ public class RestRemoteXWikiDataStorage
         try {
             return restRemoteClient.getWikis(username, password);
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
             throw e;
         }
@@ -91,7 +90,6 @@ public class RestRemoteXWikiDataStorage
         try {
             return restRemoteClient.getSpaces(spacesUrl);
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
@@ -167,7 +165,6 @@ public class RestRemoteXWikiDataStorage
         try {
             return this.restRemoteClient.getPage(pageUrl);
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             // e.printStackTrace();
             throw e;
         }
@@ -179,7 +176,6 @@ public class RestRemoteXWikiDataStorage
         try {
             return this.restRemoteClient.getClass(classUrl);
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
@@ -196,7 +192,6 @@ public class RestRemoteXWikiDataStorage
         try {
             return this.restRemoteClient.getTags(tagsUrl);
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
@@ -213,7 +208,6 @@ public class RestRemoteXWikiDataStorage
         try {
             return this.restRemoteClient.getComments(commentsUrl);
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
@@ -230,7 +224,6 @@ public class RestRemoteXWikiDataStorage
         try {
             return this.restRemoteClient.getObjectProperties(propertiesUrl);
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
@@ -256,7 +249,6 @@ public class RestRemoteXWikiDataStorage
         try {
             return this.restRemoteClient.getObject(objectUrl);
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
@@ -288,7 +280,6 @@ public class RestRemoteXWikiDataStorage
         try {
             return this.restRemoteClient.storeComment(commentsUrl, comment);
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
@@ -311,13 +302,12 @@ public class RestRemoteXWikiDataStorage
      */
     public List<Tag> getAllTagsInWiki(String wikiName)
     {
-        String allTagsUrl = this.endpoint + "/wikis/" + wikiName + "/tags";
+        String allTagsUrl = urlBuilder.getTagsUrl(wikiName);
         List<Tag> result;
         try {
             result = restRemoteClient.getAllTags(allTagsUrl);
             return result;
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
@@ -337,7 +327,6 @@ public class RestRemoteXWikiDataStorage
             result = this.restRemoteClient.addTag(tagsUrl, tagName);
             return result;
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
@@ -355,7 +344,6 @@ public class RestRemoteXWikiDataStorage
             result = this.restRemoteClient.getClasses(wiki);
             return result;
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
@@ -366,9 +354,46 @@ public class RestRemoteXWikiDataStorage
     {
         private String endpoint;
 
+        private String host;
+
+        private int port;
+
+        private String scheme;
+
+        private String userInfo;
+
+        private String pathPrefix;
+
         public RestUrlBuilder(String endpoint)
         {
             this.endpoint = endpoint;
+            try {
+                URI uri = new URI(endpoint);
+                this.host = uri.getHost();
+                this.port = uri.getPort();
+                this.scheme = uri.getScheme();
+                this.userInfo = uri.getUserInfo();
+                this.pathPrefix = uri.getPath();
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+            }
+
+        }
+
+        /**
+         * @param wikiName
+         * @return
+         */
+        public String getTagsUrl(String wikiName)
+        {
+            try {
+                String path = pathPrefix + "/wikis/" + wikiName + "/tags";
+                URI uri = new URI(scheme, userInfo, host, port, path, null, null);
+                return uri.toASCIIString();
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+            }
+            return null;
         }
 
         /**
@@ -379,12 +404,11 @@ public class RestRemoteXWikiDataStorage
         public String getclassUrl(String wiki, String className)
         {
             try {
-                String url =
-                    endpoint + "/wikis/" + URLEncoder.encode(wiki, "UTF-8") + "/classes/"
-                        + URLEncoder.encode(className, "UTF-8");
-                return url;
-            } catch (UnsupportedEncodingException e) {
-                // This should never happen, UTF-8 is always available
+                String path = pathPrefix + "/wikis/" + wiki + "/classes/" + className;
+                URI uri = new URI(scheme, userInfo, host, port, path, null, null);
+                return uri.toASCIIString();
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
             }
             return null;
         }
@@ -398,13 +422,11 @@ public class RestRemoteXWikiDataStorage
         public String getTagsUrl(String wiki, String space, String pageName)
         {
             try {
-                String url =
-                    endpoint + "/wikis/" + URLEncoder.encode(wiki, "UTF-8") + "/spaces/"
-                        + URLEncoder.encode(space, "UTF-8") + "/pages/" + URLEncoder.encode(pageName, "UTF-8")
-                        + "/tags";
-                return url;
-            } catch (UnsupportedEncodingException e) {
-                // This should never happen, UTF-8 is always available
+                String path = pathPrefix + "/wikis/" + wiki + "/spaces/" + space + "/pages/" + pageName + "/tags";
+                URI uri = new URI(scheme, userInfo, host, port, path, null, null);
+                return uri.toASCIIString();
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
             }
             return null;
         }
@@ -420,13 +442,13 @@ public class RestRemoteXWikiDataStorage
         public String getObjectUrl(String wiki, String space, String pageName, String className, int number)
         {
             try {
-                String url =
-                    endpoint + "/wikis/" + URLEncoder.encode(wiki, "UTF-8") + "/spaces/"
-                        + URLEncoder.encode(space, "UTF-8") + "/pages/" + URLEncoder.encode(pageName, "UTF-8")
-                        + "/objects/" + URLEncoder.encode(className, "UTF-8") + "/" + number;
-                return url;
-            } catch (UnsupportedEncodingException e) {
-                // This should never happen, UTF-8 is always available
+                String path =
+                    pathPrefix + "/wikis/" + wiki + "/spaces/" + space + "/pages/" + pageName + "/objects/" + className
+                        + "/" + number;
+                URI uri = new URI(scheme, userInfo, host, port, path, null, null);
+                return uri.toASCIIString();
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
             }
             return null;
         }
@@ -441,21 +463,19 @@ public class RestRemoteXWikiDataStorage
         public String getPageUrl(String wiki, String space, String pageName, String language)
         {
             try {
-                String url = null;
+                String path = null;
                 if (language != null && !language.equals("")) {
-                    url =
-                        endpoint + "/wikis/" + URLEncoder.encode(wiki, "UTF-8") + "/spaces/"
-                            + URLEncoder.encode(space, "UTF-8") + "/pages/" + URLEncoder.encode(pageName, "UTF-8")
-                            + "/translations/" + language;
+                    path =
+                        pathPrefix + "/wikis/" + wiki + "/spaces/" + space + "/pages/" + pageName + "/translations/"
+                            + language;
                 } else {
-                    url =
-                        endpoint + "/wikis/" + URLEncoder.encode(wiki, "UTF-8") + "/spaces/"
-                            + URLEncoder.encode(space, "UTF-8") + "/pages/" + URLEncoder.encode(pageName, "UTF-8");
+                    path = pathPrefix + "/wikis/" + wiki + "/spaces/" + space + "/pages/" + pageName;
 
                 }
-                return url;
-            } catch (UnsupportedEncodingException e) {
-                // This should never happen, UTF-8 is always available
+                URI uri = new URI(scheme, userInfo, host, port, path, null, null);
+                return uri.toASCIIString();
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
             }
             return null;
         }
@@ -471,13 +491,13 @@ public class RestRemoteXWikiDataStorage
         public String getObjectPropertiesUrl(String wiki, String space, String pageName, String className, int number)
         {
             try {
-                String url =
-                    endpoint + "/wikis/" + URLEncoder.encode(wiki, "UTF-8") + "/spaces/"
-                        + URLEncoder.encode(space, "UTF-8") + "/pages/" + URLEncoder.encode(pageName, "UTF-8")
-                        + "/objects/" + URLEncoder.encode(className, "UTF-8") + "/" + number + "/properties";
-                return url;
-            } catch (UnsupportedEncodingException e) {
-                // This should never happen, UTF-8 is always available
+                String path =
+                    pathPrefix + "/wikis/" + wiki + "/spaces/" + space + "/pages/" + pageName + "/objects/" + className
+                        + "/" + number + "/properties";
+                URI uri = new URI(scheme, userInfo, host, port, path, null, null);
+                return uri.toASCIIString();
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
             }
             return null;
         }
@@ -491,13 +511,11 @@ public class RestRemoteXWikiDataStorage
         public String getCommentsUrl(String wiki, String space, String pageName)
         {
             try {
-                String url =
-                    endpoint + "/wikis/" + URLEncoder.encode(wiki, "UTF-8") + "/spaces/"
-                        + URLEncoder.encode(space, "UTF-8") + "/pages/" + URLEncoder.encode(pageName, "UTF-8")
-                        + "/comments";
-                return url;
-            } catch (UnsupportedEncodingException e) {
-                // This should never happen, UTF-8 is always available
+                String path = pathPrefix + "/wikis/" + wiki + "/spaces/" + space + "/pages/" + pageName + "/comments";
+                URI uri = new URI(scheme, userInfo, host, port, path, null, null);
+                return uri.toASCIIString();
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
             }
             return null;
         }
@@ -512,21 +530,19 @@ public class RestRemoteXWikiDataStorage
         public String getHistoryUrl(String wiki, String space, String pageName, String language)
         {
             try {
-                String url = null;
+                String path = null;
                 if (language != null && !language.equals("")) {
-                    url =
-                        endpoint + "/wikis/" + URLEncoder.encode(wiki, "UTF-8") + "/spaces/"
-                            + URLEncoder.encode(space, "UTF-8") + "/pages/" + URLEncoder.encode(pageName, "UTF-8")
-                            + "/translations/" + language + "/history";
+                    path =
+                        pathPrefix + "/wikis/" + wiki + "/spaces/" + space + "/pages/" + pageName + "/translations/"
+                            + language + "/history";
                 } else {
-                    url =
-                        endpoint + "/wikis/" + URLEncoder.encode(wiki, "UTF-8") + "/spaces/"
-                            + URLEncoder.encode(space, "UTF-8") + "/pages/" + URLEncoder.encode(pageName, "UTF-8")
-                            + "/history";
+                    path = pathPrefix + "/wikis/" + wiki + "/spaces/" + space + "/pages/" + pageName + "/history";
                 }
-                return url;
-            } catch (UnsupportedEncodingException e) {
-                // This should never happen, UTF-8 is always available
+
+                URI uri = new URI(scheme, userInfo, host, port, path, null, null);
+                return uri.toASCIIString();
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
             }
             return null;
         }
@@ -540,13 +556,13 @@ public class RestRemoteXWikiDataStorage
         public String getAttachmentUrl(String wiki, String space, String pageName, String attachmentName)
         {
             try {
-                String url =
-                    endpoint + "/wikis/" + URLEncoder.encode(wiki, "UTF-8") + "/spaces/"
-                        + URLEncoder.encode(space, "UTF-8") + "/pages/" + URLEncoder.encode(pageName, "UTF-8")
-                        + "/attachments/" + URLEncoder.encode(attachmentName, "UTF-8");
-                return url;
-            } catch (UnsupportedEncodingException e) {
-                // This should never happen, UTF-8 is always available
+                String path =
+                    pathPrefix + "/wikis/" + wiki + "/spaces/" + space + "/pages/" + pageName + "/attachments/"
+                        + attachmentName;
+                URI uri = new URI(scheme, userInfo, host, port, path, null, null);
+                return uri.toASCIIString();
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
             }
             return null;
         }
@@ -554,13 +570,12 @@ public class RestRemoteXWikiDataStorage
         public String getAttachmentsUrl(String wiki, String space, String pageName)
         {
             try {
-                String url =
-                    endpoint + "/wikis/" + URLEncoder.encode(wiki, "UTF-8") + "/spaces/"
-                        + URLEncoder.encode(space, "UTF-8") + "/pages/" + URLEncoder.encode(pageName, "UTF-8")
-                        + "/attachments";
-                return url;
-            } catch (UnsupportedEncodingException e) {
-                // This should never happen, UTF-8 is always available
+                String path =
+                    pathPrefix + "/wikis/" + wiki + "/spaces/" + space + "/pages/" + pageName + "/attachments";
+                URI uri = new URI(scheme, userInfo, host, port, path, null, null);
+                return uri.toASCIIString();
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
             }
             return null;
         }
@@ -574,13 +589,11 @@ public class RestRemoteXWikiDataStorage
         public String getObjectsUrl(String wiki, String space, String pageName)
         {
             try {
-                String url =
-                    endpoint + "/wikis/" + URLEncoder.encode(wiki, "UTF-8") + "/spaces/"
-                        + URLEncoder.encode(space, "UTF-8") + "/pages/" + URLEncoder.encode(pageName, "UTF-8")
-                        + "/objects";
-                return url;
-            } catch (UnsupportedEncodingException e) {
-                // This should never happen, UTF-8 is always available
+                String path = pathPrefix + "/wikis/" + wiki + "/spaces/" + space + "/pages/" + pageName + "/objects";
+                URI uri = new URI(scheme, userInfo, host, port, path, null, null);
+                return uri.toASCIIString();
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
             }
             return null;
         }
@@ -593,38 +606,58 @@ public class RestRemoteXWikiDataStorage
         public String getPagesUrl(String wiki, String space)
         {
             try {
-                String url =
-                    endpoint + "/wikis/" + URLEncoder.encode(wiki, "UTF-8") + "/spaces/"
-                        + URLEncoder.encode(space, "UTF-8") + "/pages";
-                return url;
-            } catch (UnsupportedEncodingException e) {
-                // This should never happen, UTF-8 is always available
+                String path = pathPrefix + "/wikis/" + wiki + "/spaces/" + space + "/pages";
+                URI uri = new URI(scheme, userInfo, host, port, path, null, null);
+                return uri.toASCIIString();
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
             }
             return null;
         }
 
         public String getRootUrl()
         {
-            return endpoint;
+            try {
+                URI uri = new URI(scheme, userInfo, host, port, pathPrefix, null, null);
+                return uri.toASCIIString();
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+            }
+            return null;
         }
 
         public String getWikisUrl()
         {
-            return endpoint + "/wikis";
+            try {
+                String path = pathPrefix + "/wikis";
+                URI uri = new URI(scheme, userInfo, host, port, path, null, null);
+                return uri.toASCIIString();
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+            }
+            return null;
         }
 
         public String getSyntaxesUrl()
         {
-            return endpoint + "/syntaxes";
+            try {
+                String path = pathPrefix + "/syntaxes";
+                URI uri = new URI(scheme, userInfo, host, port, path, null, null);
+                return uri.toASCIIString();
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+            }
+            return null;
         }
 
         public String getSpacesUrl(String wikiId)
         {
             try {
-                String url = endpoint + "/wikis/" + URLEncoder.encode(wikiId, "UTF-8") + "/spaces";
-                return url;
-            } catch (UnsupportedEncodingException e) {
-                // This should never happen, UTF-8 is always available
+                String path = pathPrefix + "/wikis/" + wikiId + "/spaces";
+                URI uri = new URI(scheme, userInfo, host, port, path, null, null);
+                return uri.toASCIIString();
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
             }
             return null;
         }
@@ -642,22 +675,21 @@ public class RestRemoteXWikiDataStorage
             int minorVersion)
         {
             try {
-                String url = null;
+                String path = null;
 
                 if (!language.equals("")) {
-                    url =
-                        endpoint + "/wikis/" + URLEncoder.encode(wiki, "UTF-8") + "/spaces/"
-                            + URLEncoder.encode(space, "UTF-8") + "/pages/" + URLEncoder.encode(name, "UTF-8")
-                            + "/translations/" + language + "/history/" + majorVersion + "." + minorVersion;
+                    path =
+                        pathPrefix + "/wikis/" + wiki + "/spaces/" + space + "/pages/" + name + "/translations/"
+                            + language + "/history/" + majorVersion + "." + minorVersion;
                 } else {
-                    url =
-                        endpoint + "/wikis/" + URLEncoder.encode(wiki, "UTF-8") + "/spaces/"
-                            + URLEncoder.encode(space, "UTF-8") + "/pages/" + URLEncoder.encode(name, "UTF-8")
-                            + "/history/" + majorVersion + "." + minorVersion;
+                    path =
+                        pathPrefix + "/wikis/" + wiki + "/spaces/" + space + "/pages/" + name + "/history/"
+                            + majorVersion + "." + minorVersion;
                 }
-                return url;
-            } catch (UnsupportedEncodingException e) {
-                // This should never happen, UTF-8 is always available
+                URI uri = new URI(scheme, userInfo, host, port, path, null, null);
+                return uri.toASCIIString();
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
             }
             return null;
         }
@@ -672,13 +704,12 @@ public class RestRemoteXWikiDataStorage
         public String getCopyPageUrl(String sourcePageId, String newWiki, String newSpace, String newPageName)
         {
             try {
-                String url =
-                    endpoint + "/wikis/" + URLEncoder.encode(newWiki, "UTF-8") + "/spaces/"
-                        + URLEncoder.encode(newSpace, "UTF-8") + "/pages/" + URLEncoder.encode(newPageName, "UTF-8")
-                        + "?copyFrom=" + URLEncoder.encode(sourcePageId, "UTF-8");
-                return url;
-            } catch (UnsupportedEncodingException e) {
-                // This should never happen, UTF-8 is always available
+                String path = pathPrefix + "/wikis/" + newWiki + "/spaces/" + newSpace + "/pages/" + newPageName;
+                String query = "copyFrom=" + sourcePageId;
+                URI uri = new URI(scheme, userInfo, host, port, path, query, null);
+                return uri.toASCIIString();
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
             }
             return null;
         }
@@ -693,13 +724,12 @@ public class RestRemoteXWikiDataStorage
         public String getMovePageUrl(String sourcePageId, String newWiki, String newSpace, String newPageName)
         {
             try {
-                String url =
-                    endpoint + "/wikis/" + URLEncoder.encode(newWiki, "UTF-8") + "/spaces/"
-                        + URLEncoder.encode(newSpace, "UTF-8") + "/pages/" + URLEncoder.encode(newPageName, "UTF-8")
-                        + "?moveFrom=" + URLEncoder.encode(sourcePageId, "UTF-8");
-                return url;
-            } catch (UnsupportedEncodingException e) {
-                // This should never happen, UTF-8 is always available
+                String path = pathPrefix + "/wikis/" + newWiki + "/spaces/" + newSpace + "/pages/" + newPageName;
+                String query = "moveFrom=" + sourcePageId;
+                URI uri = new URI(scheme, userInfo, host, port, path, query, null);
+                return uri.toASCIIString();
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
             }
             return null;
         }
@@ -717,7 +747,6 @@ public class RestRemoteXWikiDataStorage
             result = restRemoteClient.storePage(pageUrl, page);
             return result;
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
@@ -774,7 +803,6 @@ public class RestRemoteXWikiDataStorage
             result = restRemoteClient.storeObject(objectUrl, o);
             return result;
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
