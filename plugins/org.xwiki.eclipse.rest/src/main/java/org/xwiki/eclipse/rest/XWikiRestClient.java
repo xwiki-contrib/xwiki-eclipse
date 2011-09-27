@@ -23,6 +23,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -84,7 +85,7 @@ import org.xwiki.rest.model.jaxb.Xwiki;
 public class XWikiRestClient
 {
 
-    private String serverUrl;
+    private URI serverURI;
 
     protected Marshaller marshaller;
 
@@ -96,19 +97,20 @@ public class XWikiRestClient
 
     private String password;
 
-    public XWikiRestClient(String serverUrl, String username, String password)
+    public XWikiRestClient(String serverURLAsString, String username, String password)
     {
-        this.serverUrl = serverUrl;
-        this.username = username;
-        this.password = password;
-
-        JAXBContext context;
         try {
-            context = JAXBContext.newInstance("org.xwiki.rest.model.jaxb");
+            this.serverURI = new URI(serverURLAsString);
+            this.username = username;
+            this.password = password;
+
+            JAXBContext context = JAXBContext.newInstance("org.xwiki.rest.model.jaxb");
             marshaller = context.createMarshaller();
             unmarshaller = context.createUnmarshaller();
 
         } catch (JAXBException e) {
+            e.printStackTrace();
+        } catch (URISyntaxException e) {
             e.printStackTrace();
         }
 
@@ -118,12 +120,11 @@ public class XWikiRestClient
     public boolean login(String username, String password) throws Exception
     {
         try {
-            HttpResponse loginResponse = executeGet(getServerUrl(), username, password);
+            HttpResponse loginResponse = executeGet(serverURI, username, password);
 
             int statusCode = loginResponse.getStatusLine().getStatusCode();
 
             if (HttpStatus.SC_OK == statusCode) {
-
                 return true;
             }
 
@@ -176,12 +177,7 @@ public class XWikiRestClient
         return result;
     }
 
-    protected String getBaseUrl()
-    {
-        return getServerUrl();
-    }
-
-    protected HttpResponse executeGet(String uri) throws Exception
+    protected HttpResponse executeGet(URI uri) throws Exception
     {
 
         DefaultHttpClient httpclient = new DefaultHttpClient();
@@ -196,7 +192,7 @@ public class XWikiRestClient
         return response;
     }
 
-    protected HttpResponse executeGet(String uri, String username, String password) throws Exception
+    protected HttpResponse executeGet(URI uri, String username, String password) throws Exception
     {
         DefaultHttpClient httpClient = new DefaultHttpClient();
 
@@ -211,27 +207,26 @@ public class XWikiRestClient
 
     public Xwiki getXwikiInfo(String username, String password) throws Exception
     {
-        HttpResponse response = executeGet(getServerUrl(), username, password);
+        HttpResponse response = executeGet(serverURI, username, password);
         Xwiki xwiki = (Xwiki) unmarshaller.unmarshal(response.getEntity().getContent());
         return xwiki;
     }
 
-    public List<Wiki> getWikis(String username, String password) throws Exception
+    public List<Wiki> getWikis(URI wikisURI, String username, String password) throws Exception
     {
-        String wikisUrl = getServerUrl() + "/" + Relations.WIKIS_PREFIX;
-        HttpResponse response = executeGet(wikisUrl, username, password);
+        HttpResponse response = executeGet(wikisURI, username, password);
         Wikis wikis = (Wikis) unmarshaller.unmarshal(response.getEntity().getContent());
         return wikis.getWikis();
     }
 
-    public List<Space> getSpaces(String spacesUrl) throws Exception
+    public List<Space> getSpaces(URI spacesURI) throws Exception
     {
-        HttpResponse response = executeGet(spacesUrl, username, password);
+        HttpResponse response = executeGet(spacesURI, username, password);
         Spaces spaces = (Spaces) unmarshaller.unmarshal(response.getEntity().getContent());
         return spaces.getSpaces();
     }
 
-    protected HttpResponse executePostXml(String uri, java.lang.Object object) throws Exception
+    protected HttpResponse executePostXml(URI uri, java.lang.Object object) throws Exception
     {
         DefaultHttpClient httpClient = new DefaultHttpClient();
 
@@ -251,7 +246,7 @@ public class XWikiRestClient
         return response;
     }
 
-    protected HttpResponse executePutXml(String uri, java.lang.Object object) throws Exception
+    protected HttpResponse executePutXml(URI uri, java.lang.Object object) throws Exception
     {
         DefaultHttpClient httpClient = new DefaultHttpClient();
 
@@ -275,7 +270,7 @@ public class XWikiRestClient
         return response;
     }
 
-    protected HttpResponse executeDelete(String uri) throws Exception
+    protected HttpResponse executeDelete(URI uri) throws Exception
     {
         DefaultHttpClient httpClient = new DefaultHttpClient();
 
@@ -288,251 +283,56 @@ public class XWikiRestClient
         return response;
     }
 
-    //
-    // protected HttpPost executePost(String uri, String string, String mediaType, String userName, String password)
-    // throws Exception
-    // {
-    // HttpClient httpClient = new HttpClient();
-    // httpClient.getState().setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(userName, password));
-    // httpClient.getParams().setAuthenticationPreemptive(true);
-    //
-    // PostMethod postMethod = new PostMethod(uri);
-    // postMethod.addRequestHeader("Accept", MediaType.APPLICATION_XML.toString());
-    //
-    // RequestEntity entity = new StringRequestEntity(string, mediaType, "UTF-8");
-    // postMethod.setRequestEntity(entity);
-    //
-    // httpClient.executeMethod(postMethod);
-    //
-    // return postMethod;
-    // }
-
-    // protected HttpPost executePostForm(String uri, NameValuePair[] nameValuePairs, String userName, String password)
-    // throws Exception
-    // {
-    // HttpClient httpClient = new HttpClient();
-    // httpClient.getState().setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(userName, password));
-    // httpClient.getParams().setAuthenticationPreemptive(true);
-    //
-    // PostMethod postMethod = new PostMethod(uri);
-    // postMethod.addRequestHeader("Accept", MediaType.APPLICATION_XML.toString());
-    // postMethod.addRequestHeader("Content-type", MediaType.APPLICATION_WWW_FORM.toString());
-    //
-    // postMethod.setRequestBody(nameValuePairs);
-    //
-    // httpClient.executeMethod(postMethod);
-    //
-    // return postMethod;
-    // }
-
-    // protected HttpPut executePutXml(String uri, Object object) throws Exception
-    // {
-    // HttpClient httpClient = new HttpClient();
-    //
-    // PutMethod putMethod = new PutMethod(uri);
-    // putMethod.addRequestHeader("Accept", MediaType.APPLICATION_XML.toString());
-    //
-    // StringWriter writer = new StringWriter();
-    // marshaller.marshal(object, writer);
-    //
-    // RequestEntity entity =
-    // new StringRequestEntity(writer.toString(), MediaType.APPLICATION_XML.toString(), "UTF-8");
-    // putMethod.setRequestEntity(entity);
-    //
-    // httpClient.executeMethod(putMethod);
-    //
-    // return putMethod;
-    // }
-    //
-    // protected HttpPut executePutXml(String uri, Object object, String userName, String password) throws Exception
-    // {
-    // HttpClient httpClient = new HttpClient();
-    // httpClient.getState().setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(userName, password));
-    // httpClient.getParams().setAuthenticationPreemptive(true);
-    //
-    // PutMethod putMethod = new PutMethod(uri);
-    // putMethod.addRequestHeader("Accept", MediaType.APPLICATION_XML.toString());
-    //
-    // StringWriter writer = new StringWriter();
-    // marshaller.marshal(object, writer);
-    //
-    // RequestEntity entity =
-    // new StringRequestEntity(writer.toString(), MediaType.APPLICATION_XML.toString(), "UTF-8");
-    // putMethod.setRequestEntity(entity);
-    //
-    // httpClient.executeMethod(putMethod);
-    //
-    // return putMethod;
-    // }
-    //
-    // protected HttpPut executePut(String uri, String string, String mediaType) throws Exception
-    // {
-    // HttpClient httpClient = new HttpClient();
-    //
-    // PutMethod putMethod = new PutMethod(uri);
-    // RequestEntity entity = new StringRequestEntity(string, mediaType, "UTF-8");
-    // putMethod.setRequestEntity(entity);
-    //
-    // httpClient.executeMethod(putMethod);
-    //
-    // return putMethod;
-    // }
-    //
-    // protected HttpPut executePut(String uri, String string, String mediaType, String userName, String password)
-    // throws Exception
-    // {
-    // HttpClient httpClient = new HttpClient();
-    // httpClient.getState().setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(userName, password));
-    // httpClient.getParams().setAuthenticationPreemptive(true);
-    //
-    // PutMethod putMethod = new PutMethod(uri);
-    // RequestEntity entity = new StringRequestEntity(string, mediaType, "UTF-8");
-    // putMethod.setRequestEntity(entity);
-    //
-    // httpClient.executeMethod(putMethod);
-    //
-    // return putMethod;
-    // }
-    // protected String getWiki() throws Exception
-    // {
-    // GetMethod getMethod = executeGet(getFullUri(WikisResource.class));
-    // Assert.assertEquals(getHttpMethodInfo(getMethod), HttpStatus.SC_OK, getMethod.getStatusCode());
-    //
-    // Wikis wikis = (Wikis) unmarshaller.unmarshal(getMethod.getResponseBodyAsStream());
-    // Assert.assertTrue(wikis.getWikis().size() > 0);
-    //
-    // return wikis.getWikis().get(0).getName();
-    // }
-
-    // protected void checkLinks(LinkCollection linkCollection) throws Exception
-    // {
-    // if (linkCollection.getLinks() != null) {
-    // for (Link link : linkCollection.getLinks()) {
-    // GetMethod getMethod = executeGet(link.getHref());
-    // if (getMethod.getStatusCode() != HttpStatus.SC_UNAUTHORIZED) {
-    // Assert.assertEquals(getHttpMethodInfo(getMethod), HttpStatus.SC_OK, getMethod.getStatusCode());
-    // }
-    // }
-    // }
-    // }
-
-    // protected UriBuilder getUriBuilder(Class< ? > resource)
-    // {
-    // return UriBuilder.fromUri(getBaseUrl()).path(resource);
-    // }
-
-    // protected String getPageContent(String wikiName, String spaceName, String pageName) throws Exception
-    // {
-    // Page page = getPage(wikiName, spaceName, pageName);
-    //
-    // return page.getContent();
-    // }
-    //
-    // protected int setPageContent(String wikiName, String spaceName, String pageName, String content) throws Exception
-    // {
-    // String uri = getUriBuilder(PageResource.class).build(wikiName, spaceName, pageName).toString();
-    //
-    // PutMethod putMethod = executePut(uri, content, javax.ws.rs.core.MediaType.TEXT_PLAIN, "Admin", "admin");
-    //
-    // int code = putMethod.getStatusCode();
-    // Assert.assertTrue(String.format("Failed to set page content, %s", getHttpMethodInfo(putMethod)),
-    // code == HttpStatus.SC_ACCEPTED || code == HttpStatus.SC_CREATED);
-    //
-    // return code;
-    // }
-
-    // protected String getHttpMethodInfo(HttpMethod method) throws Exception
-    // {
-    // return String.format("\nName: %s\nURI: %s\nStatus code: %d\nStatus text: %s", method.getName(),
-    // method.getURI(), method.getStatusCode(), method.getStatusText());
-    // }
-
-    // protected String getAttachmentsInfo(Attachments attachments)
-    // {
-    // StringBuffer sb = new StringBuffer();
-    // sb.append(String.format("Attachments: %d\n", attachments.getAttachments().size()));
-    // for (Attachment attachment : attachments.getAttachments()) {
-    // sb.append(String.format("* %s\n", attachment.getName()));
-    // }
-    //
-    // return sb.toString();
-    // }
-    //
-    // protected String getPagesInfo(Pages pages)
-    // {
-    // StringBuffer sb = new StringBuffer();
-    // sb.append(String.format("Pages: %d\n", pages.getPageSummaries().size()));
-    // for (PageSummary pageSummary : pages.getPageSummaries()) {
-    // sb.append(String.format("* %s\n", pageSummary.getFullName()));
-    // }
-    //
-    // return sb.toString();
-    // }
-
-    public String getServerUrl()
-    {
-        return serverUrl;
-    }
-
-    public void setServerUrl(String serverUrl)
-    {
-        this.serverUrl = serverUrl;
-    }
-
     /**
      * @return
      */
     public Xwiki getServerInfo() throws Exception
     {
-        String wikisUrl = getServerUrl();
         HttpResponse response;
         try {
-            response = executeGet(wikisUrl, username, password);
+            response = executeGet(serverURI, username, password);
             Xwiki xwiki = (Xwiki) unmarshaller.unmarshal(response.getEntity().getContent());
             return xwiki;
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             // e.printStackTrace();
             throw e;
         }
     }
 
     /**
-     * @param pagesUrl
+     * @param pagesURI
      * @param username
      * @param password
      * @return
      */
-    public List<PageSummary> getPages(String pagesUrl)
+    public List<PageSummary> getPages(URI pagesURI)
     {
         HttpResponse response;
         try {
-            response = executeGet(pagesUrl, username, password);
+            response = executeGet(pagesURI, username, password);
             Pages pages = (Pages) unmarshaller.unmarshal(response.getEntity().getContent());
             return pages.getPageSummaries();
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return null;
     }
 
     /**
-     * @param objectsUrl
+     * @param objectsURI
      * @param username
      * @param password
      * @return
      */
-    public List<ObjectSummary> getObjects(String objectsUrl)
+    public List<ObjectSummary> getObjects(URI objectsURI)
     {
         HttpResponse response;
-        if (objectsUrl != null) {
+        if (objectsURI != null) {
             try {
-                response = executeGet(objectsUrl, username, password);
+                response = executeGet(objectsURI, username, password);
                 Objects objects = (Objects) unmarshaller.unmarshal(response.getEntity().getContent());
                 return objects.getObjectSummaries();
             } catch (Exception e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         }
@@ -541,20 +341,19 @@ public class XWikiRestClient
     }
 
     /**
-     * @param attachmentsUrl
+     * @param attachmentsURI
      * @param username
      * @param password
      * @return
      */
-    public List<Attachment> getAttachments(String attachmentsUrl)
+    public List<Attachment> getAttachments(URI attachmentsURI)
     {
         HttpResponse response;
         try {
-            response = executeGet(attachmentsUrl, username, password);
+            response = executeGet(attachmentsURI, username, password);
             Attachments attachments = (Attachments) unmarshaller.unmarshal(response.getEntity().getContent());
             return attachments.getAttachments();
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
@@ -562,88 +361,83 @@ public class XWikiRestClient
     }
 
     /**
-     * @param syntaxesUrl
+     * @param syntaxesURI
      * @return
      */
-    public Syntaxes getSyntaxes(String syntaxesUrl)
+    public Syntaxes getSyntaxes(URI syntaxesURI)
     {
         HttpResponse response;
         try {
-            response = executeGet(syntaxesUrl, username, password);
+            response = executeGet(syntaxesURI, username, password);
             Syntaxes synataxes = (Syntaxes) unmarshaller.unmarshal(response.getEntity().getContent());
             return synataxes;
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return null;
     }
 
     /**
-     * @param historyUrl
+     * @param historyURI
      * @return
      */
-    public List<HistorySummary> getPageHistory(String historyUrl)
+    public List<HistorySummary> getPageHistory(URI historyURI)
     {
         HttpResponse response;
         try {
-            response = executeGet(historyUrl, username, password);
+            response = executeGet(historyURI, username, password);
             History history = (History) unmarshaller.unmarshal(response.getEntity().getContent());
             return history.getHistorySummaries();
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
         return null;
     }
 
-    public Page getPage(String pageUrl) throws Exception
+    public Page getPage(URI pageURI) throws Exception
     {
         HttpResponse response;
         try {
-            response = executeGet(pageUrl, username, password);
+            response = executeGet(pageURI, username, password);
             Page result = (Page) unmarshaller.unmarshal(response.getEntity().getContent());
             return result;
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             // e.printStackTrace();
             throw e;
         }
     }
 
     /**
-     * @param classUrl
+     * @param classURI
      * @return
      */
-    public Class getClass(String classUrl) throws Exception
+    public Class getClass(URI classURI) throws Exception
     {
         HttpResponse response;
         try {
-            response = executeGet(classUrl, username, password);
+            response = executeGet(classURI, username, password);
             Class clazz = (Class) unmarshaller.unmarshal(response.getEntity().getContent());
             return clazz;
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
             throw e;
         }
     }
 
     /**
-     * @param tagsUrl
+     * @param tagsURI
      * @return
      */
-    public List<Tag> getTags(String tagsUrl) throws Exception
+    public List<Tag> getTags(URI tagsURI) throws Exception
     {
-        if (tagsUrl != null) {
+        if (tagsURI != null) {
             HttpResponse response;
             try {
-                response = executeGet(tagsUrl, username, password);
+                response = executeGet(tagsURI, username, password);
                 Tags tags = (Tags) unmarshaller.unmarshal(response.getEntity().getContent());
                 return tags.getTags();
             } catch (Exception e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
                 throw e;
             }
@@ -653,19 +447,18 @@ public class XWikiRestClient
     }
 
     /**
-     * @param commentsUrl
+     * @param commentsURI
      * @return
      */
-    public List<Comment> getComments(String commentsUrl) throws Exception
+    public List<Comment> getComments(URI commentsURI) throws Exception
     {
-        if (commentsUrl != null) {
+        if (commentsURI != null) {
             HttpResponse response;
             try {
-                response = executeGet(commentsUrl, username, password);
+                response = executeGet(commentsURI, username, password);
                 Comments comments = (Comments) unmarshaller.unmarshal(response.getEntity().getContent());
                 return comments.getComments();
             } catch (Exception e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
                 throw e;
             }
@@ -675,19 +468,18 @@ public class XWikiRestClient
     }
 
     /**
-     * @param propertiesUrl
+     * @param propertiesURI
      * @return
      */
-    public List<Property> getObjectProperties(String propertiesUrl) throws Exception
+    public List<Property> getObjectProperties(URI propertiesURI) throws Exception
     {
-        if (propertiesUrl != null) {
+        if (propertiesURI != null) {
             HttpResponse response;
             try {
-                response = executeGet(propertiesUrl, username, password);
+                response = executeGet(propertiesURI, username, password);
                 Properties properties = (Properties) unmarshaller.unmarshal(response.getEntity().getContent());
                 return properties.getProperties();
             } catch (Exception e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
                 throw e;
             }
@@ -698,14 +490,14 @@ public class XWikiRestClient
 
     /**
      * @param dir
-     * @param absoluteUrl
+     * @param absoluteURI
      * @param name
      */
-    public void download(String dir, String absoluteUrl, String name)
+    public void download(String dir, URI absoluteURI, String name)
     {
         HttpResponse response;
         try {
-            response = executeGet(absoluteUrl, username, password);
+            response = executeGet(absoluteURI, username, password);
             HttpEntity entity = response.getEntity();
             if (entity != null) {
                 FileOutputStream fos = new java.io.FileOutputStream(dir + File.separator + name);
@@ -713,27 +505,25 @@ public class XWikiRestClient
                 fos.close();
             }
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
     }
 
     /**
-     * @param objectUrl
+     * @param objectURI
      * @return
      */
-    public Object getObject(String objectUrl) throws Exception
+    public Object getObject(URI objectURI) throws Exception
     {
-        if (objectUrl != null) {
+        if (objectURI != null) {
             HttpResponse response;
             try {
-                response = executeGet(objectUrl, username, password);
+                response = executeGet(objectURI, username, password);
                 org.xwiki.rest.model.jaxb.Object object =
                     (org.xwiki.rest.model.jaxb.Object) unmarshaller.unmarshal(response.getEntity().getContent());
                 return object;
             } catch (Exception e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
                 throw e;
             }
@@ -743,20 +533,19 @@ public class XWikiRestClient
     }
 
     /**
-     * @param spaceUrl
+     * @param spaceURI
      * @return
      */
-    public Space getSpace(String spaceUrl) throws Exception
+    public Space getSpace(URI spaceURI) throws Exception
     {
-        if (spaceUrl != null) {
+        if (spaceURI != null) {
             HttpResponse response;
             try {
-                response = executeGet(spaceUrl, username, password);
+                response = executeGet(spaceURI, username, password);
                 org.xwiki.rest.model.jaxb.Space result =
                     (org.xwiki.rest.model.jaxb.Space) unmarshaller.unmarshal(response.getEntity().getContent());
                 return result;
             } catch (Exception e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
                 throw e;
             }
@@ -766,18 +555,18 @@ public class XWikiRestClient
     }
 
     /**
+     * @param commentsURI
      * @param comment
      * @return
      */
-    public Comment storeComment(String commentsUrl, Comment comment) throws Exception
+    public Comment storeComment(URI commentsURI, Comment comment) throws Exception
     {
         HttpResponse response;
         try {
-            response = executePostXml(commentsUrl, comment);
+            response = executePostXml(commentsURI, comment);
             Comment result = (Comment) unmarshaller.unmarshal(response.getEntity().getContent());
             return result;
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
             throw e;
         }
@@ -786,13 +575,13 @@ public class XWikiRestClient
     /**
      * FIXME: need to return different response code so that the UI can respond correspondingly
      */
-    public void uploadAttachment(String attachmentUrl, String attachmentName, URL fileUrl)
+    public void uploadAttachment(URI attachmentURI, String attachmentName, URL fileUrl)
     {
         DefaultHttpClient httpClient = new DefaultHttpClient();
 
         UsernamePasswordCredentials creds = new UsernamePasswordCredentials(username, password);
 
-        HttpPut request = new HttpPut(attachmentUrl);
+        HttpPut request = new HttpPut(attachmentURI);
         try {
             request.addHeader(new BasicScheme().authenticate(creds, request));
             request.addHeader("Accept", MediaType.APPLICATION_XML);
@@ -820,33 +609,28 @@ public class XWikiRestClient
             }
 
         } catch (AuthenticationException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (ClientProtocolException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (URISyntaxException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
 
     /**
-     * @param allTagsUrl
+     * @param allTagsURI
      * @return
      */
-    public List<Tag> getAllTags(String allTagsUrl) throws Exception
+    public List<Tag> getAllTags(URI allTagsURI) throws Exception
     {
         HttpResponse response;
         try {
-            response = executeGet(allTagsUrl, username, password);
+            response = executeGet(allTagsURI, username, password);
             Tags result = (Tags) unmarshaller.unmarshal(response.getEntity().getContent());
             return result.getTags();
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
             throw e;
         }
@@ -855,98 +639,92 @@ public class XWikiRestClient
     /**
      * FIXME: it only takes the <tags> element
      * 
-     * @param tagsUrl
+     * @param tagsURI
      * @param tagName
      * @return
      */
-    public List<Tag> addTag(String tagsUrl, String tagName) throws Exception
+    public List<Tag> addTag(URI tagsURI, String tagName) throws Exception
     {
         HttpResponse response;
         try {
             Tag tag = new Tag();
             tag.setName(tagName);
 
-            List<Tag> tags = getAllTags(tagsUrl);
+            List<Tag> tags = getAllTags(tagsURI);
             tags.add(tag);
 
             Tags tagsElement = new Tags();
             tagsElement.withTags(tags);
 
-            response = executePutXml(tagsUrl, tagsElement);
+            response = executePutXml(tagsURI, tagsElement);
             Tags tagsResponse = (Tags) unmarshaller.unmarshal(response.getEntity().getContent());
             return tagsResponse.getTags();
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
             throw e;
         }
     }
 
     /**
-     * @param wiki
+     * @param classesURI
      * @return
      */
-    public List<Class> getClasses(String wiki) throws Exception
+    public List<Class> getClasses(URI classesURI) throws Exception
     {
-        String classesUrl = serverUrl + "/wikis/" + wiki + "/classes";
         HttpResponse response;
         try {
-            response = executeGet(classesUrl, username, password);
+            response = executeGet(classesURI, username, password);
             Classes clazzes = (Classes) unmarshaller.unmarshal(response.getEntity().getContent());
             return clazzes.getClazzs();
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
             throw e;
         }
     }
 
     /**
-     * @param pageUrl
+     * @param pageURI
      * @param page
      * @return
      */
-    public Page storePage(String pageUrl, Page page) throws Exception
+    public Page storePage(URI pageURI, Page page) throws Exception
     {
         HttpResponse response;
         try {
 
-            response = executePutXml(pageUrl, page);
+            response = executePutXml(pageURI, page);
             Page result = (Page) unmarshaller.unmarshal(response.getEntity().getContent());
             return result;
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
             throw e;
         }
     }
 
     /**
-     * @param objectUrl
+     * @param objectURI
      * @param o
      * @return
      */
-    public Object storeObject(String objectUrl, Object o) throws Exception
+    public Object storeObject(URI objectURI, Object o) throws Exception
     {
         HttpResponse response;
 
         if (o.getNumber() == -1) {
             try {
-                response = executePostXml(objectUrl, o);
+                response = executePostXml(objectURI, o);
                 Object result = (Object) unmarshaller.unmarshal(response.getEntity().getContent());
                 return result;
             } catch (Exception e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
                 throw e;
             }
         } else {
             try {
-                response = executePutXml(objectUrl, o);
+                response = executePutXml(objectURI, o);
                 Object result = (Object) unmarshaller.unmarshal(response.getEntity().getContent());
                 return result;
             } catch (Exception e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
                 throw e;
             }
@@ -954,15 +732,15 @@ public class XWikiRestClient
     }
 
     /**
-     * @param tagsUrl
+     * @param tagsURI
      * @param tagName
      */
-    public void removeTag(String tagsUrl, String tagName) throws Exception
+    public void removeTag(URI tagsURI, String tagName) throws Exception
     {
         HttpResponse response;
         try {
 
-            List<Tag> tags = getAllTags(tagsUrl);
+            List<Tag> tags = getAllTags(tagsURI);
 
             for (Iterator iterator = tags.iterator(); iterator.hasNext();) {
                 Tag tag = (Tag) iterator.next();
@@ -974,11 +752,10 @@ public class XWikiRestClient
             Tags tagsElement = new Tags();
             tagsElement.withTags(tags);
 
-            response = executePutXml(tagsUrl, tagsElement);
+            response = executePutXml(tagsURI, tagsElement);
             // Tags tagsResponse = (Tags) unmarshaller.unmarshal(response.getEntity().getContent());
 
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
             throw e;
         }
@@ -986,14 +763,14 @@ public class XWikiRestClient
     }
 
     /**
-     * @param pageUrl
+     * @param pageURI
      * @param sourcePageToBeCopied
      * @return
      * @throws Exception
      */
-    public Page renamePage(String pageUrl, Page sourcePageToBeCopied) throws Exception
+    public Page renamePage(URI pageURI, Page sourcePageToBeCopied) throws Exception
     {
-        HttpResponse response = executePutXml(pageUrl, sourcePageToBeCopied);
+        HttpResponse response = executePutXml(pageURI, sourcePageToBeCopied);
         Page result = (Page) unmarshaller.unmarshal(response.getEntity().getContent());
 
         return result;

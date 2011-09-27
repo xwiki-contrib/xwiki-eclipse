@@ -201,12 +201,14 @@ public class XWikiEclipseAttachmentWizard extends Wizard implements INewWizard
                     for (XWikiEclipseAttachment attachment : attachments) {
                         DataManager dataManager = attachment.getDataManager();
                         monitor.setTaskName("Downloading " + attachment.getName());
-                        dataManager.download(dir, attachment);
-                        monitor.worked(1);
                         try {
+                            dataManager.download(dir, attachment);
+                            monitor.worked(1);
+
                             Thread.sleep(2000);
                         } catch (InterruptedException e) {
-                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        } catch (XWikiEclipseStorageException e) {
                             e.printStackTrace();
                         }
                     }

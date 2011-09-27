@@ -96,7 +96,7 @@ public interface IRemoteXWikiDataStorage
     /* store */
     XWikiEclipseTag addTag(String wiki, String space, String pageName, String tagName);
 
-    void download(String directory, XWikiEclipseAttachment attachment);
+    void download(String directory, XWikiEclipseAttachment attachment) throws XWikiEclipseStorageException;
 
     XWikiEclipseComment storeComment(XWikiEclipseComment c);
 

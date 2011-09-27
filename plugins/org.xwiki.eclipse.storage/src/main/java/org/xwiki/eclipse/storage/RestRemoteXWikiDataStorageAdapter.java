@@ -20,6 +20,7 @@
 package org.xwiki.eclipse.storage;
 
 import java.io.File;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -175,15 +176,16 @@ public class RestRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStorag
         try {
             xwiki = this.restRemoteStorage.getServerInfo();
             List<Link> links = xwiki.getLinks();
-            String syntaxesUrl = null;
+            String syntaxesURL = null;
             for (Link link : links) {
                 if (link.getRel().equals(Relations.SYNTAXES)) {
-                    syntaxesUrl = link.getHref();
+                    syntaxesURL = link.getHref();
                     break;
                 }
             }
 
-            Syntaxes syntaxes = this.restRemoteStorage.getSyntaxes(syntaxesUrl);
+            URI syntaxesURI = new URI(syntaxesURL);
+            Syntaxes syntaxes = this.restRemoteStorage.getSyntaxes(syntaxesURI);
 
             List<String> syntaxeList = syntaxes.getSyntaxes();
             serverInfo.setSyntaxes(syntaxeList);
@@ -203,7 +205,6 @@ public class RestRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStorag
             return serverInfo;
 
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             // e.printStackTrace();
             throw new XWikiEclipseStorageException(e);
         }
@@ -494,15 +495,20 @@ public class RestRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStorag
     /**
      * {@inheritDoc}
      * 
+     * @throws URISyntaxException
      * @see org.xwiki.eclipse.storage.IRemoteXWikiDataStorage#download(java.lang.String, java.util.List)
      */
     @Override
-    public void download(String dir, XWikiEclipseAttachment attachment)
+    public void download(String dir, XWikiEclipseAttachment attachment) throws XWikiEclipseStorageException
     {
-        if (attachment != null) {
-            restRemoteStorage.download(dir, attachment.getAbsoluteUrl(), attachment.getName());
+        try {
+            if (attachment != null) {
+                URI absoluteURI = new URI(attachment.getAbsoluteUrl());
+                restRemoteStorage.download(dir, absoluteURI, attachment.getName());
+            }
+        } catch (URISyntaxException e) {
+            throw new XWikiEclipseStorageException(e);
         }
-
     }
 
     /**

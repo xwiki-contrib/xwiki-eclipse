@@ -727,9 +727,14 @@ public class DataManager
      * @param directory
      * @param attachments
      */
-    public void download(String directory, XWikiEclipseAttachment attachment)
+    public void download(String directory, XWikiEclipseAttachment attachment) throws XWikiEclipseStorageException
     {
-        remoteXWikiDataStorage.download(directory, attachment);
+        try {
+            remoteXWikiDataStorage.download(directory, attachment);
+        } catch (Exception e) {
+            throw new XWikiEclipseStorageException(e);
+        }
+
     }
 
     public XWikiEclipsePageSummary getPageSummary(String wiki, String space, String pageName, String language)
