@@ -32,10 +32,13 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkingSet;
-import org.xwiki.eclipse.core.DataManager;
-import org.xwiki.eclipse.core.model.ModelObject;
+import org.xwiki.eclipse.model.ModelObject;
+import org.xwiki.eclipse.storage.DataManager;
 import org.xwiki.eclipse.ui.workingsets.XWikiEclipseElementId;
 
+/**
+ * @version $Id$
+ */
 public class UIUtils
 {
     public static Set getSelectedObjectsFromSelection(Object selection)
@@ -77,7 +80,7 @@ public class UIUtils
     {
         ProgressMonitorDialog dialog = new ProgressMonitorDialog(shell);
         dialog.setCancelable(cancelable);
-        dialog.run(true, false, operation);
+        dialog.run(true, cancelable, operation);
     }
 
     public static void showMessageDialog(Shell shell, String title, String message)

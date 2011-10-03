@@ -41,6 +41,10 @@ import org.xwiki.eclipse.ui.editors.PageEditor;
 import org.xwiki.eclipse.ui.editors.XWikiApiType;
 import org.xwiki.eclipse.ui.editors.utils.Utils;
 
+/**
+ * 
+ * @version $Id$
+ */
 public class VelocityVariableContentAssistProcessor implements IContentAssistProcessor
 {
     private Pattern VARIABLE_REFERENCE_PATTERN = Pattern.compile("\\$([\\p{Alnum}_]+)");

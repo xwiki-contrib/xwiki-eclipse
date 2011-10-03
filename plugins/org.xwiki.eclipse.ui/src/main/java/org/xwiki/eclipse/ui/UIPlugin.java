@@ -27,12 +27,14 @@ import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
-import org.xwiki.eclipse.core.DataManager;
-import org.xwiki.eclipse.core.model.XWikiEclipsePageSummary;
+import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
+import org.xwiki.eclipse.storage.DataManager;
 import org.xwiki.eclipse.ui.utils.XWikiEclipseSafeRunnable;
 
 /**
  * The activator class controls the plug-in life cycle
+ * 
+ * @version $Id$
  */
 public class UIPlugin extends AbstractUIPlugin
 {

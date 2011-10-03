@@ -32,10 +32,13 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.PropertyPage;
-import org.xwiki.eclipse.core.DataManager;
-import org.xwiki.eclipse.core.Functionality;
+import org.xwiki.eclipse.storage.DataManager;
+import org.xwiki.eclipse.storage.Functionality;
 import org.xwiki.eclipse.ui.utils.XWikiEclipseSafeRunnable;
 
+/**
+ * @version $Id$
+ */
 public class DataManagerPropertiesPage extends PropertyPage
 {
     private DataManager dataManager;

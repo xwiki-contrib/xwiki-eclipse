@@ -20,16 +20,20 @@
  */
 package org.xwiki.eclipse.ui.wizards;
 
+/**
+ * 
+ * @version $Id$
+ */
 public class NewConnectionWizardState
 {
-    private String connectionName;
+	private String connectionName;
 
     private String serverUrl;
 
     private String userName;
 
     private String password;
-
+    
     public String getServerUrl()
     {
         return serverUrl;

@@ -33,9 +33,14 @@ import org.eclipse.swt.widgets.Text;
 import org.xwiki.eclipse.ui.UIConstants;
 import org.xwiki.eclipse.ui.UIPlugin;
 
+/**
+ * @version $Id$
+ */
 public class PageSettingsPage extends WizardPage
 {
     private NewPageWizardState newPageWizardState;
+
+    private Text wikiText;
 
     private Text spaceText;
 
@@ -62,8 +67,26 @@ public class PageSettingsPage extends WizardPage
         GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, false).applyTo(group);
         group.setText("Page settings");
 
-        /* Page space */
+        /* page wiki */
         Label label = new Label(group, SWT.NONE);
+        label.setText("Wiki:");
+
+        wikiText = new Text(group, SWT.BORDER);
+        if (newPageWizardState.getWiki() != null) {
+            wikiText.setText(newPageWizardState.getWiki());
+        }
+        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, false).applyTo(wikiText);
+        wikiText.addModifyListener(new ModifyListener()
+        {
+            public void modifyText(ModifyEvent e)
+            {
+                newPageWizardState.setWiki(wikiText.getText());
+                getContainer().updateButtons();
+            }
+        });
+
+        /* Page space */
+        label = new Label(group, SWT.NONE);
         label.setText("Space:");
 
         spaceText = new Text(group, SWT.BORDER);
@@ -116,6 +139,12 @@ public class PageSettingsPage extends WizardPage
     @Override
     public boolean isPageComplete()
     {
+        String wikiTextString = wikiText.getText().trim();
+        if (wikiTextString.length() == 0) {
+            setErrorMessage("Wiki must be specified.");
+            return false;
+        }
+
         String spaceTextString = spaceText.getText().trim();
         if (spaceTextString.length() == 0) {
             setErrorMessage("Space must be specified.");
@@ -138,15 +167,7 @@ public class PageSettingsPage extends WizardPage
             return false;
         }
 
-        String pageId = spaceTextString + "." + nameTextString;
-        boolean exists = ((NewPageWizard) getWizard()).getDataManager().exists(pageId);
-        if (exists) {
-            setErrorMessage("That page already exists.");
-            return false;
-        }
-
         setErrorMessage(null);
         return true;
     }
-
 }

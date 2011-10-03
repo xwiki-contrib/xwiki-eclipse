@@ -31,13 +31,16 @@ import org.eclipse.ui.model.WorkbenchAdapter;
 import org.eclipse.ui.progress.IDeferredWorkbenchAdapter;
 import org.eclipse.ui.progress.IElementCollector;
 import org.xwiki.eclipse.core.CoreLog;
-import org.xwiki.eclipse.core.XWikiEclipseException;
-import org.xwiki.eclipse.core.model.XWikiEclipsePageSummary;
-import org.xwiki.eclipse.core.model.XWikiEclipseSpaceSummary;
+import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
+import org.xwiki.eclipse.model.XWikiEclipseSpaceSummary;
+import org.xwiki.eclipse.storage.XWikiEclipseStorageException;
 import org.xwiki.eclipse.ui.UIConstants;
 import org.xwiki.eclipse.ui.UIPlugin;
 import org.xwiki.eclipse.ui.utils.UIUtils;
 
+/**
+ * @version $Id$
+ */
 public class XWikiEclipseSpaceSummaryAdapter extends WorkbenchAdapter implements IDeferredWorkbenchAdapter
 {
     @Override
@@ -48,9 +51,9 @@ public class XWikiEclipseSpaceSummaryAdapter extends WorkbenchAdapter implements
 
             try {
                 List<XWikiEclipsePageSummary> result =
-                    spaceSummary.getDataManager().getPages(spaceSummary.getData().getKey());
+                    spaceSummary.getDataManager().getPageSummaries(spaceSummary.getWiki(), spaceSummary.getName());
                 return result.toArray();
-            } catch (XWikiEclipseException e) {
+            } catch (XWikiEclipseStorageException e) {
                 UIUtils
                     .showMessageDialog(
                         Display.getDefault().getActiveShell(),
@@ -74,7 +77,7 @@ public class XWikiEclipseSpaceSummaryAdapter extends WorkbenchAdapter implements
     {
         if (object instanceof XWikiEclipseSpaceSummary) {
             XWikiEclipseSpaceSummary spaceSummary = (XWikiEclipseSpaceSummary) object;
-            return spaceSummary.getData().getKey();
+            return spaceSummary.getName();
         }
 
         return super.getLabel(object);

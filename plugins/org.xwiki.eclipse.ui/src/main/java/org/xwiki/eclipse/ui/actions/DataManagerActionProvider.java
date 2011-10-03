@@ -25,11 +25,15 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.swt.SWT;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.menus.CommandContributionItem;
+import org.eclipse.ui.menus.CommandContributionItemParameter;
 import org.eclipse.ui.navigator.CommonActionProvider;
 import org.eclipse.ui.navigator.ICommonActionExtensionSite;
 import org.eclipse.ui.navigator.ICommonMenuConstants;
 import org.xwiki.eclipse.ui.UIConstants;
 
+/**
+ * @version $Id$
+ */
 public class DataManagerActionProvider extends CommonActionProvider
 {
     private CommandContributionItem connect;
@@ -40,39 +44,20 @@ public class DataManagerActionProvider extends CommonActionProvider
 
     public void init(final ICommonActionExtensionSite aSite)
     {
-        /* This is for Eclipse 3.4 */
-        // CommandContributionItemParameter contributionItemParameter =
-        // new CommandContributionItemParameter(PlatformUI.getWorkbench(),
-        // UIConstants.DATA_MANAGER_CONNECT_COMMAND,
-        // UIConstants.DATA_MANAGER_CONNECT_COMMAND,
-        // 0);
-        // connect = new CommandContributionItem(contributionItemParameter);
-        connect =
-            new CommandContributionItem(PlatformUI.getWorkbench(), null, UIConstants.DATA_MANAGER_CONNECT_COMMAND,
-                null, null, null, null, null, null, null, SWT.NONE);
+        CommandContributionItemParameter ccip =
+            new CommandContributionItemParameter(PlatformUI.getWorkbench().getActiveWorkbenchWindow(),
+                UIConstants.DATA_MANAGER_CONNECT_COMMAND, UIConstants.DATA_MANAGER_CONNECT_COMMAND, SWT.NONE);
+        connect = new CommandContributionItem(ccip);
 
-        /* This is for Eclipse 3.4 */
-        // contributionItemParameter =
-        // new CommandContributionItemParameter(PlatformUI.getWorkbench(),
-        // UIConstants.DATA_MANAGER_DISCONNECT_COMMAND,
-        // UIConstants.DATA_MANAGER_DISCONNECT_COMMAND,
-        // 0);
-        // disconnect = new CommandContributionItem(contributionItemParameter);
-        disconnect =
-            new CommandContributionItem(PlatformUI.getWorkbench(), null, UIConstants.DATA_MANAGER_DISCONNECT_COMMAND,
-                null, null, null, null, null, null, null, SWT.NONE);
+        ccip =
+            new CommandContributionItemParameter(PlatformUI.getWorkbench().getActiveWorkbenchWindow(),
+                UIConstants.DATA_MANAGER_DISCONNECT_COMMAND, UIConstants.DATA_MANAGER_DISCONNECT_COMMAND, SWT.NONE);
+        disconnect = new CommandContributionItem(ccip);
 
-        /* This is for Eclipse 3.4 */
-        // contributionItemParameter =
-        // new CommandContributionItemParameter(PlatformUI.getWorkbench(),
-        // UIConstants.NEW_PAGE_COMMAND,
-        // UIConstants.NEW_PAGE_COMMAND,
-        // 0);
-        // newPage = new CommandContributionItem(contributionItemParameter);
-        newPage =
-            new CommandContributionItem(PlatformUI.getWorkbench(), null, UIConstants.NEW_PAGE_COMMAND, null, null,
-                null, null, null, null, null, SWT.NONE);
-
+        ccip =
+            new CommandContributionItemParameter(PlatformUI.getWorkbench().getActiveWorkbenchWindow(),
+                UIConstants.NEW_PAGE_COMMAND, UIConstants.NEW_PAGE_COMMAND, SWT.NONE);
+        newPage = new CommandContributionItem(ccip);
     }
 
     public void fillContextMenu(IMenuManager menu)

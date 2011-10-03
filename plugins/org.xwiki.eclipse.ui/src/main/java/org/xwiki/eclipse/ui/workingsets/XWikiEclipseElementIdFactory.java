@@ -24,6 +24,10 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.ui.IElementFactory;
 import org.eclipse.ui.IMemento;
 
+/**
+ * 
+ * @version $Id$
+ */
 public class XWikiEclipseElementIdFactory implements IElementFactory
 {
     public IAdaptable createElement(IMemento memento)

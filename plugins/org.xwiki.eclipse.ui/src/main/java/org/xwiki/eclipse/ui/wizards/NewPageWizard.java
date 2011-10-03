@@ -32,23 +32,29 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
-import org.xwiki.eclipse.core.DataManager;
-import org.xwiki.eclipse.core.model.XWikiEclipsePage;
+import org.xwiki.eclipse.model.XWikiEclipsePage;
+import org.xwiki.eclipse.storage.DataManager;
 import org.xwiki.eclipse.ui.editors.PageEditor;
 import org.xwiki.eclipse.ui.editors.PageEditorInput;
 import org.xwiki.eclipse.ui.utils.XWikiEclipseSafeRunnable;
 
+/**
+ * @version $Id$
+ */
 public class NewPageWizard extends Wizard implements INewWizard
 {
     private NewPageWizardState newPageWizardState;
 
     private DataManager dataManager;
 
-    public NewPageWizard(DataManager dataManager, String spaceKey)
+    public NewPageWizard(DataManager dataManager, NewPageWizardState state)
     {
         super();
         newPageWizardState = new NewPageWizardState();
-        newPageWizardState.setSpace(spaceKey);
+
+        newPageWizardState.setWiki(state.getWiki());
+        newPageWizardState.setSpace(state.getSpace());
+
         this.dataManager = dataManager;
         setNeedsProgressMonitor(true);
     }
@@ -56,6 +62,15 @@ public class NewPageWizard extends Wizard implements INewWizard
     @Override
     public boolean performFinish()
     {
+
+        boolean exists =
+            dataManager.pageExists(newPageWizardState.getWiki(), newPageWizardState.getSpace(),
+                newPageWizardState.getName(), "");
+        if (exists) {
+            ((WizardPage) getContainer().getCurrentPage()).setErrorMessage("That page already exists.");
+            return false;
+        }
+
         try {
             getContainer().run(true, false, new IRunnableWithProgress()
             {
@@ -64,8 +79,8 @@ public class NewPageWizard extends Wizard implements INewWizard
                     try {
                         monitor.beginTask("Creating page...", IProgressMonitor.UNKNOWN);
                         final XWikiEclipsePage page =
-                            dataManager.createPage(newPageWizardState.getSpace(), newPageWizardState.getName(),
-                                newPageWizardState.getTitle(), "Write here content");
+                            dataManager.createPage(newPageWizardState.getWiki(), newPageWizardState.getSpace(),
+                                newPageWizardState.getName(), newPageWizardState.getTitle(), "", "Write here content");
 
                         Display.getDefault().syncExec(new Runnable()
                         {
@@ -113,6 +128,10 @@ public class NewPageWizard extends Wizard implements INewWizard
     public boolean canFinish()
     {
         if (!super.canFinish()) {
+            return false;
+        }
+
+        if (newPageWizardState.getWiki() == null || newPageWizardState.getWiki().length() == 0) {
             return false;
         }
 

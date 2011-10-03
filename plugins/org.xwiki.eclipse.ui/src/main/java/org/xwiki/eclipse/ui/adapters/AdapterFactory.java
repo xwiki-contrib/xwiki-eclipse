@@ -24,15 +24,24 @@ import org.eclipse.core.runtime.IAdapterFactory;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.eclipse.ui.model.IWorkbenchAdapter2;
 import org.eclipse.ui.progress.IDeferredWorkbenchAdapter;
-import org.xwiki.eclipse.core.DataManager;
-import org.xwiki.eclipse.core.model.XWikiEclipseObjectSummary;
-import org.xwiki.eclipse.core.model.XWikiEclipsePageSummary;
-import org.xwiki.eclipse.core.model.XWikiEclipseSpaceSummary;
+import org.xwiki.eclipse.model.XWikiEclipseAttachment;
+import org.xwiki.eclipse.model.XWikiEclipseClass;
+import org.xwiki.eclipse.model.XWikiEclipseComment;
+import org.xwiki.eclipse.model.XWikiEclipseObjectCollection;
+import org.xwiki.eclipse.model.XWikiEclipseObjectSummary;
+import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
+import org.xwiki.eclipse.model.XWikiEclipseSpaceSummary;
+import org.xwiki.eclipse.model.XWikiEclipseTag;
+import org.xwiki.eclipse.model.XWikiEclipseWikiSummary;
+import org.xwiki.eclipse.storage.DataManager;
 
+/**
+ * @version $Id$
+ */
 public class AdapterFactory implements IAdapterFactory
 {
-    private Class[] adapterList =
-        new Class[] {IWorkbenchAdapter.class, IWorkbenchAdapter2.class, IDeferredWorkbenchAdapter.class};
+    private Class[] adapterList = new Class[] {IWorkbenchAdapter.class, IWorkbenchAdapter2.class,
+    IDeferredWorkbenchAdapter.class};
 
     private DataManagerAdapter xwikiEclipseDataManagerAdapter = new DataManagerAdapter();
 
@@ -41,6 +50,19 @@ public class AdapterFactory implements IAdapterFactory
     private XWikiEclipsePageSummaryAdapter xwikiEclipsePageSummaryAdapter = new XWikiEclipsePageSummaryAdapter();
 
     private XWikiEclipseObjectSummaryAdapter xwikiEclipseObjectSummaryAdapter = new XWikiEclipseObjectSummaryAdapter();
+
+    private XWikiEclipseWikiSummaryAdapter xwikiEclipseWikiSummaryAdapter = new XWikiEclipseWikiSummaryAdapter();
+
+    private XWikiEclipseAttachmentAdapter xwikiEclipseAttachmentAdapter = new XWikiEclipseAttachmentAdapter();
+
+    private XWikiEclipseObjectCollectionAdapter xwikiEclipseObjectCollectionAdapter =
+        new XWikiEclipseObjectCollectionAdapter();
+
+    private XWikiEclipseClassAdapter xwikiEclipseClassSummaryAdapter = new XWikiEclipseClassAdapter();
+
+    private XWikiEclipseTagAdapter xwikiEclipseTagAdapter = new XWikiEclipseTagAdapter();
+
+    private XWikiEclipseCommentAdapter xwikiEclipseCommentAdapter = new XWikiEclipseCommentAdapter();
 
     public Object getAdapter(Object adaptableObject, Class adapterType)
     {
@@ -57,6 +79,17 @@ public class AdapterFactory implements IAdapterFactory
 
         if ((adaptableObject instanceof DataManager) && adapterType.equals(IDeferredWorkbenchAdapter.class)) {
             return xwikiEclipseDataManagerAdapter;
+        }
+
+        /*
+         * Adapters for XWikiEclipseWikiSummary
+         */
+        if ((adaptableObject instanceof XWikiEclipseWikiSummary) && adapterType.equals(IWorkbenchAdapter.class)) {
+            return xwikiEclipseWikiSummaryAdapter;
+        }
+
+        if ((adaptableObject instanceof XWikiEclipseWikiSummary) && adapterType.equals(IDeferredWorkbenchAdapter.class)) {
+            return xwikiEclipseWikiSummaryAdapter;
         }
 
         /*
@@ -81,11 +114,57 @@ public class AdapterFactory implements IAdapterFactory
         if ((adaptableObject instanceof XWikiEclipsePageSummary) && adapterType.equals(IDeferredWorkbenchAdapter.class)) {
             return xwikiEclipsePageSummaryAdapter;
         }
+
+        /*
+         * Adapters for XWikiEclipseObjectCollection
+         */
+        if ((adaptableObject instanceof XWikiEclipseObjectCollection) && adapterType.equals(IWorkbenchAdapter.class)) {
+            return xwikiEclipseObjectCollectionAdapter;
+        }
+
+        if ((adaptableObject instanceof XWikiEclipseObjectCollection)
+            && adapterType.equals(IDeferredWorkbenchAdapter.class)) {
+            return xwikiEclipseObjectCollectionAdapter;
+        }
+
+        /*
+         * Adapters for XWikiEclipseClassSummary
+         */
+        if ((adaptableObject instanceof XWikiEclipseClass) && adapterType.equals(IWorkbenchAdapter.class)) {
+            return xwikiEclipseClassSummaryAdapter;
+        }
+
+        if ((adaptableObject instanceof XWikiEclipseClass)
+            && adapterType.equals(IDeferredWorkbenchAdapter.class)) {
+            return xwikiEclipseClassSummaryAdapter;
+        }
+
         /*
          * Adapters for XWikiEclipseObjectSummary
          */
         if ((adaptableObject instanceof XWikiEclipseObjectSummary) && adapterType.equals(IWorkbenchAdapter.class)) {
             return xwikiEclipseObjectSummaryAdapter;
+        }
+
+        /*
+         * Adapters for XWikiEclipseAttachment
+         */
+        if ((adaptableObject instanceof XWikiEclipseAttachment) && adapterType.equals(IWorkbenchAdapter.class)) {
+            return xwikiEclipseAttachmentAdapter;
+        }
+
+        /*
+         * Adapters for XWikiEclipseTag
+         */
+        if ((adaptableObject instanceof XWikiEclipseTag) && adapterType.equals(IWorkbenchAdapter.class)) {
+            return xwikiEclipseTagAdapter;
+        }
+
+        /*
+         * Adapters for XWikiEclipseComment
+         */
+        if ((adaptableObject instanceof XWikiEclipseComment) && adapterType.equals(IWorkbenchAdapter.class)) {
+            return xwikiEclipseCommentAdapter;
         }
 
         return null;

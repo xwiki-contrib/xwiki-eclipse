@@ -36,9 +36,17 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.xwiki.eclipse.storage.BackendType;
+import org.xwiki.eclipse.storage.StorageConstants;
+import org.xwiki.eclipse.storage.XWikiEclipseStorageException;
+import org.xwiki.eclipse.storage.utils.StorageUtils;
 import org.xwiki.eclipse.ui.UIConstants;
 import org.xwiki.eclipse.ui.UIPlugin;
 
+/**
+ * 
+ * @version $Id$
+ */
 public class ConnectionSettingsWizardPage extends WizardPage
 {
     private NewConnectionWizardState newConnectionWizardState;
@@ -84,8 +92,8 @@ public class ConnectionSettingsWizardPage extends WizardPage
         Group group = new Group(composite, SWT.NONE);
         GridLayoutFactory.fillDefaults().numColumns(2).margins(5, 5).applyTo(group);
         GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, false).span(2, 1).applyTo(group);
-        group.setText("Connection settings");
-
+        group.setText("Connection settings");     
+        
         /* Server URL */
         label = new Label(group, SWT.NONE);
         label.setText("Server URL:");
@@ -96,11 +104,12 @@ public class ConnectionSettingsWizardPage extends WizardPage
         {
             public void modifyText(ModifyEvent e)
             {
-                newConnectionWizardState.setServerUrl(serverUrlText.getText().trim());
+                newConnectionWizardState.setServerUrl(serverUrlText.getText().trim());                
                 getContainer().updateButtons();
             }
         });
-        serverUrlText.setText("http://localhost:8080/xwiki/xmlrpc/confluence");
+        /* REST endpoint is the default value */
+        serverUrlText.setText(StorageConstants.REST_API_ENTRYPOINT);
 
         /* Username */
         label = new Label(group, SWT.NONE);
@@ -131,7 +140,7 @@ public class ConnectionSettingsWizardPage extends WizardPage
                 getContainer().updateButtons();
             }
         });
-
+        
         setControl(composite);
     }
 
@@ -152,7 +161,7 @@ public class ConnectionSettingsWizardPage extends WizardPage
                 .format("Connection '%s' already exists. Please choose another name.", connectionName));
             return false;
         }
-
+        
         if (serverUrlText.getText() == null || serverUrlText.getText().trim().length() == 0) {
             setErrorMessage("A server URL must be specified.");
             return false;
@@ -166,6 +175,14 @@ public class ConnectionSettingsWizardPage extends WizardPage
             return false;
         }
 
+        String serverUrl = serverUrlText.getText().trim();
+        try {
+            BackendType backend = StorageUtils.getBackend(serverUrl);
+        } catch (XWikiEclipseStorageException e1) {
+            setErrorMessage("wrong end point URL, end serverUrlText with /rest or /xmlrpc/confluence");
+            return false;
+        }
+        
         if (userNameText.getText() == null || userNameText.getText().trim().length() == 0) {
             setErrorMessage("User name must be specified.");
             return false;

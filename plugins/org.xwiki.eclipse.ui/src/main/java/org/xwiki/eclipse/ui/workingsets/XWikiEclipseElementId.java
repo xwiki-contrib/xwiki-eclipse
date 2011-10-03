@@ -24,6 +24,10 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IPersistableElement;
 
+/**
+ * 
+ * @version $Id$
+ */
 public class XWikiEclipseElementId implements IAdaptable, IPersistableElement
 {
     private String xwikiEclipseId;

@@ -31,10 +31,13 @@ import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.handlers.HandlerUtil;
-import org.xwiki.eclipse.core.DataManager;
+import org.xwiki.eclipse.storage.DataManager;
 import org.xwiki.eclipse.ui.utils.UIUtils;
 import org.xwiki.eclipse.ui.utils.XWikiEclipseSafeRunnable;
 
+/**
+ * @version $Id$
+ */
 public class DataManagerConnectHandler extends AbstractHandler
 {
     public Object execute(ExecutionEvent event) throws ExecutionException

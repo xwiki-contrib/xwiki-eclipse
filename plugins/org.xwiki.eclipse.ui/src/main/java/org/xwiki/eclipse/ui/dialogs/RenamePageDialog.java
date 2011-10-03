@@ -20,6 +20,7 @@
  */
 package org.xwiki.eclipse.ui.dialogs;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.SafeRunner;
@@ -42,34 +43,45 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.xwiki.eclipse.core.model.XWikiEclipsePageSummary;
-import org.xwiki.eclipse.core.model.XWikiEclipseSpaceSummary;
+import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
+import org.xwiki.eclipse.model.XWikiEclipseSpaceSummary;
+import org.xwiki.eclipse.model.XWikiEclipseWikiSummary;
+import org.xwiki.eclipse.storage.XWikiEclipseStorageException;
 import org.xwiki.eclipse.ui.utils.XWikiEclipseSafeRunnableWithResult;
 
+/**
+ * @version $Id$
+ */
 public class RenamePageDialog extends TitleAreaDialog
 {
     private XWikiEclipsePageSummary pageSummary;
+
+    private String action;
+
+    private String newWiki;
 
     private String newSpace;
 
     private String newPageName;
 
-    public RenamePageDialog(Shell parentShell, XWikiEclipsePageSummary pageSummary)
+    public RenamePageDialog(Shell parentShell, XWikiEclipsePageSummary pageSummary, String action)
     {
         super(parentShell);
         setShellStyle(getShellStyle() | SWT.RESIZE | SWT.MAX);
         this.pageSummary = pageSummary;
+        this.action = action;
     }
 
     protected void configureShell(Shell newShell)
     {
         super.configureShell(newShell);
-        newShell.setText("Rename page");
+        newShell.setText(action.equals("copyFrom") ? "Copy Page" : "Rename page");
     }
 
     @Override
@@ -82,8 +94,9 @@ public class RenamePageDialog extends TitleAreaDialog
     @Override
     protected void createButtonsForButtonBar(Composite parent)
     {
-        Button button = createButton(parent, IDialogConstants.OK_ID, "Rename", true);
-        button.addSelectionListener(new SelectionListener()
+        Button OKButton =
+            createButton(parent, IDialogConstants.OK_ID, action.equals("copyFrom") ? "Copy" : "Rename", true);
+        OKButton.addSelectionListener(new SelectionListener()
         {
 
             public void widgetDefaultSelected(SelectionEvent e)
@@ -104,7 +117,7 @@ public class RenamePageDialog extends TitleAreaDialog
     {
         Control contents = super.createContents(parent);
 
-        setTitle("Rename page");
+        setTitle(action.equals("copyFrom") ? "Copy Page" : "Rename page");
 
         return contents;
     }
@@ -120,6 +133,53 @@ public class RenamePageDialog extends TitleAreaDialog
         GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, true).applyTo(composite);
 
         Label label = new Label(composite, SWT.NONE);
+        label.setText("Wiki:");
+
+        final Combo combo = new Combo(composite, SWT.READ_ONLY | SWT.DROP_DOWN);
+        List<XWikiEclipseWikiSummary> wikis = new ArrayList<XWikiEclipseWikiSummary>();
+        try {
+            wikis = pageSummary.getDataManager().getWikis();
+        } catch (XWikiEclipseStorageException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
+        final String[] items = new String[wikis.size()];
+        for (int i = 0; i < items.length; i++) {
+            String wiki = wikis.get(i).getName();
+            items[i] = wiki;
+            if (wiki.equals(pageSummary.getWiki())) {
+                combo.select(i);
+            }
+        }
+        combo.setItems(items);
+
+        for (int i = 0; i < items.length; i++) {
+            String wiki = wikis.get(i).getName();
+            if (wiki.equals(pageSummary.getWiki())) {
+                combo.select(i);
+                newWiki = pageSummary.getWiki();
+            }
+        }
+
+        combo.addSelectionListener(new SelectionListener()
+        {
+
+            @Override
+            public void widgetSelected(SelectionEvent e)
+            {
+                // TODO Auto-generated method stub
+                newWiki = items[((Combo) e.getSource()).getSelectionIndex()];
+            }
+
+            @Override
+            public void widgetDefaultSelected(SelectionEvent e)
+            {
+                // TODO Auto-generated method stub
+
+            }
+        });
+
+        label = new Label(composite, SWT.NONE);
         label.setText("New space:");
 
         final ComboViewer comboViewer = new ComboViewer(composite, SWT.BORDER);
@@ -134,7 +194,7 @@ public class RenamePageDialog extends TitleAreaDialog
 
                         public void run() throws Exception
                         {
-                            setResult(pageSummary.getDataManager().getSpaces());
+                            setResult(pageSummary.getDataManager().getSpaces(pageSummary.getWiki()));
                         }
 
                     };
@@ -144,7 +204,7 @@ public class RenamePageDialog extends TitleAreaDialog
                     String[] elements = new String[runnable.getResult().size()];
                     int i = 0;
                     for (XWikiEclipseSpaceSummary spaceSummary : runnable.getResult()) {
-                        elements[i] = spaceSummary.getData().getKey();
+                        elements[i] = spaceSummary.getName();
                         i++;
                     }
 
@@ -187,7 +247,7 @@ public class RenamePageDialog extends TitleAreaDialog
         });
 
         comboViewer.setInput(new Object());
-        comboViewer.setSelection(new StructuredSelection(pageSummary.getData().getSpace()));
+        comboViewer.setSelection(new StructuredSelection(pageSummary.getSpace()));
 
         label = new Label(composite, SWT.NONE);
         label.setText("New name:");
@@ -195,12 +255,12 @@ public class RenamePageDialog extends TitleAreaDialog
         final Text name = new Text(composite, SWT.BORDER);
         GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(name);
 
-        if (pageSummary.getData().getId().indexOf('.') != -1) {
-            String[] components = pageSummary.getData().getId().split("\\.");
+        if (pageSummary.getId().indexOf('.') != -1) {
+            String[] components = pageSummary.getId().split("\\.");
 
             name.setText(components[1]);
         } else {
-            name.setText(pageSummary.getData().getTitle());
+            name.setText(pageSummary.getTitle());
         }
 
         name.addModifyListener(new ModifyListener()
@@ -225,4 +285,13 @@ public class RenamePageDialog extends TitleAreaDialog
         return newPageName;
     }
 
+    public String getNewWiki()
+    {
+        return newWiki;
+    }
+
+    public String getAction()
+    {
+        return action;
+    }
 }

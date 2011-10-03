@@ -49,12 +49,15 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.FilteredItemsSelectionDialog;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
-import org.xwiki.eclipse.core.DataManager;
 import org.xwiki.eclipse.core.DataManagerRegistry;
-import org.xwiki.eclipse.core.model.XWikiEclipsePageSummary;
+import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
+import org.xwiki.eclipse.storage.DataManager;
 import org.xwiki.eclipse.ui.UIPlugin;
 import org.xwiki.eclipse.ui.utils.XWikiEclipseSafeRunnable;
 
+/**
+ * @version $Id$
+ */
 public class OpenPageDialog extends FilteredItemsSelectionDialog
 {
     private Set<DataManager> targetDataManagers;
@@ -75,7 +78,8 @@ public class OpenPageDialog extends FilteredItemsSelectionDialog
         {
             if (element instanceof XWikiEclipsePageSummary) {
                 XWikiEclipsePageSummary xwikiPage = (XWikiEclipsePageSummary) element;
-                return String.format("%s (%s)", xwikiPage.getData().getId(), xwikiPage.getDataManager().getName());
+                return String.format("%s %s (%s)", xwikiPage.getId(), (xwikiPage.getLanguage().equals("") ? "" : "["
+                    + xwikiPage.getLanguage() + "]"), xwikiPage.getDataManager().getName());
             }
 
             return super.getText(element);
@@ -119,8 +123,8 @@ public class OpenPageDialog extends FilteredItemsSelectionDialog
         label.setText("Select the connections to be searched for opening pages:");
 
         CheckboxTreeViewer dataManagerTreeViewers = new CheckboxTreeViewer(composite, SWT.BORDER);
-        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(
-            dataManagerTreeViewers.getControl());
+        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false)
+            .applyTo(dataManagerTreeViewers.getControl());
         dataManagerTreeViewers.setContentProvider(new ITreeContentProvider()
         {
 
@@ -198,7 +202,7 @@ public class OpenPageDialog extends FilteredItemsSelectionDialog
             {
                 if (item instanceof XWikiEclipsePageSummary) {
                     XWikiEclipsePageSummary pageSummary = (XWikiEclipsePageSummary) item;
-                    return matches(pageSummary.getData().getTitle());
+                    return matches(pageSummary.getTitle());
                 }
 
                 return false;
@@ -214,7 +218,7 @@ public class OpenPageDialog extends FilteredItemsSelectionDialog
         progressMonitor.beginTask("Searching...", targetDataManagers.size());
 
         for (DataManager dataManager : targetDataManagers) {
-            final DataManager currentDataManager = (DataManager) dataManager;
+            final DataManager currentDataManager = dataManager;
 
             /* If we don't already have summaries, then fetch them from the data manager */
             if (dataManagerToPageSummariesMap.get(currentDataManager) == null) {
@@ -269,7 +273,7 @@ public class OpenPageDialog extends FilteredItemsSelectionDialog
                 XWikiEclipsePageSummary page1 = (XWikiEclipsePageSummary) o1;
                 XWikiEclipsePageSummary page2 = (XWikiEclipsePageSummary) o2;
 
-                return page1.getData().getTitle().compareTo(page2.getData().getTitle());
+                return page1.getTitle().compareTo(page2.getTitle());
             }
         };
     }

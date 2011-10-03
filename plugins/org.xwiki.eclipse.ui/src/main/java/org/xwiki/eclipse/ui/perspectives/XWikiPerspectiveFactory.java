@@ -35,6 +35,7 @@ import org.xwiki.eclipse.ui.wizards.NewConnectionWizard;
  * views.
  * 
  * @author Eduard Moraru
+ * @version $Id$
  */
 public class XWikiPerspectiveFactory implements IPerspectiveFactory
 {

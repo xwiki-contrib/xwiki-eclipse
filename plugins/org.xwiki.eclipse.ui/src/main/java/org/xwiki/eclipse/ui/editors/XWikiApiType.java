@@ -20,6 +20,10 @@
  */
 package org.xwiki.eclipse.ui.editors;
 
+/**
+ * 
+ * @version $Id$
+ */
 public enum XWikiApiType
 {
     XWIKI, DOC, CONTEXT, REQUEST

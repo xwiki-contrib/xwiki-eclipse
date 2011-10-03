@@ -23,13 +23,20 @@ package org.xwiki.eclipse.ui.editors;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;
-import org.xwiki.eclipse.core.model.XWikiEclipseObject;
+import org.xwiki.eclipse.model.ModelObject;
+import org.xwiki.eclipse.model.XWikiEclipseClass;
+import org.xwiki.eclipse.model.XWikiEclipseObject;
+import org.xwiki.eclipse.ui.UIConstants;
+import org.xwiki.eclipse.ui.UIPlugin;
 
+/**
+ * @version $Id$
+ */
 public class ObjectEditorInput implements IEditorInput
 {
-    private XWikiEclipseObject object;
+    private ModelObject object;
 
-    public ObjectEditorInput(XWikiEclipseObject object)
+    public ObjectEditorInput(ModelObject object)
     {
         this.object = object;
     }
@@ -41,13 +48,28 @@ public class ObjectEditorInput implements IEditorInput
 
     public ImageDescriptor getImageDescriptor()
     {
-        // TODO Auto-generated method stub
+        if (object instanceof XWikiEclipseObject) {
+            return UIPlugin.getImageDescriptor(UIConstants.OBJECT_ICON);
+        }
+
+        if (object instanceof XWikiEclipseClass) {
+            return UIPlugin.getImageDescriptor(UIConstants.CLASS_ICON);
+        }
+
         return null;
     }
 
     public String getName()
     {
-        return object.getName();
+        if (object instanceof XWikiEclipseObject) {
+            return ((XWikiEclipseObject) object).getName();
+        }
+
+        if (object instanceof XWikiEclipseClass) {
+            return ((XWikiEclipseClass) object).getName();
+        }
+
+        return null;
     }
 
     public IPersistableElement getPersistable()
@@ -61,13 +83,13 @@ public class ObjectEditorInput implements IEditorInput
         return getName();
     }
 
-    public Object getAdapter(Class adapter)
+    public ModelObject getAdapter(Class adapter)
     {
         // TODO Auto-generated method stub
         return null;
     }
 
-    public XWikiEclipseObject getObject()
+    public ModelObject getObject()
     {
         return object;
     }

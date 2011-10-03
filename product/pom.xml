@@ -34,10 +34,13 @@
   
   <artifactId>org.xwiki.eclipse.product</artifactId>
   <packaging>eclipse-repository</packaging>
+  <properties>
+    <product-id>org.xwiki.eclipse.product</product-id>
+  </properties>
   <build>
     <plugins>
       <plugin>
-	<groupId>org.sonatype.tycho</groupId>
+	<groupId>org.eclipse.tycho</groupId>
 	<artifactId>tycho-p2-director-plugin</artifactId>
 	<version>${tycho-version}</version>
 	<executions>
@@ -52,7 +55,7 @@
 	<configuration>
 	  <products>
             <product>
-              <id>org.xwiki.eclipse.rcp.product</id>
+              <id>${product-id}</id>
 	      <rootFolder>xeclipse</rootFolder>
 	    </product>
 	  </products>

@@ -29,16 +29,21 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.browser.IWebBrowser;
 import org.eclipse.ui.browser.IWorkbenchBrowserSupport;
 import org.eclipse.ui.part.ViewPart;
-import org.xwiki.eclipse.core.model.XWikiEclipseObject;
-import org.xwiki.eclipse.core.model.XWikiEclipseObjectSummary;
-import org.xwiki.eclipse.core.model.XWikiEclipsePage;
-import org.xwiki.eclipse.core.model.XWikiEclipsePageSummary;
-import org.xwiki.eclipse.core.model.XWikiEclipseSpaceSummary;
-import org.xwiki.eclipse.core.notifications.CoreEvent;
-import org.xwiki.eclipse.core.notifications.ICoreEventListener;
-import org.xwiki.eclipse.core.notifications.NotificationManager;
+import org.xwiki.eclipse.model.XWikiEclipseObject;
+import org.xwiki.eclipse.model.XWikiEclipseObjectSummary;
+import org.xwiki.eclipse.model.XWikiEclipsePage;
+import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
+import org.xwiki.eclipse.model.XWikiEclipseSpaceSummary;
+import org.xwiki.eclipse.storage.XWikiEclipseStorageException;
+import org.xwiki.eclipse.storage.notification.CoreEvent;
+import org.xwiki.eclipse.storage.notification.ICoreEventListener;
+import org.xwiki.eclipse.storage.notification.NotificationManager;
+import org.xwiki.eclipse.storage.utils.IdProcessor;
 import org.xwiki.eclipse.ui.utils.UIUtils;
 
+/**
+ * @version $Id$
+ */
 public class PagePreview extends ViewPart implements ISelectionListener, ICoreEventListener
 {
     /*
@@ -118,8 +123,8 @@ public class PagePreview extends ViewPart implements ISelectionListener, ICoreEv
 
         addressBarComposite = new Composite(mainComposite, SWT.NONE);
         GridLayoutFactory.fillDefaults().numColumns(3).margins(0, 5).spacing(0, 0).applyTo(addressBarComposite);
-        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).exclude(true).applyTo(
-            addressBarComposite);
+        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).exclude(true)
+            .applyTo(addressBarComposite);
 
         Label label = new Label(addressBarComposite, SWT.NONE);
         label.setText("URL:");
@@ -161,8 +166,8 @@ public class PagePreview extends ViewPart implements ISelectionListener, ICoreEv
                     browser = browserSupport.createBrowser("xeclipse");
                     browser.openURL(new URL(urlText.getText()));
                 } catch (Exception e1) {
-                    MessageDialog.openWarning(Display.getDefault().getActiveShell(), "Warning", String.format(
-                        "Unable to open external browser\n%s", e1));
+                    MessageDialog.openWarning(Display.getDefault().getActiveShell(), "Warning",
+                        String.format("Unable to open external browser\n%s", e1));
                 }
             }
         });
@@ -215,14 +220,21 @@ public class PagePreview extends ViewPart implements ISelectionListener, ICoreEv
         if (selectedObject instanceof XWikiEclipsePageSummary) {
             XWikiEclipsePageSummary pageSummary = (XWikiEclipsePageSummary) selectedObject;
 
-            update(pageSummary.getData().getUrl(), pageSummary.getDataManager().isConnected());
+            update(pageSummary.getUrl(), pageSummary.getDataManager().isConnected());
         }
 
         if (selectedObject instanceof XWikiEclipseObjectSummary) {
             XWikiEclipseObjectSummary objectSummary = (XWikiEclipseObjectSummary) selectedObject;
+            XWikiEclipsePageSummary pageSummary;
+            try {
+                pageSummary =
+                    objectSummary.getDataManager().getPageSummary(objectSummary.getWiki(), objectSummary.getSpace(),
+                        objectSummary.getPageName(), "");
+                update(pageSummary != null ? pageSummary.getUrl() : null, objectSummary.getDataManager().isConnected());
+            } catch (XWikiEclipseStorageException e) {
+                e.printStackTrace();
+            }
 
-            update(objectSummary.getPageSummary() != null ? objectSummary.getPageSummary().getUrl() : null,
-                objectSummary.getDataManager().isConnected());
         }
 
     }
@@ -269,7 +281,7 @@ public class PagePreview extends ViewPart implements ISelectionListener, ICoreEv
         if (object instanceof XWikiEclipsePage) {
             XWikiEclipsePage page = (XWikiEclipsePage) object;
 
-            update(page.getData().getUrl(), page.getDataManager().isConnected());
+            update(page.getUrl(), page.getDataManager().isConnected());
         }
 
         else
@@ -277,8 +289,18 @@ public class PagePreview extends ViewPart implements ISelectionListener, ICoreEv
         if (object instanceof XWikiEclipseObject) {
             XWikiEclipseObject xwikiObject = (XWikiEclipseObject) object;
 
-            update(xwikiObject.getPageSummary() != null ? xwikiObject.getPageSummary().getUrl() : null, xwikiObject
-                .getDataManager().isConnected());
+            try {
+                String pageId = xwikiObject.getPageId();
+                IdProcessor parser = new IdProcessor(pageId);
+                update(
+                    xwikiObject.getDataManager().getPageSummary(parser.getWiki(), parser.getSpace(), parser.getPage(),
+                        "") != null ? xwikiObject.getDataManager()
+                        .getPageSummary(parser.getWiki(), parser.getSpace(), parser.getPage(), "").getUrl() : null,
+                    xwikiObject.getDataManager().isConnected());
+            } catch (XWikiEclipseStorageException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
         }
 
         else
@@ -286,7 +308,7 @@ public class PagePreview extends ViewPart implements ISelectionListener, ICoreEv
         if (object instanceof XWikiEclipseSpaceSummary) {
             XWikiEclipseSpaceSummary xwikiSpaceSummary = (XWikiEclipseSpaceSummary) object;
 
-            update(xwikiSpaceSummary.getData().getUrl(), xwikiSpaceSummary.getDataManager().isConnected());
+            update(xwikiSpaceSummary.getUrl(), xwikiSpaceSummary.getDataManager().isConnected());
         }
     }
 

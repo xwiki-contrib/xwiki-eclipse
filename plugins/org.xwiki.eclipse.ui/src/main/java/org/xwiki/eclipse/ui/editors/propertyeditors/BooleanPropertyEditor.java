@@ -28,8 +28,12 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
-import org.xwiki.eclipse.core.model.XWikiEclipseObjectProperty;
+import org.xwiki.eclipse.model.XWikiEclipseObjectProperty;
 
+/**
+ * 
+ * @version $Id$
+ */
 public class BooleanPropertyEditor extends BasePropertyEditor
 {
     Button button;

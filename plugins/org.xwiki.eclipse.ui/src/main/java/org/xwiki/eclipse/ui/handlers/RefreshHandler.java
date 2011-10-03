@@ -27,10 +27,14 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.handlers.HandlerUtil;
-import org.xwiki.eclipse.core.notifications.CoreEvent;
-import org.xwiki.eclipse.core.notifications.NotificationManager;
+import org.xwiki.eclipse.storage.notification.CoreEvent;
+import org.xwiki.eclipse.storage.notification.NotificationManager;
 import org.xwiki.eclipse.ui.utils.UIUtils;
 
+/**
+ * 
+ * @version $Id$
+ */
 public class RefreshHandler extends AbstractHandler
 {
     public Object execute(ExecutionEvent event) throws ExecutionException

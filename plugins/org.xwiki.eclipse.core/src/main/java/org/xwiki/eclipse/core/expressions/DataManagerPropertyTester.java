@@ -22,11 +22,13 @@ package org.xwiki.eclipse.core.expressions;
 
 import org.eclipse.core.expressions.PropertyTester;
 import org.eclipse.core.runtime.Assert;
-import org.xwiki.eclipse.core.DataManager;
+import org.xwiki.eclipse.storage.DataManager;
 
 /**
  * This is a property tester for the Eclipse Core Expression framework for building expression containing conditions
  * about data managers. It is used in declarative handler definitions for activating/de-activating handlers.
+ * 
+ * @version $Id$
  */
 public class DataManagerPropertyTester extends PropertyTester
 {

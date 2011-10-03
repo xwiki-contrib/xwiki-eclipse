@@ -32,24 +32,36 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
-import org.xwiki.eclipse.core.DataManager;
-import org.xwiki.eclipse.core.model.XWikiEclipseObject;
+import org.xwiki.eclipse.model.XWikiEclipseClass;
+import org.xwiki.eclipse.model.XWikiEclipseObject;
+import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
+import org.xwiki.eclipse.storage.DataManager;
 import org.xwiki.eclipse.ui.editors.ObjectEditor;
 import org.xwiki.eclipse.ui.editors.ObjectEditorInput;
 import org.xwiki.eclipse.ui.utils.XWikiEclipseSafeRunnable;
 
+/**
+ * @version $Id$
+ */
 public class NewObjectWizard extends Wizard implements INewWizard
 {
     private NewObjectWizardState newObjectWizardState;
 
     private DataManager dataManager;
 
-    public NewObjectWizard(DataManager dataManager, String pageId)
+    private XWikiEclipsePageSummary pageSummary;
+
+    public NewObjectWizard(XWikiEclipsePageSummary pageSummary)
     {
         super();
+        this.pageSummary = pageSummary;
         newObjectWizardState = new NewObjectWizardState();
-        newObjectWizardState.setPageId(pageId);
-        this.dataManager = dataManager;
+
+        newObjectWizardState.setPageId(pageSummary.getId());
+        newObjectWizardState.setPageName(pageSummary.getName());
+        newObjectWizardState.setSpace(pageSummary.getSpace());
+        newObjectWizardState.setWiki(pageSummary.getWiki());
+        this.dataManager = pageSummary.getDataManager();
         setNeedsProgressMonitor(true);
     }
 
@@ -64,8 +76,12 @@ public class NewObjectWizard extends Wizard implements INewWizard
                     try {
                         monitor.beginTask("Creating object...", IProgressMonitor.UNKNOWN);
                         final XWikiEclipseObject object =
-                            dataManager.createObject(newObjectWizardState.getPageId(), newObjectWizardState
-                                .getClassName());
+                            dataManager.createObject(newObjectWizardState.getPageId(),
+                                newObjectWizardState.getClassName());
+
+                        XWikiEclipseClass clazz =
+                            dataManager.getClass(newObjectWizardState.getWiki(), newObjectWizardState.getClassName());
+                        object.setProperties(clazz.getProperties());
 
                         Display.getDefault().syncExec(new Runnable()
                         {
@@ -101,7 +117,7 @@ public class NewObjectWizard extends Wizard implements INewWizard
     @Override
     public void addPages()
     {
-        addPage(new ObjectSettingsPage("Object settings", dataManager));
+        addPage(new ObjectSettingsPage("Object settings", pageSummary));
     }
 
     public NewObjectWizardState getNewObjectWizardState()
@@ -119,8 +135,14 @@ public class NewObjectWizard extends Wizard implements INewWizard
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.eclipse.ui.IWorkbenchWizard#init(org.eclipse.ui.IWorkbench,
+     *      org.eclipse.jface.viewers.IStructuredSelection)
+     */
+    @Override
     public void init(IWorkbench workbench, IStructuredSelection selection)
     {
-        // Do nothing.
     }
 }

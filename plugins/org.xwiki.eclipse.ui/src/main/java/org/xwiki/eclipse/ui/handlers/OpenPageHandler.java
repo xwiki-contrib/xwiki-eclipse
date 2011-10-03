@@ -28,23 +28,28 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.xwiki.eclipse.core.CoreLog;
-import org.xwiki.eclipse.core.DataManager;
-import org.xwiki.eclipse.core.XWikiEclipseException;
-import org.xwiki.eclipse.core.model.ModelObject;
-import org.xwiki.eclipse.core.model.XWikiEclipsePage;
-import org.xwiki.eclipse.core.model.XWikiEclipsePageSummary;
+import org.xwiki.eclipse.model.ModelObject;
+import org.xwiki.eclipse.model.XWikiEclipsePage;
+import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
+import org.xwiki.eclipse.storage.DataManager;
+import org.xwiki.eclipse.storage.XWikiEclipseStorageException;
 import org.xwiki.eclipse.ui.dialogs.OpenPageDialog;
 import org.xwiki.eclipse.ui.editors.PageEditor;
 import org.xwiki.eclipse.ui.editors.PageEditorInput;
 import org.xwiki.eclipse.ui.utils.UIUtils;
 
+/**
+ * @version $Id$
+ */
 public class OpenPageHandler extends AbstractHandler
 {
-    public Object execute(ExecutionEvent event) throws ExecutionException
+    public ModelObject execute(ExecutionEvent event) throws ExecutionException
     {
         ISelection selection = HandlerUtil.getCurrentSelection(event);
         DataManager dataManager = null;
@@ -70,11 +75,14 @@ public class OpenPageHandler extends AbstractHandler
                 XWikiEclipsePageSummary pageSummary = (XWikiEclipsePageSummary) object;
 
                 try {
-                    XWikiEclipsePage page = pageSummary.getDataManager().getPage(pageSummary.getData().getId());
+                    XWikiEclipsePage page =
+                        pageSummary.getDataManager().getPage(pageSummary.getWiki(), pageSummary.getSpace(),
+                            pageSummary.getName(), pageSummary.getLanguage());
 
-                    PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().openEditor(
-                        new PageEditorInput(page, false), PageEditor.ID);
-                } catch (XWikiEclipseException e) {
+                    IWorkbenchPage workbenchPage = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+                    IEditorInput input = new PageEditorInput(page, false);
+                    workbenchPage.openEditor(input, PageEditor.ID);
+                } catch (XWikiEclipseStorageException e) {
                     UIUtils
                         .showMessageDialog(
                             Display.getDefault().getActiveShell(),

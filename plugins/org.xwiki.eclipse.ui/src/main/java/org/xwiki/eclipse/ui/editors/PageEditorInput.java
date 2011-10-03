@@ -24,9 +24,13 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;
-import org.xwiki.eclipse.core.model.XWikiEclipsePage;
-import org.xwiki.xmlrpc.model.XWikiExtendedId;
+import org.xwiki.eclipse.model.XWikiEclipsePage;
+import org.xwiki.eclipse.ui.UIConstants;
+import org.xwiki.eclipse.ui.UIPlugin;
 
+/**
+ * @version $Id$
+ */
 public class PageEditorInput implements IEditorInput
 {
     private XWikiEclipsePage page;
@@ -50,31 +54,14 @@ public class PageEditorInput implements IEditorInput
 
     public ImageDescriptor getImageDescriptor()
     {
-        return null;
+        return UIPlugin.getImageDescriptor(UIConstants.PAGE_ICON);
     }
 
     public String getName()
     {
-        String name = null;
-
-        /* If the page id does not have a '.' then we are dealing with confluence ids */
-        if (page.getData().getId().indexOf(".") != -1) {
-            XWikiExtendedId extendedId = new XWikiExtendedId(page.getData().getId());
-
-            if (page.getData().getLanguage() != null) {
-                if (page.getData().getLanguage().equals("")) {
-                    name = String.format("%s", extendedId.getBasePageId());
-                } else {
-                    name = String.format("%s [%s]", extendedId.getBasePageId(), page.getData().getLanguage());
-                }
-            } else {
-                name = String.format("%s", extendedId.getBasePageId());
-            }
-        } else {
-            /* This is a confuence page */
-            name = page.getData().getTitle();
-        }
-
+        String name =
+            page.getName() + "[" + page.getVersion() + "]"
+                + (page.getLanguage().equals("") ? "" : "[" + page.getLanguage() + "]");
         return name;
     }
 

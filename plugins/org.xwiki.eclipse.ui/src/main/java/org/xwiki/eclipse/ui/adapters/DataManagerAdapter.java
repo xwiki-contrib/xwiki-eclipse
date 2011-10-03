@@ -33,13 +33,16 @@ import org.eclipse.ui.model.WorkbenchAdapter;
 import org.eclipse.ui.progress.IDeferredWorkbenchAdapter;
 import org.eclipse.ui.progress.IElementCollector;
 import org.xwiki.eclipse.core.CoreLog;
-import org.xwiki.eclipse.core.DataManager;
-import org.xwiki.eclipse.core.XWikiEclipseException;
-import org.xwiki.eclipse.core.model.XWikiEclipseSpaceSummary;
+import org.xwiki.eclipse.model.XWikiEclipseWikiSummary;
+import org.xwiki.eclipse.storage.DataManager;
+import org.xwiki.eclipse.storage.XWikiEclipseStorageException;
 import org.xwiki.eclipse.ui.UIConstants;
 import org.xwiki.eclipse.ui.UIPlugin;
 import org.xwiki.eclipse.ui.utils.UIUtils;
 
+/**
+ * @version $Id$
+ */
 public class DataManagerAdapter extends WorkbenchAdapter implements IDeferredWorkbenchAdapter
 {
     @Override
@@ -49,17 +52,17 @@ public class DataManagerAdapter extends WorkbenchAdapter implements IDeferredWor
             final DataManager dataManager = (DataManager) object;
 
             try {
-                List<XWikiEclipseSpaceSummary> result = dataManager.getSpaces();
+                List<XWikiEclipseWikiSummary> result = dataManager.getWikis();
                 return result.toArray();
-            } catch (XWikiEclipseException e) {
+            } catch (XWikiEclipseStorageException e) {
                 UIUtils
                     .showMessageDialog(
                         Display.getDefault().getActiveShell(),
                         SWT.ICON_ERROR,
-                        "Error getting spaces.",
-                        "There was a communication error while getting spaces. XWiki Eclipse is taking the connection offline in order to prevent further errors. Please check your remote XWiki status and then try to reconnect.");
+                        "Error getting wiki information.",
+                        "There was a communication error while getting wiki information. XWiki Eclipse is taking the connection offline in order to prevent further errors. Please check your remote XWiki status and then try to reconnect.");
 
-                CoreLog.logError("Error getting spaces.", e);
+                CoreLog.logError("Error getting wiki information.", e);
 
                 dataManager.disconnect();
                 return NO_CHILDREN;
@@ -74,7 +77,11 @@ public class DataManagerAdapter extends WorkbenchAdapter implements IDeferredWor
     {
         if (object instanceof DataManager) {
             DataManager dataManager = (DataManager) object;
-            return dataManager.getName();
+            if (!dataManager.isConnected()) {
+                return dataManager.getName() + " [Local]";
+            } else {
+                return dataManager.getName();
+            }
         }
 
         return super.getLabel(object);
@@ -83,7 +90,7 @@ public class DataManagerAdapter extends WorkbenchAdapter implements IDeferredWor
     @Override
     public ImageDescriptor getImageDescriptor(Object object)
     {
-        return UIPlugin.getImageDescriptor(UIConstants.XWIKI_ICON);
+        return UIPlugin.getImageDescriptor(UIConstants.DATA_MANAGER_ICON);
     }
 
     @Override

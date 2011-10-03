@@ -21,6 +21,9 @@
 package org.xwiki.eclipse.ui.properties;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.jface.layout.GridLayoutFactory;
@@ -36,8 +39,12 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.browser.IWebBrowser;
 import org.eclipse.ui.browser.IWorkbenchBrowserSupport;
 import org.eclipse.ui.dialogs.PropertyPage;
-import org.xwiki.eclipse.core.model.XWikiEclipsePageSummary;
+import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
+import org.xwiki.eclipse.model.XWikiEclipsePageTranslationSummary;
 
+/**
+ * @version $Id$
+ */
 public class XWikiEclipsePageSummaryPropertiesPage extends PropertyPage
 {
 
@@ -56,35 +63,56 @@ public class XWikiEclipsePageSummaryPropertiesPage extends PropertyPage
             (XWikiEclipsePageSummary) getElement().getAdapter(XWikiEclipsePageSummary.class);
 
         Label property = new Label(composite, SWT.NONE);
-        property.setText("Id:");
+        property.setText("ID:");
         Label value = new Label(composite, SWT.NONE);
-        value.setText(pageSummary.getData().getId() == null ? "" : pageSummary.getData().getId());
+        value.setText(pageSummary.getId() == null ? "" : pageSummary.getId());
 
         property = new Label(composite, SWT.NONE);
-        property.setText("Title:");
+        property.setText("Name:");
         value = new Label(composite, SWT.NONE);
-        value.setText(pageSummary.getData().getTitle() == null ? "" : pageSummary.getData().getTitle());
+        value.setText(pageSummary.getName() == null ? "" : pageSummary.getName());
 
         property = new Label(composite, SWT.NONE);
-        property.setText("Parent:");
+        property.setText("Wiki:");
         value = new Label(composite, SWT.NONE);
-        value.setText(pageSummary.getData().getParentId() == null ? "" : pageSummary.getData().getParentId());
+        value.setText(pageSummary.getWiki() == null ? "" : pageSummary.getWiki());
 
         property = new Label(composite, SWT.NONE);
         property.setText("Space:");
         value = new Label(composite, SWT.NONE);
-        value.setText(pageSummary.getData().getSpace() == null ? "" : pageSummary.getData().getSpace());
+        value.setText(pageSummary.getSpace() == null ? "" : pageSummary.getSpace());
+
+        property = new Label(composite, SWT.NONE);
+        property.setText("Title:");
+        value = new Label(composite, SWT.NONE);
+        value.setText(pageSummary.getTitle() == null ? "" : pageSummary.getTitle());
+
+        property = new Label(composite, SWT.NONE);
+        property.setText("Parent:");
+        value = new Label(composite, SWT.NONE);
+        value.setText(pageSummary.getParentId() == null ? "" : pageSummary.getParentId());
 
         property = new Label(composite, SWT.NONE);
         property.setText("Translations:");
         value = new Label(composite, SWT.NONE);
-        value.setText(pageSummary.getData().getTranslations().toString());
+        List<String> translations = new ArrayList<String>();
+        String defaultLang = null;
+        StringBuilder sb = new StringBuilder();
+        for (XWikiEclipsePageTranslationSummary t : pageSummary.getTranslations()) {
+            if (defaultLang == null) {
+                defaultLang = t.getDefaultLanguage();
+                sb.append("[default=" + defaultLang + "], ");
+            } else if (!defaultLang.equals(t.getLanguage())) {
+                translations.add(t.getLanguage());
+            }
+        }
+        sb.append(Arrays.toString(translations.toArray()));
+        value.setText(sb.toString());
 
         property = new Label(composite, SWT.NONE);
         property.setText("Url:");
         Link link = new Link(composite, SWT.NONE);
-        link.setText(pageSummary.getData().getUrl() == null ? "" : String.format("<a>%s</a>", pageSummary.getData()
-            .getUrl()));
+        link.setText(pageSummary.getUrl() == null ? "" : String.format("<a>%s</a>", pageSummary.getUrl()));
         link.addSelectionListener(new SelectionListener()
         {
 
@@ -110,5 +138,4 @@ public class XWikiEclipsePageSummaryPropertiesPage extends PropertyPage
 
         return composite;
     }
-
 }

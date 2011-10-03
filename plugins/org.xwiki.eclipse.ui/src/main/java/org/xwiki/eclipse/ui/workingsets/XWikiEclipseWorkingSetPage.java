@@ -44,13 +44,16 @@ import org.eclipse.ui.IWorkingSetManager;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.IWorkingSetPage;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
-import org.xwiki.eclipse.core.DataManager;
-import org.xwiki.eclipse.core.model.ModelObject;
+import org.xwiki.eclipse.model.ModelObject;
+import org.xwiki.eclipse.storage.DataManager;
 import org.xwiki.eclipse.ui.NavigatorContentProvider;
 import org.xwiki.eclipse.ui.UIConstants;
 import org.xwiki.eclipse.ui.UIPlugin;
 import org.xwiki.eclipse.ui.utils.UIUtils;
 
+/**
+ * @version $Id$
+ */
 public class XWikiEclipseWorkingSetPage extends WizardPage implements IWorkingSetPage
 {
     private IWorkingSet workingSet;

@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: XWiki Eclipse Storage Plugin
+Bundle-SymbolicName: org.xwiki.eclipse.storage;singleton:=true
+Bundle-Version: 1.2.0.qualifier
+Bundle-Vendor: XWiki
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.eclipse.core.runtime;bundle-version="3.6.0",
+ org.eclipse.core.resources;bundle-version="3.6.1",
+ org.xwiki.eclipse.xmlrpc;bundle-version="1.2.0",
+ org.xwiki.eclipse.rest;bundle-version="1.2.0"
+Bundle-ClassPath: .,
+ lib/gson-1.7.1.jar
+Export-Package: org.xwiki.eclipse.model,
+ org.xwiki.eclipse.storage,
+ org.xwiki.eclipse.storage.notification,
+ org.xwiki.eclipse.storage.utils

@@ -23,16 +23,22 @@ package org.xwiki.eclipse.ui.actions;
 import org.eclipse.jface.action.Action;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.xwiki.eclipse.core.CoreLog;
-import org.xwiki.eclipse.core.XWikiEclipseException;
-import org.xwiki.eclipse.core.model.XWikiEclipsePage;
-import org.xwiki.eclipse.core.model.XWikiEclipsePageHistorySummary;
+import org.xwiki.eclipse.model.XWikiEclipsePage;
+import org.xwiki.eclipse.model.XWikiEclipsePageHistorySummary;
+import org.xwiki.eclipse.storage.XWikiEclipseStorageException;
 import org.xwiki.eclipse.ui.editors.PageEditor;
 import org.xwiki.eclipse.ui.editors.PageEditorInput;
 import org.xwiki.eclipse.ui.utils.UIUtils;
 
+/**
+ * @version $Id$
+ */
 public class OpenPageHistoryItemAction extends Action
 {
     private XWikiEclipsePageHistorySummary pageHistorySummary;
@@ -41,17 +47,17 @@ public class OpenPageHistoryItemAction extends Action
     {
         super();
 
-        int version = pageHistorySummary.getData().getVersion();
-        int minorVersion = pageHistorySummary.getData().getMinorVersion();
+        int majorVersion = pageHistorySummary.getMajorVersion();
+        int minorVersion = pageHistorySummary.getMinorVersion();
 
         /* Compatibility with XWiki 1.3 */
-        if (version > 65536) {
-            int temp = version;
-            version = temp >> 16;
+        if (majorVersion > 65536) {
+            int temp = majorVersion;
+            majorVersion = temp >> 16;
             minorVersion = temp & 0xFFFF;
         }
 
-        setText(String.format("Version %d.%d", version, minorVersion));
+        setText(String.format("Version %d.%d", majorVersion, minorVersion));
 
         this.pageHistorySummary = pageHistorySummary;
     }
@@ -60,7 +66,7 @@ public class OpenPageHistoryItemAction extends Action
     public void run()
     {
         try {
-            XWikiEclipsePage page = pageHistorySummary.getDataManager().getPage(pageHistorySummary.getData().getId());
+            XWikiEclipsePage page = pageHistorySummary.getDataManager().getPageHistory(pageHistorySummary);
 
             if (page == null) {
                 UIUtils
@@ -72,9 +78,14 @@ public class OpenPageHistoryItemAction extends Action
                 return;
             }
 
-            PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().openEditor(
-                new PageEditorInput(page, true), PageEditor.ID);
-        } catch (XWikiEclipseException e) {
+            IWorkbenchPage workbenchPage = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+            IEditorInput input = new PageEditorInput(page, false);
+            IEditorPart editor = workbenchPage.findEditor(input);
+            if (editor != null) {
+                workbenchPage.closeEditor(editor, true);
+            }
+            workbenchPage.openEditor(input, PageEditor.ID);
+        } catch (XWikiEclipseStorageException e) {
             UIUtils
                 .showMessageDialog(
                     Display.getDefault().getActiveShell(),

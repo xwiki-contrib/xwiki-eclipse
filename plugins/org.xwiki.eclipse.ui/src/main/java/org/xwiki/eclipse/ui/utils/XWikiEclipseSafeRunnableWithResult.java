@@ -20,6 +20,11 @@
  */
 package org.xwiki.eclipse.ui.utils;
 
+/**
+ * 
+ * @param <T>
+ * @version $Id$
+ */
 public abstract class XWikiEclipseSafeRunnableWithResult<T> extends XWikiEclipseSafeRunnable
 {
     private T result = null;

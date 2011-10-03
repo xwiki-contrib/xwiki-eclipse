@@ -29,14 +29,17 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.handlers.HandlerUtil;
-import org.xwiki.eclipse.core.Functionality;
-import org.xwiki.eclipse.core.model.XWikiEclipsePageSummary;
+import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
+import org.xwiki.eclipse.storage.Functionality;
 import org.xwiki.eclipse.ui.utils.UIUtils;
 import org.xwiki.eclipse.ui.wizards.NewObjectWizard;
 
+/**
+ * @version $Id$
+ */
 public class NewObjectHandler extends AbstractHandler
 {
-    public Object execute(ExecutionEvent event) throws ExecutionException
+    public Object execute(final ExecutionEvent event) throws ExecutionException
     {
         ISelection selection = HandlerUtil.getCurrentSelection(event);
 
@@ -44,7 +47,7 @@ public class NewObjectHandler extends AbstractHandler
         if (selectedObjects.size() == 1) {
             Object selectedObject = selectedObjects.iterator().next();
             if (selectedObject instanceof XWikiEclipsePageSummary) {
-                XWikiEclipsePageSummary pageSummary = (XWikiEclipsePageSummary) selectedObject;
+                final XWikiEclipsePageSummary pageSummary = (XWikiEclipsePageSummary) selectedObject;
 
                 if (!pageSummary.getDataManager().getSupportedFunctionalities().contains(Functionality.OBJECTS)) {
                     UIUtils.showMessageDialog(Display.getDefault().getActiveShell(), "Objects not supported",
@@ -53,10 +56,8 @@ public class NewObjectHandler extends AbstractHandler
                     return null;
                 }
 
-                NewObjectWizard wizard =
-                    new NewObjectWizard(pageSummary.getDataManager(), pageSummary.getData().getId());
-
-                WizardDialog dialog = new WizardDialog(HandlerUtil.getActiveWorkbenchWindow(event).getShell(), wizard);
+                NewObjectWizard wizard = new NewObjectWizard(pageSummary);
+                WizardDialog dialog = new WizardDialog(HandlerUtil.getActiveShellChecked(event), wizard);
                 dialog.create();
                 dialog.open();
             }
@@ -64,5 +65,4 @@ public class NewObjectHandler extends AbstractHandler
 
         return null;
     }
-
 }

@@ -39,11 +39,15 @@ import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.wizards.newresource.BasicNewProjectResourceWizard;
-import org.xwiki.eclipse.core.DataManager;
 import org.xwiki.eclipse.core.XWikiEclipseNature;
+import org.xwiki.eclipse.storage.DataManager;
+import org.xwiki.eclipse.storage.XWikiClient;
+import org.xwiki.eclipse.storage.utils.StorageUtils;
 import org.xwiki.eclipse.ui.perspectives.XWikiPerspectiveFactory;
-import org.xwiki.xmlrpc.XWikiXmlRpcClient;
 
+/**
+ * @version $Id$
+ */
 public class NewConnectionWizard extends Wizard implements INewWizard, IExecutableExtension
 {
     /*
@@ -109,7 +113,9 @@ public class NewConnectionWizard extends Wizard implements INewWizard, IExecutab
                         monitor.beginTask("Setting up connection", IProgressMonitor.UNKNOWN);
 
                         /* Try to login with the specified username + password */
-                        XWikiXmlRpcClient client = new XWikiXmlRpcClient(newConnectionWizardState.getServerUrl());
+                        XWikiClient client =
+                            new XWikiClient(newConnectionWizardState.getServerUrl(), newConnectionWizardState
+                                .getUserName(), newConnectionWizardState.getPassword());
                         client.login(newConnectionWizardState.getUserName(), newConnectionWizardState.getPassword());
                         client.logout();
 
@@ -121,6 +127,7 @@ public class NewConnectionWizard extends Wizard implements INewWizard, IExecutab
                 }
             });
         } catch (Exception e) {
+            e.printStackTrace();
             currentPage.setErrorMessage(String.format(
                 "Error connecting to remote XWiki: '%s'. Please check your settings.", e.getMessage()));
             return false;
@@ -142,8 +149,14 @@ public class NewConnectionWizard extends Wizard implements INewWizard, IExecutab
                         project.create(null);
                         project.open(null);
 
+                        project.setPersistentProperty(DataManager.BACKEND,
+                            StorageUtils.getBackend(newConnectionWizardState.getServerUrl()).toString());
                         project.setPersistentProperty(DataManager.ENDPOINT, newConnectionWizardState.getServerUrl());
-                        project.setPersistentProperty(DataManager.USERNAME, newConnectionWizardState.getUserName());
+                        String userName = newConnectionWizardState.getUserName();
+                        if (!userName.startsWith("XWiki.")) {
+                            userName = "XWiki." + userName;
+                        }
+                        project.setPersistentProperty(DataManager.USERNAME, userName);
                         project.setPersistentProperty(DataManager.PASSWORD, newConnectionWizardState.getPassword());
                         project.setPersistentProperty(DataManager.AUTO_CONNECT, "true");
 
@@ -152,7 +165,7 @@ public class NewConnectionWizard extends Wizard implements INewWizard, IExecutab
                         project.setDescription(description, null);
 
                         ResourcesPlugin.getWorkspace().save(true, new NullProgressMonitor());
-                    } catch (CoreException e) {
+                    } catch (Exception e) {
                         throw new InvocationTargetException(e, e.getMessage());
                     }
                 }
@@ -163,8 +176,8 @@ public class NewConnectionWizard extends Wizard implements INewWizard, IExecutab
 
         }
 
-        if (!PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getPerspective().getId().equals(
-            XWikiPerspectiveFactory.PERSPECTIVE_ID)) {
+        if (!PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getPerspective().getId()
+            .equals(XWikiPerspectiveFactory.PERSPECTIVE_ID)) {
             // Ask the user to switch to XWiki Eclipse perspective.
             BasicNewProjectResourceWizard.updatePerspective(config);
         }

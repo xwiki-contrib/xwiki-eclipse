@@ -20,7 +20,6 @@
  */
 package org.xwiki.eclipse.ui.handlers;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Set;
 
@@ -28,68 +27,73 @@ import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.handlers.HandlerUtil;
-import org.xwiki.eclipse.core.CoreLog;
-import org.xwiki.eclipse.core.XWikiEclipseException;
-import org.xwiki.eclipse.core.model.XWikiEclipsePageSummary;
-import org.xwiki.eclipse.core.model.XWikiEclipseSpaceSummary;
+import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
+import org.xwiki.eclipse.model.XWikiEclipseSpaceSummary;
 import org.xwiki.eclipse.ui.utils.UIUtils;
 
+/**
+ * @version $Id$
+ */
 public class GrabSpaceHandler extends AbstractHandler
 {
     public Object execute(ExecutionEvent event) throws ExecutionException
     {
         ISelection selection = HandlerUtil.getCurrentSelection(event);
 
-        Set selectedObjects = UIUtils.getSelectedObjectsFromSelection(selection);
-        for (Object object : selectedObjects) {
-            if (object instanceof XWikiEclipseSpaceSummary) {
-                final XWikiEclipseSpaceSummary spaceSummary = (XWikiEclipseSpaceSummary) object;
+        final Set selectedObjects = UIUtils.getSelectedObjectsFromSelection(selection);
 
+        Job grabJob = new Job("Grab Space...")
+        {
+
+            @Override
+            protected IStatus run(final IProgressMonitor monitor)
+            {
                 try {
-                    UIUtils.runWithProgress(new IRunnableWithProgress()
-                    {
+                    for (Object object : selectedObjects) {
+                        if (object instanceof XWikiEclipseSpaceSummary) {
+                            final XWikiEclipseSpaceSummary spaceSummary = (XWikiEclipseSpaceSummary) object;
 
-                        public void run(IProgressMonitor monitor) throws InvocationTargetException,
-                            InterruptedException
-                        {
-                            try {
-                                List<XWikiEclipsePageSummary> pageSummaries =
-                                    spaceSummary.getDataManager().getPages(spaceSummary.getData().getKey());
+                            List<XWikiEclipsePageSummary> pageSummaries =
+                                spaceSummary.getDataManager().getPageSummaries(spaceSummary.getWiki(),
+                                    spaceSummary.getName());
 
-                                monitor.beginTask("Fetching pages", pageSummaries.size());
+                            monitor.beginTask("Fetching pages", pageSummaries.size());
+
+                            if (monitor.isCanceled()) {
+                                return Status.CANCEL_STATUS;
+                            }
+
+                            for (XWikiEclipsePageSummary pageSummary : pageSummaries) {
+                                monitor.setTaskName(String.format("Fetching %s", pageSummary.getId()));
+
+                                pageSummary.getDataManager().getPage(pageSummary.getWiki(), pageSummary.getSpace(),
+                                    pageSummary.getName(), pageSummary.getLanguage());
 
                                 if (monitor.isCanceled()) {
-                                    return;
+                                    return Status.CANCEL_STATUS;
                                 }
 
-                                for (XWikiEclipsePageSummary pageSummary : pageSummaries) {
-                                    monitor.setTaskName(String.format("Fetching %s", pageSummary.getData().getId()));
-
-                                    pageSummary.getDataManager().getPage(pageSummary.getData().getId());
-
-                                    if (monitor.isCanceled()) {
-                                        return;
-                                    }
-
-                                    monitor.worked(1);
-                                }
-                            } catch (XWikiEclipseException e) {
-                                throw new InvocationTargetException(e);
-                            } finally {
-                                monitor.done();
+                                monitor.worked(1);
                             }
 
                         }
-
-                    }, HandlerUtil.getActiveShell(event), true);
+                    }
                 } catch (Exception e) {
-                    CoreLog.logError("Error during space grabbing", e);
+                    e.printStackTrace();
                 }
+
+                monitor.done();
+                return Status.OK_STATUS;
             }
-        }
+        };
+
+        grabJob.setUser(true);
+        grabJob.schedule();
 
         return null;
     }

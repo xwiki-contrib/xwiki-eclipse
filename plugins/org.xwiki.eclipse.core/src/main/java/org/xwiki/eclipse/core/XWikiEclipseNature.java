@@ -24,6 +24,10 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectNature;
 import org.eclipse.core.runtime.CoreException;
 
+/**
+ * 
+ * @version $Id$
+ */
 public class XWikiEclipseNature implements IProjectNature
 {
     public static final String ID = "org.xwiki.eclipse.XWikiEclipseNature";

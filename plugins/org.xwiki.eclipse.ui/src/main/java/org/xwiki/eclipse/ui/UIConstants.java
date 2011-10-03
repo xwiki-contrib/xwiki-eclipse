@@ -20,8 +20,13 @@
  */
 package org.xwiki.eclipse.ui;
 
+/**
+ * @version $Id$
+ */
 public class UIConstants
 {
+    public final static String DATA_MANAGER_ICON = "icons/data.manager.png";
+
     public final static String XWIKI_ICON = "icons/xwiki.png";
 
     public final static String SPACE_ICON = "icons/space.png";
@@ -31,6 +36,26 @@ public class UIConstants
     public final static String PAGE_LOCALLY_AVAILABLE_ICON = "icons/page.locally.available.png";
 
     public static final String PAGE_CONFLICT_ICON = "icons/page.conflict.png";
+
+    public static final String CLASS_ICON = "icons/class.png";
+
+    public static final String TAGS_ICON = "icons/tags.png";
+
+    public static final String TAG_ICON = "icons/tag.png";
+
+    public static final String PAGE_ATTACHMENTS_ICON = "icons/page.attachments.png";
+
+    public static final String PAGE_ATTACHMENT_ICON = "icons/page.attachment.png";
+
+    public static final String PAGE_COMMENTS_ICON = "icons/page.comments.png";
+
+    public static final String PAGE_COMMNENT_ICON = "icons/page.comment.png";
+
+    public static final String PAGE_ANNOTATIONS_ICON = "icons/page.annotations.png";
+
+    public static final String PAGE_ANNOTATION_ICON = "icons/page.annotation.png";
+
+    public static final String OBJECT_COLLECTION_ICON = "icons/object.collection.png";
 
     public static final String OBJECT_ICON = "icons/object.png";
 
@@ -54,11 +79,25 @@ public class UIConstants
 
     public static final String NEW_OBJECT_COMMAND = "org.xwiki.eclipse.ui.commands.NewObject";
 
+    public static final String NEW_COMMENT_COMMAND = "org.xwiki.eclipse.ui.commands.NewComment";
+
+    public static final String NEW_TAG_COMMAND = "org.xwiki.eclipse.ui.commands.NewTag";
+
+    public static final String REPLYTO_COMMENT_COMMAND = "org.xwiki.eclipse.ui.commands.ReplyToComment";
+
     public static final String DELETE_COMMAND = "org.xwiki.eclipse.ui.commands.Delete";
+
+    public static final String DOWNLOAD_ATTACHMENT_COMMAND = "org.xwiki.eclipse.ui.commands.DownloadAttachment";
+
+    public static final String UPDATE_ATTACHMENT_COMMAND = "org.xwiki.eclipse.ui.commands.UpdateAttachment";
+
+    public static final String UPLOAD_ATTACHMENT_COMMAND = "org.xwiki.eclipse.ui.commands.UploadAttachment";
 
     public static final String REFRESH_COMMAND = "org.xwiki.eclipse.ui.commands.Refresh";
 
     public static final String RENAME_PAGE_COMMAND = "org.xwiki.eclipse.ui.commands.RenamePage";
+
+    public static final String COPY_PAGE_COMMAND = "org.xwiki.eclipse.ui.commands.CopyPage";
 
     public static final String GRAB_SPACE_COMMAND = "org.xwiki.eclipse.ui.commands.GrabSpace";
 

@@ -31,6 +31,8 @@ import org.xwiki.eclipse.ui.editors.utils.CharacterScannerCharSequence;
 
 /**
  * This rule is capable of detecting a sequence that matches against a given regular expression.
+ * 
+ * @version $Id$
  */
 public class RegExRule implements IRule
 {
