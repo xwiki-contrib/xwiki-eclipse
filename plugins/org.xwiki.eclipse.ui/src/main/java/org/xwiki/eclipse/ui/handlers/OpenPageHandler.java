@@ -67,7 +67,7 @@ public class OpenPageHandler extends AbstractHandler
             }
         }
 
-        OpenPageDialog dialog = new OpenPageDialog(HandlerUtil.getActiveShell(event), dataManager);
+        OpenPageDialog dialog = new OpenPageDialog(null, dataManager);
         dialog.open();
 
         if (dialog.getResult() != null) {

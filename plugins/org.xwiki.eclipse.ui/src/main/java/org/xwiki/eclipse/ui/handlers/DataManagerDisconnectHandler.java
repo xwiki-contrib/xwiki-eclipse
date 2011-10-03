@@ -27,11 +27,13 @@ import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.xwiki.eclipse.storage.DataManager;
 import org.xwiki.eclipse.ui.utils.UIUtils;
+import org.xwiki.eclipse.ui.utils.XWikiEclipseSafeRunnable;
 
 /**
  * @version $Id$
@@ -55,7 +57,14 @@ public class DataManagerDisconnectHandler extends AbstractHandler
                         {
                             monitor.beginTask(String.format("Connecting %s", dataManager.getName()),
                                 IProgressMonitor.UNKNOWN);
-                            dataManager.disconnect();
+                            SafeRunner.run(new XWikiEclipseSafeRunnable()
+                            {
+                                public void run() throws Exception
+                                {
+                                    dataManager.disconnect();
+                                }
+                            });
+                            
                             monitor.done();
                         }
 
