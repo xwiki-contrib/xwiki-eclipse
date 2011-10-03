@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: XWiki Eclipse UI Plug-in
 Bundle-SymbolicName: org.xwiki.eclipse.ui;singleton:=true
-Bundle-Version: 1.2.0.qualifier
+Bundle-Version: 2.0.0.qualifier
 Bundle-Activator: org.xwiki.eclipse.ui.UIPlugin
 Bundle-Vendor: XWiki
 Require-Bundle: org.eclipse.ui;bundle-version="3.6.2",
@@ -17,8 +17,8 @@ Require-Bundle: org.eclipse.ui;bundle-version="3.6.2",
  org.eclipse.core.resources;bundle-version="3.6.1",
  org.eclipse.compare;bundle-version="3.5.101",
  org.eclipse.core.expressions;bundle-version="3.4.200",
- org.xwiki.eclipse.storage;bundle-version="1.2.0",
- org.xwiki.eclipse.core;bundle-version="1.2.0"
+ org.xwiki.eclipse.storage;bundle-version="2.0.0",
+ org.xwiki.eclipse.core;bundle-version="2.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.xwiki.eclipse.ui.perspectives
 Bundle-ActivationPolicy: lazy

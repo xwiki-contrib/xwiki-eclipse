@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="XWiki Eclipse" uid="org.xwiki.eclipse.product" id="org.xwiki.eclipse.product" application="org.xwiki.eclipse.rcp.application" version="1.2.0.qualifier" useFeatures="true" includeLaunchers="true">
+<product name="XWiki Eclipse" uid="org.xwiki.eclipse.product" id="org.xwiki.eclipse.product" application="org.xwiki.eclipse.rcp.application" version="2.0.0.qualifier" useFeatures="true" includeLaunchers="true">
 
    <aboutInfo>
       <image path="/org.xwiki.eclipse.rcp/icons/about.png"/>
@@ -30,7 +30,7 @@
    </launcher>
 
    <features>
-      <feature id="org.xwiki.eclipse.feature" version="1.2.0.qualifier"/>
+      <feature id="org.xwiki.eclipse.feature" version="2.0.0.qualifier"/>
       <feature id="org.eclipse.rcp"/>
    </features>
 

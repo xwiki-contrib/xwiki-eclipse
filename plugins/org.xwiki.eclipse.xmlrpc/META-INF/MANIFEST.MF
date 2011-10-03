@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: XWiki Eclipse XmlRpc Plug-in
 Bundle-SymbolicName: org.xwiki.eclipse.xmlrpc;singleton:=true
-Bundle-Version: 1.2.0.qualifier
+Bundle-Version: 2.0.0.qualifier
 Bundle-ClassPath: junit-3.8.1.jar,
  swizzle-confluence-1.2-20080419-xwiki.jar,
  ws-commons-util-1.0.2.jar,
