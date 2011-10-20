@@ -30,13 +30,11 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.model.BaseWorkbenchContentProvider;
 import org.eclipse.ui.progress.DeferredTreeContentManager;
-import org.xwiki.eclipse.core.CoreLog;
 import org.xwiki.eclipse.core.DataManagerRegistry;
 import org.xwiki.eclipse.model.XWikiEclipseAttachment;
 import org.xwiki.eclipse.model.XWikiEclipseComment;
 import org.xwiki.eclipse.model.XWikiEclipseObject;
 import org.xwiki.eclipse.model.XWikiEclipseObjectSummary;
-import org.xwiki.eclipse.model.XWikiEclipsePage;
 import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
 import org.xwiki.eclipse.model.XWikiEclipseSpaceSummary;
 import org.xwiki.eclipse.model.XWikiEclipseTag;
@@ -174,95 +172,16 @@ public class NavigatorContentProvider extends BaseWorkbenchContentProvider imple
                 break;
 
             case PAGE_STORED:
-
                 Display.getDefault().syncExec(new Runnable()
                 {
                     public void run()
                     {
-                        XWikiEclipseSpaceSummary spaceSummary = null;
-
-                        Object obj = event.getData();
-                        if (obj instanceof XWikiEclipsePage) {
-                            XWikiEclipsePage page = (XWikiEclipsePage) obj;
-
-                            try {
-                                spaceSummary = page.getDataManager().getSpace(page.getWiki(), page.getSpace());
-                            } catch (XWikiEclipseStorageException e) {
-                                // TODO Auto-generated catch block
-                                e.printStackTrace();
-                            }
-
-                        }
-
-                        if (obj instanceof XWikiEclipsePageSummary) {
-                            XWikiEclipsePageSummary pageSummary = (XWikiEclipsePageSummary) obj;
-                            try {
-                                spaceSummary =
-                                    pageSummary.getDataManager()
-                                        .getSpace(pageSummary.getWiki(), pageSummary.getSpace());
-                            } catch (XWikiEclipseStorageException e) {
-                                // TODO Auto-generated catch block
-                                e.printStackTrace();
-                            }
-                        }
-
-                        /* refresh the space */
-                        viewer.setExpandedState(spaceSummary, true);
-                        viewer.refresh(spaceSummary);
+                        viewer.update(event.getData(), null);
                     }
                 });
-
-                // Display.getDefault().syncExec(new Runnable()
-                // {
-                // public void run()
-                // {
-                // XWikiEclipsePage page = (XWikiEclipsePage) event.getData();
-                //
-                // // Check if this is a newly created page.
-                // if (page.getMajorVersion() == 1) {
-                // // Make sure the new page/space get drawn.
-                // XWikiEclipseSpaceSummary space = page.getDataManager().getSpaceSummary(page);
-                //
-                // // SpaceSummary spaceSummary = new SpaceSummary();
-                // // spaceSummary.setKey(page.getData().getSpace());
-                // // spaceSummary.setName(page.getData().getSpace());
-                // // XWikiEclipseSpaceSummary space =
-                // // new XWikiEclipseSpaceSummary(page.getDataManager(), spaceSummary);
-                //
-                // // If the space did not previously exist, draw it.
-                // if (viewer.testFindItem(space) == null)
-                // viewer.add(page.getDataManager(), space);
-                //
-                // viewer.add(space, page.getSummary());
-                // viewer.expandToLevel(page.getSummary(), 0);
-                // } else {
-                // viewer.refresh(page.getSummary());
-                // }
-                // }
-                // });
                 break;
 
             case PAGE_RENAMED:
-                // Display.getDefault().syncExec(new Runnable()
-                // {
-                // public void run()
-                // {
-                // XWikiEclipsePage oldPage = ((XWikiEclipsePage[]) event.getData())[0];
-                // XWikiEclipsePage newPage = ((XWikiEclipsePage[]) event.getData())[1];
-                //
-                // XWikiEclipseSpaceSummary space = oldPage.getSpaceSummary();
-                //
-                // // SpaceSummary spaceSummary = new SpaceSummary();
-                // // spaceSummary.setKey(newPage.getData().getSpace());
-                // // spaceSummary.setName(newPage.getData().getSpace());
-                // // XWikiEclipseSpaceSummary space =
-                // // new XWikiEclipseSpaceSummary(newPage.getDataManager(), spaceSummary);
-                //
-                // viewer.add(newPage.getDataManager(), space);
-                // viewer.add(space, newPage.getSummary());
-                // viewer.remove(oldPage.getSummary());
-                // }
-                // });
                 break;
 
             case PAGE_REMOVED:
@@ -270,30 +189,7 @@ public class NavigatorContentProvider extends BaseWorkbenchContentProvider imple
                 {
                     public void run()
                     {
-                        XWikiEclipsePageSummary pageSummary = (XWikiEclipsePageSummary) event.getData();
-                        XWikiEclipseSpaceSummary space;
-                        try {
-                            space =
-                                pageSummary.getDataManager().getSpace(pageSummary.getWiki(), pageSummary.getSpace());
-                            List<XWikiEclipsePageSummary> pages = null;
-                            try {
-                                pages = space.getDataManager().getPageSummaries(space.getWiki(), space.getName());
-                            } catch (XWikiEclipseStorageException e) {
-                                CoreLog.logError("Unable to get space pages: " + e.getMessage());
-                            }
-
-                            if (pages != null && pages.size() == 0) {
-                                // The space is left with no pages so it has to be removed.
-                                viewer.remove(space);
-                            } else {
-                                viewer.remove(pageSummary);
-                            }
-
-                        } catch (XWikiEclipseStorageException e1) {
-                            // TODO Auto-generated catch block
-                            e1.printStackTrace();
-                        }
-
+                        viewer.remove(event.getData());
                     }
                 });
                 break;
@@ -303,31 +199,27 @@ public class NavigatorContentProvider extends BaseWorkbenchContentProvider imple
                 {
                     public void run()
                     {
+                        /*
+                         * Build an object summary corresponding to the object received through the event. This is
+                         * needed because in the tree we only find object summaries, and to match them we need this kind
+                         * of objects.
+                         */
                         XWikiEclipseObject object = (XWikiEclipseObject) event.getData();
-                        XWikiEclipsePageSummary pageSumary;
-                        try {
-                            pageSumary =
-                                object.getDataManager().getPageSummary(object.getWiki(), object.getSpace(),
-                                    object.getPageName(), "");
-                            /*
-                             * FIXME: For lack of a way of knowing whether the object has just been created or modified,
-                             * I chose to refresh all the objects in the page. Best way: like the PAGE_STORED event
-                             * handling, only that, in that case, there was a way of knowing if the page was just
-                             * created and that there were visual inconsistencies. Maybe a new OBJECT_CREATED event?
-                             * This could be an elegant solution for the PAGE_STORED too, by introducing a PAGE_CREATED
-                             * event.
-                             */
-                            viewer.refresh(pageSumary);
-                        } catch (XWikiEclipseStorageException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                        }
-                    }
+                        XWikiEclipseObjectSummary objectSummary =
+                            new XWikiEclipseObjectSummary(object.getDataManager());
+                        objectSummary.setClassName(object.getClassName());
+                        objectSummary.setId(object.getId());
+                        objectSummary.setNumber(object.getNumber());
+                        objectSummary.setPageId(object.getPageId());
+                        objectSummary.setPageName(object.getPageName());
+                        objectSummary.setSpace(object.getSpace());
+                        objectSummary.setWiki(object.getWiki());
 
+                        viewer.update(objectSummary, null);
+                    }
                 });
                 break;
             case TAG_STORED:
-
                 Display.getDefault().syncExec(new Runnable()
                 {
                     public void run()
@@ -349,7 +241,6 @@ public class NavigatorContentProvider extends BaseWorkbenchContentProvider imple
                 });
                 break;
             case ATTACHMENT_UPLOADED:
-
                 Display.getDefault().syncExec(new Runnable()
                 {
                     public void run()
