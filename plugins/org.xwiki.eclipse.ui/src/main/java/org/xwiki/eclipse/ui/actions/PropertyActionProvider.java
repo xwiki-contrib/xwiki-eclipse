@@ -34,7 +34,6 @@ import org.eclipse.ui.navigator.ICommonMenuConstants;
 import org.eclipse.ui.texteditor.IWorkbenchActionDefinitionIds;
 
 /**
- * 
  * @version $Id$
  */
 public class PropertyActionProvider extends CommonActionProvider

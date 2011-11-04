@@ -21,7 +21,6 @@
 package org.xwiki.eclipse.core;
 
 /**
- * 
  * @version $Id$
  */
 public class XWikiEclipseException extends Exception

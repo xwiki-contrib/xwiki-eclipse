@@ -35,7 +35,6 @@ import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.RetargetTextEditorAction;
 
 /**
- * 
  * @version $Id$
  */
 public class XWikiEditorActionContributor extends TextEditorActionContributor
@@ -64,8 +63,8 @@ public class XWikiEditorActionContributor extends TextEditorActionContributor
 
                 try {
                     ITypedRegion partition = document.getPartition(offset);
-                    System.out.format("Offset: %d Partition:(%d, %d, %s)\n", offset, partition.getOffset(), partition
-                        .getLength(), partition.getType());
+                    System.out.format("Offset: %d Partition:(%d, %d, %s)\n", offset, partition.getOffset(),
+                        partition.getLength(), partition.getType());
                     pageEditor.setSelectionRange(partition.getOffset(), partition.getLength());
 
                 } catch (BadLocationException e) {

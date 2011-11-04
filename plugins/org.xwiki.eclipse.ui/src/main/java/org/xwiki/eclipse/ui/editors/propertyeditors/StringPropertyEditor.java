@@ -32,7 +32,6 @@ import org.eclipse.ui.forms.widgets.Section;
 import org.xwiki.eclipse.model.XWikiEclipseObjectProperty;
 
 /**
- * 
  * @version $Id$
  */
 public class StringPropertyEditor extends BasePropertyEditor

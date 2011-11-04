@@ -37,7 +37,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
 
 /**
- * 
  * @version $Id$
  */
 public class XWikiContentOutlinePage extends ContentOutlinePage implements IDocumentListener

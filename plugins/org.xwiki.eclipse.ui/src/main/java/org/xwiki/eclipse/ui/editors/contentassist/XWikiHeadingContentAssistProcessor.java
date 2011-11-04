@@ -34,7 +34,6 @@ import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.jface.text.contentassist.IContextInformationValidator;
 
 /**
- * 
  * @version $Id$
  */
 public class XWikiHeadingContentAssistProcessor implements IContentAssistProcessor

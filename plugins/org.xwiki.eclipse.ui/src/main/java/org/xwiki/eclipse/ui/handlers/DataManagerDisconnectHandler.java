@@ -64,7 +64,7 @@ public class DataManagerDisconnectHandler extends AbstractHandler
                                     dataManager.disconnect();
                                 }
                             });
-                            
+
                             monitor.done();
                         }
 

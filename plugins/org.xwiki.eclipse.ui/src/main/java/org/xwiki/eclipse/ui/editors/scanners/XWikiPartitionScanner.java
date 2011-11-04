@@ -31,7 +31,6 @@ import org.eclipse.jface.text.rules.Token;
 import org.xwiki.eclipse.ui.editors.scanners.rules.BalancedParenthesisRule;
 
 /**
- * 
  * @version $Id$
  */
 public class XWikiPartitionScanner extends RuleBasedPartitionScanner
@@ -50,8 +49,8 @@ public class XWikiPartitionScanner extends RuleBasedPartitionScanner
 
     public static final String VELOCITY = "__velocity";
 
-    public static final String[] ALL_PARTITIONS =
-        {XWIKI_HTML, XWIKI_CODE, XWIKI_PRE, XWIKI_DL, XWIKI_TABLE, XWIKI_STYLE, VELOCITY};
+    public static final String[] ALL_PARTITIONS = {XWIKI_HTML, XWIKI_CODE, XWIKI_PRE, XWIKI_DL, XWIKI_TABLE,
+    XWIKI_STYLE, VELOCITY};
 
     public XWikiPartitionScanner()
     {

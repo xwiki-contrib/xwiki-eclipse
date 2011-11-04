@@ -47,7 +47,8 @@ public class XmlrpcRemoteXWikiDataStorage
 
     private boolean disposed;
 
-    public XmlrpcRemoteXWikiDataStorage(String endpoint, String userName, String password) throws XWikiEclipseXmlrpcException
+    public XmlrpcRemoteXWikiDataStorage(String endpoint, String userName, String password)
+        throws XWikiEclipseXmlrpcException
     {
         try {
             rpc = new XWikiXmlRpcClient(endpoint);

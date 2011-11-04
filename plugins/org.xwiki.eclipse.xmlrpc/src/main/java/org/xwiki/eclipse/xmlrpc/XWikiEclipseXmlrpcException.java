@@ -21,7 +21,6 @@
 package org.xwiki.eclipse.xmlrpc;
 
 /**
- * 
  * @version $Id$
  */
 public class XWikiEclipseXmlrpcException extends Exception
@@ -29,7 +28,6 @@ public class XWikiEclipseXmlrpcException extends Exception
 
     private static final long serialVersionUID = 2434298349927342334L;
 
-    
     public XWikiEclipseXmlrpcException(Throwable e)
     {
         super(e);

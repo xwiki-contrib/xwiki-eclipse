@@ -34,7 +34,6 @@ import org.xwiki.eclipse.ui.editors.scanners.rules.BalancedParenthesisRule;
 import org.xwiki.eclipse.ui.editors.scanners.rules.RegExRule;
 
 /**
- * 
  * @version $Id$
  */
 public class XWikiMarkupScanner extends RuleBasedScanner

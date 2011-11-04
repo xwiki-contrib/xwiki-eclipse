@@ -21,14 +21,14 @@
 package org.xwiki.eclipse.storage;
 
 /**
- * 
  * @version $Id$
  */
-public class XWikiEclipseStorageException extends Exception {
+public class XWikiEclipseStorageException extends Exception
+{
 
-	private static final long serialVersionUID = 234238432742374123L;
+    private static final long serialVersionUID = 234238432742374123L;
 
-	public XWikiEclipseStorageException(Throwable e)
+    public XWikiEclipseStorageException(Throwable e)
     {
         super(e);
     }

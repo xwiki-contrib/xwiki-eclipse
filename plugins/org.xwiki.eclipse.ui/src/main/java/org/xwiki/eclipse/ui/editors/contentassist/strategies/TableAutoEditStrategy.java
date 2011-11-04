@@ -24,7 +24,6 @@ import org.eclipse.jface.text.IAutoEditStrategy;
 import org.eclipse.jface.text.IDocument;
 
 /**
- * 
  * @version $Id$
  */
 public class TableAutoEditStrategy implements IAutoEditStrategy

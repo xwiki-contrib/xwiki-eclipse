@@ -32,7 +32,6 @@ import org.xwiki.eclipse.ui.editors.Preferences;
 import org.xwiki.eclipse.ui.editors.scanners.rules.BalancedParenthesisRule;
 
 /**
- * 
  * @version $Id$
  */
 public class VelocityScanner extends RuleBasedScanner

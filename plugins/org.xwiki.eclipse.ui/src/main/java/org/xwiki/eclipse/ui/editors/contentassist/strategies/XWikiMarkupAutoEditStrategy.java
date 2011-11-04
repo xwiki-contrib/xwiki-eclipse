@@ -31,7 +31,6 @@ import org.eclipse.jface.text.IRegion;
 import org.xwiki.eclipse.ui.editors.Constants;
 
 /**
- * 
  * @version $Id$
  */
 public class XWikiMarkupAutoEditStrategy implements IAutoEditStrategy

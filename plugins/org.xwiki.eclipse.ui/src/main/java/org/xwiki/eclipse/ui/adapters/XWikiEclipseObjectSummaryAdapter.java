@@ -41,9 +41,7 @@ public class XWikiEclipseObjectSummaryAdapter extends WorkbenchAdapter
             /*
              * FIXME: Fetching all the properties when loading object summary will invoke getObject() method, which
              * stores all the object and class file locally. This would cause additional overhead, therefore, only
-             * display the number or id at current phase.
-             * 
-             * display the property name and value, the priority: author ->
+             * display the number or id at current phase. display the property name and value, the priority: author ->
              * name or title -> the first stringClass -> the first non-textarea class
              */
             String label = "[" + number + "]";

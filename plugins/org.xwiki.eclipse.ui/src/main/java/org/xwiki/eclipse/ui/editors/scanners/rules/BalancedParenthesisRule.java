@@ -26,7 +26,6 @@ import org.eclipse.jface.text.rules.IToken;
 import org.eclipse.jface.text.rules.Token;
 
 /**
- * 
  * @version $Id$
  */
 public class BalancedParenthesisRule implements IPredicateRule

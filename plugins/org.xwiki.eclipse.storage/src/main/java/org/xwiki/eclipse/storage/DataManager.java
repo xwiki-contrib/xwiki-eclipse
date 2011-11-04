@@ -251,7 +251,7 @@ public class DataManager
         /* When connected synchronize all the pages and objects */
         synchronizePages(new HashSet<String>(pageToStatusMap.keySet()));
         synchronizeObjects(new HashSet<String>(objectToStatusMap.keySet()));
-        
+
         NotificationManager.getDefault().fireCoreEvent(CoreEvent.Type.DATA_MANAGER_CONNECTED, this, null);
     }
 
@@ -296,7 +296,7 @@ public class DataManager
         supportedFunctionalities.clear();
         supportedFunctionalities.add(Functionality.OBJECTS);
         supportedFunctionalities.add(Functionality.RENAME);
-        
+
         NotificationManager.getDefault().fireCoreEvent(CoreEvent.Type.DATA_MANAGER_DISCONNECTED, this, null);
     }
 
@@ -605,8 +605,8 @@ public class DataManager
                 localXWikiDataStorage.storePageSummary(pageSummary);
 
             } else {
-                /* default language */                
-                pageSummary = new XWikiEclipsePageSummary(this);                
+                /* default language */
+                pageSummary = new XWikiEclipsePageSummary(this);
                 pageSummary.setLanguage("");
                 pageSummary.setUrl(result.getUrl());
                 pageSummary.setName(result.getName());
@@ -629,7 +629,7 @@ public class DataManager
             spaceSummary.setId(String.format("%s:%s", result.getWiki(), result.getSpace()));
             spaceSummary.setName(result.getSpace());
             spaceSummary.setUrl("");
-            spaceSummary.setWiki(result.getWiki());                        
+            spaceSummary.setWiki(result.getWiki());
             localXWikiDataStorage.storeSpace(spaceSummary);
 
             XWikiEclipseWikiSummary wikiSummary = new XWikiEclipseWikiSummary(this);
@@ -812,7 +812,7 @@ public class DataManager
 
             XWikiEclipseWikiSummary wikiSummary = new XWikiEclipseWikiSummary(this);
             wikiSummary.setName(result.getWiki());
-            wikiSummary.setWikiId(result.getWiki());            
+            wikiSummary.setWikiId(result.getWiki());
             localXWikiDataStorage.storeWiki(wikiSummary);
 
             XWikiEclipsePageSummary pageSummary = new XWikiEclipsePageSummary(this);

@@ -25,7 +25,6 @@ import org.eclipse.jface.viewers.ViewerFilter;
 import org.xwiki.eclipse.ui.workingsets.XWikiEclipseElementId;
 
 /**
- * 
  * @version $Id$
  */
 public class XWikiEclipseIdFiter extends ViewerFilter

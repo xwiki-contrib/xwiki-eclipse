@@ -21,9 +21,10 @@
 package org.xwiki.eclipse.storage;
 
 /**
- * 
  * @version $Id$
  */
-public enum BackendType {
-    REST, XMLRPC
+public enum BackendType
+{
+    REST,
+    XMLRPC
 }

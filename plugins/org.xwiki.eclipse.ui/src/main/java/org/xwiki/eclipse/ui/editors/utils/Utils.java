@@ -24,7 +24,6 @@ import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 
 /**
- * 
  * @version $Id$
  */
 public class Utils

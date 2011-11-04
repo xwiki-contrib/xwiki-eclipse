@@ -27,5 +27,8 @@ package org.xwiki.eclipse.storage;
  */
 public enum Functionality
 {
-    OBJECTS, RENAME, TRANSLATIONS, ALL_PAGES_RETRIEVAL
+    OBJECTS,
+    RENAME,
+    TRANSLATIONS,
+    ALL_PAGES_RETRIEVAL
 }

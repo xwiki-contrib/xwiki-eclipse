@@ -21,7 +21,6 @@
 package org.xwiki.eclipse.ui.editors;
 
 /**
- * 
  * @version $Id$
  */
 public class Constants

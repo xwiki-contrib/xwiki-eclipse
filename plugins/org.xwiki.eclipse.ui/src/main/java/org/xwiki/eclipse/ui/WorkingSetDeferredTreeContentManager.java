@@ -29,7 +29,6 @@ import org.eclipse.ui.progress.PendingUpdateAdapter;
 import org.xwiki.eclipse.ui.utils.UIUtils;
 
 /**
- * 
  * @version $Id$
  */
 public class WorkingSetDeferredTreeContentManager extends DeferredTreeContentManager

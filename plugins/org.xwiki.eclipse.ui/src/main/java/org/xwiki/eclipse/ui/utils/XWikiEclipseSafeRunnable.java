@@ -23,7 +23,6 @@ package org.xwiki.eclipse.ui.utils;
 import org.eclipse.jface.util.SafeRunnable;
 
 /**
- * 
  * @version $Id$
  */
 public abstract class XWikiEclipseSafeRunnable extends SafeRunnable

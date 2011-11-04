@@ -21,7 +21,6 @@
 package org.xwiki.eclipse.ui.utils;
 
 /**
- * 
  * @param <T>
  * @version $Id$
  */

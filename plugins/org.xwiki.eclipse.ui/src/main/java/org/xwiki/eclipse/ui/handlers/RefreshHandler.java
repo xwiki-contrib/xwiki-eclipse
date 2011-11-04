@@ -32,7 +32,6 @@ import org.xwiki.eclipse.storage.notification.NotificationManager;
 import org.xwiki.eclipse.ui.utils.UIUtils;
 
 /**
- * 
  * @version $Id$
  */
 public class RefreshHandler extends AbstractHandler

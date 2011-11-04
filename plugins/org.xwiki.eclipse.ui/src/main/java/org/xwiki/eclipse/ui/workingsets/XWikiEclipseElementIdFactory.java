@@ -25,7 +25,6 @@ import org.eclipse.ui.IElementFactory;
 import org.eclipse.ui.IMemento;
 
 /**
- * 
  * @version $Id$
  */
 public class XWikiEclipseElementIdFactory implements IElementFactory

@@ -29,7 +29,6 @@ import org.eclipse.ui.navigator.ICommonActionExtensionSite;
 import org.eclipse.ui.navigator.ICommonMenuConstants;
 
 /**
- * 
  * @version $Id$
  */
 public class XWikiEclipseObjectSummaryActionProvider extends CommonActionProvider

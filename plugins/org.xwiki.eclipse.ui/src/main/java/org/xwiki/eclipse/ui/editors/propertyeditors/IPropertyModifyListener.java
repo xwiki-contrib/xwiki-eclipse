@@ -23,7 +23,6 @@ package org.xwiki.eclipse.ui.editors.propertyeditors;
 import org.xwiki.eclipse.model.XWikiEclipseObjectProperty;
 
 /**
- * 
  * @version $Id$
  */
 public interface IPropertyModifyListener

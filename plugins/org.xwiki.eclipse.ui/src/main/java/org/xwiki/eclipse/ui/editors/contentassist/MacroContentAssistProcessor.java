@@ -40,7 +40,6 @@ import org.xwiki.eclipse.ui.editors.VelocityDirectiveType;
 import org.xwiki.eclipse.ui.editors.utils.Utils;
 
 /**
- * 
  * @version $Id$
  */
 public class MacroContentAssistProcessor implements IContentAssistProcessor

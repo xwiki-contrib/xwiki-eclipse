@@ -24,11 +24,11 @@ import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleContext;
 
 /**
- * 
  * @version $Id$
  */
-public class StoragePlugin extends Plugin {
-	// The plug-in ID
+public class StoragePlugin extends Plugin
+{
+    // The plug-in ID
     public static final String PLUGIN_ID = "org.xwiki.eclipse.storage"; //$NON-NLS-1$
 
     // The shared instance
@@ -48,7 +48,7 @@ public class StoragePlugin extends Plugin {
     public void start(BundleContext context) throws Exception
     {
         super.start(context);
-        plugin = this;       
+        plugin = this;
     }
 
     /*

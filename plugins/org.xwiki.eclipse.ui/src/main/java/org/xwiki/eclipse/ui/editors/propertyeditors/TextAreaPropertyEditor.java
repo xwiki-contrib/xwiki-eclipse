@@ -37,7 +37,6 @@ import org.xwiki.eclipse.model.XWikiEclipseObjectProperty;
 import org.xwiki.eclipse.ui.dialogs.TextAreaPropertyEditorDialog;
 
 /**
- * 
  * @version $Id$
  */
 public class TextAreaPropertyEditor extends BasePropertyEditor
@@ -60,8 +59,8 @@ public class TextAreaPropertyEditor extends BasePropertyEditor
 
         textArea = new StyledText(composite, SWT.BORDER);
         toolkit.adapt(textArea);
-        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).hint(0,
-            textArea.getLineHeight() * 5).applyTo(textArea);
+        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false)
+            .hint(0, textArea.getLineHeight() * 5).applyTo(textArea);
         textArea.addModifyListener(new ModifyListener()
         {
             public void modifyText(ModifyEvent e)

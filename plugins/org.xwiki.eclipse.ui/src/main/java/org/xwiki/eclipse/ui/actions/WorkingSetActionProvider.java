@@ -28,7 +28,6 @@ import org.eclipse.ui.actions.WorkingSetFilterActionGroup;
 import org.eclipse.ui.navigator.CommonActionProvider;
 
 /**
- * 
  * @version $Id$
  */
 public class WorkingSetActionProvider extends CommonActionProvider

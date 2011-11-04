@@ -25,7 +25,6 @@ import org.eclipse.core.resources.IProjectNature;
 import org.eclipse.core.runtime.CoreException;
 
 /**
- * 
  * @version $Id$
  */
 public class XWikiEclipseNature implements IProjectNature

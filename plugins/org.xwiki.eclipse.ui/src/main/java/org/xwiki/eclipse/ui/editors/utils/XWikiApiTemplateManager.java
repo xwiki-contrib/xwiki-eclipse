@@ -39,7 +39,6 @@ import org.xwiki.eclipse.ui.editors.Constants;
 import org.xwiki.eclipse.ui.editors.XWikiApiType;
 
 /**
- * 
  * @version $Id$
  */
 public class XWikiApiTemplateManager
@@ -202,8 +201,8 @@ public class XWikiApiTemplateManager
             /* Use the exception string in the proposal box to give more information to the user */
             if (exception != null && !exception.equals("")) {
                 template =
-                    new Template(templateNameString.toString(), exception, contextTypeId, templatePatternString
-                        .toString(), false);
+                    new Template(templateNameString.toString(), exception, contextTypeId,
+                        templatePatternString.toString(), false);
             } else {
                 template =
                     new Template(templateNameString.toString(), "", contextTypeId, templatePatternString.toString(),

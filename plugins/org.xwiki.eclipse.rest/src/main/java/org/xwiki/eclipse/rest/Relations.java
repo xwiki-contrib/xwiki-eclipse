@@ -33,12 +33,15 @@ public class Relations
     public static final String WADL = "wadl";
 
     public static final String WIKIS = "http://www.xwiki.org/rel/wikis";
+
     public static final String WIKIS_PREFIX = "wikis";
 
     public static final String SPACES = "http://www.xwiki.org/rel/spaces";
+
     public static final String SPACES_PREFIX = "spaces";
 
     public static final String PAGES = "http://www.xwiki.org/rel/pages";
+
     public static final String PAGES_PREFIX = "pages";
 
     public static final String TRANSLATION = "http://www.xwiki.org/rel/translation";

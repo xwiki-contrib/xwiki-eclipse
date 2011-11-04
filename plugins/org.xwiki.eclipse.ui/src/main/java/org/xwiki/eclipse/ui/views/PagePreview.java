@@ -282,8 +282,7 @@ public class PagePreview extends ViewPart implements ISelectionListener, ICoreEv
             XWikiEclipsePage page = (XWikiEclipsePage) object;
 
             update(page.getUrl(), page.getDataManager().isConnected());
-        }
-        else if (object instanceof XWikiEclipseSpaceSummary) {
+        } else if (object instanceof XWikiEclipseSpaceSummary) {
             XWikiEclipseSpaceSummary xwikiSpaceSummary = (XWikiEclipseSpaceSummary) object;
 
             update(xwikiSpaceSummary.getUrl(), xwikiSpaceSummary.getDataManager().isConnected());

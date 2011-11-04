@@ -134,8 +134,7 @@ public class AdapterFactory implements IAdapterFactory
             return xwikiEclipseClassSummaryAdapter;
         }
 
-        if ((adaptableObject instanceof XWikiEclipseClass)
-            && adapterType.equals(IDeferredWorkbenchAdapter.class)) {
+        if ((adaptableObject instanceof XWikiEclipseClass) && adapterType.equals(IDeferredWorkbenchAdapter.class)) {
             return xwikiEclipseClassSummaryAdapter;
         }
 

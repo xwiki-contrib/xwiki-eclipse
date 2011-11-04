@@ -29,7 +29,6 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.xwiki.eclipse.model.XWikiEclipseObjectProperty;
 
 /**
- * 
  * @version $Id$
  */
 public abstract class BasePropertyEditor

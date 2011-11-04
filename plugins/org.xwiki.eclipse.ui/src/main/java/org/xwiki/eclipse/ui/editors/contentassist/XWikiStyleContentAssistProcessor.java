@@ -33,7 +33,6 @@ import org.eclipse.jface.text.contentassist.IContextInformationValidator;
 import org.xwiki.eclipse.ui.editors.utils.Utils;
 
 /**
- * 
  * @version $Id$
  */
 public class XWikiStyleContentAssistProcessor implements IContentAssistProcessor
