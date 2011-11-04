@@ -803,13 +803,25 @@ public class DataManager
             localXWikiDataStorage.storeObject(result);
 
             /* store wiki, space and page */
-            XWikiEclipseSpaceSummary spaceSummary = getSpace(wiki, space);
+            XWikiEclipseSpaceSummary spaceSummary = new XWikiEclipseSpaceSummary(this);
+            spaceSummary.setId(String.format("%s:%s", result.getWiki(), result.getSpace()));
+            spaceSummary.setName(result.getSpace());
+            spaceSummary.setUrl("");
+            spaceSummary.setWiki(result.getWiki());
             localXWikiDataStorage.storeSpace(spaceSummary);
 
-            XWikiEclipseWikiSummary wikiSummary = getWiki(wiki);
+            XWikiEclipseWikiSummary wikiSummary = new XWikiEclipseWikiSummary(this);
+            wikiSummary.setName(result.getWiki());
+            wikiSummary.setWikiId(result.getWiki());            
             localXWikiDataStorage.storeWiki(wikiSummary);
 
-            XWikiEclipsePageSummary pageSummary = getPageSummary(wiki, space, pageName, "");
+            XWikiEclipsePageSummary pageSummary = new XWikiEclipsePageSummary(this);
+            pageSummary.setFullName(result.getPageId());
+            pageSummary.setId(result.getPageId());
+            pageSummary.setLanguage("");
+            pageSummary.setName(result.getPageName());
+            pageSummary.setSpace(result.getSpace());
+            pageSummary.setWiki(result.getWiki());
             localXWikiDataStorage.storePageSummary(pageSummary);
 
             /* Fire the stored notification to communicate that the object has been stored in the local storage */

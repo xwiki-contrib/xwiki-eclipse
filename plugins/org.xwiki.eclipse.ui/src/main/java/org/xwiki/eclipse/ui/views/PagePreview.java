@@ -283,29 +283,7 @@ public class PagePreview extends ViewPart implements ISelectionListener, ICoreEv
 
             update(page.getUrl(), page.getDataManager().isConnected());
         }
-
-        else
-
-        if (object instanceof XWikiEclipseObject) {
-            XWikiEclipseObject xwikiObject = (XWikiEclipseObject) object;
-
-            try {
-                String pageId = xwikiObject.getPageId();
-                IdProcessor parser = new IdProcessor(pageId);
-                update(
-                    xwikiObject.getDataManager().getPageSummary(parser.getWiki(), parser.getSpace(), parser.getPage(),
-                        "") != null ? xwikiObject.getDataManager()
-                        .getPageSummary(parser.getWiki(), parser.getSpace(), parser.getPage(), "").getUrl() : null,
-                    xwikiObject.getDataManager().isConnected());
-            } catch (XWikiEclipseStorageException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-        }
-
-        else
-
-        if (object instanceof XWikiEclipseSpaceSummary) {
+        else if (object instanceof XWikiEclipseSpaceSummary) {
             XWikiEclipseSpaceSummary xwikiSpaceSummary = (XWikiEclipseSpaceSummary) object;
 
             update(xwikiSpaceSummary.getUrl(), xwikiSpaceSummary.getDataManager().isConnected());
