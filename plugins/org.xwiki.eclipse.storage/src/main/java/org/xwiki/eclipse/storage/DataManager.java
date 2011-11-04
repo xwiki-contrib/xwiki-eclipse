@@ -605,8 +605,18 @@ public class DataManager
                 localXWikiDataStorage.storePageSummary(pageSummary);
 
             } else {
-                /* default language */
-                pageSummary = getPageSummary(wiki, space, pageName, language);
+                /* default language */                
+                pageSummary = new XWikiEclipsePageSummary(this);                
+                pageSummary.setLanguage("");
+                pageSummary.setUrl(result.getUrl());
+                pageSummary.setName(result.getName());
+                pageSummary.setWiki(result.getWiki());
+                pageSummary.setSpace(result.getSpace());
+                pageSummary.setId(result.getId());
+                pageSummary.setParentId(result.getParentId());
+                pageSummary.setTitle(result.getTitle());
+                pageSummary.setSyntax(result.getSyntax());
+                pageSummary.setFullName(result.getFullName());
 
                 localXWikiDataStorage.storePageSummary(pageSummary);
             }
@@ -615,10 +625,16 @@ public class DataManager
             lastRetrievedPagesDataStorage.storePage(result);
 
             /* store wiki, space and page */
-            XWikiEclipseSpaceSummary spaceSummary = getSpace(wiki, space);
+            XWikiEclipseSpaceSummary spaceSummary = new XWikiEclipseSpaceSummary(this);
+            spaceSummary.setId(String.format("%s:%s", result.getWiki(), result.getSpace()));
+            spaceSummary.setName(result.getSpace());
+            spaceSummary.setUrl("");
+            spaceSummary.setWiki(result.getWiki());                        
             localXWikiDataStorage.storeSpace(spaceSummary);
 
-            XWikiEclipseWikiSummary wikiSummary = getWiki(wiki);
+            XWikiEclipseWikiSummary wikiSummary = new XWikiEclipseWikiSummary(this);
+            wikiSummary.setWikiId(result.getWiki());
+            wikiSummary.setName(result.getWiki());
             localXWikiDataStorage.storeWiki(wikiSummary);
 
             localXWikiDataStorage.storePage(result);
