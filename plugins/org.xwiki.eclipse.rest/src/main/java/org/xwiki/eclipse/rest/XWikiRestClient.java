@@ -145,38 +145,6 @@ public class XWikiRestClient
         return true;
     }
 
-    public static Link getFirstLinkByRelation(LinkCollection linkCollection, String relation)
-    {
-        if (linkCollection.getLinks() == null) {
-            return null;
-        }
-
-        for (Link link : linkCollection.getLinks()) {
-            if (link.getRel().equals(relation)) {
-                return link;
-            }
-        }
-
-        return null;
-    }
-
-    public static List<Link> getLinksByRelation(LinkCollection linkCollection, String relation)
-    {
-        List<Link> result = new ArrayList<Link>();
-
-        if (linkCollection.getLinks() == null) {
-            return result;
-        }
-
-        for (Link link : linkCollection.getLinks()) {
-            if (link.getRel().equals(relation)) {
-                result.add(link);
-            }
-        }
-
-        return result;
-    }
-
     protected HttpResponse executeGet(URI uri) throws Exception
     {
 
