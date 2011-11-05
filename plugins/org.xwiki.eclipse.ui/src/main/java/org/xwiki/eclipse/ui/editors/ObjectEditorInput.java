@@ -24,7 +24,6 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;
 import org.xwiki.eclipse.model.ModelObject;
-import org.xwiki.eclipse.model.XWikiEclipseClass;
 import org.xwiki.eclipse.model.XWikiEclipseObject;
 import org.xwiki.eclipse.ui.UIConstants;
 import org.xwiki.eclipse.ui.UIPlugin;
@@ -34,9 +33,9 @@ import org.xwiki.eclipse.ui.UIPlugin;
  */
 public class ObjectEditorInput implements IEditorInput
 {
-    private ModelObject object;
+    private XWikiEclipseObject object;
 
-    public ObjectEditorInput(ModelObject object)
+    public ObjectEditorInput(XWikiEclipseObject object)
     {
         this.object = object;
     }
@@ -48,28 +47,12 @@ public class ObjectEditorInput implements IEditorInput
 
     public ImageDescriptor getImageDescriptor()
     {
-        if (object instanceof XWikiEclipseObject) {
-            return UIPlugin.getImageDescriptor(UIConstants.OBJECT_ICON);
-        }
-
-        if (object instanceof XWikiEclipseClass) {
-            return UIPlugin.getImageDescriptor(UIConstants.CLASS_ICON);
-        }
-
-        return null;
+        return UIPlugin.getImageDescriptor(UIConstants.OBJECT_ICON);
     }
 
     public String getName()
     {
-        if (object instanceof XWikiEclipseObject) {
-            return ((XWikiEclipseObject) object).getName();
-        }
-
-        if (object instanceof XWikiEclipseClass) {
-            return ((XWikiEclipseClass) object).getName();
-        }
-
-        return null;
+        return object.getName();
     }
 
     public IPersistableElement getPersistable()
