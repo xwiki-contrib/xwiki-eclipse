@@ -61,8 +61,7 @@ public class TextAreaPropertyEditorDialog extends Dialog
 
     private XWikiEclipseObject object;
 
-    public TextAreaPropertyEditorDialog(Shell parentShell, XWikiEclipseObject object,
-        XWikiEclipseObjectProperty property)
+    public TextAreaPropertyEditorDialog(Shell parentShell, XWikiEclipseObject object, XWikiEclipseObjectProperty property)
     {
         super(parentShell);
         this.property = property;
