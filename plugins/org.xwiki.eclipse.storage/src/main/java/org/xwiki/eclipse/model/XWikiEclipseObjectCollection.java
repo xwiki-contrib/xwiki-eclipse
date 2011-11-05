@@ -19,11 +19,9 @@
  */
 package org.xwiki.eclipse.model;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.xwiki.eclipse.storage.DataManager;
-import org.xwiki.eclipse.storage.XWikiEclipseStorageException;
 
 /**
  * a container for the page's objects that have the same className, e.g., annotation, tag, comments
@@ -32,63 +30,51 @@ import org.xwiki.eclipse.storage.XWikiEclipseStorageException;
  */
 public class XWikiEclipseObjectCollection extends ModelObject
 {
-    private String className;
-
-    private String pageId;
-
-    private List<ModelObject> objects;
-
-    /**
-     * @param dataManager
-     */
-    public XWikiEclipseObjectCollection(DataManager dataManager)
+    public enum Type
     {
-        super(dataManager);
+        ATTACHMENTS,
+        OBJECTS,
+        TAGS,
+        COMMENTS,
+        ANNOTATIONS
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.xwiki.eclipse.model.ModelObject#getXWikiEclipseId()
-     */
+    private Type type;
+
+    private Object arg;
+
+    private XWikiEclipsePageSummary pageSummary;
+
+    public XWikiEclipseObjectCollection(DataManager dataManager, XWikiEclipsePageSummary pageSummary, Type type)
+    {
+        this(dataManager, pageSummary, type, null);
+    }
+
+    public XWikiEclipseObjectCollection(DataManager dataManager, XWikiEclipsePageSummary pageSummary, Type type, Object arg)
+    {
+        super(dataManager);
+        this.pageSummary = pageSummary;
+        this.type = type;
+        this.arg = arg;
+    }
+
     @Override
     public String getXWikiEclipseId()
     {
-        return String.format(
-            "xwikieclipse://%s/%s/classname/%s", getDataManager().getName(), getPageId(), getClassName()); //$NON-NLS-1$
+        return String.format("xwikieclipse://%s/%s/%s/%s", getDataManager().getName(), pageSummary.getId(), type, arg != null ? arg : "all"); //$NON-NLS-1$
     }
 
-    public String getClassName()
+    public Type getType()
     {
-        return className;
+        return type;
     }
 
-    public void setClassName(String className)
+    public XWikiEclipsePageSummary getPageSummary()
     {
-        this.className = className;
+        return pageSummary;
     }
-
-    public List<ModelObject> getObjects() throws XWikiEclipseStorageException
-    {
-        if (objects == null) {
-            objects = new ArrayList<ModelObject>();
-        }
-
-        return objects;
-    }
-
-    public void setObjects(List<ModelObject> objects)
-    {
-        this.objects = objects;
-    }
-
-    public String getPageId()
-    {
-        return pageId;
-    }
-
-    public void setPageId(String pageId)
-    {
-        this.pageId = pageId;
+    
+    public Object getArg() {
+        return arg;
     }
 }

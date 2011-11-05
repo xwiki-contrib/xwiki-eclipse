@@ -224,7 +224,20 @@ public class RestRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStorag
         if (pages != null) {
 
             for (PageSummary pageSummary : pages) {
-                XWikiEclipsePageSummary page = new XWikiEclipsePageSummary(dataManager);
+                List<XWikiEclipsePageSummary.Data> data = new ArrayList<XWikiEclipsePageSummary.Data>();
+                for(Link link : pageSummary.getLinks()) {
+                    if("http://www.xwiki.org/rel/objects".equals(link.getRel())) {
+                        data.add(XWikiEclipsePageSummary.Data.OBJECTS);
+                    } else if("http://www.xwiki.org/rel/comments".equals(link.getRel())) {
+                        data.add(XWikiEclipsePageSummary.Data.COMMENTS);
+                    } else if("http://www.xwiki.org/rel/attachments".equals(link.getRel())) {
+                        data.add(XWikiEclipsePageSummary.Data.ATTACHMENTS);
+                    } else if("http://www.xwiki.org/rel/tags".equals(link.getRel())) {
+                        data.add(XWikiEclipsePageSummary.Data.TAGS);
+                    }
+                }
+
+                XWikiEclipsePageSummary page = new XWikiEclipsePageSummary(dataManager, data.toArray(new XWikiEclipsePageSummary.Data[0]));
                 page.setId(pageSummary.getId());
                 page.setName(pageSummary.getName());
                 page.setFullName(pageSummary.getFullName());

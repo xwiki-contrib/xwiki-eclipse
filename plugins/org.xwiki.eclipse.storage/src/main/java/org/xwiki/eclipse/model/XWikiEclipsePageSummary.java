@@ -21,7 +21,9 @@
 package org.xwiki.eclipse.model;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.xwiki.eclipse.storage.DataManager;
 
@@ -32,6 +34,14 @@ import org.xwiki.eclipse.storage.DataManager;
  */
 public class XWikiEclipsePageSummary extends ModelObject
 {
+    public enum Data
+    {
+        OBJECTS,
+        ATTACHMENTS,
+        TAGS,
+        COMMENTS
+    }
+
     private String id;
 
     private String title;
@@ -54,9 +64,15 @@ public class XWikiEclipsePageSummary extends ModelObject
 
     private String language = "";
 
-    public XWikiEclipsePageSummary(DataManager dataManager)
+    private Set<Data> data;
+
+    public XWikiEclipsePageSummary(DataManager dataManager, Data... data)
     {
         super(dataManager);
+        this.data = new HashSet<Data>();
+        for (Data d : data) {
+            this.data.add(d);
+        }
     }
 
     @Override
@@ -179,4 +195,10 @@ public class XWikiEclipsePageSummary extends ModelObject
     {
         this.language = language;
     }
+
+    public boolean has(Data d)
+    {
+        return data.contains(d);
+    }
+
 }

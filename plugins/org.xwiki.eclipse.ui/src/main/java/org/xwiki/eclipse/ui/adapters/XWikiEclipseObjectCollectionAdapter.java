@@ -20,7 +20,11 @@
  */
 package org.xwiki.eclipse.ui.adapters;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
@@ -30,10 +34,14 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.model.WorkbenchAdapter;
 import org.eclipse.ui.progress.IDeferredWorkbenchAdapter;
 import org.eclipse.ui.progress.IElementCollector;
-import org.xwiki.eclipse.core.CoreLog;
-import org.xwiki.eclipse.model.ModelObject;
+import org.xwiki.eclipse.model.XWikiEclipseAttachment;
+import org.xwiki.eclipse.model.XWikiEclipseComment;
 import org.xwiki.eclipse.model.XWikiEclipseObjectCollection;
-import org.xwiki.eclipse.storage.XWikiEclipseStorageException;
+import org.xwiki.eclipse.model.XWikiEclipseObjectCollection.Type;
+import org.xwiki.eclipse.model.XWikiEclipseObjectSummary;
+import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
+import org.xwiki.eclipse.model.XWikiEclipseTag;
+import org.xwiki.eclipse.storage.DataManager;
 import org.xwiki.eclipse.ui.UIConstants;
 import org.xwiki.eclipse.ui.UIPlugin;
 import org.xwiki.eclipse.ui.utils.UIUtils;
@@ -46,24 +54,73 @@ public class XWikiEclipseObjectCollectionAdapter extends WorkbenchAdapter implem
     @Override
     public Object[] getChildren(Object object)
     {
+
         if (object instanceof XWikiEclipseObjectCollection) {
-            final XWikiEclipseObjectCollection collection = (XWikiEclipseObjectCollection) object;
+            XWikiEclipseObjectCollection collection = (XWikiEclipseObjectCollection) object;
+            XWikiEclipsePageSummary pageSummary = collection.getPageSummary();
+
+            DataManager dataManager = collection.getDataManager();
+
+            Map<String, List<XWikiEclipseObjectSummary>> classToObjectsMap =
+                new HashMap<String, List<XWikiEclipseObjectSummary>>();
 
             try {
-                List<ModelObject> objects = collection.getObjects();
-                return objects.toArray();
-            } catch (XWikiEclipseStorageException e) {
-                UIUtils
-                    .showMessageDialog(
-                        Display.getDefault().getActiveShell(),
-                        SWT.ICON_ERROR,
-                        "Error getting objects.",
-                        "There was a communication error while getting objects. XWiki Eclipse is taking the connection offline in order to prevent further errors. Please check your remote XWiki status and then try to reconnect.");
-                collection.getDataManager().disconnect();
+                switch (collection.getType()) {
+                    case OBJECTS:
 
-                CoreLog.logError("Error getting objects.", e);
+                        List<XWikiEclipseObjectSummary> objects =
+                            dataManager.getObjectSummaries(pageSummary.getWiki(), pageSummary.getSpace(),
+                                pageSummary.getName());
 
-                return NO_CHILDREN;
+                        for (XWikiEclipseObjectSummary objectSummary : objects) {
+                            List<XWikiEclipseObjectSummary> l = classToObjectsMap.get(objectSummary.getClassName());
+                            if (l == null) {
+                                l = new ArrayList<XWikiEclipseObjectSummary>();
+                                classToObjectsMap.put(objectSummary.getClassName(), l);
+                            }
+
+                            l.add(objectSummary);
+                        }
+
+                        if (collection.getArg() == null) {
+                            List<XWikiEclipseObjectCollection> result = new ArrayList<XWikiEclipseObjectCollection>();
+                            Set<String> classNames = classToObjectsMap.keySet();
+                            for (String className : classNames) {
+                                result.add(new XWikiEclipseObjectCollection(dataManager, pageSummary, Type.OBJECTS,
+                                    className));
+                            }
+                            return result.toArray();
+                        } else {
+                            objects = classToObjectsMap.get(collection.getArg());
+                            if (objects != null) {
+                                return objects.toArray();
+                            } else {
+                                return NO_CHILDREN;
+                            }
+                        }
+
+                    case ATTACHMENTS:
+                        List<XWikiEclipseAttachment> attachments =
+                            dataManager.getAttachments(pageSummary.getWiki(), pageSummary.getSpace(),
+                                pageSummary.getName());
+
+                        return attachments.toArray();
+
+                    case COMMENTS:
+                        List<XWikiEclipseComment> comments =
+                            dataManager.getComments(pageSummary.getWiki(), pageSummary.getSpace(),
+                                pageSummary.getName());
+
+                        return comments.toArray();
+
+                    case TAGS:
+                        List<XWikiEclipseTag> tags = dataManager.getTags(pageSummary);
+
+                        return tags.toArray();
+                }
+            } catch (Exception e) {
+                UIUtils.showMessageDialog(Display.getDefault().getActiveShell(), SWT.ICON_ERROR,
+                    "Error getting objects.", "There was a communication error while getting objects.");
             }
         }
 
@@ -75,8 +132,26 @@ public class XWikiEclipseObjectCollectionAdapter extends WorkbenchAdapter implem
     {
         if (object instanceof XWikiEclipseObjectCollection) {
             XWikiEclipseObjectCollection collection = (XWikiEclipseObjectCollection) object;
+            Type type = collection.getType();
 
-            return collection.getClassName();
+            switch (type) {
+                case OBJECTS:
+                    if (collection.getArg() == null) {
+                        return "Objects";
+                    } else {
+                        return collection.getArg().toString();
+                    }
+                case ATTACHMENTS:
+                    return "Attachments";
+                case TAGS:
+                    return "Tags";
+                case COMMENTS:
+                    return "Comments";
+                case ANNOTATIONS:
+                    return "Annotations";
+                default:
+                    return type.toString();
+            }
         }
 
         return super.getLabel(object);
@@ -87,20 +162,22 @@ public class XWikiEclipseObjectCollectionAdapter extends WorkbenchAdapter implem
     {
         if (object instanceof XWikiEclipseObjectCollection) {
             XWikiEclipseObjectCollection collection = (XWikiEclipseObjectCollection) object;
-            String classname = collection.getClassName();
+            Type type = collection.getType();
 
-            if (classname.equals("Attachments")) {
-                return UIPlugin.getImageDescriptor(UIConstants.PAGE_ATTACHMENTS_ICON);
-            } else if (classname.equals("Tags")) {
-                return UIPlugin.getImageDescriptor(UIConstants.TAGS_ICON);
-            } else if (classname.equals("Comments")) {
-                return UIPlugin.getImageDescriptor(UIConstants.PAGE_COMMENTS_ICON);
-            } else if (classname.equals("Annotations")) {
-                return UIPlugin.getImageDescriptor(UIConstants.PAGE_ANNOTATIONS_ICON);
-            } else {
-                return UIPlugin.getImageDescriptor(UIConstants.OBJECT_COLLECTION_ICON);
+            switch (type) {
+                case OBJECTS:
+                    return UIPlugin.getImageDescriptor(UIConstants.OBJECT_COLLECTION_ICON);
+                case ATTACHMENTS:
+                    return UIPlugin.getImageDescriptor(UIConstants.PAGE_ATTACHMENTS_ICON);
+                case TAGS:
+                    return UIPlugin.getImageDescriptor(UIConstants.TAGS_ICON);
+                case COMMENTS:
+                    return UIPlugin.getImageDescriptor(UIConstants.PAGE_COMMENTS_ICON);
+                case ANNOTATIONS:
+                    return UIPlugin.getImageDescriptor(UIConstants.PAGE_ANNOTATIONS_ICON);
+                default:
+                    return UIPlugin.getImageDescriptor(UIConstants.OBJECT_COLLECTION_ICON);
             }
-
         }
 
         return null;
