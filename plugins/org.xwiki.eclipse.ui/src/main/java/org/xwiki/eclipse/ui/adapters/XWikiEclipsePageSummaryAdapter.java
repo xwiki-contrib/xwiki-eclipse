@@ -31,7 +31,9 @@ import org.eclipse.ui.progress.IDeferredWorkbenchAdapter;
 import org.eclipse.ui.progress.IElementCollector;
 import org.xwiki.eclipse.model.XWikiEclipseObjectCollection;
 import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
+import org.xwiki.eclipse.model.XWikiEclipsePageSummary.Data;
 import org.xwiki.eclipse.storage.DataManager;
+import org.xwiki.eclipse.storage.XWikiEclipseStorageException;
 import org.xwiki.eclipse.ui.UIConstants;
 import org.xwiki.eclipse.ui.UIPlugin;
 
@@ -46,6 +48,19 @@ public class XWikiEclipsePageSummaryAdapter extends WorkbenchAdapter implements 
         if (object instanceof XWikiEclipsePageSummary) {
             XWikiEclipsePageSummary pageSummary = (XWikiEclipsePageSummary) object;
             DataManager dataManager = pageSummary.getDataManager();
+            try {
+                /*
+                 * Get the updated version. The version we get from the parameter is the one that was cached when the
+                 * space was expanded. Since objects, attachments, etc. might be added in the meanwhie, we need to
+                 * refresh this information by asking an updated version of the page summary. This is needed, for
+                 * example, when an object or a comment is added from the UI.
+                 */
+                pageSummary =
+                    dataManager.getPageSummary(pageSummary.getWiki(), pageSummary.getSpace(), pageSummary.getName(),
+                        pageSummary.getLanguage());
+            } catch (XWikiEclipseStorageException e) {
+                return NO_CHILDREN;
+            }
 
             List<XWikiEclipseObjectCollection> result = new ArrayList<XWikiEclipseObjectCollection>();
 

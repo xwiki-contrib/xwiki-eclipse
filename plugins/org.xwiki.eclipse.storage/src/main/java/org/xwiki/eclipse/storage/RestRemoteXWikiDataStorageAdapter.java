@@ -654,8 +654,22 @@ public class RestRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStorag
     public XWikiEclipsePageSummary getPageSummary(String wiki, String space, String pageName, String language)
     {
         try {
-            XWikiEclipsePage page = getPage(wiki, space, pageName, language);
-            XWikiEclipsePageSummary pageSummary = new XWikiEclipsePageSummary(page.getDataManager());
+            Page page = restRemoteStorage.getPage(wiki, space, pageName, language);
+
+            List<XWikiEclipsePageSummary.Data> data = new ArrayList<XWikiEclipsePageSummary.Data>();
+            for(Link link : page.getLinks()) {
+                if("http://www.xwiki.org/rel/objects".equals(link.getRel())) {
+                    data.add(XWikiEclipsePageSummary.Data.OBJECTS);
+                } else if("http://www.xwiki.org/rel/comments".equals(link.getRel())) {
+                    data.add(XWikiEclipsePageSummary.Data.COMMENTS);
+                } else if("http://www.xwiki.org/rel/attachments".equals(link.getRel())) {
+                    data.add(XWikiEclipsePageSummary.Data.ATTACHMENTS);
+                } else if("http://www.xwiki.org/rel/tags".equals(link.getRel())) {
+                    data.add(XWikiEclipsePageSummary.Data.TAGS);
+                }
+            }
+
+            XWikiEclipsePageSummary pageSummary = new XWikiEclipsePageSummary(dataManager, data.toArray(new XWikiEclipsePageSummary.Data[0]));
             pageSummary.setFullName(page.getFullName());
             pageSummary.setId(page.getId());
             pageSummary.setLanguage(page.getLanguage());
@@ -664,7 +678,7 @@ public class RestRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStorag
             pageSummary.setSpace(page.getSpace());
             pageSummary.setSyntax(page.getSyntax());
             pageSummary.setTitle(page.getTitle());
-            pageSummary.setUrl(page.getUrl());
+            pageSummary.setUrl(page.getXwikiAbsoluteUrl());
             pageSummary.setWiki(page.getWiki());
 
             return pageSummary;
