@@ -225,19 +225,20 @@ public class RestRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStorag
 
             for (PageSummary pageSummary : pages) {
                 List<XWikiEclipsePageSummary.Data> data = new ArrayList<XWikiEclipsePageSummary.Data>();
-                for(Link link : pageSummary.getLinks()) {
-                    if("http://www.xwiki.org/rel/objects".equals(link.getRel())) {
+                for (Link link : pageSummary.getLinks()) {
+                    if ("http://www.xwiki.org/rel/objects".equals(link.getRel())) {
                         data.add(XWikiEclipsePageSummary.Data.OBJECTS);
-                    } else if("http://www.xwiki.org/rel/comments".equals(link.getRel())) {
+                    } else if ("http://www.xwiki.org/rel/comments".equals(link.getRel())) {
                         data.add(XWikiEclipsePageSummary.Data.COMMENTS);
-                    } else if("http://www.xwiki.org/rel/attachments".equals(link.getRel())) {
+                    } else if ("http://www.xwiki.org/rel/attachments".equals(link.getRel())) {
                         data.add(XWikiEclipsePageSummary.Data.ATTACHMENTS);
-                    } else if("http://www.xwiki.org/rel/tags".equals(link.getRel())) {
+                    } else if ("http://www.xwiki.org/rel/tags".equals(link.getRel())) {
                         data.add(XWikiEclipsePageSummary.Data.TAGS);
                     }
                 }
 
-                XWikiEclipsePageSummary page = new XWikiEclipsePageSummary(dataManager, data.toArray(new XWikiEclipsePageSummary.Data[0]));
+                XWikiEclipsePageSummary page =
+                    new XWikiEclipsePageSummary(dataManager, data.toArray(new XWikiEclipsePageSummary.Data[0]));
                 page.setId(pageSummary.getId());
                 page.setName(pageSummary.getName());
                 page.setFullName(pageSummary.getFullName());
@@ -657,19 +658,20 @@ public class RestRemoteXWikiDataStorageAdapter implements IRemoteXWikiDataStorag
             Page page = restRemoteStorage.getPage(wiki, space, pageName, language);
 
             List<XWikiEclipsePageSummary.Data> data = new ArrayList<XWikiEclipsePageSummary.Data>();
-            for(Link link : page.getLinks()) {
-                if("http://www.xwiki.org/rel/objects".equals(link.getRel())) {
+            for (Link link : page.getLinks()) {
+                if ("http://www.xwiki.org/rel/objects".equals(link.getRel())) {
                     data.add(XWikiEclipsePageSummary.Data.OBJECTS);
-                } else if("http://www.xwiki.org/rel/comments".equals(link.getRel())) {
+                } else if ("http://www.xwiki.org/rel/comments".equals(link.getRel())) {
                     data.add(XWikiEclipsePageSummary.Data.COMMENTS);
-                } else if("http://www.xwiki.org/rel/attachments".equals(link.getRel())) {
+                } else if ("http://www.xwiki.org/rel/attachments".equals(link.getRel())) {
                     data.add(XWikiEclipsePageSummary.Data.ATTACHMENTS);
-                } else if("http://www.xwiki.org/rel/tags".equals(link.getRel())) {
+                } else if ("http://www.xwiki.org/rel/tags".equals(link.getRel())) {
                     data.add(XWikiEclipsePageSummary.Data.TAGS);
                 }
             }
 
-            XWikiEclipsePageSummary pageSummary = new XWikiEclipsePageSummary(dataManager, data.toArray(new XWikiEclipsePageSummary.Data[0]));
+            XWikiEclipsePageSummary pageSummary =
+                new XWikiEclipsePageSummary(dataManager, data.toArray(new XWikiEclipsePageSummary.Data[0]));
             pageSummary.setFullName(page.getFullName());
             pageSummary.setId(page.getId());
             pageSummary.setLanguage(page.getLanguage());

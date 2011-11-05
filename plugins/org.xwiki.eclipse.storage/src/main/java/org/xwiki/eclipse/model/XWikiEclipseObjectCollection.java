@@ -50,7 +50,8 @@ public class XWikiEclipseObjectCollection extends ModelObject
         this(dataManager, pageSummary, type, null);
     }
 
-    public XWikiEclipseObjectCollection(DataManager dataManager, XWikiEclipsePageSummary pageSummary, Type type, Object arg)
+    public XWikiEclipseObjectCollection(DataManager dataManager, XWikiEclipsePageSummary pageSummary, Type type,
+        Object arg)
     {
         super(dataManager);
         this.pageSummary = pageSummary;
@@ -61,7 +62,9 @@ public class XWikiEclipseObjectCollection extends ModelObject
     @Override
     public String getXWikiEclipseId()
     {
-        return String.format("xwikieclipse://%s/%s/%s/%s", getDataManager().getName(), pageSummary.getId(), type, arg != null ? arg : "all"); //$NON-NLS-1$
+        return String
+            .format(
+                "xwikieclipse://%s/%s/%s/%s", getDataManager().getName(), pageSummary.getId(), type, arg != null ? arg : "all"); //$NON-NLS-1$
     }
 
     public Type getType()
@@ -73,8 +76,9 @@ public class XWikiEclipseObjectCollection extends ModelObject
     {
         return pageSummary;
     }
-    
-    public Object getArg() {
+
+    public Object getArg()
+    {
         return arg;
     }
 }
