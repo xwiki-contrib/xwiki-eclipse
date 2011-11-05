@@ -72,7 +72,7 @@ public class ObjectEditorInput implements IEditorInput
         return null;
     }
 
-    public ModelObject getObject()
+    public XWikiEclipseObject getObject()
     {
         return object;
     }

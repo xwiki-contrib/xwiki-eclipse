@@ -59,10 +59,14 @@ public class TextAreaPropertyEditorDialog extends Dialog
 
     private String text;
 
-    public TextAreaPropertyEditorDialog(Shell parentShell, XWikiEclipseObjectProperty object)
+    private XWikiEclipseObject object;
+
+    public TextAreaPropertyEditorDialog(Shell parentShell, XWikiEclipseObject object,
+        XWikiEclipseObjectProperty property)
     {
         super(parentShell);
-        this.property = object;
+        this.property = property;
+        this.object = object;
     }
 
     @Override
@@ -88,17 +92,9 @@ public class TextAreaPropertyEditorDialog extends Dialog
         FormToolkit toolkit = new FormToolkit(parent.getDisplay());
         Form form = toolkit.createForm(composite);
         toolkit.decorateFormHeading(form);
-        XWikiEclipseObject object;
-        try {
-            object =
-                property.getDataManager().getObject(property.getWiki(), property.getSpace(), property.getPage(),
-                    property.getClassName(), property.getNumber());
-            form.setText(String.format("Property %s of object %s on page %s", property.getPrettyName(),
-                object.getName(), object.getPageId()));
-        } catch (XWikiEclipseStorageException e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
-        }
+
+        form.setText(String.format("Property %s of object %s (class %s) on page %s", property.getPrettyName(),
+            object.getId(), object.getClassName(), object.getPageId()));
 
         GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, true).applyTo(form);
         GridLayoutFactory.fillDefaults().applyTo(form.getBody());

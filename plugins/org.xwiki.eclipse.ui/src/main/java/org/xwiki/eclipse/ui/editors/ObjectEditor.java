@@ -175,16 +175,9 @@ public class ObjectEditor extends EditorPart
         scrolledForm.getBody().setLayout(tableWrapLayout);
 
         ObjectEditorInput input = (ObjectEditorInput) getEditorInput();
-        ModelObject object = input.getObject();
-
-        List<XWikiEclipseObjectProperty> properties = null;
-        if (object instanceof XWikiEclipseObject) {
-            properties = ((XWikiEclipseObject) object).getProperties();
-        }
-        if (object instanceof XWikiEclipseClass) {
-            properties = ((XWikiEclipseClass) object).getProperties();
-        }
-
+        XWikiEclipseObject object = input.getObject();
+        List<XWikiEclipseObjectProperty> properties = object.getProperties();
+        
         /* Just for spacing */
         toolkit.createLabel(scrolledForm.getBody(), "");
 
@@ -208,7 +201,7 @@ public class ObjectEditor extends EditorPart
             }
 
             if ("com.xpn.xwiki.objects.classes.TextAreaClass".equals(property.getType())) {
-                propertyEditor = new TextAreaPropertyEditor(toolkit, scrolledForm.getBody(), property);
+                propertyEditor = new TextAreaPropertyEditor(toolkit, scrolledForm.getBody(), object, property);
             }
 
             if ("com.xpn.xwiki.objects.classes.DateClass".equals(property.getType())) {

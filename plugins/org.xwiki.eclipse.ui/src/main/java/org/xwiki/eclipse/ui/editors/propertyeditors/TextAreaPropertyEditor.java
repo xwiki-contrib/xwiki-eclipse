@@ -33,6 +33,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
+import org.xwiki.eclipse.model.XWikiEclipseObject;
 import org.xwiki.eclipse.model.XWikiEclipseObjectProperty;
 import org.xwiki.eclipse.ui.dialogs.TextAreaPropertyEditorDialog;
 
@@ -43,9 +44,13 @@ public class TextAreaPropertyEditor extends BasePropertyEditor
 {
     StyledText textArea;
 
-    public TextAreaPropertyEditor(FormToolkit toolkit, Composite parent, XWikiEclipseObjectProperty property)
+    private XWikiEclipseObject object;
+
+    public TextAreaPropertyEditor(FormToolkit toolkit, Composite parent, XWikiEclipseObject object,
+        XWikiEclipseObjectProperty property)
     {
         super(toolkit, parent, property);
+        this.object = object;
     }
 
     @Override
@@ -82,7 +87,7 @@ public class TextAreaPropertyEditor extends BasePropertyEditor
 
             public void widgetSelected(SelectionEvent e)
             {
-                TextAreaPropertyEditorDialog dialog = new TextAreaPropertyEditorDialog(parent.getShell(), property);
+                TextAreaPropertyEditorDialog dialog = new TextAreaPropertyEditorDialog(parent.getShell(), object, property);
                 int result = dialog.open();
                 if (result == Dialog.OK) {
                     textArea.setText(dialog.getText() != null ? dialog.getText() : "");
