@@ -31,7 +31,7 @@ import org.eclipse.jface.text.IRegion;
 import org.xwiki.eclipse.ui.editors.Constants;
 
 /**
- * @version $Id$
+ * @version $Id: 0272516d550290e2162bd74dfef93d659374aaef $
  */
 public class XWikiMarkupAutoEditStrategy implements IAutoEditStrategy
 {
@@ -60,7 +60,7 @@ public class XWikiMarkupAutoEditStrategy implements IAutoEditStrategy
                 configureCommand(command, "[]", 1);
             } else if (command.text.equals(">")) {
                 String tag = getTag(document, '<', command.offset - 1);
-                if (tag != null) {
+                if (tag != null && !tag.matches("</.*")) {
                     String closingTag = String.format("></%s>", tag.substring(1));
 
                     configureCommand(command, closingTag, 1);
