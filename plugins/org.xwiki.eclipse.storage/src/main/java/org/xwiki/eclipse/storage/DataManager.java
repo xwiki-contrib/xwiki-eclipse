@@ -289,7 +289,9 @@ public class DataManager
 
     public void disconnect()
     {
-        remoteXWikiDataStorage.dispose();
+        if(remoteXWikiDataStorage != null) {
+            remoteXWikiDataStorage.dispose();
+        }
         remoteXWikiDataStorage = null;
 
         /* Set this to true, because the local storage always support extended features */
