@@ -31,7 +31,7 @@ import org.eclipse.jface.text.IRegion;
 import org.xwiki.eclipse.ui.editors.Constants;
 
 /**
- * @version $Id: 0272516d550290e2162bd74dfef93d659374aaef $
+ * @version $Id$
  */
 public class XWikiMarkupAutoEditStrategy implements IAutoEditStrategy
 {
@@ -124,15 +124,25 @@ public class XWikiMarkupAutoEditStrategy implements IAutoEditStrategy
         try {
             int startOffset = endOffset;
             int character;
-
+            int lastSpaceOffset = -1;
+          
             while (startOffset >= 0) {
                 character = document.getChar(startOffset);
+                if (character == ' ') {
+                    lastSpaceOffset = startOffset;
+                }
                 if (character == '\n') {
                     return null;
                 }
 
                 if (character == openingChar) {
-                    return document.get(startOffset, endOffset - startOffset + 1);
+                    int length;
+                    if (lastSpaceOffset > 0) {
+                        length = lastSpaceOffset - startOffset;
+                    } else {
+                        length = endOffset - startOffset + 1;
+                    }
+                    return document.get(startOffset, length);
                 }
 
                 startOffset--;
