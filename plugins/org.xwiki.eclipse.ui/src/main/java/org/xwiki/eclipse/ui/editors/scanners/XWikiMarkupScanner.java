@@ -31,6 +31,9 @@ import org.eclipse.jface.text.rules.Token;
 import org.xwiki.eclipse.ui.editors.Constants;
 import org.xwiki.eclipse.ui.editors.Preferences;
 import org.xwiki.eclipse.ui.editors.scanners.rules.BalancedParenthesisRule;
+import org.xwiki.eclipse.ui.editors.scanners.rules.DefinitionListRule;
+import org.xwiki.eclipse.ui.editors.scanners.rules.HeaderRule;
+import org.xwiki.eclipse.ui.editors.scanners.rules.ListRule;
 import org.xwiki.eclipse.ui.editors.scanners.rules.RegExRule;
 
 /**
@@ -66,63 +69,16 @@ public class XWikiMarkupScanner extends RuleBasedScanner
 
         List<IRule> rules = new ArrayList<IRule>();
 
-        /* RegEx rules work better with respect to SingleLineRules */
-        RegExRule regExRule = new RegExRule("1 .*\n?", heading1Token);
-        regExRule.setColumnConstraint(0);
-        rules.add(regExRule);
+        HeaderRule headers = new HeaderRule();
+        headers.add("^= .|^1 .", heading1Token);
+        headers.add("^== .|^1\\.1 .", heading2Token);
+        headers.add("^=== .|^1\\.1\\.1 .", heading3Token);
+        headers.add("^==== .|^1\\.1\\.1\\.1 .", heading4Token);
+        headers.add("^===== .|^1\\.1\\.1\\.1\\.1 .", heading5Token);
+        headers.add("^====== .|^1\\.1\\.1\\.1\\.1\\.1 .", heading6Token);
 
-        regExRule = new RegExRule("= .*\n?", heading1Token);
-        regExRule.setColumnConstraint(0);
-        rules.add(regExRule);
-
-        regExRule = new RegExRule("1.1 .*\n?", heading2Token);
-        regExRule.setColumnConstraint(0);
-        rules.add(regExRule);
-
-        regExRule = new RegExRule("== .*\n?", heading1Token);
-        regExRule.setColumnConstraint(0);
-        rules.add(regExRule);
-
-        regExRule = new RegExRule("1.1.1 .*\n?", heading3Token);
-        regExRule.setColumnConstraint(0);
-        rules.add(regExRule);
-
-        regExRule = new RegExRule("=== .*\n?", heading1Token);
-        regExRule.setColumnConstraint(0);
-        rules.add(regExRule);
-
-        regExRule = new RegExRule("1.1.1.1 .*\n?", heading4Token);
-        regExRule.setColumnConstraint(0);
-        rules.add(regExRule);
-
-        regExRule = new RegExRule("==== .*\n?", heading1Token);
-        regExRule.setColumnConstraint(0);
-        rules.add(regExRule);
-
-        regExRule = new RegExRule("1.1.1.1.1 .*\n?", heading5Token);
-        regExRule.setColumnConstraint(0);
-        rules.add(regExRule);
-
-        regExRule = new RegExRule("===== .*\n?", heading1Token);
-        regExRule.setColumnConstraint(0);
-        rules.add(regExRule);
-
-        regExRule = new RegExRule("1.1.1.1.1.1 .*\n?", heading6Token);
-        regExRule.setColumnConstraint(0);
-        rules.add(regExRule);
-
-        regExRule = new RegExRule("====== .*\n?", heading1Token);
-        regExRule.setColumnConstraint(0);
-        rules.add(regExRule);
-
-        regExRule = new RegExRule(Constants.LIST_BULLET_PATTERN, listBulletToken);
-        regExRule.setColumnConstraint(0);
-        rules.add(regExRule);
-
-        regExRule = new RegExRule(Constants.DEFINITION_TERM_PATTERN, definitionTermToken);
-        regExRule.setColumnConstraint(0);
-        rules.add(regExRule);
-
+        rules.add(new ListRule(Constants.LIST_BULLET_PATTERN, listBulletToken));
+        rules.add(new DefinitionListRule(Constants.DEFINITION_TERM_PATTERN, definitionTermToken));
         rules.add(new SingleLineRule("**", "**", boldToken, '\\'));
         rules.add(new SingleLineRule("*", "*", boldToken, '\\'));
         rules.add(new SingleLineRule("~~", "~~", italicToken, '\\'));
