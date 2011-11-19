@@ -36,10 +36,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.xwiki.eclipse.storage.BackendType;
 import org.xwiki.eclipse.storage.StorageConstants;
-import org.xwiki.eclipse.storage.XWikiEclipseStorageException;
-import org.xwiki.eclipse.storage.utils.StorageUtils;
 import org.xwiki.eclipse.ui.UIConstants;
 import org.xwiki.eclipse.ui.UIPlugin;
 
@@ -173,15 +170,7 @@ public class ConnectionSettingsWizardPage extends WizardPage
             setErrorMessage("The specified address is not a valid URL.");
             return false;
         }
-
-        String serverUrl = serverUrlText.getText().trim();
-        try {
-            BackendType backend = StorageUtils.getBackend(serverUrl);
-        } catch (XWikiEclipseStorageException e1) {
-            setErrorMessage("wrong end point URL, end serverUrlText with /rest or /xmlrpc/confluence");
-            return false;
-        }
-
+       
         if (userNameText.getText() == null || userNameText.getText().trim().length() == 0) {
             setErrorMessage("User name must be specified.");
             return false;

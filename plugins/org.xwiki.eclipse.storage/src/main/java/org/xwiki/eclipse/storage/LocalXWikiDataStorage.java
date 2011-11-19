@@ -24,7 +24,6 @@ import org.xwiki.eclipse.model.XWikiEclipseSpaceSummary;
 import org.xwiki.eclipse.model.XWikiEclipseWikiSummary;
 import org.xwiki.eclipse.storage.utils.IdProcessor;
 import org.xwiki.eclipse.storage.utils.StorageUtils;
-import org.xwiki.xmlrpc.model.XWikiPageHistorySummary;
 
 /**
  * This class implements a local data storage for XWiki elements that uses the Eclipse resource component. The local
@@ -480,10 +479,10 @@ public class LocalXWikiDataStorage
         return true;
     }
 
-    public List<XWikiPageHistorySummary> getPageHistory(String pageId) throws XWikiEclipseStorageException
+    public List<XWikiEclipsePageHistorySummary> getPageHistory(String pageId) throws XWikiEclipseStorageException
     {
         // Currently not supported in local storage.
-        return new ArrayList<XWikiPageHistorySummary>();
+        return new ArrayList<XWikiEclipsePageHistorySummary>();
     }
 
     /**

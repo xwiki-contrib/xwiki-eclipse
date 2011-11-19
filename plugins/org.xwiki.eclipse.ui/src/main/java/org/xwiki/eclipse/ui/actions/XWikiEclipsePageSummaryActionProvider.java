@@ -45,7 +45,6 @@ import org.xwiki.eclipse.model.XWikiEclipsePage;
 import org.xwiki.eclipse.model.XWikiEclipsePageHistorySummary;
 import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
 import org.xwiki.eclipse.model.XWikiEclipsePageTranslationSummary;
-import org.xwiki.eclipse.storage.Functionality;
 import org.xwiki.eclipse.storage.XWikiEclipseStorageException;
 import org.xwiki.eclipse.ui.UIConstants;
 import org.xwiki.eclipse.ui.editors.PageEditor;
@@ -172,10 +171,6 @@ public class XWikiEclipsePageSummaryActionProvider extends CommonActionProvider
 
             if (selectedObject instanceof XWikiEclipsePageSummary) {
                 final XWikiEclipsePageSummary pageSummary = (XWikiEclipsePageSummary) selectedObject;
-
-                if (!pageSummary.getDataManager().getSupportedFunctionalities().contains(Functionality.TRANSLATIONS)) {
-                    return menuManager;
-                }
 
                 if (pageSummary.getTranslations() != null) {
                     for (XWikiEclipsePageTranslationSummary translation : pageSummary.getTranslations()) {

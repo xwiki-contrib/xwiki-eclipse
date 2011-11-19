@@ -40,8 +40,8 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.wizards.newresource.BasicNewProjectResourceWizard;
 import org.xwiki.eclipse.core.XWikiEclipseNature;
+import org.xwiki.eclipse.rest.XWikiRestClient;
 import org.xwiki.eclipse.storage.DataManager;
-import org.xwiki.eclipse.storage.XWikiClient;
 import org.xwiki.eclipse.storage.utils.StorageUtils;
 import org.xwiki.eclipse.ui.perspectives.XWikiPerspectiveFactory;
 
@@ -113,12 +113,11 @@ public class NewConnectionWizard extends Wizard implements INewWizard, IExecutab
                         monitor.beginTask("Setting up connection", IProgressMonitor.UNKNOWN);
 
                         /* Try to login with the specified username + password */
-                        XWikiClient client =
-                            new XWikiClient(newConnectionWizardState.getServerUrl(), newConnectionWizardState
+                        XWikiRestClient client =
+                            new XWikiRestClient(newConnectionWizardState.getServerUrl(), newConnectionWizardState
                                 .getUserName(), newConnectionWizardState.getPassword());
                         client.login(newConnectionWizardState.getUserName(), newConnectionWizardState.getPassword());
                         client.logout();
-
                     } catch (Exception e) {
                         throw new InvocationTargetException(e, e.getMessage());
                     } finally {
@@ -149,8 +148,6 @@ public class NewConnectionWizard extends Wizard implements INewWizard, IExecutab
                         project.create(null);
                         project.open(null);
 
-                        project.setPersistentProperty(DataManager.BACKEND,
-                            StorageUtils.getBackend(newConnectionWizardState.getServerUrl()).toString());
                         project.setPersistentProperty(DataManager.ENDPOINT, newConnectionWizardState.getServerUrl());
                         String userName = newConnectionWizardState.getUserName();
                         if (!userName.startsWith("XWiki.")) {

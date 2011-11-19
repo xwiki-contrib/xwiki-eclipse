@@ -65,8 +65,6 @@ public class DataManager
 
     protected PersistentMap objectToStatusMap;
 
-    protected Set<Functionality> supportedFunctionalities;
-
     /* Properties for projects associated to data managers */
     public static final QualifiedName AUTO_CONNECT = new QualifiedName("xwiki.eclipse", "auto_connect"); //$NON-NLS-1$ //$NON-NLS-2$
 
@@ -75,8 +73,6 @@ public class DataManager
     public static final QualifiedName USERNAME = new QualifiedName("xwiki.eclipse", "username"); //$NON-NLS-1$ //$NON-NLS-2$
 
     public static final QualifiedName ENDPOINT = new QualifiedName("xwiki.eclipse", "endpoint"); //$NON-NLS-1$ //$NON-NLS-2$
-
-    public static final QualifiedName BACKEND = new QualifiedName("xwiki.eclipse", "backend"); //$NON-NLS-1$ //$NON-NLS-2$;
 
     /**
      * The remote XWiki
@@ -117,16 +113,6 @@ public class DataManager
         pageToStatusMap = new PersistentMap(project.getFolder(DATA_MANAGER_DIRECTORY).getFile(PAGES_STATUS));
 
         objectToStatusMap = new PersistentMap(project.getFolder(DATA_MANAGER_DIRECTORY).getFile(OBJECTS_STATUS));
-
-        /*
-         * At the beginning we operate locally, and the local storage always support all extended functionalities, i.e.,
-         * objects, etc.
-         */
-        supportedFunctionalities = new HashSet<Functionality>();
-        supportedFunctionalities.add(Functionality.OBJECTS);
-        supportedFunctionalities.add(Functionality.RENAME);
-        supportedFunctionalities.add(Functionality.TRANSLATIONS);
-        supportedFunctionalities.add(Functionality.ALL_PAGES_RETRIEVAL);
     }
 
     /*
@@ -135,11 +121,6 @@ public class DataManager
     public IProject getProject()
     {
         return project;
-    }
-
-    public Set<Functionality> getSupportedFunctionalities()
-    {
-        return supportedFunctionalities;
     }
 
     public String getName()
@@ -187,16 +168,6 @@ public class DataManager
         project.setPersistentProperty(AUTO_CONNECT, autoConnect ? "true" : null); //$NON-NLS-1$
     }
 
-    public String getBackend() throws CoreException
-    {
-        return project.getPersistentProperty(BACKEND);
-    }
-
-    public void setBackend(final String backend) throws CoreException
-    {
-        project.setPersistentProperty(BACKEND, backend);
-    }
-
     public String getXWikiEclipseId()
     {
         return String.format("xwikieclipse://%s", getName()); //$NON-NLS-1$
@@ -217,36 +188,7 @@ public class DataManager
         }
 
         remoteXWikiDataStorage =
-            RemoteXWikiDataStorageFactory.getRemoteXWikiDataStorage(this, getEndpoint(), getUserName(), getPassword());
-        if (remoteXWikiDataStorage == null) {
-            /* remote connection error, operate locally */
-            disconnect();
-        } else {
-            try {
-                XWikiEclipseServerInfo serverInfo = remoteXWikiDataStorage.getServerInfo();
-
-                if (serverInfo.getBaseUrl().contains("xwiki")) {
-                    if (serverInfo.getMajorVersion() == 1) {
-                        if (serverInfo.getMinorVersion() < 5) {
-                            supportedFunctionalities.remove(Functionality.RENAME);
-                        }
-
-                        if (serverInfo.getMinorVersion() < 4) {
-                            supportedFunctionalities.remove(Functionality.TRANSLATIONS);
-                            supportedFunctionalities.remove(Functionality.ALL_PAGES_RETRIEVAL);
-                        }
-                    }
-                } else {
-                    /* We are talking to a confluence server */
-                    supportedFunctionalities.remove(Functionality.TRANSLATIONS);
-                    supportedFunctionalities.remove(Functionality.OBJECTS);
-                    supportedFunctionalities.remove(Functionality.ALL_PAGES_RETRIEVAL);
-                }
-            } catch (Exception e) {
-                /* Here we are talking to an XWiki < 1.4. In this case we only support basic functionalities. */
-                supportedFunctionalities.clear();
-            }
-        }
+            new RestRemoteXWikiDataStorageAdapter(this, getEndpoint(), getUserName(), getPassword());
 
         /* When connected synchronize all the pages and objects */
         synchronizePages(new HashSet<String>(pageToStatusMap.keySet()));
@@ -289,15 +231,10 @@ public class DataManager
 
     public void disconnect()
     {
-        if(remoteXWikiDataStorage != null) {
+        if (remoteXWikiDataStorage != null) {
             remoteXWikiDataStorage.dispose();
         }
         remoteXWikiDataStorage = null;
-
-        /* Set this to true, because the local storage always support extended features */
-        supportedFunctionalities.clear();
-        supportedFunctionalities.add(Functionality.OBJECTS);
-        supportedFunctionalities.add(Functionality.RENAME);
 
         NotificationManager.getDefault().fireCoreEvent(CoreEvent.Type.DATA_MANAGER_DISCONNECTED, this, null);
     }

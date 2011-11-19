@@ -35,7 +35,6 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.xwiki.eclipse.model.XWikiEclipseComment;
 import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
-import org.xwiki.eclipse.storage.Functionality;
 import org.xwiki.eclipse.ui.editors.CommentEditor;
 import org.xwiki.eclipse.ui.editors.CommentEditorInput;
 import org.xwiki.eclipse.ui.utils.UIUtils;
@@ -57,13 +56,6 @@ public class NewCommentHandler extends AbstractHandler
             if (selectedObject instanceof XWikiEclipsePageSummary) {
                 XWikiEclipsePageSummary pageSummary = (XWikiEclipsePageSummary) selectedObject;
 
-                if (!pageSummary.getDataManager().getSupportedFunctionalities().contains(Functionality.OBJECTS)) {
-                    UIUtils.showMessageDialog(Display.getDefault().getActiveShell(), "Objects not supported",
-                        "This data manager is connected to an XWiki that does not support object management.");
-
-                    return null;
-                }
-
                 try {
                     XWikiEclipseComment comment = new XWikiEclipseComment(pageSummary.getDataManager());
                     comment.setAuthor(pageSummary.getDataManager().getUserName());
@@ -82,14 +74,7 @@ public class NewCommentHandler extends AbstractHandler
             }
 
             if (selectedObject instanceof XWikiEclipseComment) {
-                XWikiEclipseComment comment = (XWikiEclipseComment) selectedObject;
-
-                if (!comment.getDataManager().getSupportedFunctionalities().contains(Functionality.OBJECTS)) {
-                    UIUtils.showMessageDialog(Display.getDefault().getActiveShell(), "Objects not supported",
-                        "This data manager is connected to an XWiki that does not support object management.");
-
-                    return null;
-                }
+                XWikiEclipseComment comment = (XWikiEclipseComment) selectedObject;               
 
                 try {
                     XWikiEclipseComment replyToComment = new XWikiEclipseComment(comment.getDataManager());

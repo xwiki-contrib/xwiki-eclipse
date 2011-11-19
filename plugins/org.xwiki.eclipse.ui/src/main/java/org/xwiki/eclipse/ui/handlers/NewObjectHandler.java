@@ -27,10 +27,8 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.wizard.WizardDialog;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
-import org.xwiki.eclipse.storage.Functionality;
 import org.xwiki.eclipse.ui.utils.UIUtils;
 import org.xwiki.eclipse.ui.wizards.NewObjectWizard;
 
@@ -47,14 +45,7 @@ public class NewObjectHandler extends AbstractHandler
         if (selectedObjects.size() == 1) {
             Object selectedObject = selectedObjects.iterator().next();
             if (selectedObject instanceof XWikiEclipsePageSummary) {
-                final XWikiEclipsePageSummary pageSummary = (XWikiEclipsePageSummary) selectedObject;
-
-                if (!pageSummary.getDataManager().getSupportedFunctionalities().contains(Functionality.OBJECTS)) {
-                    UIUtils.showMessageDialog(Display.getDefault().getActiveShell(), "Objects not supported",
-                        "This data manager is connected to an XWiki that does not support object management.");
-
-                    return null;
-                }
+                final XWikiEclipsePageSummary pageSummary = (XWikiEclipsePageSummary) selectedObject;              
 
                 NewObjectWizard wizard = new NewObjectWizard(pageSummary);
                 WizardDialog dialog = new WizardDialog(HandlerUtil.getActiveShellChecked(event), wizard);

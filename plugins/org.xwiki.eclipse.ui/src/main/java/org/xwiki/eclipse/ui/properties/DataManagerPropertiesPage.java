@@ -20,8 +20,6 @@
  */
 package org.xwiki.eclipse.ui.properties;
 
-import java.util.Formatter;
-
 import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
@@ -33,7 +31,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.PropertyPage;
 import org.xwiki.eclipse.storage.DataManager;
-import org.xwiki.eclipse.storage.Functionality;
 import org.xwiki.eclipse.ui.utils.XWikiEclipseSafeRunnable;
 
 /**
@@ -75,12 +72,8 @@ public class DataManagerPropertiesPage extends PropertyPage
                 label = new Label(composite, SWT.BORDER);
                 label.setText("Status:");
                 label = new Label(composite, SWT.BORDER);
-                if (dataManager.isConnected()) {
-                    Formatter f = new Formatter();
-                    for (Functionality functionality : dataManager.getSupportedFunctionalities()) {
-                        f.format("%s ", functionality);
-                    }
-                    label.setText(String.format("Connected. Support for: %s", f.toString()));
+                if (dataManager.isConnected()) {                    
+                    label.setText("Connected");
                 } else {
                     label.setText("Not connected");
                 }

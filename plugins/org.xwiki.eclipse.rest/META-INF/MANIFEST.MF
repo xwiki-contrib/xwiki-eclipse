@@ -17,3 +17,4 @@ Bundle-ClassPath: .,
  lib/commons-io.jar
 Export-Package: org.xwiki.eclipse.rest,
  org.xwiki.rest.model.jaxb
+Import-Package: org.xwiki.rest.model.jaxb

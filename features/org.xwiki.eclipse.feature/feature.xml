@@ -50,8 +50,7 @@ if not, write to the Free Software Foundation, Inc.,
    <requires>
       <import plugin="org.eclipse.core.runtime" version="3.6.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.resources" version="3.6.1" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.core.expressions" version="3.4.200" match="greaterOrEqual"/>
-      <import plugin="org.xwiki.eclipse.xmlrpc" version="2.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.expressions" version="3.4.200" match="greaterOrEqual"/> 
       <import plugin="org.xwiki.eclipse.storage" version="2.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui" version="3.6.2" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.ide" version="3.6.2" match="greaterOrEqual"/>
