@@ -40,8 +40,8 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.wizards.newresource.BasicNewProjectResourceWizard;
 import org.xwiki.eclipse.core.XWikiEclipseNature;
-import org.xwiki.eclipse.rest.XWikiRestClient;
 import org.xwiki.eclipse.storage.DataManager;
+import org.xwiki.eclipse.storage.rest.XWikiRestClient;
 import org.xwiki.eclipse.storage.utils.StorageUtils;
 import org.xwiki.eclipse.ui.perspectives.XWikiPerspectiveFactory;
 

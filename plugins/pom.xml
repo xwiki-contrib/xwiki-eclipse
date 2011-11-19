@@ -38,7 +38,6 @@
   <modules>
     <module>org.xwiki.eclipse.storage</module>
     <module>org.xwiki.eclipse.core</module>
-    <module>org.xwiki.eclipse.rest</module>
     <module>org.xwiki.eclipse.ui</module>
     <module>org.xwiki.eclipse.rcp</module>
   </modules>
