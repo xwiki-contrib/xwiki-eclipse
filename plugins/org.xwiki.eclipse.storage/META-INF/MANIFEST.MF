@@ -13,4 +13,5 @@ Bundle-ClassPath: .,
 Export-Package: org.xwiki.eclipse.model,
  org.xwiki.eclipse.storage,
  org.xwiki.eclipse.storage.notification,
+ org.xwiki.eclipse.storage.rest,
  org.xwiki.eclipse.storage.utils

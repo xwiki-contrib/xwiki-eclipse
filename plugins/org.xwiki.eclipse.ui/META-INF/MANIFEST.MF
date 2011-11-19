@@ -18,8 +18,7 @@ Require-Bundle: org.eclipse.ui;bundle-version="3.6.2",
  org.eclipse.compare;bundle-version="3.5.101",
  org.eclipse.core.expressions;bundle-version="3.4.200",
  org.xwiki.eclipse.storage;bundle-version="2.0.0",
- org.xwiki.eclipse.core;bundle-version="2.0.0",
- org.xwiki.eclipse.rest;bundle-version="2.0.0"
+ org.xwiki.eclipse.core;bundle-version="2.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.xwiki.eclipse.ui.perspectives
 Bundle-ActivationPolicy: lazy
