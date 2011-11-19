@@ -54,6 +54,7 @@ import org.eclipse.ui.IWorkbench;
 import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
 import org.xwiki.eclipse.model.XWikiEclipseTag;
 import org.xwiki.eclipse.storage.DataManager;
+import org.xwiki.eclipse.storage.XWikiEclipseStorageException;
 import org.xwiki.eclipse.storage.notification.CoreEvent;
 import org.xwiki.eclipse.storage.notification.NotificationManager;
 import org.xwiki.eclipse.ui.UIConstants;
@@ -87,7 +88,13 @@ public class XWikiEclipseTagWizard extends Wizard implements INewWizard
         this.pageSummary = (XWikiEclipsePageSummary) selectedObjects.iterator().next();
 
         /* fetch all the possible tags in this wiki, populate the proposals */
-        List<XWikiEclipseTag> tagsInWiki = pageSummary.getDataManager().getAllTagsInWiki(pageSummary.getWiki());
+        List<XWikiEclipseTag> tagsInWiki = new ArrayList<XWikiEclipseTag>();
+        try {
+            tagsInWiki = pageSummary.getDataManager().getAllTagsInWiki(pageSummary.getWiki());
+        } catch (XWikiEclipseStorageException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
         if (tagsProposals == null) {
             tagsProposals = new String[tagsInWiki.size()];

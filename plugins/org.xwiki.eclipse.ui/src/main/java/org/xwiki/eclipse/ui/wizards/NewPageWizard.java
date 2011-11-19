@@ -62,16 +62,15 @@ public class NewPageWizard extends Wizard implements INewWizard
     @Override
     public boolean performFinish()
     {
-
-        boolean exists =
-            dataManager.pageExists(newPageWizardState.getWiki(), newPageWizardState.getSpace(),
-                newPageWizardState.getName(), "");
-        if (exists) {
-            ((WizardPage) getContainer().getCurrentPage()).setErrorMessage("That page already exists.");
-            return false;
-        }
-
         try {
+            boolean exists =
+                dataManager.pageExists(newPageWizardState.getWiki(), newPageWizardState.getSpace(),
+                    newPageWizardState.getName(), "");
+            if (exists) {
+                ((WizardPage) getContainer().getCurrentPage()).setErrorMessage("That page already exists.");
+                return false;
+            }
+
             getContainer().run(true, false, new IRunnableWithProgress()
             {
                 public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException

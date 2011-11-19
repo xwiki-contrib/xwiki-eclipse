@@ -53,85 +53,63 @@ public interface IRemoteXWikiDataStorage
 
     List<XWikiEclipseSpaceSummary> getSpaceSummaries(String wikiId) throws XWikiEclipseStorageException;
 
-    List<XWikiEclipsePageSummary> getPageSummaries(String wiki, String space);
+    List<XWikiEclipsePageSummary> getPageSummaries(String wiki, String space) throws XWikiEclipseStorageException;
 
-    List<XWikiEclipseObjectSummary> getObjectSummaries(String wiki, String space, String pageName);
+    List<XWikiEclipseObjectSummary> getObjectSummaries(String wiki, String space, String pageName)
+        throws XWikiEclipseStorageException;
 
-    List<XWikiEclipseAttachment> getAttachments(String wiki, String space, String pageName);
+    List<XWikiEclipseAttachment> getAttachments(String wiki, String space, String pageName) throws XWikiEclipseStorageException;
 
     List<XWikiEclipsePageHistorySummary> getPageHistorySummaries(String wiki, String space, String page, String language)
         throws XWikiEclipseStorageException;
 
-    XWikiEclipseClass getClass(String wiki, String space, String pageName);
+    XWikiEclipseClass getClass(String wiki, String space, String pageName) throws XWikiEclipseStorageException;
 
-    List<XWikiEclipseTag> getTags(String wiki, String space, String page);
+    List<XWikiEclipseTag> getTags(String wiki, String space, String page) throws XWikiEclipseStorageException;
 
-    List<XWikiEclipseComment> getComments(String wiki, String space, String pageName);
+    List<XWikiEclipseComment> getComments(String wiki, String space, String pageName) throws XWikiEclipseStorageException;
 
     List<XWikiEclipseObjectProperty> getObjectProperties(String wiki, String space, String pageName, String className,
-        int number);
+        int number) throws XWikiEclipseStorageException;
 
     XWikiEclipsePage getPage(String wiki, String space, String pageName, String language)
         throws XWikiEclipseStorageException;
 
-    XWikiEclipseObject getObject(String wiki, String space, String pageName, String className, int number);
+    XWikiEclipseObject getObject(String wiki, String space, String pageName, String className, int number) throws XWikiEclipseStorageException;
 
-    /**
-     * @param wiki
-     * @param space
-     * @param pageName
-     * @param language translation language for the page
-     * @return
-     */
-    XWikiEclipsePageSummary getPageSummary(String wiki, String space, String pageName, String language);
+    XWikiEclipsePageSummary getPageSummary(String wiki, String space, String pageName, String language) throws XWikiEclipseStorageException;
 
-    XWikiEclipseSpaceSummary getSpace(String wiki, String space);
+    XWikiEclipseSpaceSummary getSpace(String wiki, String space) throws XWikiEclipseStorageException;
 
-    List<XWikiEclipseTag> getAllTagsInWiki(String wiki);
+    List<XWikiEclipseTag> getAllTagsInWiki(String wiki) throws XWikiEclipseStorageException;
 
-    List<XWikiEclipseClass> getClasses(String wiki);
+    List<XWikiEclipseClass> getClasses(String wiki) throws XWikiEclipseStorageException;
 
-    XWikiEclipseClass getClass(String wiki, String className);
+    XWikiEclipseClass getClass(String wiki, String className) throws XWikiEclipseStorageException;
 
     /* store */
-    XWikiEclipseTag addTag(String wiki, String space, String pageName, String tagName);
+    XWikiEclipseTag addTag(String wiki, String space, String pageName, String tagName) throws XWikiEclipseStorageException;
 
     void download(String directory, XWikiEclipseAttachment attachment) throws XWikiEclipseStorageException;
 
-    XWikiEclipseComment storeComment(XWikiEclipseComment c);
+    XWikiEclipseComment storeComment(XWikiEclipseComment c) throws XWikiEclipseStorageException;
 
-    void uploadAttachment(String wiki, String space, String pageName, URL fileUrl);
+    void uploadAttachment(String wiki, String space, String pageName, URL fileUrl) throws XWikiEclipseStorageException;
 
-    void updateAttachment(String wiki, String space, String pageName, String attachmentName, URL fileUrl);
+    void updateAttachment(String wiki, String space, String pageName, String attachmentName, URL fileUrl) throws XWikiEclipseStorageException;
 
     /* delete */
+    //FIXME: REFACTORING: Check this... Delete a model object?
     void remove(ModelObject o) throws XWikiEclipseStorageException;
 
-    boolean pageExists(String wiki, String space, String pageName, String language);
+    boolean pageExists(String wiki, String space, String pageName, String language) throws XWikiEclipseStorageException;
 
-    /**
-     * @param page
-     * @return
-     */
-    XWikiEclipsePage storePage(XWikiEclipsePage page);
+    XWikiEclipsePage storePage(XWikiEclipsePage page) throws XWikiEclipseStorageException;
 
-    /**
-     * @param wiki
-     * @param space
-     * @param name
-     * @param language
-     * @param majorVersion
-     * @param minorVersion
-     * @return
-     */
     XWikiEclipsePage getPageHistory(String wiki, String space, String name, String language, int majorVersion,
         int minorVersion) throws XWikiEclipseStorageException;
 
-    /**
-     * @param object
-     * @return
-     */
-    XWikiEclipseObject storeObject(XWikiEclipseObject object);
+    XWikiEclipseObject storeObject(XWikiEclipseObject object) throws XWikiEclipseStorageException;
 
     /**
      * @param sourcePage

@@ -188,7 +188,7 @@ public class DataManager
         }
 
         remoteXWikiDataStorage =
-            new RestRemoteXWikiDataStorageAdapter(this, getEndpoint(), getUserName(), getPassword());
+            new RestRemoteXWikiDataStorage(this, getEndpoint(), getUserName(), getPassword());
 
         /* When connected synchronize all the pages and objects */
         synchronizePages(new HashSet<String>(pageToStatusMap.keySet()));
@@ -407,11 +407,8 @@ public class DataManager
             number);
     }
 
-    /**
-     * @param pageSummary
-     * @return
-     */
     public List<XWikiEclipseAttachment> getAttachments(String wiki, String space, String pageName)
+        throws XWikiEclipseStorageException
     {
         Assert.isNotNull(wiki);
         Assert.isNotNull(space);
@@ -622,11 +619,7 @@ public class DataManager
         return null;
     }
 
-    /**
-     * @param pageSummary
-     * @return
-     */
-    public XWikiEclipseClass getClass(String wiki, String space, String pageName)
+    public XWikiEclipseClass getClass(String wiki, String space, String pageName) throws XWikiEclipseStorageException
     {
         XWikiEclipseClass result = null;
         if (isConnected()) {
@@ -637,10 +630,6 @@ public class DataManager
         return null;
     }
 
-    /**
-     * @param pageSummary
-     * @return
-     */
     public List<XWikiEclipseTag> getTags(XWikiEclipsePageSummary pageSummary) throws XWikiEclipseStorageException
     {
         List<XWikiEclipseTag> result = null;
@@ -653,11 +642,8 @@ public class DataManager
         return null;
     }
 
-    /**
-     * @param pageSummary
-     * @return
-     */
     public List<XWikiEclipseComment> getComments(String wiki, String space, String pageName)
+        throws XWikiEclipseStorageException
     {
         List<XWikiEclipseComment> result = null;
 
@@ -670,7 +656,7 @@ public class DataManager
     }
 
     public List<XWikiEclipseObjectProperty> getObjectProperties(String wiki, String space, String pageName,
-        String className, int number)
+        String className, int number) throws XWikiEclipseStorageException
     {
         List<XWikiEclipseObjectProperty> result = null;
 
@@ -834,10 +820,7 @@ public class DataManager
 
     }
 
-    /**
-     * @param c
-     */
-    public XWikiEclipseComment storeComment(XWikiEclipseComment c)
+    public XWikiEclipseComment storeComment(XWikiEclipseComment c) throws XWikiEclipseStorageException
     {
         XWikiEclipseComment result = null;
 
@@ -849,11 +832,7 @@ public class DataManager
         return result;
     }
 
-    /**
-     * @param pageSummary
-     * @param fileUrl
-     */
-    public void uploadAttachment(XWikiEclipsePageSummary pageSummary, URL fileUrl)
+    public void uploadAttachment(XWikiEclipsePageSummary pageSummary, URL fileUrl) throws XWikiEclipseStorageException
     {
         if (isConnected()) {
             remoteXWikiDataStorage.uploadAttachment(pageSummary.getWiki(), pageSummary.getSpace(),
@@ -881,11 +860,7 @@ public class DataManager
         return result;
     }
 
-    /**
-     * @param attachment
-     * @param fileUrl
-     */
-    public void updateAttachment(XWikiEclipseAttachment attachment, URL fileUrl)
+    public void updateAttachment(XWikiEclipseAttachment attachment, URL fileUrl) throws XWikiEclipseStorageException
     {
         if (isConnected()) {
             String pageId = attachment.getPageId();
@@ -896,17 +871,14 @@ public class DataManager
 
     }
 
-    public List<XWikiEclipseTag> getAllTagsInWiki(String wiki)
+    public List<XWikiEclipseTag> getAllTagsInWiki(String wiki) throws XWikiEclipseStorageException
     {
         List<XWikiEclipseTag> result = remoteXWikiDataStorage.getAllTagsInWiki(wiki);
         return result;
     }
 
-    /**
-     * @param pageSummary
-     * @param tag
-     */
     public XWikiEclipseTag addTag(String wiki, String space, String pageName, String tag)
+        throws XWikiEclipseStorageException
     {
         XWikiEclipseTag result = null;
         if (isConnected()) {
@@ -916,11 +888,7 @@ public class DataManager
         return result;
     }
 
-    /**
-     * @param wiki
-     * @return
-     */
-    public List<XWikiEclipseClass> getClasses(String wiki)
+    public List<XWikiEclipseClass> getClasses(String wiki) throws XWikiEclipseStorageException
     {
         List<XWikiEclipseClass> result = null;
         if (isConnected()) {
@@ -930,12 +898,6 @@ public class DataManager
         return result;
     }
 
-    /**
-     * @param wiki
-     * @param className
-     * @return
-     * @throws XWikiEclipseStorageException
-     */
     public XWikiEclipseClass getClass(String wiki, String className) throws XWikiEclipseStorageException
     {
         XWikiEclipseClass result = null;
@@ -953,22 +915,13 @@ public class DataManager
         return result;
     }
 
-    /**
-     * @param pageSummary
-     * @param newSpace
-     * @param newPageName
-     */
     public void renamePage(XWikiEclipsePageSummary pageSummary, String newSpace, String newPageName)
     {
         // TODO Auto-generated method stub
-
     }
 
-    /**
-     * @param pageId
-     * @return
-     */
     public boolean pageExists(String wiki, String space, String pageName, String language)
+        throws XWikiEclipseStorageException
     {
         if (isConnected()) {
             return remoteXWikiDataStorage.pageExists(wiki, space, pageName, language);
@@ -977,15 +930,6 @@ public class DataManager
         return localXWikiDataStorage.pageExists(wiki, space, pageName, language);
     }
 
-    /**
-     * @param wiki
-     * @param space
-     * @param name
-     * @param title
-     * @param language
-     * @param content
-     * @return
-     */
     public XWikiEclipsePage createPage(String wiki, String space, String name, String title, String language,
         String content) throws CoreException, XWikiEclipseStorageException
     {
