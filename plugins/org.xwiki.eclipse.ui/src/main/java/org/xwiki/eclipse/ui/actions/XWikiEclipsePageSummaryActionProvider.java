@@ -172,48 +172,56 @@ public class XWikiEclipsePageSummaryActionProvider extends CommonActionProvider
             if (selectedObject instanceof XWikiEclipsePageSummary) {
                 final XWikiEclipsePageSummary pageSummary = (XWikiEclipsePageSummary) selectedObject;
 
-                if (pageSummary.getTranslations() != null) {
-                    for (XWikiEclipsePageTranslationSummary translation : pageSummary.getTranslations()) {
-                        if (!translation.getLanguage().equals(translation.getDefaultLanguage())) {
-                            menuManager.add(new OpenPageTranslationAction(pageSummary, translation));
+                try {
+                    XWikiEclipsePageSummary updatedPageSummary =
+                        pageSummary.getDataManager().getPageSummary(pageSummary.getWiki(), pageSummary.getSpace(),
+                            pageSummary.getName(), null);
+
+                    if (updatedPageSummary.getTranslations() != null) {
+                        for (XWikiEclipsePageTranslationSummary translation : updatedPageSummary.getTranslations()) {
+                            if (!translation.getLanguage().equals(translation.getDefaultLanguage())) {
+                                menuManager.add(new OpenPageTranslationAction(updatedPageSummary, translation));
+                            }
                         }
                     }
+                } catch (XWikiEclipseStorageException e) {
+                    e.printStackTrace();
+                }
 
-                    /* TODO: Checkout the server side. This gives non-deterministic results */
-                    menuManager.add(new Separator());
+                /* TODO: Checkout the server side. This gives non-deterministic results */
+                menuManager.add(new Separator());
 
-                    menuManager.add(new Action("New translation...")
+                menuManager.add(new Action("New translation...")
+                {
+                    @Override
+                    public void run()
                     {
-                        @Override
-                        public void run()
-                        {
-                            InputDialog inputDialog =
-                                new InputDialog(Display.getDefault().getActiveShell(), "Translation", "Translation",
-                                    "", null);
-                            inputDialog.open();
+                        InputDialog inputDialog =
+                            new InputDialog(Display.getDefault().getActiveShell(), "Translation", "Translation", "",
+                                null);
+                        inputDialog.open();
 
-                            if (inputDialog.getReturnCode() == InputDialog.OK) {
-                                if (!inputDialog.getValue().equals("")) {
-                                    try {
-                                        XWikiEclipsePage page =
-                                            pageSummary.getDataManager().createPage(pageSummary.getWiki(),
-                                                pageSummary.getSpace(), pageSummary.getName(), pageSummary.getTitle(),
-                                                inputDialog.getValue(), "Write translation here");
-                                        PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
-                                            .openEditor(new PageEditorInput(page, false), PageEditor.ID);
-                                    } catch (XWikiEclipseStorageException e) {
-                                        e.printStackTrace();
-                                    } catch (PartInitException e) {
-                                        e.printStackTrace();
-                                    } catch (CoreException e) {
-                                        // TODO Auto-generated catch block
-                                        e.printStackTrace();
-                                    }
+                        if (inputDialog.getReturnCode() == InputDialog.OK) {
+                            if (!inputDialog.getValue().equals("")) {
+                                try {
+                                    XWikiEclipsePage page =
+                                        pageSummary.getDataManager().createPage(pageSummary.getWiki(),
+                                            pageSummary.getSpace(), pageSummary.getName(), pageSummary.getTitle(),
+                                            inputDialog.getValue(), "Write translation here");
+                                    PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+                                        .openEditor(new PageEditorInput(page, false), PageEditor.ID);
+                                } catch (XWikiEclipseStorageException e) {
+                                    e.printStackTrace();
+                                } catch (PartInitException e) {
+                                    e.printStackTrace();
+                                } catch (CoreException e) {
+                                    // TODO Auto-generated catch block
+                                    e.printStackTrace();
                                 }
                             }
                         }
-                    });
-                }
+                    }
+                });
             }
         }
 
