@@ -648,6 +648,18 @@ public class RestRemoteXWikiDataStorage implements IRemoteXWikiDataStorage
             pageSummary.setSpace(page.getSpace());
             pageSummary.setSyntax(page.getSyntax());
             pageSummary.setTitle(page.getTitle());
+            
+            String defaultLanguage = page.getTranslations().getDefault();
+            List<Translation> translations = page.getTranslations().getTranslations();
+            if (translations != null && translations.size() > 0) {
+                for (Translation translation : translations) {
+                    XWikiEclipsePageTranslationSummary t = new XWikiEclipsePageTranslationSummary(dataManager);
+                    t.setLanguage(translation.getLanguage());
+                    t.setDefaultLanguage(defaultLanguage);
+                    pageSummary.getTranslations().add(t);
+                }
+            }
+            
             pageSummary.setUrl(page.getXwikiAbsoluteUrl());
             pageSummary.setWiki(page.getWiki());
 
