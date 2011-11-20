@@ -35,6 +35,7 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
+import org.xwiki.eclipse.core.CoreLog;
 
 /**
  * @version $Id$
@@ -133,8 +134,7 @@ public class XWikiContentOutlinePage extends ContentOutlinePage implements IDocu
                         headings.add(new HeadingInfo(start, length, line));
                     }
                 } catch (BadLocationException e) {
-                    /* Should never happen */
-                    e.printStackTrace();
+                    CoreLog.logError("Error in content outline", e);
                 }
             }
 

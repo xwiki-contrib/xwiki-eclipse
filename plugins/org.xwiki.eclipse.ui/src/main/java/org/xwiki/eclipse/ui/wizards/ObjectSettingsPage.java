@@ -48,6 +48,7 @@ import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.eclipse.ui.progress.DeferredTreeContentManager;
 import org.eclipse.ui.progress.IDeferredWorkbenchAdapter;
 import org.eclipse.ui.progress.IElementCollector;
+import org.xwiki.eclipse.core.CoreLog;
 import org.xwiki.eclipse.model.XWikiEclipseClass;
 import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
 import org.xwiki.eclipse.storage.XWikiEclipseStorageException;
@@ -337,16 +338,16 @@ public class ObjectSettingsPage extends WizardPage
         {
             DeferredTreeItem item = (DeferredTreeItem) object;
 
-            //FIXME: REFACTORING: What this code is for?!?
+            // FIXME: REFACTORING: What this code is for?!?
             if (item.getName().equals("All Classes")) {
                 List<XWikiEclipseClass> clazzs = new ArrayList<XWikiEclipseClass>();
-                
+
                 try {
                     clazzs = pageSummary.getDataManager().getClasses(pageSummary.getWiki());
-                } catch (XWikiEclipseStorageException e) {               
-                    e.printStackTrace();
+                } catch (XWikiEclipseStorageException e) {
+                    CoreLog.logError("Error getting classes in object settings page", e);
                 }
-                
+
                 for (XWikiEclipseClass c : clazzs) {
                     String id = c.getId();
 

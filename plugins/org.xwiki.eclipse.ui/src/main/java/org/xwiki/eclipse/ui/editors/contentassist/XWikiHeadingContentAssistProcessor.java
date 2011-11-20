@@ -32,6 +32,7 @@ import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.jface.text.contentassist.IContextInformationValidator;
+import org.xwiki.eclipse.core.CoreLog;
 
 /**
  * @version $Id$
@@ -57,8 +58,7 @@ public class XWikiHeadingContentAssistProcessor implements IContentAssistProcess
                     null, null));
             }
         } catch (BadLocationException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            CoreLog.logError("Content assist error", e);
         }
 
         if (result.size() > 0) {

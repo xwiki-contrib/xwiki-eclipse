@@ -30,6 +30,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.model.BaseWorkbenchContentProvider;
 import org.eclipse.ui.progress.DeferredTreeContentManager;
+import org.xwiki.eclipse.core.CoreLog;
 import org.xwiki.eclipse.core.notification.CoreEvent;
 import org.xwiki.eclipse.core.notification.ICoreEventListener;
 import org.xwiki.eclipse.core.notification.NotificationManager;
@@ -233,8 +234,7 @@ public class NavigatorContentProvider extends BaseWorkbenchContentProvider imple
                             viewer.setExpandedState(pageSummary, true);
                             viewer.refresh(pageSummary);
                         } catch (XWikiEclipseStorageException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
+                            CoreLog.logError("Error getting page summary in navigator content provider", e);
                         }
 
                     }
@@ -288,10 +288,8 @@ public class NavigatorContentProvider extends BaseWorkbenchContentProvider imple
                                     parser.getPage(), "");
                             viewer.setExpandedState(pageSummary, true);
                             viewer.refresh(pageSummary);
-
                         } catch (XWikiEclipseStorageException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
+                            CoreLog.logError("Error getting page summary in navigator content provider", e);
                         }
 
                     }
@@ -316,7 +314,6 @@ public class NavigatorContentProvider extends BaseWorkbenchContentProvider imple
                 {
                     public void run()
                     {
-
                         try {
                             XWikiEclipseComment comment = (XWikiEclipseComment) event.getData();
                             String pageId = comment.getPageId();
@@ -327,12 +324,10 @@ public class NavigatorContentProvider extends BaseWorkbenchContentProvider imple
                                     parser.getPage(), "");
 
                             viewer.setExpandedState(pageSummary, true);
-
                             viewer.refresh(pageSummary, true);
 
                         } catch (XWikiEclipseStorageException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
+                            CoreLog.logError("Error getting page summary in navigator content provider", e);
                         }
 
                     }

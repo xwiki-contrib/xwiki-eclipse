@@ -34,6 +34,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.eclipse.jface.text.templates.Template;
+import org.xwiki.eclipse.core.CoreLog;
 import org.xwiki.eclipse.ui.UIPlugin;
 import org.xwiki.eclipse.ui.editors.Constants;
 import org.xwiki.eclipse.ui.editors.XWikiApiType;
@@ -116,12 +117,8 @@ public class XWikiApiTemplateManager
             }
 
             reader.close();
-        } catch (FileNotFoundException e) {
-            System.err.println("Error: " + e.getMessage());
-            e.printStackTrace();
-        } catch (IOException e) {
-            System.err.println("Error: " + e.getMessage());
-            e.printStackTrace();
+        } catch (Exception e) {
+            CoreLog.logError(String.format("Error loading template %s", entryPath), e);
         }
 
         Template[] result = apiList.toArray(new Template[apiList.size()]);

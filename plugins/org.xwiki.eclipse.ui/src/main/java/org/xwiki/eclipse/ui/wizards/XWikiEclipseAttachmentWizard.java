@@ -57,6 +57,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
+import org.xwiki.eclipse.core.CoreLog;
 import org.xwiki.eclipse.core.notification.CoreEvent;
 import org.xwiki.eclipse.core.notification.NotificationManager;
 import org.xwiki.eclipse.model.XWikiEclipseAttachment;
@@ -143,8 +144,7 @@ public class XWikiEclipseAttachmentWizard extends Wizard implements INewWizard
                             pageAttachmentsMap.get(pageSummary).add(attachment);
                         }
                     } catch (XWikiEclipseStorageException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
+                        CoreLog.logError("Error creating attachment wizard", e);
                     }
                 }
             }
@@ -207,9 +207,9 @@ public class XWikiEclipseAttachmentWizard extends Wizard implements INewWizard
 
                             Thread.sleep(2000);
                         } catch (InterruptedException e) {
-                            e.printStackTrace();
+                            // Do nothing
                         } catch (XWikiEclipseStorageException e) {
-                            e.printStackTrace();
+                            CoreLog.logError(String.format("Error downloading attachment %s", attachment.getName()), e);
                         }
                     }
 

@@ -33,6 +33,7 @@ import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 import org.eclipse.ui.application.ActionBarAdvisor;
 import org.eclipse.ui.application.IActionBarConfigurer;
 import org.eclipse.ui.views.IViewDescriptor;
+import org.xwiki.eclipse.core.CoreLog;
 
 /**
  * @version $Id$
@@ -67,7 +68,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
             try {
                 window.getActivePage().showView(viewDescriptor.getId());
             } catch (PartInitException e) {
-                e.printStackTrace();
+                CoreLog.logError(String.format("Unable to activate view %s", viewDescriptor.getId()), e);
             }
         }
 

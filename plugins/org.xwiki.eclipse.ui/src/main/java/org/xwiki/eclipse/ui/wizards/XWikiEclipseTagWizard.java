@@ -51,6 +51,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
+import org.xwiki.eclipse.core.CoreLog;
 import org.xwiki.eclipse.core.notification.CoreEvent;
 import org.xwiki.eclipse.core.notification.NotificationManager;
 import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
@@ -92,8 +93,7 @@ public class XWikiEclipseTagWizard extends Wizard implements INewWizard
         try {
             tagsInWiki = pageSummary.getDataManager().getAllTagsInWiki(pageSummary.getWiki());
         } catch (XWikiEclipseStorageException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            CoreLog.logError("Error getting all tags for tag wizard", e);
         }
 
         if (tagsProposals == null) {
@@ -173,11 +173,11 @@ public class XWikiEclipseTagWizard extends Wizard implements INewWizard
                         });
 
                         monitor.worked(1);
+
                         try {
                             Thread.sleep(2000);
                         } catch (InterruptedException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
+                            // Do nothing
                         }
 
                     }

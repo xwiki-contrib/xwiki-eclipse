@@ -32,6 +32,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.handlers.HandlerUtil;
+import org.xwiki.eclipse.core.CoreLog;
 import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
 import org.xwiki.eclipse.model.XWikiEclipseSpaceSummary;
 import org.xwiki.eclipse.ui.utils.UIUtils;
@@ -84,7 +85,7 @@ public class GrabSpaceHandler extends AbstractHandler
                         }
                     }
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    CoreLog.logError("Error in grabbing space", e);
                 }
 
                 monitor.done();

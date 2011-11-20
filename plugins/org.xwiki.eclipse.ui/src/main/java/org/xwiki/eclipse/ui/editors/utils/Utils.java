@@ -22,6 +22,7 @@ package org.xwiki.eclipse.ui.editors.utils;
 
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
+import org.xwiki.eclipse.core.CoreLog;
 
 /**
  * @version $Id$
@@ -67,7 +68,7 @@ public class Utils
                 currentOffset--;
             }
         } catch (BadLocationException e) {
-            e.printStackTrace();
+            CoreLog.logError("Error getting prefix", e);
         }
 
         return result;

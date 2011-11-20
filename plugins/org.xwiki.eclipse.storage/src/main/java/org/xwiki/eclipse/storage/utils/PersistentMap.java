@@ -28,6 +28,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.xwiki.eclipse.core.CoreLog;
 import org.xwiki.eclipse.storage.StoragePlugin;
 
 import com.google.gson.reflect.TypeToken;
@@ -59,8 +60,8 @@ public class PersistentMap
                 {
                 }.getType());
             } catch (Exception e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                throw new CoreException(new Status(IStatus.ERROR, StoragePlugin.PLUGIN_ID,
+                    "Unable to initialize persistent map", e));
             }
         } else {
             map = new HashMap<String, String>();
@@ -68,13 +69,13 @@ public class PersistentMap
         }
     }
 
-    public void put(String key, String value)
+    public void put(String key, String value) throws CoreException
     {
         map.put(key, value);
         synchronize();
     }
 
-    public void remove(String key)
+    public void remove(String key) throws CoreException
     {
         if (!map.containsKey(key)) {
             return;
@@ -94,16 +95,8 @@ public class PersistentMap
         return map.keySet();
     }
 
-    private synchronized void synchronize()
-    {
-        try {
-            StorageUtils.writeToJson(file, map);
-        } catch (CoreException e) {
-            e.printStackTrace();
-            IStatus status =
-                new Status(IStatus.ERROR, StoragePlugin.PLUGIN_ID, IStatus.OK, "Unable to synchronize persistent map",
-                    e);
-            StoragePlugin.getDefault().getLog().log(status);
-        }
+    private synchronized void synchronize() throws CoreException
+    {       
+            StorageUtils.writeToJson(file, map);      
     }
 }

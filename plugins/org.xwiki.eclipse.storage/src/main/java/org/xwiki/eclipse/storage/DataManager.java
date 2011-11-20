@@ -1122,7 +1122,12 @@ public class DataManager
             localXWikiDataStorage.storeObject(o);
 
             String objectId = IdProcessor.getExtendedObjectId(o.getPageId(), o.getClassName(), o.getNumber());
-            objectToStatusMap.put(objectId, DIRTY_STATUS);
+
+            try {
+                objectToStatusMap.put(objectId, DIRTY_STATUS);
+            } catch (CoreException e) {
+                throw new XWikiEclipseStorageException(e);
+            }
 
             /* store wiki, space and page */
             IdProcessor parser = new IdProcessor(o.getPageId());
@@ -1181,7 +1186,11 @@ public class DataManager
 
             object = remoteXWikiDataStorage.storeObject(object);
             localXWikiDataStorage.storeObject(object);
-            objectToStatusMap.remove(objectId);
+            try {
+                objectToStatusMap.remove(objectId);
+            } catch (CoreException e) {
+                throw new XWikiEclipseStorageException(e);
+            }
 
             /* Cleanup */
             String previousObjectId =
@@ -1190,12 +1199,20 @@ public class DataManager
             IdProcessor parser = new IdProcessor(previousObject.getPageId());
             localXWikiDataStorage.removeObject(parser.getWiki(), parser.getSpace(), parser.getPage(),
                 previousObject.getClassName(), previousObject.getNumber());
-            objectToStatusMap.remove(previousObjectId);
+            try {
+                objectToStatusMap.remove(previousObjectId);
+            } catch (CoreException e) {
+                throw new XWikiEclipseStorageException(e);
+            }
         } else {
             object = remoteXWikiDataStorage.storeObject(object);
             localXWikiDataStorage.storeObject(object);
 
-            objectToStatusMap.remove(objectId);
+            try {
+                objectToStatusMap.remove(objectId);
+            } catch (CoreException e) {
+                throw new XWikiEclipseStorageException(e);
+            }
         }
 
         return object;

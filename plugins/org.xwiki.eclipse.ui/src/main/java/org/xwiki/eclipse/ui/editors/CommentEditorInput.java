@@ -26,6 +26,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;
+import org.xwiki.eclipse.core.CoreLog;
 import org.xwiki.eclipse.model.XWikiEclipseComment;
 import org.xwiki.eclipse.ui.UIConstants;
 
@@ -139,8 +140,7 @@ public class CommentEditorInput implements IEditorInput
 
             }
         } catch (NotDefinedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            CoreLog.logError("Error in comment editor", e);
         }
 
         return name;
@@ -152,8 +152,7 @@ public class CommentEditorInput implements IEditorInput
             try {
                 return command.getName();
             } catch (NotDefinedException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                CoreLog.logError("Error in comment editor", e);
             }
         }
 

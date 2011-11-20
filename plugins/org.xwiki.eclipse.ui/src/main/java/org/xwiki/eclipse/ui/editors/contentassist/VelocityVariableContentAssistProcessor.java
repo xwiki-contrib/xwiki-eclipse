@@ -37,6 +37,7 @@ import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.jface.text.contentassist.IContextInformationValidator;
+import org.xwiki.eclipse.core.CoreLog;
 import org.xwiki.eclipse.ui.editors.PageEditor;
 import org.xwiki.eclipse.ui.editors.XWikiApiType;
 import org.xwiki.eclipse.ui.editors.utils.Utils;
@@ -116,8 +117,7 @@ public class VelocityVariableContentAssistProcessor implements IContentAssistPro
                 variables.add(m.group(1));
             }
         } catch (BadLocationException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            CoreLog.logError("Content assist error", e);
         }
 
         return variables;

@@ -26,6 +26,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.dialogs.PropertyPage;
+import org.xwiki.eclipse.core.CoreLog;
 import org.xwiki.eclipse.model.XWikiEclipseComment;
 import org.xwiki.eclipse.model.XWikiEclipsePage;
 import org.xwiki.eclipse.storage.XWikiEclipseStorageException;
@@ -54,9 +55,8 @@ public class XWikiEclipseCommentPropertiesPage extends PropertyPage
             String pageId = comment.getPageId();
             IdProcessor parser = new IdProcessor(pageId);
             page = comment.getDataManager().getPage(parser.getWiki(), parser.getSpace(), parser.getPage(), "");
-        } catch (XWikiEclipseStorageException e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
+        } catch (XWikiEclipseStorageException e) {
+            CoreLog.logError("Error creating comment properties page", e);
         }
 
         Label property = new Label(composite, SWT.NONE);

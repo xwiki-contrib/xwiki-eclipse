@@ -28,6 +28,7 @@ import org.eclipse.jface.text.DocumentCommand;
 import org.eclipse.jface.text.IAutoEditStrategy;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
+import org.xwiki.eclipse.core.CoreLog;
 import org.xwiki.eclipse.ui.editors.Constants;
 
 /**
@@ -148,7 +149,7 @@ public class XWikiMarkupAutoEditStrategy implements IAutoEditStrategy
                 startOffset--;
             }
         } catch (BadLocationException e) {
-            e.printStackTrace();
+            CoreLog.logError("Edit strategy exception", e);
         }
 
         return null;

@@ -13,7 +13,10 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Status;
+import org.xwiki.eclipse.core.CoreLog;
 import org.xwiki.eclipse.model.XWikiEclipseClass;
 import org.xwiki.eclipse.model.XWikiEclipseObject;
 import org.xwiki.eclipse.model.XWikiEclipseObjectSummary;
@@ -149,8 +152,7 @@ public class LocalXWikiDataStorage
                                 XWikiEclipseWikiSummary.class.getCanonicalName());
                         result.add(wikiSummary);
                     } catch (Exception e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
+                        throw new XWikiEclipseStorageException(e);
                     }
 
                 }
@@ -203,21 +205,16 @@ public class LocalXWikiDataStorage
                 if (spaceFolderResource instanceof IFile) {
                     IFile wikiFile = (IFile) spaceFolderResource;
                     XWikiEclipseSpaceSummary spaceSummary;
-                    try {
-                        spaceSummary =
-                            (XWikiEclipseSpaceSummary) StorageUtils.readFromJSON(wikiFile,
-                                XWikiEclipseSpaceSummary.class.getCanonicalName());
-                        if (spaceSummary.getWiki().equals(wikiId)) {
-                            result.add(spaceSummary);
-                        }
-                    } catch (Exception e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
 
+                    spaceSummary =
+                        (XWikiEclipseSpaceSummary) StorageUtils.readFromJSON(wikiFile,
+                            XWikiEclipseSpaceSummary.class.getCanonicalName());
+                    if (spaceSummary.getWiki().equals(wikiId)) {
+                        result.add(spaceSummary);
+                    }
                 }
             }
-        } catch (CoreException e) {
+        } catch (Exception e) {
             throw new XWikiEclipseStorageException(e);
         }
 
@@ -571,22 +568,17 @@ public class LocalXWikiDataStorage
                     IFile file = (IFile) pageFolderResource;
                     if (file.getFileExtension().equals(PAGE_SUMMARY_FILE_EXTENSION)) {
                         IFile pageSummaryFile = (IFile) pageFolderResource;
-                        XWikiEclipsePageSummary pageSummary;
-                        try {
-                            pageSummary =
-                                (XWikiEclipsePageSummary) StorageUtils.readFromJSON(pageSummaryFile,
-                                    XWikiEclipsePageSummary.class.getCanonicalName());
-                            if (pageSummary.getWiki().equals(wiki) && pageSummary.getSpace().equals(space)) {
-                                result.add(pageSummary);
-                            }
-                        } catch (Exception e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
+                        XWikiEclipsePageSummary pageSummary =
+                            (XWikiEclipsePageSummary) StorageUtils.readFromJSON(pageSummaryFile,
+                                XWikiEclipsePageSummary.class.getCanonicalName());
+                        if (pageSummary.getWiki().equals(wiki) && pageSummary.getSpace().equals(space)) {
+                            result.add(pageSummary);
                         }
+
                     }
                 }
             }
-        } catch (CoreException e) {
+        } catch (Exception e) {
             throw new XWikiEclipseStorageException(e);
         }
 
@@ -652,8 +644,8 @@ public class LocalXWikiDataStorage
                     }
 
                 } catch (Exception e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    throw new CoreException(new Status(IStatus.ERROR, StoragePlugin.PLUGIN_ID, String.format(
+                        "Error removing %s page from local storage", pageId), e));
                 }
 
             }

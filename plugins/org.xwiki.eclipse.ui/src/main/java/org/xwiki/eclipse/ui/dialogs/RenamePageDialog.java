@@ -49,6 +49,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.xwiki.eclipse.core.CoreLog;
 import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
 import org.xwiki.eclipse.model.XWikiEclipseSpaceSummary;
 import org.xwiki.eclipse.model.XWikiEclipseWikiSummary;
@@ -139,10 +140,9 @@ public class RenamePageDialog extends TitleAreaDialog
         List<XWikiEclipseWikiSummary> wikis = new ArrayList<XWikiEclipseWikiSummary>();
         try {
             wikis = pageSummary.getDataManager().getWikis();
-        } catch (XWikiEclipseStorageException e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
-        }
+        } catch (XWikiEclipseStorageException e) {
+            CoreLog.logError(String.format("Error getting wikis in rename page dialog"), e);
+        }        
         final String[] items = new String[wikis.size()];
         for (int i = 0; i < items.length; i++) {
             String wiki = wikis.get(i).getName();
@@ -163,11 +163,9 @@ public class RenamePageDialog extends TitleAreaDialog
 
         combo.addSelectionListener(new SelectionListener()
         {
-
             @Override
             public void widgetSelected(SelectionEvent e)
             {
-                // TODO Auto-generated method stub
                 newWiki = items[((Combo) e.getSource()).getSelectionIndex()];
             }
 
@@ -175,7 +173,6 @@ public class RenamePageDialog extends TitleAreaDialog
             public void widgetDefaultSelected(SelectionEvent e)
             {
                 // TODO Auto-generated method stub
-
             }
         });
 

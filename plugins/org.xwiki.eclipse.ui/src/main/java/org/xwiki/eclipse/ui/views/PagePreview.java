@@ -29,6 +29,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.browser.IWebBrowser;
 import org.eclipse.ui.browser.IWorkbenchBrowserSupport;
 import org.eclipse.ui.part.ViewPart;
+import org.xwiki.eclipse.core.CoreLog;
 import org.xwiki.eclipse.core.notification.CoreEvent;
 import org.xwiki.eclipse.core.notification.ICoreEventListener;
 import org.xwiki.eclipse.core.notification.NotificationManager;
@@ -232,7 +233,7 @@ public class PagePreview extends ViewPart implements ISelectionListener, ICoreEv
                         objectSummary.getPageName(), "");
                 update(pageSummary != null ? pageSummary.getUrl() : null, objectSummary.getDataManager().isConnected());
             } catch (XWikiEclipseStorageException e) {
-                e.printStackTrace();
+                CoreLog.logError("Getting page summary for page preview", e);
             }
 
         }

@@ -36,6 +36,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.browser.IWebBrowser;
 import org.eclipse.ui.browser.IWorkbenchBrowserSupport;
 import org.eclipse.ui.dialogs.PropertyPage;
+import org.xwiki.eclipse.core.CoreLog;
 import org.xwiki.eclipse.model.XWikiEclipseAttachment;
 import org.xwiki.eclipse.model.XWikiEclipsePage;
 import org.xwiki.eclipse.storage.XWikiEclipseStorageException;
@@ -65,9 +66,8 @@ public class XWikiEclipseAttachmentPropertiesPage extends PropertyPage
             String pageId = attachment.getPageId();
             IdProcessor parser = new IdProcessor(pageId);
             page = attachment.getDataManager().getPage(parser.getWiki(), parser.getSpace(), parser.getPage(), "");
-        } catch (XWikiEclipseStorageException e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
+        } catch (XWikiEclipseStorageException e) {
+            CoreLog.logError("Error opening attachment properties", e);
         }
 
         Label property = new Label(composite, SWT.NONE);

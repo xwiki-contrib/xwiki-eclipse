@@ -75,15 +75,18 @@ public class RestRemoteXWikiDataStorage implements IRemoteXWikiDataStorage
     private String endpoint;
 
     private String username;
-    
+
     public RestRemoteXWikiDataStorage(DataManager dataManager, String endpoint, String userName, String password)
         throws XWikiEclipseStorageException
     {
-        this.username = userName;
-        this.dataManager = dataManager;
-        this.restClient = new XWikiRestClient(endpoint, userName, password);
-        this.endpoint = endpoint;
         try {
+            this.username = userName;
+            this.dataManager = dataManager;
+
+            this.restClient = new XWikiRestClient(endpoint, userName, password);
+            this.endpoint = endpoint;
+            
+            //FIXME: REFACTORING: Is this needed?
             XWikiEclipseServerInfo serverInfo = getServerInfo();
         } catch (Exception e) {
             throw new XWikiEclipseStorageException(e);
@@ -457,8 +460,7 @@ public class RestRemoteXWikiDataStorage implements IRemoteXWikiDataStorage
         try {
             List<XWikiEclipseObjectProperty> result = new ArrayList<XWikiEclipseObjectProperty>();
 
-            List<Property> properties =
-                this.restClient.getObjectProperties(wiki, space, pageName, className, number);
+            List<Property> properties = this.restClient.getObjectProperties(wiki, space, pageName, className, number);
             if (properties != null) {
 
                 for (Property property : properties) {
@@ -549,8 +551,7 @@ public class RestRemoteXWikiDataStorage implements IRemoteXWikiDataStorage
         try {
             XWikiEclipseObject result = new XWikiEclipseObject(dataManager);
 
-            org.xwiki.rest.model.jaxb.Object object =
-                restClient.getObject(wiki, space, pageName, className, number);
+            org.xwiki.rest.model.jaxb.Object object = restClient.getObject(wiki, space, pageName, className, number);
             result.setName(object.getId());
             result.setClassName(object.getClassName());
             result.setId(object.getId());
@@ -598,8 +599,7 @@ public class RestRemoteXWikiDataStorage implements IRemoteXWikiDataStorage
             comment.setText(c.getText());
 
             IdProcessor parser = new IdProcessor(c.getPageId());
-            Comment stored =
-                restClient.storeComment(parser.getWiki(), parser.getSpace(), parser.getPage(), comment);
+            Comment stored = restClient.storeComment(parser.getWiki(), parser.getSpace(), parser.getPage(), comment);
 
             XWikiEclipseComment result = new XWikiEclipseComment(dataManager);
             result.setAuthor(stored.getAuthor());
@@ -648,7 +648,7 @@ public class RestRemoteXWikiDataStorage implements IRemoteXWikiDataStorage
             pageSummary.setSpace(page.getSpace());
             pageSummary.setSyntax(page.getSyntax());
             pageSummary.setTitle(page.getTitle());
-            
+
             String defaultLanguage = page.getTranslations().getDefault();
             List<Translation> translations = page.getTranslations().getTranslations();
             if (translations != null && translations.size() > 0) {
@@ -659,7 +659,7 @@ public class RestRemoteXWikiDataStorage implements IRemoteXWikiDataStorage
                     pageSummary.getTranslations().add(t);
                 }
             }
-            
+
             pageSummary.setUrl(page.getXwikiAbsoluteUrl());
             pageSummary.setWiki(page.getWiki());
 
@@ -847,8 +847,8 @@ public class RestRemoteXWikiDataStorage implements IRemoteXWikiDataStorage
         if (o instanceof XWikiEclipseObjectSummary) {
             XWikiEclipseObjectSummary objectSummary = (XWikiEclipseObjectSummary) o;
             try {
-                restClient.removeObject(objectSummary.getWiki(), objectSummary.getSpace(),
-                    objectSummary.getPageName(), objectSummary.getClassName(), objectSummary.getNumber());
+                restClient.removeObject(objectSummary.getWiki(), objectSummary.getSpace(), objectSummary.getPageName(),
+                    objectSummary.getClassName(), objectSummary.getNumber());
             } catch (Exception e) {
                 throw new XWikiEclipseStorageException(e);
             }
@@ -895,11 +895,9 @@ public class RestRemoteXWikiDataStorage implements IRemoteXWikiDataStorage
             XWikiEclipseAttachment attachment = (XWikiEclipseAttachment) o;
             IdProcessor parser = new IdProcessor(attachment.getPageId());
             try {
-                restClient.removeAttachment(parser.getWiki(), parser.getSpace(), parser.getPage(),
-                    attachment.getName());
+                restClient
+                    .removeAttachment(parser.getWiki(), parser.getSpace(), parser.getPage(), attachment.getName());
             } catch (Exception e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
                 throw new XWikiEclipseStorageException(e);
             }
         }
@@ -1096,8 +1094,7 @@ public class RestRemoteXWikiDataStorage implements IRemoteXWikiDataStorage
             sourcePageToBeCopied.setWiki(sourcePage.getWiki());
 
             Page page =
-                restClient.copyPage(sourcePageToBeCopied, newWiki, newSpace, newPageName,
-                    sourcePage.getLanguage());
+                restClient.copyPage(sourcePageToBeCopied, newWiki, newSpace, newPageName, sourcePage.getLanguage());
 
             XWikiEclipsePage result = new XWikiEclipsePage(dataManager);
             result.setContent(page.getContent());

@@ -33,6 +33,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.HandlerUtil;
+import org.xwiki.eclipse.core.CoreLog;
 import org.xwiki.eclipse.model.XWikiEclipseComment;
 import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
 import org.xwiki.eclipse.ui.editors.CommentEditor;
@@ -64,17 +65,13 @@ public class NewCommentHandler extends AbstractHandler
 
                     PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
                         .openEditor(new CommentEditorInput(comment, command), CommentEditor.ID);
-                } catch (PartInitException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                } catch (CoreException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                } catch (Exception e) {
+                    CoreLog.logError("Error in new comment", e);
                 }
             }
 
             if (selectedObject instanceof XWikiEclipseComment) {
-                XWikiEclipseComment comment = (XWikiEclipseComment) selectedObject;               
+                XWikiEclipseComment comment = (XWikiEclipseComment) selectedObject;
 
                 try {
                     XWikiEclipseComment replyToComment = new XWikiEclipseComment(comment.getDataManager());
@@ -89,14 +86,9 @@ public class NewCommentHandler extends AbstractHandler
 
                     PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
                         .openEditor(new CommentEditorInput(replyToComment, command), CommentEditor.ID);
-                } catch (PartInitException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                } catch (CoreException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                } catch (Exception e) {
+                    CoreLog.logError("Error new comment", e);
                 }
-
             }
         }
 

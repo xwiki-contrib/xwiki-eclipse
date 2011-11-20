@@ -34,6 +34,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.DateTime;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
+import org.xwiki.eclipse.core.CoreLog;
 import org.xwiki.eclipse.model.XWikiEclipseObjectProperty;
 
 /**
@@ -132,8 +133,7 @@ public class DatePropertyEditor extends BasePropertyEditor
             time.setMinutes(calendar.get(Calendar.MINUTE));
             time.setSeconds(calendar.get(Calendar.SECOND));
         } catch (ParseException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            CoreLog.logError("Date parsing error", e);
         }
     }
 }

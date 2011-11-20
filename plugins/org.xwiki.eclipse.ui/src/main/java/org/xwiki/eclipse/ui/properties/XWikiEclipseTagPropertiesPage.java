@@ -37,6 +37,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.browser.IWebBrowser;
 import org.eclipse.ui.browser.IWorkbenchBrowserSupport;
 import org.eclipse.ui.dialogs.PropertyPage;
+import org.xwiki.eclipse.core.CoreLog;
 import org.xwiki.eclipse.model.XWikiEclipseTag;
 
 /**
@@ -97,9 +98,8 @@ public class XWikiEclipseTagPropertiesPage extends PropertyPage
                     });
                 }
             });
-        } catch (CoreException e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
+        } catch (CoreException e) {
+            CoreLog.logError("Error creating tag properties page", e);
         }
 
         return composite;

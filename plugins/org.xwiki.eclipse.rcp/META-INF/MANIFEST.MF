@@ -11,7 +11,8 @@ Require-Bundle: org.eclipse.ui;bundle-version="3.6.2",
  org.eclipse.ui.navigator.resources;bundle-version="3.4.202",
  org.eclipse.ui.views;bundle-version="3.5.1",
  org.eclipse.ui.views.log;bundle-version="1.0.100",
- org.xwiki.eclipse.ui;bundle-version="2.0.0"
+ org.xwiki.eclipse.ui;bundle-version="2.0.0",
+ org.xwiki.eclipse.core;bundle-version="2.0.0"
 Bundle-Vendor: XWiki
 Export-Package: org.xwiki.eclipse.rcp
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

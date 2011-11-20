@@ -41,6 +41,7 @@ import org.eclipse.ui.navigator.CommonActionProvider;
 import org.eclipse.ui.navigator.ICommonActionConstants;
 import org.eclipse.ui.navigator.ICommonActionExtensionSite;
 import org.eclipse.ui.navigator.ICommonMenuConstants;
+import org.xwiki.eclipse.core.CoreLog;
 import org.xwiki.eclipse.model.XWikiEclipsePage;
 import org.xwiki.eclipse.model.XWikiEclipsePageHistorySummary;
 import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
@@ -152,8 +153,7 @@ public class XWikiEclipsePageSummaryActionProvider extends CommonActionProvider
                         menuManager.add(new OpenPageHistoryItemAction(pageHistorySummary));
                     }
                 } catch (XWikiEclipseStorageException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    CoreLog.logError("Unable to build history menu", e);
                 }
             }
         }
@@ -185,7 +185,7 @@ public class XWikiEclipsePageSummaryActionProvider extends CommonActionProvider
                         }
                     }
                 } catch (XWikiEclipseStorageException e) {
-                    e.printStackTrace();
+                    CoreLog.logError("Unable to build translations menu", e);
                 }
 
                 /* TODO: Checkout the server side. This gives non-deterministic results */
@@ -210,13 +210,8 @@ public class XWikiEclipsePageSummaryActionProvider extends CommonActionProvider
                                             inputDialog.getValue(), "Write translation here");
                                     PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
                                         .openEditor(new PageEditorInput(page, false), PageEditor.ID);
-                                } catch (XWikiEclipseStorageException e) {
-                                    e.printStackTrace();
-                                } catch (PartInitException e) {
-                                    e.printStackTrace();
-                                } catch (CoreException e) {
-                                    // TODO Auto-generated catch block
-                                    e.printStackTrace();
+                                } catch (Exception e) {
+                                    CoreLog.logError(String.format("Error running action %s", getId()), e);
                                 }
                             }
                         }

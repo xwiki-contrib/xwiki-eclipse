@@ -45,6 +45,7 @@ import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.xwiki.eclipse.core.CoreLog;
 import org.xwiki.rest.model.jaxb.Attachment;
 import org.xwiki.rest.model.jaxb.Attachments;
 import org.xwiki.rest.model.jaxb.Class;
@@ -88,21 +89,16 @@ public class XWikiRestClient
 
     private String password;
 
-    public XWikiRestClient(String serverURLAsString, String username, String password)
+    public XWikiRestClient(String serverURLAsString, String username, String password) throws Exception
     {
-        try {
-            this.serverURI = new URI(serverURLAsString);
-            this.username = username;
-            this.password = password;
 
-            JAXBContext context = JAXBContext.newInstance("org.xwiki.rest.model.jaxb");
-            marshaller = context.createMarshaller();
-            unmarshaller = context.createUnmarshaller();
-        } catch (JAXBException e) {
-            e.printStackTrace();
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
+        this.serverURI = new URI(serverURLAsString);
+        this.username = username;
+        this.password = password;
+
+        JAXBContext context = JAXBContext.newInstance("org.xwiki.rest.model.jaxb");
+        marshaller = context.createMarshaller();
+        unmarshaller = context.createUnmarshaller();
 
         objectFactory = new ObjectFactory();
     }
@@ -404,7 +400,7 @@ public class XWikiRestClient
                 fos.close();
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            CoreLog.logError(String.format("Error in download %s to %s/%s", absoluteURI, dir, name), e);
         }
 
     }
@@ -534,7 +530,7 @@ public class XWikiRestClient
 
     public Object storeObject(Object o) throws Exception
     {
-        //FIXME: REFACTORING: Check conditions
+        // FIXME: REFACTORING: Check conditions
         if (o.getNumber() == -1) {
             URI objectURI =
                 new URI(String.format("%s/wikis/%s/spaces/%s/pages/%s/objects", serverURI, o.getWiki(), o.getSpace(),
@@ -573,7 +569,8 @@ public class XWikiRestClient
         executePutXml(tagsURI, tagsElement);
     }
 
-    public Page renamePage(Page sourcePageToBeCopied, String wiki, String space, String page, String language) throws Exception
+    public Page renamePage(Page sourcePageToBeCopied, String wiki, String space, String page, String language)
+        throws Exception
     {
         URI pageURI;
 
@@ -584,16 +581,18 @@ public class XWikiRestClient
                 new URI(String.format("%s/wikis/%s/spaces/%s/pages/%s/translations/%s", serverURI, wiki, space, page,
                     language));
         }
-                
+
         HttpResponse response = executePutXml(pageURI, sourcePageToBeCopied);
         Page result = (Page) unmarshaller.unmarshal(response.getEntity().getContent());
-        
-        removePage(sourcePageToBeCopied.getWiki(), sourcePageToBeCopied.getSpace(), sourcePageToBeCopied.getName(), sourcePageToBeCopied.getLanguage());
+
+        removePage(sourcePageToBeCopied.getWiki(), sourcePageToBeCopied.getSpace(), sourcePageToBeCopied.getName(),
+            sourcePageToBeCopied.getLanguage());
 
         return result;
     }
-    
-    public Page copyPage(Page sourcePageToBeCopied, String wiki, String space, String page, String language) throws Exception
+
+    public Page copyPage(Page sourcePageToBeCopied, String wiki, String space, String page, String language)
+        throws Exception
     {
         URI pageURI;
 
@@ -604,10 +603,10 @@ public class XWikiRestClient
                 new URI(String.format("%s/wikis/%s/spaces/%s/pages/%s/translations/%s", serverURI, wiki, space, page,
                     language));
         }
-                
+
         HttpResponse response = executePutXml(pageURI, sourcePageToBeCopied);
         Page result = (Page) unmarshaller.unmarshal(response.getEntity().getContent());
-        
+
         return result;
     }
 

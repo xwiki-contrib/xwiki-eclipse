@@ -39,6 +39,7 @@ import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.wizards.newresource.BasicNewProjectResourceWizard;
+import org.xwiki.eclipse.core.CoreLog;
 import org.xwiki.eclipse.core.XWikiEclipseNature;
 import org.xwiki.eclipse.storage.DataManager;
 import org.xwiki.eclipse.storage.rest.XWikiRestClient;
@@ -126,7 +127,7 @@ public class NewConnectionWizard extends Wizard implements INewWizard, IExecutab
                 }
             });
         } catch (Exception e) {
-            e.printStackTrace();
+            CoreLog.logError("Setting up the connection", e);
             currentPage.setErrorMessage(String.format(
                 "Error connecting to remote XWiki: '%s'. Please check your settings.", e.getMessage()));
             return false;
