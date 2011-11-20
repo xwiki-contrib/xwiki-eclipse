@@ -98,7 +98,6 @@ public class XWikiRestClient
             JAXBContext context = JAXBContext.newInstance("org.xwiki.rest.model.jaxb");
             marshaller = context.createMarshaller();
             unmarshaller = context.createUnmarshaller();
-
         } catch (JAXBException e) {
             e.printStackTrace();
         } catch (URISyntaxException e) {
@@ -412,7 +411,7 @@ public class XWikiRestClient
 
     public Space getSpace(String wiki, String space) throws Exception
     {
-        URI spaceURI = new URI(String.format("%s/wiki/%s/spaces/%s", serverURI, wiki, space));
+        URI spaceURI = new URI(String.format("%s/wikis/%s/spaces/%s", serverURI, wiki, space));
 
         HttpResponse response = executeGet(spaceURI);
         org.xwiki.rest.model.jaxb.Space result =
@@ -557,7 +556,7 @@ public class XWikiRestClient
 
     public void removeTag(String wiki, String space, String page, String tagName) throws Exception
     {
-        URI tagsURI = new URI(String.format("%s/wiki/%s/spaces/%s/pages/%s/tags", serverURI, wiki, space, page));
+        URI tagsURI = new URI(String.format("%s/wikis/%s/spaces/%s/pages/%s/tags", serverURI, wiki, space, page));
 
         List<Tag> tags = getTags(wiki, space, page);
 
