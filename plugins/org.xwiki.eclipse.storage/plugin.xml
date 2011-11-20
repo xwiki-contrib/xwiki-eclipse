@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension point="org.eclipse.core.expressions.propertyTesters">
+		<propertyTester class="org.xwiki.eclipse.storage.expressions.DataManagerPropertyTester" id="org.xwiki.eclipse.core.DataManagerTester" namespace="org.xwiki.eclipse.storage.DataManager" properties="isConnected" type="org.xwiki.eclipse.storage.DataManager">
+      </propertyTester>
+	</extension>
+
+</plugin>

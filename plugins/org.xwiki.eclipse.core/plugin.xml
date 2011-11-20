@@ -7,8 +7,4 @@
          </run>
 		</runtime>
 	</extension>
-	<extension point="org.eclipse.core.expressions.propertyTesters">
-		<propertyTester class="org.xwiki.eclipse.core.expressions.DataManagerPropertyTester" id="org.xwiki.eclipse.core.DataManagerTester" namespace="org.xwiki.eclipse.storage.DataManager" properties="isConnected" type="org.xwiki.eclipse.storage.DataManager">
-      </propertyTester>
-	</extension>
 </plugin>
