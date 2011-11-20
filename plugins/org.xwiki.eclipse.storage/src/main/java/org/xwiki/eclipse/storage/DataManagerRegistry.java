@@ -18,7 +18,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  *
  */
-package org.xwiki.eclipse.core;
+package org.xwiki.eclipse.storage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,9 +35,10 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.xwiki.eclipse.storage.DataManager;
-import org.xwiki.eclipse.storage.notification.CoreEvent;
-import org.xwiki.eclipse.storage.notification.NotificationManager;
+import org.xwiki.eclipse.core.CoreLog;
+import org.xwiki.eclipse.core.XWikiEclipseNature;
+import org.xwiki.eclipse.core.notification.CoreEvent;
+import org.xwiki.eclipse.core.notification.NotificationManager;
 
 /**
  * @version $Id$

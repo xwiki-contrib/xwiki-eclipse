@@ -6,7 +6,9 @@ Bundle-Version: 2.0.0.qualifier
 Bundle-Vendor: XWiki
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.6.0",
- org.eclipse.core.resources;bundle-version="3.6.1"
+ org.eclipse.core.resources;bundle-version="3.6.1",
+ org.eclipse.core.expressions;bundle-version="3.4.300",
+ org.xwiki.eclipse.core;bundle-version="2.0.0"
 Bundle-ClassPath: .,
  lib/commons-codec.jar,
  lib/commons-io.jar,
@@ -75,7 +77,6 @@ Export-Package: com.google.gson,
  org.apache.http.util,
  org.xwiki.eclipse.model,
  org.xwiki.eclipse.storage,
- org.xwiki.eclipse.storage.notification,
  org.xwiki.eclipse.storage.rest,
  org.xwiki.eclipse.storage.utils,
  org.xwiki.rest.model.jaxb

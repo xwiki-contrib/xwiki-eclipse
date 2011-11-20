@@ -18,7 +18,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  *
  */
-package org.xwiki.eclipse.storage.notification;
+package org.xwiki.eclipse.core.notification;
 
 /**
  * The interface for objects interested in listening XWiki Eclipse Core events.

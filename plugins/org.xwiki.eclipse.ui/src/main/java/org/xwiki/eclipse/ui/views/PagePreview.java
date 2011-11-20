@@ -29,15 +29,15 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.browser.IWebBrowser;
 import org.eclipse.ui.browser.IWorkbenchBrowserSupport;
 import org.eclipse.ui.part.ViewPart;
+import org.xwiki.eclipse.core.notification.CoreEvent;
+import org.xwiki.eclipse.core.notification.ICoreEventListener;
+import org.xwiki.eclipse.core.notification.NotificationManager;
 import org.xwiki.eclipse.model.XWikiEclipseObject;
 import org.xwiki.eclipse.model.XWikiEclipseObjectSummary;
 import org.xwiki.eclipse.model.XWikiEclipsePage;
 import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
 import org.xwiki.eclipse.model.XWikiEclipseSpaceSummary;
 import org.xwiki.eclipse.storage.XWikiEclipseStorageException;
-import org.xwiki.eclipse.storage.notification.CoreEvent;
-import org.xwiki.eclipse.storage.notification.ICoreEventListener;
-import org.xwiki.eclipse.storage.notification.NotificationManager;
 import org.xwiki.eclipse.storage.utils.IdProcessor;
 import org.xwiki.eclipse.ui.utils.UIUtils;
 

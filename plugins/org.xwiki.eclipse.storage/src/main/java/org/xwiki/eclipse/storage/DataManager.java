@@ -13,6 +13,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.QualifiedName;
+import org.xwiki.eclipse.core.notification.CoreEvent;
+import org.xwiki.eclipse.core.notification.NotificationManager;
 import org.xwiki.eclipse.model.ModelObject;
 import org.xwiki.eclipse.model.XWikiEclipseAttachment;
 import org.xwiki.eclipse.model.XWikiEclipseClass;
@@ -27,8 +29,6 @@ import org.xwiki.eclipse.model.XWikiEclipseServerInfo;
 import org.xwiki.eclipse.model.XWikiEclipseSpaceSummary;
 import org.xwiki.eclipse.model.XWikiEclipseTag;
 import org.xwiki.eclipse.model.XWikiEclipseWikiSummary;
-import org.xwiki.eclipse.storage.notification.CoreEvent;
-import org.xwiki.eclipse.storage.notification.NotificationManager;
 import org.xwiki.eclipse.storage.utils.IdProcessor;
 import org.xwiki.eclipse.storage.utils.PersistentMap;
 
