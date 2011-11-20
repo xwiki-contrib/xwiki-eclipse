@@ -30,6 +30,7 @@ import org.eclipse.ui.progress.IDeferredWorkbenchAdapter;
 import org.eclipse.ui.progress.IElementCollector;
 import org.xwiki.eclipse.model.XWikiEclipseSpaceSummary;
 import org.xwiki.eclipse.model.XWikiEclipseWikiSummary;
+import org.xwiki.eclipse.storage.XWikiEclipseStorageException;
 import org.xwiki.eclipse.ui.UIConstants;
 import org.xwiki.eclipse.ui.UIPlugin;
 
@@ -43,9 +44,15 @@ public class XWikiEclipseWikiSummaryAdapter extends WorkbenchAdapter implements 
     {
         if (object instanceof XWikiEclipseWikiSummary) {
             XWikiEclipseWikiSummary wiki = (XWikiEclipseWikiSummary) object;
-            List<XWikiEclipseSpaceSummary> spaces = wiki.getDataManager().getSpaces(wiki.getWikiId());
-            return spaces.toArray();
+            List<XWikiEclipseSpaceSummary> spaces;
+            try {
+                spaces = wiki.getDataManager().getSpaces(wiki.getWikiId());
+                return spaces.toArray();
+            } catch (XWikiEclipseStorageException e) {
+                return NO_CHILDREN;
+            }
         }
+
         return super.getChildren(object);
     }
 

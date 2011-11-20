@@ -187,8 +187,7 @@ public class DataManager
             return;
         }
 
-        remoteXWikiDataStorage =
-            new RestRemoteXWikiDataStorage(this, getEndpoint(), getUserName(), getPassword());
+        remoteXWikiDataStorage = new RestRemoteXWikiDataStorage(this, getEndpoint(), getUserName(), getPassword());
 
         /* When connected synchronize all the pages and objects */
         synchronizePages(new HashSet<String>(pageToStatusMap.keySet()));
@@ -321,37 +320,27 @@ public class DataManager
     /**
      * @param wiki
      * @return
+     * @throws XWikiEclipseStorageException
      */
-    public List<XWikiEclipseSpaceSummary> getSpaces(String wikiId)
+    public List<XWikiEclipseSpaceSummary> getSpaces(String wikiId) throws XWikiEclipseStorageException
     {
         List<XWikiEclipseSpaceSummary> result = null;
 
         if (isConnected()) {
-            try {
-                result = remoteXWikiDataStorage.getSpaceSummaries(wikiId);
-            } catch (XWikiEclipseStorageException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
+            result = remoteXWikiDataStorage.getSpaceSummaries(wikiId);
         } else {
             result = new ArrayList<XWikiEclipseSpaceSummary>();
             List<XWikiEclipseSpaceSummary> spaces;
-            try {
-                spaces = localXWikiDataStorage.getSpaces(wikiId);
-                for (XWikiEclipseSpaceSummary spaceSummary : spaces) {
-                    XWikiEclipseSpaceSummary space = new XWikiEclipseSpaceSummary(this);
-                    space.setId(spaceSummary.getId());
-                    space.setName(spaceSummary.getName());
-                    space.setUrl(spaceSummary.getUrl());
-                    space.setWiki(spaceSummary.getWiki());
 
-                    result.add(space);
-                }
-                return result;
+            spaces = localXWikiDataStorage.getSpaces(wikiId);
+            for (XWikiEclipseSpaceSummary spaceSummary : spaces) {
+                XWikiEclipseSpaceSummary space = new XWikiEclipseSpaceSummary(this);
+                space.setId(spaceSummary.getId());
+                space.setName(spaceSummary.getName());
+                space.setUrl(spaceSummary.getUrl());
+                space.setWiki(spaceSummary.getWiki());
 
-            } catch (XWikiEclipseStorageException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                result.add(space);
             }
         }
 
@@ -385,8 +374,6 @@ public class DataManager
                 }
 
             } catch (Exception e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
                 throw new XWikiEclipseStorageException(e);
             }
         }
@@ -431,14 +418,7 @@ public class DataManager
         List<XWikiEclipseWikiSummary> result = null;
 
         if (isConnected()) {
-            try {
-                result = remoteXWikiDataStorage.getWikiSummaries();
-            } catch (XWikiEclipseStorageException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-                throw e;
-            }
-            return result;
+            result = remoteXWikiDataStorage.getWikiSummaries();
         } else {
             result = new ArrayList<XWikiEclipseWikiSummary>();
 
@@ -456,8 +436,9 @@ public class DataManager
                     result.add(wikiSummary);
                 }
             }
-            return result;
         }
+
+        return result;
     }
 
     /**
@@ -470,18 +451,12 @@ public class DataManager
         List<XWikiEclipsePageHistorySummary> result = null;
 
         if (isConnected()) {
-            try {
-                result = remoteXWikiDataStorage.getPageHistorySummaries(wiki, space, pageName, language);
-                return result;
-            } catch (XWikiEclipseStorageException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-                throw e;
-            }
+            result = remoteXWikiDataStorage.getPageHistorySummaries(wiki, space, pageName, language);
         } else {
             result = localXWikiDataStorage.getPageHistorySummaries(wiki, space, pageName, language);
-            return result;
         }
+
+        return result;
     }
 
     public XWikiEclipsePage getPage(String wiki, String space, String pageName, String language)
@@ -576,6 +551,7 @@ public class DataManager
             localXWikiDataStorage.storePage(result);
 
             NotificationManager.getDefault().fireCoreEvent(CoreEvent.Type.PAGE_STORED, this, pageSummary);
+
             return result;
         }
 
@@ -622,24 +598,25 @@ public class DataManager
     public XWikiEclipseClass getClass(String wiki, String space, String pageName) throws XWikiEclipseStorageException
     {
         XWikiEclipseClass result = null;
+
         if (isConnected()) {
             result = remoteXWikiDataStorage.getClass(wiki, space, pageName);
-            return result;
+
         }
 
-        return null;
+        return result;
     }
 
     public List<XWikiEclipseTag> getTags(XWikiEclipsePageSummary pageSummary) throws XWikiEclipseStorageException
     {
         List<XWikiEclipseTag> result = null;
+
         if (isConnected()) {
             result =
                 remoteXWikiDataStorage.getTags(pageSummary.getWiki(), pageSummary.getSpace(), pageSummary.getName());
-            return result;
         }
 
-        return null;
+        return result;
     }
 
     public List<XWikiEclipseComment> getComments(String wiki, String space, String pageName)
@@ -649,10 +626,9 @@ public class DataManager
 
         if (isConnected()) {
             result = remoteXWikiDataStorage.getComments(wiki, space, pageName);
-            return result;
         }
 
-        return null;
+        return result;
     }
 
     public List<XWikiEclipseObjectProperty> getObjectProperties(String wiki, String space, String pageName,
@@ -662,24 +638,14 @@ public class DataManager
 
         if (isConnected()) {
             result = remoteXWikiDataStorage.getObjectProperties(wiki, space, pageName, className, number);
-            return result;
         }
 
-        return null;
+        return result;
     }
 
-    /**
-     * @param directory
-     * @param attachments
-     */
     public void download(String directory, XWikiEclipseAttachment attachment) throws XWikiEclipseStorageException
     {
-        try {
-            remoteXWikiDataStorage.download(directory, attachment);
-        } catch (Exception e) {
-            throw new XWikiEclipseStorageException(e);
-        }
-
+        remoteXWikiDataStorage.download(directory, attachment);
     }
 
     public XWikiEclipsePageSummary getPageSummary(String wiki, String space, String pageName, String language)
@@ -689,7 +655,6 @@ public class DataManager
 
         if (isConnected()) {
             result = remoteXWikiDataStorage.getPageSummary(wiki, space, pageName, language);
-            return result;
         } else {
             XWikiEclipsePageSummary pageSummary;
             try {
@@ -704,15 +669,12 @@ public class DataManager
                 result.setParentId(pageSummary.getParentId());
                 result.setTitle(pageSummary.getTitle());
                 result.setSyntax(pageSummary.getSyntax());
-                return result;
             } catch (Exception e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                throw new XWikiEclipseStorageException(e);
             }
-
         }
 
-        return null;
+        return result;
     }
 
     public XWikiEclipseObject getObject(String wiki, String space, String pageName, String className, int number)
@@ -751,8 +713,6 @@ public class DataManager
 
             /* Fire the stored notification to communicate that the object has been stored in the local storage */
             NotificationManager.getDefault().fireCoreEvent(CoreEvent.Type.OBJECT_STORED, this, result);
-
-            return result;
         } else {
             XWikiEclipseObject object = localXWikiDataStorage.getObject(wiki, space, pageName, className, number);
 
@@ -783,9 +743,9 @@ public class DataManager
 
                 result.getProperties().add(prop);
             }
-
-            return result;
         }
+
+        return result;
     }
 
     /**
@@ -807,8 +767,7 @@ public class DataManager
         try {
             localXWikiDataStorage.removePage(pageId);
         } catch (CoreException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            throw new XWikiEclipseStorageException(e);
         }
     }
 
@@ -817,7 +776,6 @@ public class DataManager
         if (isConnected()) {
             remoteXWikiDataStorage.remove(o);
         }
-
     }
 
     public XWikiEclipseComment storeComment(XWikiEclipseComment c) throws XWikiEclipseStorageException
@@ -829,6 +787,7 @@ public class DataManager
         }
 
         NotificationManager.getDefault().fireCoreEvent(CoreEvent.Type.COMMENT_STORED, this, result);
+
         return result;
     }
 
@@ -874,6 +833,7 @@ public class DataManager
     public List<XWikiEclipseTag> getAllTagsInWiki(String wiki) throws XWikiEclipseStorageException
     {
         List<XWikiEclipseTag> result = remoteXWikiDataStorage.getAllTagsInWiki(wiki);
+
         return result;
     }
 
@@ -881,6 +841,7 @@ public class DataManager
         throws XWikiEclipseStorageException
     {
         XWikiEclipseTag result = null;
+
         if (isConnected()) {
             result = remoteXWikiDataStorage.addTag(wiki, space, pageName, tag);
         }
@@ -891,6 +852,7 @@ public class DataManager
     public List<XWikiEclipseClass> getClasses(String wiki) throws XWikiEclipseStorageException
     {
         List<XWikiEclipseClass> result = null;
+
         if (isConnected()) {
             result = remoteXWikiDataStorage.getClasses(wiki);
         }
@@ -901,14 +863,13 @@ public class DataManager
     public XWikiEclipseClass getClass(String wiki, String className) throws XWikiEclipseStorageException
     {
         XWikiEclipseClass result = null;
+
         if (isConnected()) {
             result = remoteXWikiDataStorage.getClass(wiki, className);
         } else {
             try {
                 result = localXWikiDataStorage.getClass(wiki, className);
             } catch (Exception e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
                 throw new XWikiEclipseStorageException(e);
             }
         }
@@ -1134,27 +1095,18 @@ public class DataManager
         XWikiEclipsePage ancestorPage =
             lastRetrievedPagesDataStorage.getPage(parser.getWiki(), parser.getSpace(), parser.getPage(),
                 parser.getLanguage());
-        return ancestorPage != null ? ancestorPage : null;
 
+        return ancestorPage != null ? ancestorPage : null;
     }
 
-    /**
-     * @param wiki
-     * @param space
-     * @param name
-     * @param language
-     * @param majorVersion
-     * @param minorVersion
-     * @return
-     */
     public XWikiEclipsePage getPageHistory(XWikiEclipsePageHistorySummary pageHistory)
         throws XWikiEclipseStorageException
     {
         if (isConnected()) {
-            return remoteXWikiDataStorage.getPageHistory(pageHistory.getWiki(), pageHistory.getSpace(),
-                pageHistory.getName(), pageHistory.getLanguage(), pageHistory.getMajorVersion(),
-                pageHistory.getMinorVersion());
+            remoteXWikiDataStorage.getPageHistory(pageHistory.getWiki(), pageHistory.getSpace(), pageHistory.getName(),
+                pageHistory.getLanguage(), pageHistory.getMajorVersion(), pageHistory.getMinorVersion());
         }
+
         return null;
     }
 
@@ -1187,7 +1139,6 @@ public class DataManager
             o = synchronize(o);
 
             NotificationManager.getDefault().fireCoreEvent(CoreEvent.Type.OBJECT_STORED, this, o);
-
         }
 
     }
