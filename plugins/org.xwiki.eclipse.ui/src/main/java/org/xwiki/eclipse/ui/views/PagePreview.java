@@ -179,7 +179,7 @@ public class PagePreview extends ViewPart implements ISelectionListener, ICoreEv
         stackLayout = new StackLayout();
         browserComposite.setLayout(stackLayout);
 
-        //browser = new Browser(browserComposite, SWT.NONE);
+        browser = new Browser(browserComposite, SWT.NONE);
 
         notConnectedComposite = new Composite(browserComposite, SWT.NONE);
         GridLayoutFactory.fillDefaults().margins(0, 0).applyTo(notConnectedComposite);

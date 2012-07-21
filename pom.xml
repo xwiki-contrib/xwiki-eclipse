@@ -52,14 +52,14 @@
   </prerequisites>
 
   <properties>
-    <tycho-version>0.13.0</tycho-version>
+    <tycho-version>0.15.0</tycho-version>
   </properties>
   <repositories>
     <!-- configure p2 repository to resolve against -->
     <repository>
-      <id>indigo</id>
+      <id>juno</id>
       <layout>p2</layout>
-      <url>http://download.eclipse.org/releases/indigo</url>
+      <url>http://download.eclipse.org/releases/juno</url>
     </repository>
     <repository>
       <id>tycho-repository-site</id>
