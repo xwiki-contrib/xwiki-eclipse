@@ -30,24 +30,17 @@ import org.eclipse.ui.navigator.ICommonMenuConstants;
 /**
  * @version $Id$
  */
-public class XWikiEclipseClassActionProvider extends CommonActionProvider
+public class XWikiEclipseClassActionProvider
 {
     private Action open;
 
-    private ISelectionProvider selectionProvider;
-
-    @Override
-    public void init(ICommonActionExtensionSite aSite)
+    public XWikiEclipseClassActionProvider(ISelectionProvider selectionProvider)
     {
-        super.init(aSite);
-        selectionProvider = aSite.getViewSite().getSelectionProvider();
         open = new OpenXWikiModelObjectAction(selectionProvider);
     }
-
-    @Override
+    
     public void fillContextMenu(IMenuManager menu)
     {
-        menu.appendToGroup(ICommonMenuConstants.GROUP_NEW, open);
-        super.fillContextMenu(menu);
+        menu.add(open);
     }
 }

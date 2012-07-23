@@ -28,6 +28,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.navigator.ICommonActionConstants;
 import org.xwiki.eclipse.core.CoreLog;
 import org.xwiki.eclipse.model.XWikiEclipseComment;
 import org.xwiki.eclipse.model.XWikiEclipseObject;
@@ -102,14 +103,13 @@ public class OpenXWikiModelObjectAction extends Action
                     UIUtils.showMessageDialog(Display.getDefault().getActiveShell(), "Error opening editor",
                         "There was an error while opening the editor.");
                 }
-            }
-            if (object instanceof XWikiEclipseObjectSummary) {
+            } else if (object instanceof XWikiEclipseObjectSummary) {
                 final XWikiEclipseObjectSummary objectSummary = (XWikiEclipseObjectSummary) object;
 
                 try {
                     XWikiEclipseObject xwikiObject =
                         objectSummary.getDataManager().getObject(objectSummary.getWiki(), objectSummary.getSpace(),
-                            objectSummary.getPageName(), objectSummary.getClassName(), objectSummary.getNumber());
+                            objectSummary.getPageName(), objectSummary.getClassName(), objectSummary.getNumber());                    
 
                     PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
                         .openEditor(new ObjectEditorInput(xwikiObject), ObjectEditor.ID);
@@ -129,9 +129,7 @@ public class OpenXWikiModelObjectAction extends Action
                         "There was an error while opening the editor.");
                 }
 
-            }
-
-            if (object instanceof XWikiEclipseComment) {
+            } else if (object instanceof XWikiEclipseComment) {
                 final XWikiEclipseComment comment = (XWikiEclipseComment) object;
 
                 try {

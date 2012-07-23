@@ -22,10 +22,8 @@ package org.xwiki.eclipse.ui.actions;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.ui.IActionBars;
+import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.ui.navigator.CommonActionProvider;
-import org.eclipse.ui.navigator.ICommonActionConstants;
-import org.eclipse.ui.navigator.ICommonActionExtensionSite;
 import org.eclipse.ui.navigator.ICommonMenuConstants;
 
 /**
@@ -35,20 +33,13 @@ public class XWikiEclipseObjectSummaryActionProvider extends CommonActionProvide
 {
     private Action open;
 
-    public void init(final ICommonActionExtensionSite aSite)
+    public XWikiEclipseObjectSummaryActionProvider(ISelectionProvider selectionProvider)
     {
-        open = new OpenXWikiModelObjectAction(aSite.getViewSite().getSelectionProvider());
+        open = new OpenXWikiModelObjectAction(selectionProvider);
     }
 
     public void fillContextMenu(IMenuManager menu)
     {
-        super.fillContextMenu(menu);
-        menu.appendToGroup(ICommonMenuConstants.GROUP_OPEN, open);
-    }
-
-    public void fillActionBars(IActionBars actionBars)
-    {
-        super.fillActionBars(actionBars);
-        actionBars.setGlobalActionHandler(ICommonActionConstants.OPEN, open);
+        menu.add(open);
     }
 }

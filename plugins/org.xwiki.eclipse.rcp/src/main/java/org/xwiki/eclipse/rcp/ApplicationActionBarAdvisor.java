@@ -127,6 +127,10 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
             if (v.getId().equals("org.eclipse.ui.views.ContentOutline")) {
                 addView = true;
             }
+            
+            if (v.getId().equals("org.xwiki.eclipse.ui.views.NewNavigator")) {
+                addView = true;
+            }
 
             if (addView) {
                 ShowViewAction action = new ShowViewAction(window, v);

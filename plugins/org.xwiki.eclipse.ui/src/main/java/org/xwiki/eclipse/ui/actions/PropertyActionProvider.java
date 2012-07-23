@@ -23,8 +23,10 @@ package org.xwiki.eclipse.ui.actions;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.window.IShellProvider;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionContext;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.dialogs.PropertyDialogAction;
@@ -36,21 +38,21 @@ import org.eclipse.ui.texteditor.IWorkbenchActionDefinitionIds;
 /**
  * @version $Id$
  */
-public class PropertyActionProvider extends CommonActionProvider
+public class PropertyActionProvider
 {
     private PropertyDialogAction propertiesAction;
 
     private ISelectionProvider selectionProvider;
 
-    public void init(final ICommonActionExtensionSite aSite)
+    public PropertyActionProvider(ISelectionProvider selectionProvider)
     {
-        selectionProvider = aSite.getViewSite().getSelectionProvider();
+        this.selectionProvider = selectionProvider;
 
         propertiesAction = new PropertyDialogAction(new IShellProvider()
         {
             public Shell getShell()
             {
-                return aSite.getViewSite().getShell();
+                return Display.getDefault().getActiveShell();
             }
         }, selectionProvider);
 
@@ -59,19 +61,6 @@ public class PropertyActionProvider extends CommonActionProvider
 
     public void fillContextMenu(IMenuManager menu)
     {
-        super.fillContextMenu(menu);
-        menu.appendToGroup(ICommonMenuConstants.GROUP_PROPERTIES, propertiesAction);
-    }
-
-    public void fillActionBars(IActionBars actionBars)
-    {
-        super.fillActionBars(actionBars);
-        actionBars.setGlobalActionHandler(ActionFactory.PROPERTIES.getId(), propertiesAction);
-    }
-
-    public void setContext(ActionContext context)
-    {
-        super.setContext(context);
-        propertiesAction.selectionChanged(selectionProvider.getSelection());
+        menu.add(propertiesAction);
     }
 }

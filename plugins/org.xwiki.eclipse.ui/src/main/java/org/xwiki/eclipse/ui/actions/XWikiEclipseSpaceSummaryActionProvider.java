@@ -26,21 +26,19 @@ import org.eclipse.swt.SWT;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.menus.CommandContributionItem;
 import org.eclipse.ui.menus.CommandContributionItemParameter;
-import org.eclipse.ui.navigator.CommonActionProvider;
-import org.eclipse.ui.navigator.ICommonActionExtensionSite;
 import org.eclipse.ui.navigator.ICommonMenuConstants;
 import org.xwiki.eclipse.ui.UIConstants;
 
 /**
  * @version $Id$
  */
-public class XWikiEclipseSpaceSummaryActionProvider extends CommonActionProvider
+public class XWikiEclipseSpaceSummaryActionProvider
 {
     private CommandContributionItem newPage;
 
     private CommandContributionItem grabSpace;
 
-    public void init(final ICommonActionExtensionSite aSite)
+    public XWikiEclipseSpaceSummaryActionProvider()
     {
         CommandContributionItemParameter ccip =
             new CommandContributionItemParameter(PlatformUI.getWorkbench(), UIConstants.NEW_PAGE_COMMAND,
@@ -56,9 +54,8 @@ public class XWikiEclipseSpaceSummaryActionProvider extends CommonActionProvider
 
     public void fillContextMenu(IMenuManager menu)
     {
-        super.fillContextMenu(menu);
-        menu.appendToGroup(ICommonMenuConstants.GROUP_ADDITIONS, newPage);
-        menu.appendToGroup(ICommonMenuConstants.GROUP_ADDITIONS, new Separator());
-        menu.appendToGroup(ICommonMenuConstants.GROUP_ADDITIONS, grabSpace);
+        menu.add(newPage);
+        menu.add(new Separator());
+        menu.add(grabSpace);
     }
 }

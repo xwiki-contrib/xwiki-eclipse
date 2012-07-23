@@ -23,7 +23,6 @@ package org.xwiki.eclipse.ui.actions;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
@@ -33,14 +32,11 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IActionBars;
-import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.menus.CommandContributionItem;
 import org.eclipse.ui.menus.CommandContributionItemParameter;
 import org.eclipse.ui.navigator.CommonActionProvider;
 import org.eclipse.ui.navigator.ICommonActionConstants;
-import org.eclipse.ui.navigator.ICommonActionExtensionSite;
-import org.eclipse.ui.navigator.ICommonMenuConstants;
 import org.xwiki.eclipse.core.CoreLog;
 import org.xwiki.eclipse.model.XWikiEclipsePage;
 import org.xwiki.eclipse.model.XWikiEclipsePageHistorySummary;
@@ -55,7 +51,7 @@ import org.xwiki.eclipse.ui.utils.UIUtils;
 /**
  * @version $Id$
  */
-public class XWikiEclipsePageSummaryActionProvider extends CommonActionProvider
+public class XWikiEclipsePageSummaryActionProvider
 {
     private Action open;
 
@@ -73,9 +69,9 @@ public class XWikiEclipsePageSummaryActionProvider extends CommonActionProvider
 
     private ISelectionProvider selectionProvider;
 
-    public void init(final ICommonActionExtensionSite aSite)
+    public XWikiEclipsePageSummaryActionProvider(ISelectionProvider selectionProvider)
     {
-        selectionProvider = aSite.getViewSite().getSelectionProvider();
+        this.selectionProvider = selectionProvider;
 
         open = new OpenXWikiModelObjectAction(selectionProvider);
 
@@ -118,20 +114,19 @@ public class XWikiEclipsePageSummaryActionProvider extends CommonActionProvider
 
     public void fillContextMenu(IMenuManager menu)
     {
-        super.fillContextMenu(menu);
-        menu.appendToGroup(ICommonMenuConstants.GROUP_OPEN, open);
+        menu.add(open);
 
-        menu.appendToGroup(ICommonMenuConstants.GROUP_OPEN, getTranslationMenu());
-        menu.appendToGroup(ICommonMenuConstants.GROUP_OPEN, getHistoryMenu());
+        menu.add(getTranslationMenu());
+        menu.add(getHistoryMenu());
 
-        menu.appendToGroup(ICommonMenuConstants.GROUP_ADDITIONS, new Separator());
-        menu.appendToGroup(ICommonMenuConstants.GROUP_ADDITIONS, newObject);
-        menu.appendToGroup(ICommonMenuConstants.GROUP_ADDITIONS, newComment);
-        menu.appendToGroup(ICommonMenuConstants.GROUP_ADDITIONS, newTag);
-        menu.appendToGroup(ICommonMenuConstants.GROUP_ADDITIONS, uploadAttachment);
-        menu.appendToGroup(ICommonMenuConstants.GROUP_ADDITIONS, new Separator());
-        menu.appendToGroup(ICommonMenuConstants.GROUP_ADDITIONS, renamePage);
-        menu.appendToGroup(ICommonMenuConstants.GROUP_ADDITIONS, copyPage);
+        menu.add(new Separator());
+        menu.add(newObject);
+        menu.add(newComment);
+        menu.add(newTag);
+        menu.add(uploadAttachment);
+        menu.add(new Separator());
+        menu.add(renamePage);
+        menu.add(copyPage);
     }
 
     private IMenuManager getHistoryMenu()
@@ -221,11 +216,5 @@ public class XWikiEclipsePageSummaryActionProvider extends CommonActionProvider
         }
 
         return menuManager;
-    }
-
-    public void fillActionBars(IActionBars actionBars)
-    {
-        super.fillActionBars(actionBars);
-        actionBars.setGlobalActionHandler(ICommonActionConstants.OPEN, open);
     }
 }

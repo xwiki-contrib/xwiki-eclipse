@@ -242,6 +242,10 @@ public class PagePreview extends ViewPart implements ISelectionListener, ICoreEv
 
     private void update(final String url, final boolean isConnected)
     {
+        if (browser == null) {
+            return;
+        }
+
         Display.getDefault().syncExec(new Runnable()
         {
             public void run()

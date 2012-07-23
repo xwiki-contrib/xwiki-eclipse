@@ -33,11 +33,11 @@ import org.xwiki.eclipse.ui.UIConstants;
 /**
  * @version $Id$
  */
-public class XWikiEclipseWikiSummaryActionProvider extends CommonActionProvider
+public class XWikiEclipseWikiSummaryActionProvider
 {
     private CommandContributionItem newPage;
 
-    public void init(final ICommonActionExtensionSite aSite)
+    public XWikiEclipseWikiSummaryActionProvider()
     {
         CommandContributionItemParameter ccip =
             new CommandContributionItemParameter(PlatformUI.getWorkbench(), UIConstants.NEW_PAGE_COMMAND,
@@ -48,7 +48,6 @@ public class XWikiEclipseWikiSummaryActionProvider extends CommonActionProvider
 
     public void fillContextMenu(IMenuManager menu)
     {
-        super.fillContextMenu(menu);
         menu.appendToGroup(ICommonMenuConstants.GROUP_ADDITIONS, newPage);
     }
 }

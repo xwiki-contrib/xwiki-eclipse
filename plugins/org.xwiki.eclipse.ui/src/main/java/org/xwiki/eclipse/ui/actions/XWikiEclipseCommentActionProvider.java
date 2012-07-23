@@ -22,6 +22,7 @@ package org.xwiki.eclipse.ui.actions;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.PlatformUI;
@@ -42,9 +43,9 @@ public class XWikiEclipseCommentActionProvider extends CommonActionProvider
 
     private CommandContributionItem replyToComment;
 
-    public void init(final ICommonActionExtensionSite aSite)
+    public XWikiEclipseCommentActionProvider(ISelectionProvider selectionProvider)
     {
-        open = new OpenXWikiModelObjectAction(aSite.getViewSite().getSelectionProvider());
+        open = new OpenXWikiModelObjectAction(selectionProvider);
 
         CommandContributionItemParameter ccip =
             new CommandContributionItemParameter(PlatformUI.getWorkbench().getActiveWorkbenchWindow(),
@@ -55,14 +56,7 @@ public class XWikiEclipseCommentActionProvider extends CommonActionProvider
 
     public void fillContextMenu(IMenuManager menu)
     {
-        super.fillContextMenu(menu);
-        menu.appendToGroup(ICommonMenuConstants.GROUP_OPEN, open);
-        menu.appendToGroup(ICommonMenuConstants.GROUP_EDIT, replyToComment);
-    }
-
-    public void fillActionBars(IActionBars actionBars)
-    {
-        super.fillActionBars(actionBars);
-        actionBars.setGlobalActionHandler(ICommonActionConstants.OPEN, open);
+        menu.add(open);
+        menu.add(replyToComment);
     }
 }

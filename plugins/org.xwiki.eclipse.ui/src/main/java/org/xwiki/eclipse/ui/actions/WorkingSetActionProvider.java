@@ -23,6 +23,8 @@ package org.xwiki.eclipse.ui.actions;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.actions.WorkingSetFilterActionGroup;
 import org.eclipse.ui.navigator.CommonActionProvider;
@@ -30,27 +32,32 @@ import org.eclipse.ui.navigator.CommonActionProvider;
 /**
  * @version $Id$
  */
-public class WorkingSetActionProvider extends CommonActionProvider
+public class WorkingSetActionProvider
 {
-
     private WorkingSetFilterActionGroup actions;
 
     private boolean contributedToViewMenu;
 
-    @Override
+    private Viewer viewer;
+    
+    public WorkingSetActionProvider(Viewer viewer)
+    {
+        this.viewer = viewer;
+    }
+    
     public void fillActionBars(IActionBars actionBars)
     {
         if (!contributedToViewMenu) {
             actions =
-                new WorkingSetFilterActionGroup(getActionSite().getViewSite().getShell(), new IPropertyChangeListener()
+                new WorkingSetFilterActionGroup(Display.getDefault().getActiveShell(), new IPropertyChangeListener()
                 {
                     public void propertyChange(PropertyChangeEvent event)
                     {
                         if (event.getNewValue() != null) {
-                            getActionSite().getStructuredViewer().setInput(event.getNewValue());
+                            viewer.setInput(event.getNewValue());
                         } else {
                             /* Actually it doesn't really matter what input we specify here */
-                            getActionSite().getStructuredViewer().setInput(ResourcesPlugin.getWorkspace().getRoot());
+                            viewer.setInput(ResourcesPlugin.getWorkspace().getRoot());
                         }
                     }
                 });
@@ -60,15 +67,4 @@ public class WorkingSetActionProvider extends CommonActionProvider
             contributedToViewMenu = true;
         }
     }
-
-    @Override
-    public void dispose()
-    {
-        super.dispose();
-
-        if (actions != null) {
-            actions.dispose();
-        }
-    }
-
 }

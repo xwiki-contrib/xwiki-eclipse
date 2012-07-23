@@ -33,11 +33,11 @@ import org.xwiki.eclipse.ui.UIConstants;
 /**
  * @version $Id$
  */
-public class RefreshActionProvider extends CommonActionProvider
+public class RefreshActionProvider
 {
     private CommandContributionItem refresh;
 
-    public void init(final ICommonActionExtensionSite aSite)
+    public RefreshActionProvider()
     {
         /* This is the preferred way for creating a command contribution item in Eclipse 3.4 */
         CommandContributionItemParameter contributionItemParameter =
@@ -48,8 +48,7 @@ public class RefreshActionProvider extends CommonActionProvider
 
     public void fillContextMenu(IMenuManager menu)
     {
-        super.fillContextMenu(menu);
-        menu.appendToGroup(ICommonMenuConstants.GROUP_ADDITIONS, refresh);
+        menu.add(refresh);
     }
 
 }

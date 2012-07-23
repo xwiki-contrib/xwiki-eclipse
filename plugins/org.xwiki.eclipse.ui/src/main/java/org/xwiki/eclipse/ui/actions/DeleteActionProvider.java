@@ -34,11 +34,11 @@ import org.xwiki.eclipse.ui.UIConstants;
 /**
  * @version $Id$
  */
-public class DeleteActionProvider extends CommonActionProvider
+public class DeleteActionProvider
 {
     private CommandContributionItem delete;
 
-    public void init(final ICommonActionExtensionSite aSite)
+    public DeleteActionProvider()
     {
         CommandContributionItemParameter contributionItemParameter =
             new CommandContributionItemParameter(PlatformUI.getWorkbench(), UIConstants.DELETE_COMMAND,
@@ -48,9 +48,6 @@ public class DeleteActionProvider extends CommonActionProvider
 
     public void fillContextMenu(IMenuManager menu)
     {
-        super.fillContextMenu(menu);
-        menu.appendToGroup(ICommonMenuConstants.GROUP_ADDITIONS, new Separator());
-        menu.appendToGroup(ICommonMenuConstants.GROUP_ADDITIONS, delete);
-        menu.appendToGroup(ICommonMenuConstants.GROUP_ADDITIONS, new Separator());
+        menu.add(delete);
     }
 }
