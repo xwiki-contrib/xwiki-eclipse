@@ -56,7 +56,6 @@ public class WorkingSetDeferredTreeContentManager extends DeferredTreeContentMan
             } else {
                 elementCollector.add(element, monitor);
             }
-
         }
 
         public void add(Object[] elements, IProgressMonitor monitor)
@@ -70,6 +69,17 @@ public class WorkingSetDeferredTreeContentManager extends DeferredTreeContentMan
             }
 
             elementCollector.add(filteredObjects, monitor);
+
+            /*
+             * This is really a ugly hack that seems to fix the problem with disappearing children, i.e. nodes that are
+             * collapsed immediately after they have been expanded. Maybe there are some race conditions somewhere but
+             * it's hard to identify. A message has been sent on Eclipse JFace mailing list in order to find possible
+             * hint for solving the problem cleanly.
+             */
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+            }
         }
 
         public void done()
