@@ -34,7 +34,7 @@ import org.xwiki.eclipse.ui.UIConstants;
 /**
  * @version $Id$
  */
-public class DataManagerActionProvider extends CommonActionProvider
+public class DataManagerActionProvider
 {
     private CommandContributionItem connect;
 
@@ -42,7 +42,7 @@ public class DataManagerActionProvider extends CommonActionProvider
 
     private CommandContributionItem newPage;
 
-    public void init(final ICommonActionExtensionSite aSite)
+    public DataManagerActionProvider()
     {
         CommandContributionItemParameter ccip =
             new CommandContributionItemParameter(PlatformUI.getWorkbench().getActiveWorkbenchWindow(),
@@ -62,10 +62,9 @@ public class DataManagerActionProvider extends CommonActionProvider
 
     public void fillContextMenu(IMenuManager menu)
     {
-        super.fillContextMenu(menu);
-        menu.appendToGroup(ICommonMenuConstants.GROUP_ADDITIONS, connect);
-        menu.appendToGroup(ICommonMenuConstants.GROUP_ADDITIONS, disconnect);
-        menu.appendToGroup(ICommonMenuConstants.GROUP_ADDITIONS, new Separator());
-        menu.appendToGroup(ICommonMenuConstants.GROUP_ADDITIONS, newPage);
+        menu.add(connect);
+        menu.add(disconnect);
+        menu.add(new Separator());
+        menu.add(newPage);
     }
 }

@@ -48,6 +48,6 @@ public class XWikiEclipseWikiSummaryActionProvider
 
     public void fillContextMenu(IMenuManager menu)
     {
-        menu.appendToGroup(ICommonMenuConstants.GROUP_ADDITIONS, newPage);
+        menu.add(newPage);
     }
 }

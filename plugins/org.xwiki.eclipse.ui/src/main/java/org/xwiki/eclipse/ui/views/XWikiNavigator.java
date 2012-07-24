@@ -29,8 +29,10 @@ import org.xwiki.eclipse.model.XWikiEclipseObjectSummary;
 import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
 import org.xwiki.eclipse.model.XWikiEclipseSpaceSummary;
 import org.xwiki.eclipse.model.XWikiEclipseWikiSummary;
+import org.xwiki.eclipse.storage.DataManager;
 import org.xwiki.eclipse.ui.NavigatorContentProvider;
 import org.xwiki.eclipse.ui.UIConstants;
+import org.xwiki.eclipse.ui.actions.DataManagerActionProvider;
 import org.xwiki.eclipse.ui.actions.DeleteActionProvider;
 import org.xwiki.eclipse.ui.actions.OpenXWikiModelObjectAction;
 import org.xwiki.eclipse.ui.actions.PropertyActionProvider;
@@ -68,6 +70,8 @@ public class XWikiNavigator extends ViewPart
     private DeleteActionProvider deleteActionProvider;
 
     private WorkingSetActionProvider workingSetActionProvider;
+
+    private DataManagerActionProvider dataManagerActionProvider;
 
     @Override
     public void init(IViewSite site) throws PartInitException
@@ -111,6 +115,7 @@ public class XWikiNavigator extends ViewPart
         IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
         navigatorTreeViewer.setInput(projects[0]);
 
+        dataManagerActionProvider = new DataManagerActionProvider();
         propertyActionProvider = new PropertyActionProvider(navigatorTreeViewer);
         refreshActionProvider = new RefreshActionProvider();
         pageSummaryActionProvider = new XWikiEclipsePageSummaryActionProvider(navigatorTreeViewer);
@@ -120,9 +125,9 @@ public class XWikiNavigator extends ViewPart
         classActionProvider = new XWikiEclipseClassActionProvider(navigatorTreeViewer);
         attachmentActionProvider = new XWikiEclipseAttachmentActionProvider();
         deleteActionProvider = new DeleteActionProvider();
-        
+
         workingSetActionProvider = new WorkingSetActionProvider(navigatorTreeViewer);
-        
+
         IActionBars actionBars = getViewSite().getActionBars();
         workingSetActionProvider.fillActionBars(actionBars);
     }
@@ -137,7 +142,11 @@ public class XWikiNavigator extends ViewPart
 
         Object selectedElement = selection.getFirstElement();
 
-        if (selectedElement instanceof XWikiEclipseWikiSummary) {
+        if (selectedElement instanceof DataManager) {
+            dataManagerActionProvider.fillContextMenu(manager);
+            manager.add(new Separator());
+            deleteActionProvider.fillContextMenu(manager);
+        } else if (selectedElement instanceof XWikiEclipseWikiSummary) {
             wikiSummaryActionProvider.fillContextMenu(manager);
             manager.add(new Separator());
             refreshActionProvider.fillContextMenu(manager);
@@ -180,6 +189,9 @@ public class XWikiNavigator extends ViewPart
             manager.add(new Separator());
             propertyActionProvider.fillContextMenu(manager);
         }
+
+        /* Add a final separator for the additional contributed items via plugin.xml */
+        manager.add(new Separator());
 
     }
 
