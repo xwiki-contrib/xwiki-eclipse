@@ -120,6 +120,16 @@
                   <outputDirectory>./</outputDirectory>
                   <destFileName>lib/xwiki-platform-rest-model.jar</destFileName>
                 </artifactItem>
+                <!-- gson -->
+                <artifactItem>
+                  <groupId>com.google.code.gson</groupId>
+                  <artifactId>gson</artifactId>
+                  <version>2.2.2</version>
+                  <type>jar</type>
+                  <overWrite>false</overWrite>
+                  <outputDirectory>./</outputDirectory>
+                  <destFileName>lib/gson.jar</destFileName>
+                </artifactItem>
               </artifactItems>
               <overWriteReleases>false</overWriteReleases>
               <overWriteSnapshots>true</overWriteSnapshots>
