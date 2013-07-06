@@ -28,6 +28,7 @@ import java.net.URL;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.print.URIException;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -130,7 +131,7 @@ public class XWikiRestClient
         // do nothing
         return true;
     }
-
+    
     protected HttpResponse executeGet(URI uri) throws Exception
     {
         DefaultHttpClient httpClient = new DefaultHttpClient();
@@ -205,10 +206,19 @@ public class XWikiRestClient
 
         return xwiki;
     }
+    
+    protected URI getURI(String path, String query, String fragment) throws URISyntaxException {
+        return new URI(serverURI.getScheme(), serverURI.getUserInfo(), serverURI.getHost(),  serverURI.getPort(), serverURI.getPath() + path, query, fragment);
+    }
+
+    protected URI getURI(String path) throws URISyntaxException {
+        return getURI(path, null, null);
+    }
+
 
     public List<Wiki> getWikis() throws Exception
     {
-        URI wikisURI = new URI(String.format("%s/wikis", serverURI));
+        URI wikisURI = getURI(String.format("/wikis"));
 
         HttpResponse response = executeGet(wikisURI);
         Wikis wikis = (Wikis) unmarshaller.unmarshal(response.getEntity().getContent());
@@ -218,7 +228,7 @@ public class XWikiRestClient
 
     public List<Space> getSpaces(String wiki) throws Exception
     {
-        URI spacesURI = new URI(String.format("%s/wikis/%s/spaces", serverURI, wiki));
+        URI spacesURI = getURI(String.format("/wikis/%s/spaces", wiki));
 
         HttpResponse response = executeGet(spacesURI);
         Spaces spaces = (Spaces) unmarshaller.unmarshal(response.getEntity().getContent());
@@ -228,7 +238,7 @@ public class XWikiRestClient
 
     public List<PageSummary> getPages(String wiki, String space) throws Exception
     {
-        URI pagesURI = new URI(String.format("%s/wikis/%s/spaces/%s/pages", serverURI, wiki, space));
+        URI pagesURI = getURI(String.format("/wikis/%s/spaces/%s/pages", wiki, space));
 
         HttpResponse response = executeGet(pagesURI);
         Pages pages = (Pages) unmarshaller.unmarshal(response.getEntity().getContent());
@@ -238,7 +248,7 @@ public class XWikiRestClient
 
     public List<ObjectSummary> getObjects(String wiki, String space, String page) throws Exception
     {
-        URI objectsURI = new URI(String.format("%s/wikis/%s/spaces/%s/pages/%s/objects", serverURI, wiki, space, page));
+        URI objectsURI = getURI(String.format("/wikis/%s/spaces/%s/pages/%s/objects", wiki, space, page));
 
         HttpResponse response = executeGet(objectsURI);
         Objects objects = (Objects) unmarshaller.unmarshal(response.getEntity().getContent());
@@ -249,7 +259,7 @@ public class XWikiRestClient
     public List<Attachment> getAttachments(String wiki, String space, String page) throws Exception
     {
         URI attachmentsURI =
-            new URI(String.format("%s/wikis/%s/spaces/%s/pages/%s/attachments", serverURI, wiki, space, page));
+            getURI(String.format("/wikis/%s/spaces/%s/pages/%s/attachments", wiki, space, page));
 
         HttpResponse response = executeGet(attachmentsURI);
         Attachments attachments = (Attachments) unmarshaller.unmarshal(response.getEntity().getContent());
@@ -259,7 +269,7 @@ public class XWikiRestClient
 
     public Syntaxes getSyntaxes() throws Exception
     {
-        URI syntaxesURI = new URI(String.format("%s/syntaxes", serverURI));
+        URI syntaxesURI = getURI(String.format("/syntaxes"));
 
         HttpResponse response = executeGet(syntaxesURI);
         Syntaxes syntaxes = (Syntaxes) unmarshaller.unmarshal(response.getEntity().getContent());
@@ -272,10 +282,10 @@ public class XWikiRestClient
         URI pageURI;
 
         if (language == null || language.equals("")) {
-            pageURI = new URI(String.format("%s/wikis/%s/spaces/%s/pages/%s", serverURI, wiki, space, page));
+            pageURI = getURI(String.format("/wikis/%s/spaces/%s/pages/%s", wiki, space, page));
         } else {
             pageURI =
-                new URI(String.format("%s/wikis/%s/spaces/%s/pages/%s/translations/%s", serverURI, wiki, space, page,
+                getURI(String.format("/wikis/%s/spaces/%s/pages/%s/translations/%s", wiki, space, page,
                     language));
         }
 
@@ -292,11 +302,11 @@ public class XWikiRestClient
 
         if (language == null || language.equals("")) {
             pageURI =
-                new URI(String.format("%s/wikis/%s/spaces/%s/pages/%s/history/%d.%d", serverURI, wiki, space, page,
+                getURI(String.format("/wikis/%s/spaces/%s/pages/%s/history/%d.%d", wiki, space, page,
                     majorVersion, minorVersion));
         } else {
             pageURI =
-                new URI(String.format("%s/wikis/%s/spaces/%s/pages/%s/translations/%s/history/%d.%d", serverURI, wiki,
+                getURI(String.format("/wikis/%s/spaces/%s/pages/%s/translations/%s/history/%d.%d", wiki,
                     space, page, language, majorVersion, minorVersion));
         }
 
@@ -312,10 +322,10 @@ public class XWikiRestClient
         URI historyURI;
 
         if (language == null || language.equals("")) {
-            historyURI = new URI(String.format("%s/wikis/%s/spaces/%s/pages/%s/history", serverURI, wiki, space, page));
+            historyURI = getURI(String.format("/wikis/%s/spaces/%s/pages/%s/history", wiki, space, page));
         } else {
             historyURI =
-                new URI(String.format("%s/wikis/%s/spaces/%s/pages/%s/translations/%s/history", serverURI, wiki, space,
+                getURI(String.format("/wikis/%s/spaces/%s/pages/%s/translations/%s/history", wiki, space,
                     page, language));
         }
 
@@ -327,7 +337,7 @@ public class XWikiRestClient
 
     public org.xwiki.rest.model.jaxb.Class getClass(String wiki, String className) throws Exception
     {
-        URI classURI = new URI(String.format("%s/wikis/%s/classes/%s", serverURI, wiki, className));
+        URI classURI = getURI(String.format("/wikis/%s/classes/%s", wiki, className));
 
         HttpResponse response = executeGet(classURI);
         org.xwiki.rest.model.jaxb.Class clazz = (Class) unmarshaller.unmarshal(response.getEntity().getContent());
@@ -338,7 +348,7 @@ public class XWikiRestClient
 
     public List<Tag> getTags(String wiki, String space, String page) throws Exception
     {
-        URI tagsURI = new URI(String.format("%s/wikis/%s/spaces/%s/pages/%s/tags", serverURI, wiki, space, page));
+        URI tagsURI = getURI(String.format("/wikis/%s/spaces/%s/pages/%s/tags", wiki, space, page));
 
         HttpResponse response = executeGet(tagsURI);
         Tags tags = (Tags) unmarshaller.unmarshal(response.getEntity().getContent());
@@ -349,7 +359,7 @@ public class XWikiRestClient
     public List<Comment> getComments(String wiki, String space, String page) throws Exception
     {
         URI commentsURI =
-            new URI(String.format("%s/wikis/%s/spaces/%s/pages/%s/comments", serverURI, wiki, space, page));
+            getURI(String.format("/wikis/%s/spaces/%s/pages/%s/comments", wiki, space, page));
 
         HttpResponse response = executeGet(commentsURI);
         Comments comments = (Comments) unmarshaller.unmarshal(response.getEntity().getContent());
@@ -361,7 +371,7 @@ public class XWikiRestClient
         throws Exception
     {
         URI propertiesURI =
-            new URI(String.format("%s/wikis/%s/spaces/%s/pages/%s/objects/%s/%d/properties", serverURI, wiki, space,
+            getURI(String.format("/wikis/%s/spaces/%s/pages/%s/objects/%s/%d/properties", wiki, space,
                 page, className, number));
 
         HttpResponse response = executeGet(propertiesURI);
@@ -373,7 +383,7 @@ public class XWikiRestClient
     public Object getObject(String wiki, String space, String page, String className, int number) throws Exception
     {
         URI objectURI =
-            new URI(String.format("%s/wikis/%s/spaces/%s/pages/%s/objects/%s/%d", serverURI, wiki, space, page,
+            getURI(String.format("/wikis/%s/spaces/%s/pages/%s/objects/%s/%d", wiki, space, page,
                 className, number));
 
         HttpResponse response = executeGet(objectURI);
@@ -407,7 +417,7 @@ public class XWikiRestClient
 
     public Space getSpace(String wiki, String space) throws Exception
     {
-        URI spaceURI = new URI(String.format("%s/wikis/%s/spaces/%s", serverURI, wiki, space));
+        URI spaceURI = getURI(String.format("/wikis/%s/spaces/%s", wiki, space));
 
         HttpResponse response = executeGet(spaceURI);
         org.xwiki.rest.model.jaxb.Space result =
@@ -419,7 +429,7 @@ public class XWikiRestClient
     public Comment storeComment(String wiki, String space, String page, Comment comment) throws Exception
     {
         URI commentsURI =
-            new URI(String.format("%s/wikis/%s/spaces/%s/pages/%s/comments", serverURI, wiki, space, page));
+            getURI(String.format("/wikis/%s/spaces/%s/pages/%s/comments", wiki, space, page));
 
         HttpResponse response = executePostXml(commentsURI, comment);
         Comment result = (Comment) unmarshaller.unmarshal(response.getEntity().getContent());
@@ -434,7 +444,7 @@ public class XWikiRestClient
         throws Exception
     {
         URI attachmentURI =
-            new URI(String.format("%s/wikis/%s/spaces/%s/pages/%s/attachments/%s", serverURI, wiki, space, page,
+            getURI(String.format("/wikis/%s/spaces/%s/pages/%s/attachments/%s", wiki, space, page,
                 attachmentName));
 
         DefaultHttpClient httpClient = new DefaultHttpClient();
@@ -471,7 +481,7 @@ public class XWikiRestClient
 
     public List<Tag> getAllTags(String wiki) throws Exception
     {
-        URI allTagsURI = new URI(String.format("%s/wikis/%s/tags"));
+        URI allTagsURI = getURI(String.format("/wikis/%s/tags"));
 
         HttpResponse response = executeGet(allTagsURI);
         Tags result = (Tags) unmarshaller.unmarshal(response.getEntity().getContent());
@@ -481,7 +491,7 @@ public class XWikiRestClient
 
     public List<Tag> addTag(String wiki, String space, String page, String tagName) throws Exception
     {
-        URI tagsURI = new URI(String.format("%s/wikis/%s/spaces/%s/pages/%s/tags", serverURI, wiki, space, page));
+        URI tagsURI = getURI(String.format("/wikis/%s/spaces/%s/pages/%s/tags", wiki, space, page));
 
         HttpResponse response;
         Tag tag = new Tag();
@@ -500,7 +510,7 @@ public class XWikiRestClient
 
     public List<Class> getClasses(String wiki) throws Exception
     {
-        URI classesURI = new URI(String.format("%s/wikis/%s/classes", serverURI, wiki));
+        URI classesURI = getURI(String.format("/wikis/%s/classes", wiki));
 
         HttpResponse response = executeGet(classesURI);
         Classes classes = (Classes) unmarshaller.unmarshal(response.getEntity().getContent());
@@ -514,12 +524,11 @@ public class XWikiRestClient
         URI pageURI;
 
         if (page.getLanguage() == null || page.getLanguage().equals("")) {
-            pageURI =
-                new URI(String.format("%s/wikis/%s/spaces/%s/pages/%s", serverURI, page.getWiki(), page.getSpace(),
-                    page.getName()));
+            pageURI = getURI(String.format("/wikis/%s/spaces/%s/pages/%s", page.getWiki(), page.getSpace(),
+                page.getName()));
         } else {
             pageURI =
-                new URI(String.format("%s/wikis/%s/spaces/%s/pages/%s/translations/%s", serverURI, page.getWiki(),
+                getURI(String.format("/wikis/%s/spaces/%s/pages/%s/translations/%s", page.getWiki(),
                     page.getSpace(), page.getName(), page.getLanguage()));
         }
 
@@ -533,7 +542,7 @@ public class XWikiRestClient
         // FIXME: REFACTORING: Check conditions
         if (o.getNumber() == -1) {
             URI objectURI =
-                new URI(String.format("%s/wikis/%s/spaces/%s/pages/%s/objects", serverURI, o.getWiki(), o.getSpace(),
+                getURI(String.format("/wikis/%s/spaces/%s/pages/%s/objects", o.getWiki(), o.getSpace(),
                     o.getPageName()));
 
             HttpResponse response = executePostXml(objectURI, o);
@@ -541,7 +550,7 @@ public class XWikiRestClient
             return result;
         } else {
             URI objectURI =
-                new URI(String.format("%s/wikis/%s/spaces/%s/pages/%s/objects/%s/%d", serverURI, o.getWiki(),
+                getURI(String.format("/wikis/%s/spaces/%s/pages/%s/objects/%s/%d", o.getWiki(),
                     o.getSpace(), o.getPageName(), o.getClassName(), o.getNumber()));
 
             HttpResponse response = executePutXml(objectURI, o);
@@ -552,7 +561,7 @@ public class XWikiRestClient
 
     public void removeTag(String wiki, String space, String page, String tagName) throws Exception
     {
-        URI tagsURI = new URI(String.format("%s/wikis/%s/spaces/%s/pages/%s/tags", serverURI, wiki, space, page));
+        URI tagsURI = getURI(String.format("/wikis/%s/spaces/%s/pages/%s/tags", wiki, space, page));
 
         List<Tag> tags = getTags(wiki, space, page);
 
@@ -575,10 +584,10 @@ public class XWikiRestClient
         URI pageURI;
 
         if (language == null || language.equals("")) {
-            pageURI = new URI(String.format("%s/wikis/%s/spaces/%s/pages/%s", serverURI, wiki, space, page));
+            pageURI = getURI(String.format("/wikis/%s/spaces/%s/pages/%s", wiki, space, page));
         } else {
             pageURI =
-                new URI(String.format("%s/wikis/%s/spaces/%s/pages/%s/translations/%s", serverURI, wiki, space, page,
+                getURI(String.format("/wikis/%s/spaces/%s/pages/%s/translations/%s", wiki, space, page,
                     language));
         }
 
@@ -597,10 +606,10 @@ public class XWikiRestClient
         URI pageURI;
 
         if (language == null || language.equals("")) {
-            pageURI = new URI(String.format("%s/wikis/%s/spaces/%s/pages/%s", serverURI, wiki, space, page));
+            pageURI = getURI(String.format("/wikis/%s/spaces/%s/pages/%s", wiki, space, page));
         } else {
             pageURI =
-                new URI(String.format("%s/wikis/%s/spaces/%s/pages/%s/translations/%s", serverURI, wiki, space, page,
+                getURI(String.format("/wikis/%s/spaces/%s/pages/%s/translations/%s", wiki, space, page,
                     language));
         }
 
@@ -613,7 +622,7 @@ public class XWikiRestClient
     public void removeObject(String wiki, String space, String page, String className, int number) throws Exception
     {
         URI objectURI =
-            new URI(String.format("%s/wikis/%s/spaces/%s/pages/%s/objects/%s/%d", serverURI, wiki, space, page,
+            getURI(String.format("/wikis/%s/spaces/%s/pages/%s/objects/%s/%d", wiki, space, page,
                 className, number));
 
         // FIXME: REFACTORING: Handle error codes
@@ -625,10 +634,10 @@ public class XWikiRestClient
         URI pageURI;
 
         if (language == null || language.equals("")) {
-            pageURI = new URI(String.format("%s/wikis/%s/spaces/%s/pages/%s", serverURI, wiki, space, page));
+            pageURI = getURI(String.format("/wikis/%s/spaces/%s/pages/%s", wiki, space, page));
         } else {
             pageURI =
-                new URI(String.format("%s/wikis/%s/spaces/%s/pages/%s/translations/%s", serverURI, wiki, space, page,
+                getURI(String.format("/wikis/%s/spaces/%s/pages/%s/translations/%s", wiki, space, page,
                     language));
         }
 
@@ -639,7 +648,7 @@ public class XWikiRestClient
     public void removeAttachment(String wiki, String space, String page, String attachmentName) throws Exception
     {
         URI attachmentURI =
-            new URI(String.format("%s/wikis/%s/spaces/%s/pages/%s/attachments/%s", serverURI, wiki, space, page,
+            getURI(String.format("/wikis/%s/spaces/%s/pages/%s/attachments/%s", wiki, space, page,
                 attachmentName));
 
         // FIXME: REFACTORING: Handle error codes
