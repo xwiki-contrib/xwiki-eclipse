@@ -42,6 +42,8 @@ import org.xwiki.eclipse.ui.editors.contentassist.XWikiStyleContentAssistProcess
 import org.xwiki.eclipse.ui.editors.contentassist.strategies.TableAutoEditStrategy;
 import org.xwiki.eclipse.ui.editors.contentassist.strategies.VelocityAutoEditStrategy;
 import org.xwiki.eclipse.ui.editors.contentassist.strategies.XWikiMarkupAutoEditStrategy;
+import org.xwiki.eclipse.ui.editors.scanners.GroovyPartitionScanner;
+import org.xwiki.eclipse.ui.editors.scanners.GroovyScanner;
 import org.xwiki.eclipse.ui.editors.scanners.VelocityScanner;
 import org.xwiki.eclipse.ui.editors.scanners.XWikiMarkupScanner;
 import org.xwiki.eclipse.ui.editors.scanners.XWikiPartitionScanner;
@@ -78,6 +80,16 @@ public class XWikiSourceViewerConfiguration extends TextSourceViewerConfiguratio
         reconciler.setDamager(dr, XWikiPartitionScanner.XWIKI_TABLE);
         reconciler.setRepairer(dr, XWikiPartitionScanner.XWIKI_TABLE);
 
+        /* Use the Velocity Scanner for velocity blocks */
+        dr = new DefaultDamagerRepairer(new VelocityScanner());
+        reconciler.setDamager(dr, XWikiPartitionScanner.VELOCITY);
+        reconciler.setRepairer(dr, XWikiPartitionScanner.VELOCITY);
+
+        /* Use the Groovy Scanner for groovy blocks */
+        dr = new DefaultDamagerRepairer(new GroovyScanner());
+        reconciler.setDamager(dr, XWikiPartitionScanner.GROOVY);
+        reconciler.setRepairer(dr, XWikiPartitionScanner.GROOVY);
+
         /* Use a uniform style for html blocks. */
         RuleBasedScanner codeScanner = new RuleBasedScanner();
         codeScanner.setDefaultReturnToken(new Token(Preferences.getDefault().getTextAttribute(Preferences.Style.HTML)));
@@ -99,10 +111,10 @@ public class XWikiSourceViewerConfiguration extends TextSourceViewerConfiguratio
         reconciler.setDamager(dr, XWikiPartitionScanner.XWIKI_PRE);
         reconciler.setRepairer(dr, XWikiPartitionScanner.XWIKI_PRE);
 
-        /* Use the Velocity scanner for Velocity blocks. */
-        dr = new DefaultDamagerRepairer(new VelocityScanner());
-        reconciler.setDamager(dr, XWikiPartitionScanner.VELOCITY);
-        reconciler.setRepairer(dr, XWikiPartitionScanner.VELOCITY);
+        RuleBasedScanner javadocScanner = new GroovyScanner();
+        dr = new DefaultDamagerRepairer(javadocScanner);
+        reconciler.setDamager(dr, GroovyPartitionScanner.GROOVY_DEFAULT);
+        reconciler.setRepairer(dr, GroovyPartitionScanner.GROOVY_DEFAULT);
 
         return reconciler;
     }

@@ -49,8 +49,10 @@ public class XWikiPartitionScanner extends RuleBasedPartitionScanner
 
     public static final String VELOCITY = "__velocity";
 
+    public static final String GROOVY = "__groovy";
+
     public static final String[] ALL_PARTITIONS = {XWIKI_HTML, XWIKI_CODE, XWIKI_PRE, XWIKI_DL, XWIKI_TABLE,
-    XWIKI_STYLE, VELOCITY};
+    XWIKI_STYLE, VELOCITY, GROOVY};
 
     public XWikiPartitionScanner()
     {
@@ -61,6 +63,7 @@ public class XWikiPartitionScanner extends RuleBasedPartitionScanner
         IToken dlToken = new Token(XWIKI_DL);
         IToken styleToken = new Token(XWIKI_STYLE);
         IToken velocityToken = new Token(VELOCITY);
+        IToken groovyToken = new Token(GROOVY);
 
         List<IPredicateRule> rules = new ArrayList<IPredicateRule>();
 
@@ -73,6 +76,7 @@ public class XWikiPartitionScanner extends RuleBasedPartitionScanner
         rules.add(new MultiLineRule("<dl>", "</dl>", dlToken));
         rules.add(new MultiLineRule("{{velocity", "{{/velocity}}", velocityToken));
         rules.add(new BalancedParenthesisRule('#', velocityToken));
+        rules.add(new MultiLineRule("{{groovy", "{{/groovy}}", groovyToken));
 
         setPredicateRules(rules.toArray(new IPredicateRule[rules.size()]));
     }

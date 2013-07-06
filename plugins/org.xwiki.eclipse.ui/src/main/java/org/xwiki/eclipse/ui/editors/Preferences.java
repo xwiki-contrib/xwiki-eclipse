@@ -56,7 +56,9 @@ public class Preferences
         IDENTIFIER,
         CODE,
         HTML,
-        DEFINITION_TERM
+        DEFINITION_TERM,
+        COMMENT,
+        DEFAULT
     }
 
     private static Preferences sharedInstance;
@@ -129,7 +131,13 @@ public class Preferences
         stylesToTextAttributeMap.put(Style.HTML,
             new TextAttribute(Display.getDefault().getSystemColor(SWT.COLOR_DARK_YELLOW), null, SWT.NONE));
 
-        defaultTextAttribute = new TextAttribute(Display.getDefault().getSystemColor(SWT.COLOR_BLUE), null, SWT.NONE);
+        attribute = new TextAttribute(Display.getDefault().getSystemColor(SWT.COLOR_GRAY), null, SWT.NONE);
+        stylesToTextAttributeMap.put(Style.COMMENT, attribute);
+
+        attribute = new TextAttribute(Display.getDefault().getSystemColor(SWT.COLOR_BLACK ), null, SWT.NONE);
+        stylesToTextAttributeMap.put(Style.DEFAULT, attribute);
+
+        defaultTextAttribute = new TextAttribute(Display.getDefault().getSystemColor(SWT.COLOR_BLACK), null, SWT.NONE);
     }
 
     public static Preferences getDefault()

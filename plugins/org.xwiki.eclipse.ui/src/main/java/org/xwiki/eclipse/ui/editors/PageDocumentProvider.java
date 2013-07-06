@@ -21,15 +21,18 @@
 package org.xwiki.eclipse.ui.editors;
 
 import org.eclipse.core.runtime.CoreException;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentPartitioner;
 import org.eclipse.jface.text.rules.FastPartitioner;
+import org.eclipse.jface.text.rules.RuleBasedPartitionScanner;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.editors.text.FileDocumentProvider;
 import org.xwiki.eclipse.model.XWikiEclipsePage;
+import org.xwiki.eclipse.ui.editors.scanners.GroovyPartitionScanner;
 import org.xwiki.eclipse.ui.editors.scanners.XWikiPartitionScanner;
 import org.xwiki.eclipse.ui.utils.XWikiEclipseSafeRunnable;
 
@@ -52,10 +55,25 @@ public class PageDocumentProvider extends FileDocumentProvider
         if (element instanceof PageEditorInput) {
             PageEditorInput pageEditorInput = (PageEditorInput) element;
 
-            IDocument document = new Document(pageEditorInput.getPage().getContent());
+            String content = pageEditorInput.getPage().getContent();
+            IDocument document = new Document(content);
 
-            IDocumentPartitioner partitioner =
-                new FastPartitioner(new XWikiPartitionScanner(), XWikiPartitionScanner.ALL_PARTITIONS);
+            IDocumentPartitioner partitioner;
+
+            // to get groovy code for use by $xwiki.parseGroovyFromPage to color with groovy
+            // we need some custom detection
+            if (content.contains("public class")) {
+                try {
+                    RuleBasedPartitionScanner groovyScanner = new GroovyPartitionScanner();
+                    partitioner = new FastPartitioner(groovyScanner, GroovyPartitionScanner.LEGAL_CONTENT_TYPES);
+                } catch (Throwable e) {
+                    e.printStackTrace();
+                    partitioner = new FastPartitioner(new XWikiPartitionScanner(), XWikiPartitionScanner.ALL_PARTITIONS);
+                };
+            } else  {
+                partitioner = new FastPartitioner(new XWikiPartitionScanner(), XWikiPartitionScanner.ALL_PARTITIONS);
+            }
+
             partitioner.connect(document);
             document.setDocumentPartitioner(partitioner);
 

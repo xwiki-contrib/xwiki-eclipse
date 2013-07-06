@@ -43,6 +43,12 @@ public class XWikiMarkupScanner extends RuleBasedScanner
 {
     public XWikiMarkupScanner()
     {
+        List<IRule> rules = getRules();
+        setRules(rules.toArray(new IRule[rules.size()]));
+    }
+
+    protected List<IRule> getRules()
+    {
         IToken boldToken = new Token(Preferences.getDefault().getTextAttribute(Preferences.Style.BOLD));
 
         IToken italicToken = new Token(Preferences.getDefault().getTextAttribute(Preferences.Style.ITALIC));
@@ -64,18 +70,25 @@ public class XWikiMarkupScanner extends RuleBasedScanner
         IToken imageToken = new Token(Preferences.getDefault().getTextAttribute(Preferences.Style.IMAGE));
 
         IToken identifierToken = new Token(Preferences.getDefault().getTextAttribute(Preferences.Style.IDENTIFIER));
-
+        IToken macroToken = new Token(Preferences.getDefault().getTextAttribute(Preferences.Style.MACRO));
         IToken otherStyleToken = new Token(Preferences.getDefault().getTextAttribute(Preferences.Style.UNDERLINE));
 
         List<IRule> rules = new ArrayList<IRule>();
 
         HeaderRule headers = new HeaderRule();
-        headers.add("^= .|^1 .", heading1Token);
-        headers.add("^== .|^1\\.1 .", heading2Token);
-        headers.add("^=== .|^1\\.1\\.1 .", heading3Token);
-        headers.add("^==== .|^1\\.1\\.1\\.1 .", heading4Token);
-        headers.add("^===== .|^1\\.1\\.1\\.1\\.1 .", heading5Token);
-        headers.add("^====== .|^1\\.1\\.1\\.1\\.1\\.1 .", heading6Token);
+        headers.add("^= .", heading1Token);
+        headers.add("^== .", heading2Token);
+        headers.add("^=== .", heading3Token);
+        headers.add("^==== .", heading4Token);
+        headers.add("^===== .", heading5Token);
+        headers.add("^====== .", heading6Token);
+        headers.add("^1 .", heading1Token);
+        headers.add("^1\\.1 .", heading2Token);
+        headers.add("^1\\.1\\.1 .", heading3Token);
+        headers.add("^1\\.1\\.1\\.1 .", heading4Token);
+        headers.add("^1\\.1\\.1\\.1\\.1 .", heading5Token);
+        headers.add("^1\\.1\\.1\\.1\\.1\\.1 .", heading6Token);
+        rules.add(headers);
 
         rules.add(new ListRule(Constants.LIST_BULLET_PATTERN, listBulletToken));
         rules.add(new DefinitionListRule(Constants.DEFINITION_TERM_PATTERN, definitionTermToken));
@@ -96,8 +109,9 @@ public class XWikiMarkupScanner extends RuleBasedScanner
         rules.add(new SingleLineRule("{image:", "}", imageToken, '\\'));
         rules.add(new SingleLineRule("image:", " ", imageToken, '\\'));
 
-        rules.add(new BalancedParenthesisRule('$', identifierToken));
+        rules.add(new SingleLineRule("{{{", "}}}", otherStyleToken));
+        rules.add(new SingleLineRule("{{", "}}", macroToken));
 
-        setRules(rules.toArray(new IRule[rules.size()]));
+        return rules;
     }
 }
