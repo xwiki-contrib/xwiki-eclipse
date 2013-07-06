@@ -906,14 +906,18 @@ public class RestRemoteXWikiDataStorage implements IRemoteXWikiDataStorage
     @Override
     public boolean pageExists(String wiki, String space, String pageName, String language)
         throws XWikiEclipseStorageException
-    {
-        XWikiEclipsePageSummary pageSummary = getPageSummary(wiki, space, pageName, language);
-        if (pageSummary != null) {
-            return true;
+        {
+        try {
+            XWikiEclipsePageSummary pageSummary = getPageSummary(wiki, space, pageName, language);
+            if (pageSummary != null) {
+                return true;
+            }
+        } catch (XWikiEclipseStorageException e) {
+            return false;
         }
 
         return false;
-    }
+        }
 
     /**
      * {@inheritDoc}
