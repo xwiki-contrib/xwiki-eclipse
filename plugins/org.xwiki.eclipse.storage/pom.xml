@@ -23,7 +23,7 @@
   <packaging>eclipse-plugin</packaging>
 
   <properties>
-    <xwiki.version>3.1-SNAPSHOT</xwiki.version>
+    <xwiki.version>3.1</xwiki.version>
   </properties>
   <build>
     <plugins>
