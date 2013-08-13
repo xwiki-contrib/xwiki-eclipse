@@ -22,3 +22,8 @@ Require-Bundle: org.eclipse.ui;bundle-version="3.6.2",
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.xwiki.eclipse.ui.perspectives
 Bundle-ActivationPolicy: lazy
+Bundle-ClassPath: lib/javacc-5.0.jar,
+ .,
+ lib/xwiki-rendering-wikimodel-4.2.jar,
+ lib/xwiki-commons-velocity-4.2.jar,
+ lib/slf4j-api-1.7.5.jar

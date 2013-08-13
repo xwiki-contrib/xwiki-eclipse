@@ -113,7 +113,8 @@ public class XWikiNavigator extends ViewPart
         getSite().setSelectionProvider(navigatorTreeViewer);
 
         IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
-        navigatorTreeViewer.setInput(projects[0]);
+        if (projects.length>0) 
+         navigatorTreeViewer.setInput(projects[0]);
 
         dataManagerActionProvider = new DataManagerActionProvider();
         propertyActionProvider = new PropertyActionProvider(navigatorTreeViewer);

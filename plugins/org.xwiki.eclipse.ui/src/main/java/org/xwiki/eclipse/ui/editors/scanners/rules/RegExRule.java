@@ -24,6 +24,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.eclipse.jface.text.rules.ICharacterScanner;
+import org.eclipse.jface.text.rules.IPredicateRule;
 import org.eclipse.jface.text.rules.IRule;
 import org.eclipse.jface.text.rules.IToken;
 import org.eclipse.jface.text.rules.Token;
@@ -34,7 +35,7 @@ import org.xwiki.eclipse.ui.editors.utils.CharacterScannerCharSequence;
  * 
  * @version $Id$
  */
-public class RegExRule implements IRule
+public class RegExRule implements IPredicateRule
 {
     /**
      * The regular expression pattern.
@@ -68,7 +69,7 @@ public class RegExRule implements IRule
      * (non-Javadoc)
      * @see org.eclipse.jface.text.rules.IRule#evaluate(org.eclipse.jface.text.rules.ICharacterScanner)
      */
-    public IToken evaluate(ICharacterScanner scanner)
+    public IToken evaluate(ICharacterScanner scanner, boolean resume)
     {
         /* Wrap the character scanner into a char sequence to be used later for pattern matching. */
         CharacterScannerCharSequence charSequence = new CharacterScannerCharSequence(scanner);
@@ -110,4 +111,15 @@ public class RegExRule implements IRule
         this.columnConstraint = columnConstraint;
     }
 
+    @Override
+    public IToken getSuccessToken()
+    {
+        return token;
+    }
+
+    @Override
+    public IToken evaluate(ICharacterScanner scanner)
+    {
+        return evaluate(scanner, false);
+    }
 }

@@ -21,7 +21,6 @@
 package org.xwiki.eclipse.ui.editors;
 
 import org.eclipse.core.runtime.CoreException;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.jface.text.Document;
@@ -29,11 +28,14 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentPartitioner;
 import org.eclipse.jface.text.rules.FastPartitioner;
 import org.eclipse.jface.text.rules.RuleBasedPartitionScanner;
+import org.eclipse.jface.text.source.AnnotationModel;
+import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.editors.text.FileDocumentProvider;
 import org.xwiki.eclipse.model.XWikiEclipsePage;
 import org.xwiki.eclipse.ui.editors.scanners.GroovyPartitionScanner;
 import org.xwiki.eclipse.ui.editors.scanners.XWikiPartitionScanner;
+import org.xwiki.eclipse.ui.editors.scanners.XWikiAdvancedPartitionScanner;
 import org.xwiki.eclipse.ui.utils.XWikiEclipseSafeRunnable;
 
 /**
@@ -41,6 +43,7 @@ import org.xwiki.eclipse.ui.utils.XWikiEclipseSafeRunnable;
  */
 public class PageDocumentProvider extends FileDocumentProvider
 {
+
     private PageEditor pageEditor;
 
     public PageDocumentProvider(PageEditor pageEditor)
@@ -133,6 +136,13 @@ public class PageDocumentProvider extends FileDocumentProvider
         }
 
         super.doSaveDocument(monitor, element, document, overwrite);
+    }
+
+    @Override
+    protected IAnnotationModel createAnnotationModel(Object element) throws CoreException
+    {
+        // TODO Auto-generated method stub
+        return new AnnotationModel();
     }
 
 }
