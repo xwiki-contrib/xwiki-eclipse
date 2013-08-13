@@ -53,6 +53,15 @@ import org.eclipse.jface.text.rules.WordPatternRule;
 import org.eclipse.jface.text.rules.WordRule;
 import org.xwiki.eclipse.ui.editors.Preferences;
 
+/**
+ * This scanner is used for syntax highlighting of Groovy Code
+ * It is activated from XWikiSourceViewerConfiguration#getPresentationReconciler
+ * 
+ * @see XWikiSourceViewerConfiguration#getPresentationReconciler
+
+ * Modified from GroovyPartitionScanner from Groovy Eclipse Plugin
+ * http://groovy.codehaus.org/Eclipse+Plugin 
+ */
 public class GroovyScanner extends RuleBasedScanner {
 
     /**

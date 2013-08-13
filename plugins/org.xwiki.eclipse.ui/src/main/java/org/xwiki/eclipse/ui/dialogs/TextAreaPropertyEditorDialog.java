@@ -48,6 +48,7 @@ import org.xwiki.eclipse.model.XWikiEclipseObjectProperty;
 import org.xwiki.eclipse.storage.XWikiEclipseStorageException;
 import org.xwiki.eclipse.ui.editors.XWikiSourceViewerConfiguration;
 import org.xwiki.eclipse.ui.editors.scanners.XWikiPartitionScanner;
+import org.xwiki.eclipse.ui.editors.scanners.XWikiAdvancedPartitionScanner;
 
 /**
  * @version $Id$
@@ -100,7 +101,7 @@ public class TextAreaPropertyEditorDialog extends Dialog
 
         IDocument document = new Document(property.getValue() != null ? (String) property.getValue() : "");
         IDocumentPartitioner partitioner =
-            new FastPartitioner(new XWikiPartitionScanner(), XWikiPartitionScanner.ALL_PARTITIONS);
+            new FastPartitioner(new XWikiAdvancedPartitionScanner(), XWikiAdvancedPartitionScanner.ALL_PARTITIONS);
         partitioner.connect(document);
         document.setDocumentPartitioner(partitioner);
 

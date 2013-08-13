@@ -86,12 +86,16 @@
                   name="separator1"
                   visible="true">
             </separator>
+            <separator
+                  name="separator2"
+                  visible="true">
+            </separator>
             <command
                   commandId="org.xwiki.eclipse.ui.commands.OpenPage"
                   id="Open page">
             </command>
             <separator
-                  name="separator2"
+                  name="separator3"
                   visible="true">
             </separator>
             <command

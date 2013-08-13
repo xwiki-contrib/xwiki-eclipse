@@ -20,6 +20,8 @@
  */
 package org.xwiki.eclipse.ui.editors;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.ResourceBundle;
 
 import org.eclipse.core.runtime.CoreException;
@@ -31,12 +33,18 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.IContributionItem;
+import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.source.Annotation;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.IVerticalRuler;
+import org.eclipse.jface.text.source.projection.ProjectionAnnotation;
+import org.eclipse.jface.text.source.projection.ProjectionAnnotationModel;
+import org.eclipse.jface.text.source.projection.ProjectionSupport;
+import org.eclipse.jface.text.source.projection.ProjectionViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.FillLayout;
@@ -49,6 +57,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.forms.widgets.Form;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
 import org.eclipse.ui.texteditor.TextOperationAction;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
@@ -84,6 +93,16 @@ public class PageEditor extends TextEditor implements ICoreEventListener
     private EditConflictAction editConflictAction;
 
     private Object outlinePage;
+    
+    private ProjectionSupport projectionSupport;
+    
+    private ColorManager colorManager;
+    
+    private Annotation[] oldAnnotations;
+ 
+    private ProjectionAnnotationModel annotationModel;
+    
+ 
 
     private class EditConflictAction extends Action
     {
@@ -105,8 +124,9 @@ public class PageEditor extends TextEditor implements ICoreEventListener
     public PageEditor()
     {
         super();
-        setDocumentProvider(new PageDocumentProvider(this));
+        colorManager = new ColorManager();
         setSourceViewerConfiguration(new XWikiSourceViewerConfiguration(this));
+        setDocumentProvider(new PageDocumentProvider(this));
     }
 
     @Override
@@ -116,27 +136,35 @@ public class PageEditor extends TextEditor implements ICoreEventListener
 
         ResourceBundle bundle = ResourceBundle.getBundle("org.xwiki.eclipse.ui.editors.Editor");
 
+        // adding content format action
+        setAction("ContentFormatProposal", new TextOperationAction(bundle, "ContentFormatProposal.", this, ISourceViewer.FORMAT));
+
         Action action =
             new TextOperationAction(bundle, "ContentAssistProposal.", this, ISourceViewer.CONTENTASSIST_PROPOSALS);
         String id = ITextEditorActionDefinitionIds.CONTENT_ASSIST_PROPOSALS;
         action.setActionDefinitionId(id);
         setAction("ContentAssistProposal", action);
-        markAsStateDependentAction("ContentAssistProposal", true);
+        markAsStateDependentAction("ContentAssistProposal", true);        
     }
 
     @Override
     protected ISourceViewer createSourceViewer(Composite parent, IVerticalRuler ruler, int styles)
     {
-        ISourceViewer viewer = super.createSourceViewer(parent, ruler, styles);
+        ISourceViewer viewer = new ProjectionViewer(parent, ruler, getOverviewRuler(), isOverviewRulerVisible(), styles);
+
+        // ensure decoration support has been created and configured.
+        getSourceViewerDecorationSupport(viewer);
+
         viewer.getTextWidget().setWordWrap(true);
 
         return viewer;
     }
-
+    
     @Override
     public void dispose()
     {
         NotificationManager.getDefault().removeListener(this);
+        colorManager.dispose();
         super.dispose();
     }
 
@@ -154,6 +182,8 @@ public class PageEditor extends TextEditor implements ICoreEventListener
     @Override
     public void createPartControl(Composite parent)
     {
+        try {
+        /*
         FormToolkit toolkit = new FormToolkit(parent.getDisplay());
         form = toolkit.createForm(parent);
         toolkit.decorateFormHeading(form);
@@ -166,15 +196,33 @@ public class PageEditor extends TextEditor implements ICoreEventListener
         editorComposite.setLayout(new FillLayout());
         GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, true).applyTo(editorComposite);
         super.createPartControl(editorComposite);
+        */
+        super.createPartControl(parent);
 
         PageEditorInput pageEditorInput = (PageEditorInput) getEditorInput();
         if (pageEditorInput.isReadOnly()) {
             getSourceViewer().getTextWidget().setBackground(new Color(Display.getDefault(), 248, 248, 248));
         }
-
+        
+        ProjectionViewer viewer =(ProjectionViewer)getSourceViewer();
+        
+        projectionSupport = new ProjectionSupport(viewer,getAnnotationAccess(),getSharedColors());
+        projectionSupport.install();
+        
+        //turn projection mode on
+        viewer.doOperation(ProjectionViewer.TOGGLE);
+        
+        annotationModel = viewer.getProjectionAnnotationModel();
+        
+        if (annotationModel==null)
+            System.out.println("Failed to create annotation model");
+        
         updateInfo();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
-
+    
     @Override
     protected void doSetInput(IEditorInput input) throws CoreException
     {
@@ -624,4 +672,39 @@ public class PageEditor extends TextEditor implements ICoreEventListener
         return super.getAdapter(adapter);
     }
 
+    public void updateFoldingStructure(ArrayList positions)
+    {
+        Annotation[] annotations = new Annotation[positions.size()];
+        
+        //this will hold the new annotations along
+        //with their corresponding positions
+        HashMap newAnnotations = new HashMap();
+        
+        for(int i =0;i<positions.size();i++)
+        {
+        	// System.out.println("Position " + i + " " + positions.get(i).toString());
+        	
+            ProjectionAnnotation annotation = new ProjectionAnnotation();
+            
+            newAnnotations.put(annotation,positions.get(i));
+            
+            annotations[i]=annotation;
+        }
+        
+        if (annotationModel!=null) {
+         annotationModel.modifyAnnotations(oldAnnotations,newAnnotations,null);
+        } else {
+            System.out.println("Annotation Model is not ready");
+        }
+        
+        oldAnnotations=annotations;
+    }
+    
+    /**
+     * Adding context menus in the editor
+     */
+    protected void editorContextMenuAboutToShow(IMenuManager menu) {
+       	addAction(menu, "ContentFormatProposal");
+        super.editorContextMenuAboutToShow(menu);
+    }
 }

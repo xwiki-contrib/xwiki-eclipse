@@ -37,6 +37,10 @@ import org.xwiki.eclipse.ui.editors.scanners.rules.ListRule;
 import org.xwiki.eclipse.ui.editors.scanners.rules.RegExRule;
 
 /**
+ * This scanner is used for Syntax Highlighting of XWiki Syntax (1.0 and 2.0)
+ * It is activated from XWikiSourceViewerConfiguration#getPresentationReconciler
+ * 
+ * @see XWikiSourceViewerConfiguration#getPresentationReconciler
  * @version $Id$
  */
 public class XWikiMarkupScanner extends RuleBasedScanner
