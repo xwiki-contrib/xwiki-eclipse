@@ -34,6 +34,10 @@ import org.eclipse.jface.text.rules.WordRule;
 import org.xwiki.eclipse.ui.editors.Preferences;
 
 /**
+ * This scanner is used for Syntax Highlighting of Velocity Code
+ * It is activated from XWikiSourceViewerConfiguration#getPresentationReconciler
+ * 
+ * @see XWikiSourceViewerConfiguration#getPresentationReconciler
  * @version $Id$
  */
 public class VelocityScanner extends XWikiMarkupScanner

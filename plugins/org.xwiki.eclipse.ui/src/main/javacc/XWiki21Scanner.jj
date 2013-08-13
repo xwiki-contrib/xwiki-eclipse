@@ -1,0 +1,1032 @@
+/*
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ */
+options
+{
+    STATIC = false;
+    UNICODE_INPUT = true;
+    ERROR_REPORTING = false;   
+    TOKEN_EXTENDS = "org.xwiki.eclipse.ui.parser.Partition";
+    // Uncomment below for debugging
+    //DEBUG_PARSER = true;
+    //DEBUG_LOOKAHEAD = true;
+    //DEBUG_TOKEN_MANAGER = true;
+}
+
+PARSER_BEGIN(XWikiScanner)
+/*
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ */
+package org.xwiki.eclipse.ui.parser.xwiki21;
+
+import java.util.Stack;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
+
+import org.xwiki.rendering.wikimodel.impl.IWikiScannerContext;
+
+import org.xwiki.eclipse.ui.parser.PartitionsBuilder;
+import org.xwiki.eclipse.ui.parser.Partition;
+import org.xwiki.velocity.internal.util.VelocityBlock.VelocityType;
+import org.xwiki.velocity.internal.util.VelocityParser;
+import org.xwiki.velocity.internal.util.VelocityParserContext;
+
+
+/**
+ * This is the internal wiki page parser generated from the grammar file. 
+ * It allows to parse XWiki Syntax code including velocity code
+ * to allow partitionning which permits code folding and indentation.
+ *
+ * <p>This code was originally authored by Mikhail Kotelnikov (Cognium Systems SA) and other contributors (including
+ * XWiki committers), under the ASL 2.0 license (http://www.apache.org/licenses/LICENSE-2.0).</p>
+ */
+public class XWikiScanner {
+    private PartitionsBuilder partitionsBuilder;
+
+    public void parse(PartitionsBuilder partitionsBuilder) throws ParseException {
+        this.partitionsBuilder = partitionsBuilder;
+        doParse();
+    }
+    
+    public Map<String, Object> getMacroAttributes(String image) {
+    	Matcher nameMatcher = token_source.MACRO_NAME_PATTERN.matcher(image);
+        if (!nameMatcher.find()) {
+            throw new RuntimeException(String.format("Macro name pattern did not match [%s].", image));
+        }
+		String name = nameMatcher.group(1);
+    	
+    	Map<String, Object> attributes = new HashMap<String, Object>();
+    	attributes.put("NAME", name);
+    	
+    	return attributes;     
+    }
+    
+    public Map<String, Object> getHeaderAttributes(String image) {
+    	int level = image.trim().length();
+    	
+    	Map<String, Object> attributes = new HashMap<String, Object>();
+    	attributes.put("LEVEL", level);
+    	
+    	return attributes;
+    }
+    
+    public Map<String, Object> getListItemAttributes(String image) {
+    	int level = image.trim().length();
+    	
+    	Map<String, Object> attributes = new HashMap<String, Object>();
+    	attributes.put("LEVEL", level);
+    	
+    	return attributes;
+    }
+    
+    /**
+     * This code implements an additional parsing of Velocity Macros using the Velocity jjtree parser
+     */
+    void parseVelocity(String text, int offset) {
+        int level = 0;
+        char[] array = text.toCharArray();
+        
+		StringBuffer velocityBlock = new StringBuffer();
+        VelocityParserContext context = new VelocityParserContext();
+        VelocityParser velocityParser = new VelocityParser();
+        int i = 0;
+        
+        for (; i < array.length;) {
+            char c = array[i];
+
+            context.setType(null);
+
+            velocityBlock.setLength(0);
+
+        	try {
+                if (c == '#') {
+                	int startOffset = i;
+                    i = velocityParser.getKeyWord(array, i, velocityBlock, context);
+   
+                    if (velocityBlock.toString().startsWith("#if")) { 
+                       level++;
+                       partitionsBuilder.begin(Partition.Type.VELOCITY_IF, null, startOffset + offset);
+                       // System.out.println("START IF: " + startOffset + " (" + (startOffset + offset) + ")");
+                    } else if (velocityBlock.toString().startsWith("#foreach")) {
+                        level++;
+                    	partitionsBuilder.begin(Partition.Type.VELOCITY_FOREACH, null, startOffset + offset + 1);
+                        // System.out.println("START FOREACH: " + startOffset + " (" + (startOffset + offset) + ")");
+                    } else if (velocityBlock.toString().startsWith("#macro")) {
+                        level++;
+                    	partitionsBuilder.begin(Partition.Type.VELOCITY_MACRO, null, startOffset + offset + 1);
+                        // System.out.println("START FOREACH: " + startOffset + " (" + (startOffset + offset) + ")");
+                    } else if(velocityBlock.toString().startsWith("#end")) {
+                        if (level>0) {
+                         level--;
+                         // System.out.println("END: " + startOffset + " (" + (startOffset + offset) + ")");
+                    	 partitionsBuilder.end(startOffset + 5 + offset);
+                    	}
+                    }
+                    
+                } else if (c == '$') {
+                    i = velocityParser.getVar(array, i, velocityBlock, context);
+                } else if (c == '\\') {
+  
+                    if (array.length > i + 1) {
+                        char escapedChar = array[i + 1];
+
+                        if (escapedChar == '\\') {
+                            c = escapedChar;
+                            i++;
+                        } else {
+                            int newI = i + 1;
+                            if (escapedChar == '#') {
+                                newI = velocityParser.getKeyWord(array, newI, velocityBlock, context);
+                            } else if (escapedChar == '$') {
+                                newI = velocityParser.getVar(array, newI, velocityBlock, context);
+                            }
+
+                            if (context.getType() != VelocityType.COMMENT) {
+                                c = escapedChar;
+                                i++;
+                            }
+
+                            context.setType(null);
+                        }
+                    }
+                } else {
+                	i++;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                i++;
+            }
+        }
+        
+        while (level>0) {
+            level--;
+            partitionsBuilder.end(i + offset);
+        }
+
+ }
+    
+}
+
+PARSER_END(XWikiScanner)
+
+TOKEN_MGR_DECLS: {
+
+    public static final Pattern MACRO_NAME_PATTERN = Pattern.compile("^\\{\\{[/]?[\u0000-\u0020]*(.*?)[\u0000-\u0020\\}/]");
+
+    int verbatimBlockDepth = 0;
+    int tableDepth = 0; 
+    String macroName = "";
+    int macroDepth = 0;
+    void initMacro(CharSequence buf) {
+        macroName = getMacroName(buf);
+        macroDepth = 1;
+    }
+    String getMacroName(CharSequence buf) {
+        Matcher matcher = MACRO_NAME_PATTERN.matcher(buf);
+        if (!matcher.find()) {
+            // This must not be reachable.  I.e., make sure MACRO_NAME_PATTERN matches <MACRO_START> and <MACRO_END>.
+            throw new RuntimeException(String.format("Didn't match macro name pattern: [%s].", buf.toString()));
+        }
+        return matcher.group(1); 
+    }
+
+    /*
+     * The lexical scanner operates in four different categories of
+     * states:
+     *
+     * * base states: INLINE
+     * * beginning of line state: BEGINNING_OF_LINE
+     * * block states: TABLE_CONTEXT, HEADER_CONTEXT
+     * * special states: VERBATIM_CONTEXT, MACRO_CONTEXT
+     *
+     * Except for state transitions to BEGINNING_OF_LINE and to
+     * special states, we need to control the state transitions in
+     * java code.  For this control the state we keep two variables:
+     *
+     * * preceedingSpecialState
+     * * stateStack
+     *
+     * And we use the below five operations for switching lexical state.
+     * 
+     * * returnFromSpecialState()        - Called to switch from a
+     *                                     a special state.
+     * * enterBlockState(int state)      - Called instead of switching
+     *                                     to a block state directly.
+     * * pushStateControl()              - Called when entering an
+     *                                     embedded document.
+     * * popControlState()               - Called when leaving an
+     *                                     embedded document.  Restores
+     *                                     control variables and switches
+     *                                     back to the state the
+     *                                     corresponding pushStateControl
+     *                                     was called from.
+     *
+     */
+
+    private class LexStateControl {
+        private int preceedingSpecialState;
+        LexStateControl() {
+            preceedingSpecialState = INLINE;
+        }
+        public void clearBlockState() {
+            preceedingSpecialState = INLINE;
+        }
+        public void returnFromSpecialState() {
+            SwitchTo(preceedingSpecialState);
+        }
+        public void enterBlockState(int state) {
+            preceedingSpecialState = state;
+            SwitchTo(state);
+        }
+    }
+
+    private class ControlState {
+        private final int curLexState;
+        private final LexStateControl lexStateControl;
+        ControlState(int curLexState, LexStateControl lexStateControl) {
+            this.curLexState = curLexState;
+            this.lexStateControl = lexStateControl;
+        }
+        
+        public int getCurLexState() {
+            return this.curLexState;
+        }
+
+        public LexStateControl getLexStateControl() {
+            return this.lexStateControl;
+        }
+
+    }
+    private final Stack<ControlState> controlStateStack = new Stack<ControlState>();
+
+    LexStateControl lexStateControl = new LexStateControl();
+
+    private void clearBlockState() { lexStateControl.clearBlockState(); }
+    private void returnFromSpecialState() { lexStateControl.returnFromSpecialState(); }
+    private void returnFromBeginningOfLine() { returnFromSpecialState(); }
+    private void enterBlockState(int state) { lexStateControl.enterBlockState(state); }
+
+    private void pushControlState() {
+        controlStateStack.push(new ControlState(curLexState, lexStateControl));
+        lexStateControl = new LexStateControl();
+        SwitchTo(BEGINNING_OF_LINE);
+    }
+
+    private void popControlState() {
+        ControlState s = controlStateStack.pop();
+        lexStateControl = s.getLexStateControl();
+        SwitchTo(s.getCurLexState());
+    }
+
+    private boolean inEmbeddedDocument() {
+        return controlStateStack.size() > 0;
+    }
+}
+
+<DEFAULT> SKIP:
+{
+    // The lexical state is controlled in the java code, javacc fails to realize that the empty string match cannot
+    // result in an infinite loop.
+    "" : BEGINNING_OF_LINE
+}
+
+<BEGINNING_OF_LINE> TOKEN:
+{
+      <HEADER_BEGIN: <HEADER_BEGIN_PATTERN> > { enterBlockState(HEADER_CONTEXT); }
+    | <LIST_ITEM: (<SPACE>)* ( ("*")+ (":" | ";")* | ( "1" | "*" )+ "." (":" | ";")* | (":" | ";")+ ) (<SPACE>) > { clearBlockState(); }: INLINE
+    | <HORLINE: "---" ("-")+ > { clearBlockState(); }: INLINE
+    | <TABLE_ROW: (<PARAMS> (<SPACE>)*)? (<HCELL>|<CELL>)> { input_stream.backup(image.length()); enterBlockState(TABLE_CONTEXT); }
+    | <BLOCK_PARAMETERS: <PARAMS> <NEW_LINE>> {clearBlockState();} : BEGINNING_OF_LINE
+    | <NL_BEGINING_OF_LINE: <NEW_LINE>> { matchedToken.kind = NL; }
+    | <QUOT_LINE_BEGIN: (">")+ > { clearBlockState(); }: INLINE
+
+}
+
+<BEGINNING_OF_LINE> SKIP:
+{
+    // The lexical state is controlled in the java code, javacc fails to realize that the empty string match cannot
+    // result in an infinite loop.
+    "" {returnFromBeginningOfLine();}
+}
+
+<TABLE_CONTEXT> TOKEN:
+{
+      <TABLE_HCELL: <HCELL>> 
+    | <TABLE_CELL:   <CELL>> 
+}
+
+<HEADER_CONTEXT> TOKEN:
+{
+      <HEADER_END: (<SPACE>)*  ("=")+ <NEW_LINE> > {clearBlockState();} : BEGINNING_OF_LINE
+    | <HEADER_END_INLINE: (<SPACE>)* ("=")+> {
+          clearBlockState();
+          matchedToken.kind = HEADER_END;
+       } : INLINE
+
+    | <NEW_HEADER_BEGIN: <NEW_LINE> <HEADER_BEGIN_PATTERN>> { matchedToken.kind = HEADER_BEGIN; }
+}
+
+<VERBATIM_CONTEXT> TOKEN:
+{
+      <INTERNAL_VERBATIM_START: "{" ("{")? ("{")?  > {
+          if (image.length() == 3) {
+              verbatimBlockDepth++;
+          }
+          matchedToken.kind = VERBATIM_CONTENT;
+      } 
+    | <VERBATIM_END: "}" ("}")? ("}")? > {
+          if (image.length() < 3) {
+              matchedToken.kind = VERBATIM_CONTENT;   
+          } else {
+              verbatimBlockDepth--;
+              if (verbatimBlockDepth == 0)  {
+                  returnFromSpecialState();
+              } else {
+                  matchedToken.kind = VERBATIM_CONTENT;
+              }
+          }
+      }
+    | <VERBATIM_CONTENT: ( 
+          "~" ~[]
+        | ~["}", "{", "~"]
+      )+ >
+}
+
+<MACRO_CONTEXT> TOKEN:
+{
+    <INTERNAL_MACRO_START: <MACRO_START> > {
+        {
+            String name = getMacroName(image); 
+            if (name.equals(macroName)) {
+                macroDepth++;
+            }
+            matchedToken.kind = MACRO_CONTENT;                       
+        }               
+    }
+    | <MACRO_END: "{{/" <MACRO_NAME> (<SPACE>)* "}}" > {
+        {
+            String name = getMacroName(image); 
+            if (name.equals(macroName)) {
+                macroDepth--;
+                if (macroDepth == 0) {
+                    returnFromSpecialState();
+                } else {
+                     matchedToken.kind = MACRO_CONTENT;
+                }
+            } else {
+                matchedToken.kind = MACRO_CONTENT;
+            }                       
+        }               
+    }
+    | <MACRO_CONTENT: ( <XWIKI_CHAR> | <SPACE> |<NEW_LINE> | <XWIKI_SPECIAL_SYMBOL> ) >
+
+}
+
+<*> TOKEN:
+{
+      <#PARAMS:   "(%" ( "~" ~[] | ~["%", "~", "'", "\""] | "%" ~[")", "~", "\"", "'"] | "%~" ~[]
+                  | <DOUBLE_QUOTED> | <SINGLE_QUOTED>)* "%)" >
+    | <#DOUBLE_QUOTED: "\"" ( "~" ~[] | ~["\"", "~"])* "\"">
+    | <#SINGLE_QUOTED:  "'" ( "~" ~[] | ~[ "'", "~"])*  "'">
+    | <#HCELL: "!=" | "|=">
+    | <#CELL:  "|"  | "!!">
+    | <#MACRO_NAME: (<CHAR>)+ (["-", "_", ".", ":"] (<CHAR>)+)* >
+    | <#MACRO_PARAMS: ( <DOUBLE_QUOTED> | <SINGLE_QUOTED> | "~" ~[] | ~["}", "\"", "'", "~"] | "}" ~["}", "~"] | "}~" ~[] )* >
+    // TODO: Shouldn't this be "=" ("=")? ("=")? ("=")? ("=")? ("=")? ("=")?
+    | <#HEADER_BEGIN_PATTERN: (<SPACE>)* ("=")+ (<SPACE>)* >
+    | <#REFERENCE_IMAGE: "[[image:" ("~" ~[] | ~["]", "~"] | "]" ~["]", "~"] | "]~" ~[] )* "]]" >
+    | <#REFERENCE:  ( "[[" ( <REFERENCE_IMAGE> | "~" ~[] | ~["]", "~"] | "]" ~["]", "~"] | "]~" ~[] )* "]]" ) >
+	| <#IMAGE: "image:" ("~" ~[] | <XWIKI_CHAR> | <XWIKI_SPECIAL_SYMBOL> )* >
+	| <#ATTACH: "attach:" ("~" ~[] | <XWIKI_CHAR> | <XWIKI_SPECIAL_SYMBOL> )* > 
+
+	| <#XWIKI_URI: ( ( <XWIKI_URI_URIS> ( <URI_PATH_ABSOLUTE> | <URI_PATH_ROOTLESS> ) ) | <URI_SCHEME_COMPOSITE> "://" <URI_AUTHORITY> <URI_PATH_ABEMPTY> ) ("?" <URI_QUERY>)? ("#" <URI_FRAGMENT>)? >
+	| <#XWIKI_URI_URIS: "mailto:" >
+	| <#XWIKI_CHAR: <CHAR> | "~" <CHAR> >
+        | <#EMPTY_LINE: <NEW_LINE> <NEW_LINE>>
+// <common-tokens>
+    // =========================================================================
+    // New lines, spaces, special symbols and character definitions
+    // =========================================================================
+    | <#NEW_LINE : "\r\n" | "\r" | "\n" >
+    | <#SPACE : [" ", "\t"] >
+      // All special symbols from the range 0-127
+    | <#SPECIAL_SYMBOL : [
+        "!",     "\"",     "#",     "$",     "%",     "&",     "'",     "(",  
+        ")",     "*",      "+",     ",",     "-",     ".",     "/",     ":",  
+        ";",     "<",      "=",     ">",     "?",     "@",     "[",     "\\", 
+        "]",     "^",      "_",     "`",     "{",     "|",     "}",     "~" 
+     ] >
+      // Characters are defined as all possible symbols excluding special 
+      // symbols, spaces and new lines
+    | <#CHAR : ~[
+        "\t",    "\n",     "\r",    " ",
+        "!",     "\"",     "#",     "$",     "%",     "&",     "'",     "(",  
+        ")",     "*",      "+",     ",",     "-",     ".",     "/",     ":",  
+        ";",     "<",      "=",     ">",     "?",     "@",     "[",     "\\", 
+        "]",     "^",      "_",     "`",     "{",     "|",     "}",     "~" 
+    ] >
+    // =========================================================================
+    // URI syntax recognition.
+    // =========================================================================
+    // This grammar recognize the full URI syntax with following exceptions:
+    //  * It has a simplified hier-part definition: it does not contain an empty 
+    //    path (so the sequences like "here: " are not recognized as URIs).
+    //  * It has a simplified version of the host definition: it does not contain
+    //    explicit IP definitions. 
+    //  * It parses "extended" URI syntax where "opaque" URIs are treated as 
+    //    having multiple schema parts
+    //    Example: in an opaque URI like "download:http://www.foo.com/bar.zip"
+    //    the part "download:http" is treated as a "composite" scheme part.
+    //
+    // See also:
+    //  * http://tools.ietf.org/html/rfc3986#page-49 - the official URI grammar
+    //  * http://en.wikipedia.org/wiki/Uniform_Resource_Identifier
+    //  * http://en.wikipedia.org/wiki/URI_scheme#Generic_syntax
+    //  * http://www.iana.org/assignments/uri-schemes.html
+    // =========================================================================
+    | <#URI: <URI_SCHEME_COMPOSITE> ":" <URI_HIER_PART> ("?" <URI_QUERY>)? ("#" <URI_FRAGMENT>)? >
+
+    | <#ALPHA: ( ["A"-"Z", "a"-"z"] )>
+    | <#DIGIT: ["0"-"9"]>
+    | <#HEXDIG: ( <DIGIT> | ["A"-"F"] | ["a"-"f"] ) >
+    | <#URI_GEN_DELIMS: [ ":", "/", "?", "#", "[", "]", "@" ]>
+
+    // Some default can not be accepted in the text - like "," symbols 
+    //<#URI_SUB_DELIMS: [ "!", "$", "&", "'", "(", ")", "*", "+", ",", ";", "=" ]>
+    | <#URI_SUB_DELIMS: [ "!", "$", "&", "'", "(", ")", "*", "+", /*",",*/ ";", "=" ]>
+    | <#URI_UNRESERVED: ( <ALPHA> | <DIGIT> | "-" | "." | "_" | "~" )>
+    | <#URI_RESERVED: ( <URI_GEN_DELIMS> | <URI_SUB_DELIMS> ) >
+    | <#URI_SCHEME: <ALPHA> ( <ALPHA> | <DIGIT> | "+" | "-" | "." )* >
+    | <#URI_SCHEME_COMPOSITE: <URI_SCHEME> ( ":" <URI_SCHEME> )* >
+    | <#URI_PCT_ENCODED: "%" <HEXDIG> <HEXDIG> >
+    | <#URI_PCHAR_FIRST:  ( <URI_UNRESERVED> | <URI_PCT_ENCODED> | <URI_SUB_DELIMS> ) >
+    | <#URI_PCHAR:  ( <URI_PCHAR_FIRST> | ":" | "@" ) >
+    | <#URI_QUERY:    ( <URI_PCHAR> | "/" | "?" )* >
+    | <#URI_FRAGMENT: ( <URI_PCHAR> | "/" | "?" )* >
+      // A simplified hier-part definition: it does not contain an empty path.
+    | <#URI_HIER_PART: ( "//" <URI_AUTHORITY> <URI_PATH_ABEMPTY> | <URI_PATH_ABSOLUTE> | <URI_PATH_ROOTLESS> )>
+    | <#URI_AUTHORITY: ( <URI_USERINFO> "@" )? <URI_HOST> ( ":" <URI_PORT> )? >
+    | <#URI_USERINFO: ( <URI_UNRESERVED> | <URI_PCT_ENCODED> | <URI_SUB_DELIMS> | ":" )* >
+    | <#URI_PATH_ABEMPTY: ( "/" <URI_SEGMENT> )* >
+    | <#URI_PATH_ABSOLUTE: "/" ( <URI_SEGMENT_NZ> ( "/" <URI_SEGMENT> )* )? >
+    | <#URI_PATH_ROOTLESS: <URI_PCHAR_FIRST> <URI_SEGMENT_NZ_NC> ( "/" <URI_SEGMENT> )* >
+    | <#URI_SEGMENT: (<URI_PCHAR>)* >
+    | <#URI_SEGMENT_NZ: (<URI_PCHAR>)+ >
+    | <#URI_SEGMENT_NZ_NC: (<URI_UNRESERVED> | <URI_PCT_ENCODED> | <URI_SUB_DELIMS> | "@")+ >
+    | <#URI_PORT: (<DIGIT>)+ >
+      // A simplified version of the host: it does not contain explicit IP definitions
+    | <#URI_HOST: ( <URI_REG_NAME> ) >
+    | <#URI_REG_NAME: ( <URI_UNRESERVED> | <URI_PCT_ENCODED> | <URI_SUB_DELIMS> )* >
+    // =========================================================================
+// </common-tokens>
+
+}
+
+<INLINE, TABLE_CONTEXT, HEADER_CONTEXT, BEGINNING_OF_LINE> TOKEN: {
+       <DOC_PARAMETERS: <PARAMS> (<SPACE>)* (<NEW_LINE> (<SPACE>)*)? "((("> { input_stream.backup("(((".length()); }
+}
+
+<INLINE, TABLE_CONTEXT, HEADER_CONTEXT> TOKEN:
+{
+      <INLINE_PARAMETERS: <PARAMS> >
+    | <DOC_BEGIN: (<SPACE>)* "(((" (<SPACE>)* > { pushControlState(); } : BEGINNING_OF_LINE
+    | <D_REFERENCE : <REFERENCE> >
+    | <VERBATIM_START: "{{{" > { verbatimBlockDepth++; }  : VERBATIM_CONTEXT
+    | <MACRO_EMPTY: "{{" <MACRO_NAME> ((<SPACE> | <NEW_LINE>) <MACRO_PARAMS>)? "/}}" >
+    | <MACRO_START: "{{" <MACRO_NAME> ((<SPACE> | <NEW_LINE>) <MACRO_PARAMS>)?  "}}" > { initMacro(image);} : MACRO_CONTEXT
+    | <STRONG: "**">
+    | <EM:     "//">
+    | <STRIKE: "--">
+    | <INS:    "__">
+    | <SUP:    "^^">
+    | <SUB:    ",,">
+    | <MONO:   "##">
+    | <D_IMAGE : <IMAGE> >
+    | <D_ATTACH : <ATTACH> >
+    | <BR: "\\\\" >
+    | <D_XWIKI_URI: <XWIKI_URI> >
+    | <XWIKI_SPACE : ( <SPACE> | "~" <SPACE> )+ >
+
+    | <DOC_END:   (<SPACE>)* ")))" (<SPACE>)* > { 
+       if (inEmbeddedDocument()) {
+          popControlState();
+       } else {
+          /*
+           * We must put back the spaces on the input stream.
+           */
+          String s = image.toString();
+          int offset = s.indexOf(")))");
+          if (offset > 0) {
+             input_stream.backup(s.length() - offset);
+             matchedToken.image = s.substring(0, offset);
+             matchedToken.kind = XWIKI_SPACE;
+          } else if (s.length() > ")))".length()) {
+             matchedToken.image = s.substring(0, ")))".length());
+             input_stream.backup(s.length() - ")))".length());
+             matchedToken.kind = XWIKI_SPECIAL_SYMBOL;
+          } else {
+             matchedToken.kind = XWIKI_SPECIAL_SYMBOL;
+          }
+       }
+    }
+
+    
+    // "Standard" tokens. They are the same for all wikis.
+    | <NL: <NEW_LINE> > : BEGINNING_OF_LINE
+    | <WORD : ( <XWIKI_CHAR> )+ >
+    | <XWIKI_SPECIAL_SYMBOL: <SPECIAL_SYMBOL> | "~" <SPECIAL_SYMBOL> >
+}
+
+
+// The below definitions must stand after the definition of NL above
+<TABLE_CONTEXT> TOKEN:
+{
+      <TABLE_END_EMPTY_LINE: <EMPTY_LINE> > {clearBlockState();} : BEGINNING_OF_LINE
+}
+
+<HEADER_CONTEXT> TOKEN:
+{
+      <HEADER_END_EMPTY_LINE: <EMPTY_LINE> > {clearBlockState();} : BEGINNING_OF_LINE
+}
+
+<INLINE> TOKEN:
+{
+     <BLOCK_END: <EMPTY_LINE>> : BEGINNING_OF_LINE
+}
+
+void doParse():
+{
+}
+{
+    {
+        partitionsBuilder.begin(Partition.Type.DOCUMENT, null, token.getBeginOffset());
+    }
+    // TODO: First empty line of document doesn't count?
+    (LOOKAHEAD(1)emptyLine())?
+    ( docElements() )*
+    <EOF>
+    {
+        partitionsBuilder.end(Partition.Type.DOCUMENT, token.getEndOffset());
+    }
+}
+
+void inlineParameters():
+{
+}
+{
+    <INLINE_PARAMETERS> 
+    { 
+    	partitionsBuilder.begin(Partition.Type.PARAMETERS, null, token.getBeginOffset());
+    	partitionsBuilder.end(Partition.Type.PARAMETERS, token.getEndOffset());    
+    }
+}
+
+void blockParameters():
+{
+}
+{
+    <BLOCK_PARAMETERS> 
+    { 
+    	partitionsBuilder.begin(Partition.Type.PARAMETERS, null, token.getBeginOffset());
+    	partitionsBuilder.end(Partition.Type.PARAMETERS, token.getEndOffset());         
+    }
+}
+
+void docElements():
+{
+}
+{
+    LOOKAHEAD(1)
+    (blockStart()
+     (
+       header()
+       |
+       LOOKAHEAD(1) blockParameters()
+       |
+       list()
+       |
+       quot()
+       |
+       horline()
+       |
+       table()
+       | 
+       LOOKAHEAD(1) macro(false) (LOOKAHEAD(1) <NL>)?
+       |
+       LOOKAHEAD(1) verbatimBlock(false) (LOOKAHEAD(1) <NL>)?
+       |
+       LOOKAHEAD(1) embeddedDocument()
+       |
+       paragraph()
+      )
+    blockEnd())
+    |
+    emptyLine()
+}
+
+void header():
+{
+}
+{
+    <HEADER_BEGIN>
+    {    	
+        partitionsBuilder.begin(Partition.Type.HEADER, getHeaderAttributes(token.image.trim()), token.getBeginOffset());        
+    }
+    (LOOKAHEAD(1) newLine() )?
+    block()
+    {
+    	partitionsBuilder.end(Partition.Type.HEADER , token.getEndOffset());
+    }
+}
+
+void macro(boolean inline):
+{
+   Token start = null;
+   StringBuilder content = new StringBuilder();
+   boolean empty = false;
+   int startOffset;
+   Map<String, Object> macroAttributes;
+}
+{
+   (  ( start = <MACRO_EMPTY> { empty = true; partitionsBuilder.begin(Partition.Type.MACRO, null, token.getBeginOffset()); partitionsBuilder.end(Partition.Type.MACRO, token.getEndOffset());}) 
+    | (start = <MACRO_START> 
+    	{     	
+    	    macroAttributes = getMacroAttributes(start.image);
+    		partitionsBuilder.begin(Partition.Type.MACRO, macroAttributes, token.getBeginOffset()); 
+    		startOffset = token.getBeginOffset();
+    	} 
+      (<MACRO_CONTENT>
+      	{
+      		content.append(token.image);
+      	})* 
+      (<MACRO_END> 
+      	{ 
+      	    if ("velocity".equals(macroAttributes.get("NAME"))) {
+      	      // Launches velocity code parsing to do further partitioning
+      	      parseVelocity(content.toString(), startOffset + 11);
+      	    }
+      		partitionsBuilder.end(Partition.Type.MACRO, token.getEndOffset() + 1); 
+      	})?)
+   )
+   linesMaybeEmpty()   
+}
+
+void list():
+{
+    String str = "";
+}
+{
+    {
+        //partitionsBuilder.begin(Partition.Type.LIST, null, token.getBeginOffset());
+    }
+    ( LOOKAHEAD(1) 
+     (listItem() | 
+      blockParameters()
+     )
+    )+
+    (LOOKAHEAD(1)<BLOCK_END>)?    
+}
+
+void listItem():
+{   
+}
+{
+    (    	
+        <LIST_ITEM>
+        {	             	
+	        partitionsBuilder.begin(Partition.Type.LIST_ITEM , getListItemAttributes(token.image), token.getBeginOffset());
+        }
+        (LOOKAHEAD(1) newLine() )?
+        ( LOOKAHEAD(1)
+          ((embeddedDocument() [LOOKAHEAD(1) <NL>]) | lines())
+        )*
+        {
+            partitionsBuilder.end(Partition.Type.LIST_ITEM, token.getEndOffset());
+        }
+    )
+}
+
+void table():
+{   
+}
+{
+    {
+        partitionsBuilder.begin(Partition.Type.TABLE, null, token.getBeginOffset());
+    }
+    (LOOKAHEAD(1) tableRow() )+
+    ( tableEnd() )?
+    {
+        partitionsBuilder.end(Partition.Type.TABLE, token.getEndOffset());
+    }
+}
+
+void tableRow():
+{ 
+}
+{
+    <TABLE_ROW>
+    (<INLINE_PARAMETERS>  
+    { 
+    	partitionsBuilder.begin(Partition.Type.PARAMETERS, null, token.getBeginOffset());
+    	partitionsBuilder.end(Partition.Type.PARAMETERS, token.getEndOffset());         
+    } (<XWIKI_SPACE>)*)?
+    tableFirstCell()
+    (tableCell())*
+    {
+        partitionsBuilder.end(Partition.Type.TABLE_ROW, token.getEndOffset());
+    }
+}
+
+void tableCell():
+{
+}
+{
+    (<TABLE_CELL>|(<TABLE_HCELL>{/***head=true;*/}))
+    (LOOKAHEAD(1) (<INLINE_PARAMETERS>|<DOC_PARAMETERS>)
+    { 
+    	partitionsBuilder.begin(Partition.Type.PARAMETERS, null, token.getBeginOffset());
+    	partitionsBuilder.end(Partition.Type.PARAMETERS, token.getEndOffset());         
+    })?    
+    (LOOKAHEAD(1) newLine() )?
+    block()
+}
+
+void tableFirstCell():
+{    
+}
+{
+    (<TABLE_CELL>|(<TABLE_HCELL>{/***head=true;*/}))
+    // If the cell starts with (% ... %)((( ...))), the
+    // parameters belongs to the cell.
+    (LOOKAHEAD(1)(<INLINE_PARAMETERS>|<DOC_PARAMETERS>)
+    {
+    	partitionsBuilder.begin(Partition.Type.PARAMETERS, null, token.getBeginOffset());
+    	partitionsBuilder.end(Partition.Type.PARAMETERS, token.getEndOffset());         
+    })?
+    {
+        partitionsBuilder.begin(Partition.Type.TABLE_ROW, null, token.getBeginOffset());
+    }
+    (LOOKAHEAD(1) newLine() )?
+    block()
+}
+
+
+void verbatimBlock(boolean inline):
+{
+   StringBuilder buf = new StringBuilder();
+}
+{
+   <VERBATIM_START>
+   (<VERBATIM_CONTENT> {buf.append(token.image);})*
+   (<VERBATIM_END>)?  
+   linesMaybeEmpty()
+   {
+       //Commented out because it generates spurious "end paragraphs" without corresponding "begin paragraph"
+       //partitionsBuilder.end(Partition.Type.PARAGRAPH, token.getEndOffset());
+   }
+}
+
+void horline():
+{
+}
+{
+    <HORLINE>   
+}
+
+void quot():
+{
+}
+{
+    {
+        partitionsBuilder.begin(Partition.Type.QUOT, null, token.getBeginOffset());
+    }
+    ( LOOKAHEAD(1) quotLine() )+
+    {
+        partitionsBuilder.end(Partition.Type.QUOT, token.getEndOffset());
+    }
+}
+
+void quotLine():
+{
+    String str;
+}
+{
+    <QUOT_LINE_BEGIN>
+    {
+        str = token.image.trim();
+        int depth = str.length();
+        partitionsBuilder.begin(Partition.Type.QUOT_LINE, null, token.getBeginOffset());
+    }
+    (LOOKAHEAD(1) line())? (LOOKAHEAD(1)<NL>)?
+    {
+        partitionsBuilder.end(Partition.Type.QUOT_LINE, token.getEndOffset());
+    }
+}
+
+void headerEnd():
+{
+}
+{
+      <HEADER_END>
+   | (<HEADER_END_EMPTY_LINE>)
+}
+
+void tableEnd():
+{
+}
+{
+      <TABLE_END_EMPTY_LINE>
+}
+
+void blockStart():
+{
+}
+{
+    {}
+}
+
+void block():
+{
+}
+{
+    ( LOOKAHEAD(1)
+       (embeddedDocument()|lines()|<NL>)
+     )*
+    (LOOKAHEAD(1) (<BLOCK_END> | headerEnd()))?
+}
+
+void blockEnd():
+{
+}
+{
+    {}
+}
+
+void paragraph():
+{
+}
+{
+    { partitionsBuilder.begin(Partition.Type.PARAGRAPH, null, token.getBeginOffset() + 1); }
+    (
+     lines()
+    )
+    { partitionsBuilder.end(Partition.Type.PARAGRAPH, token.getEndOffset()); }
+}
+
+void lines():
+{
+}
+{
+    line() (LOOKAHEAD(1) <NL>)?
+    (
+       LOOKAHEAD(1) 
+       (
+          (line()) 
+          (LOOKAHEAD(1) <NL>)?
+       )
+    )*
+}
+
+void linesMaybeEmpty():
+{
+}
+{
+    [LOOKAHEAD(1) line()] (LOOKAHEAD(1) <NL>)?
+    (
+       LOOKAHEAD(1) 
+       (
+          (line()) 
+          (LOOKAHEAD(1) <NL>)?
+       )
+    )*
+}
+
+void emptyLine():
+{
+}
+{
+   ( (<NL>|(<BLOCK_END>)) )
+}
+
+void newLine():
+{
+}
+{
+    <NL>
+}
+
+void newLineSkip():
+{
+}
+{
+    <NL>
+}
+
+void line():
+{
+}
+{
+    (LOOKAHEAD(1) inline() )+
+
+}
+
+void inline():
+{
+    String str = null;
+}
+{
+    (
+        <WORD>
+        |
+        <XWIKI_SPACE>
+        |
+        <XWIKI_SPECIAL_SYMBOL>
+        | <STRONG> { partitionsBuilder.onFormat(IWikiScannerContext.STRONG, token.getBeginOffset(), token.getEndOffset());}
+        | <EM>     { partitionsBuilder.onFormat(IWikiScannerContext.EM, token.getBeginOffset(), token.getEndOffset());    }
+        | <STRIKE> { partitionsBuilder.onFormat(IWikiScannerContext.STRIKE, token.getBeginOffset(), token.getEndOffset()); }
+        | <INS>    { partitionsBuilder.onFormat(IWikiScannerContext.INS, token.getBeginOffset(), token.getEndOffset());   }
+        | <SUP>    { partitionsBuilder.onFormat(IWikiScannerContext.SUP, token.getBeginOffset(), token.getEndOffset());   }
+        | <SUB>    { partitionsBuilder.onFormat(IWikiScannerContext.SUB, token.getBeginOffset(), token.getEndOffset());   }
+        | <MONO>   { partitionsBuilder.onFormat(IWikiScannerContext.MONO, token.getBeginOffset(), token.getEndOffset());   }
+        | <BR>     
+        | macro(true)
+        | <D_XWIKI_URI> { /***fContext.onReference(token.image);  */      }
+        | <D_IMAGE>     { /***fContext.onImage(token.image.substring("image:".length())); */ }
+        | <D_ATTACH>    { /***fContext.onReference(token.image); */    } 
+        | inlineParameters()
+        | <D_REFERENCE>
+        {
+            /*str = token.image;
+            if (str.startsWith("[[")) {
+                str = str.substring(2, str.length() - 2);
+            }
+            WikiReference ref = fReferenceParser.parse(str);
+
+            if (ref.getLink().startsWith("image:")) {
+              //***fContext.onImage(new WikiReference(ref.getLink().substring("image:".length()), ref.getLabel(), ref.getParameters()));
+            } else { 
+              //***fContext.onReference(ref);
+            }*/
+        }
+        | verbatimBlock(true)
+    )
+}
+
+void embeddedDocument():
+{
+    /*WikiParameters params = WikiParameters.EMPTY;*/
+}
+{
+    (<DOC_PARAMETERS> 
+    {
+        partitionsBuilder.begin(Partition.Type.PARAMETERS, null, token.getBeginOffset());
+    	partitionsBuilder.end(Partition.Type.PARAMETERS, token.getEndOffset());                 
+    })?
+    <DOC_BEGIN>
+    {
+        partitionsBuilder.begin(Partition.Type.DOCUMENT, null, token.getBeginOffset());
+    }
+    // TODO: First empty line of document doesn't count?
+    (LOOKAHEAD(1)emptyLine())?
+    ( docElements() )*
+    (
+        <DOC_END> | <EOF>
+    )
+    {        
+        partitionsBuilder.end(Partition.Type.DOCUMENT, token.getEndOffset());
+    }
+}

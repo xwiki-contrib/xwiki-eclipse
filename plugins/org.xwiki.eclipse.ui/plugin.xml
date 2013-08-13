@@ -209,6 +209,11 @@
         id="org.xwiki.eclipse.ui.commands.OpenPage"
         name="Open XWiki page">
   </command>
+  <command
+        categoryId="org.xwiki.eclipse"
+        id="org.xwiki.eclipse.ui.commands.FormatContent"
+        name="Format">
+  </command>
   <category
         id="org.xwiki.eclipse"
         name="XWiki Eclipse">

@@ -41,7 +41,11 @@ public class XWikiEditorActionContributor extends TextEditorActionContributor
 {
     private RetargetTextEditorAction contentAssistProposal;
 
+	private RetargetTextEditorAction formatProposal;
+
     private RetargetTextEditorAction editorInfoAction;
+    
+
 
     private static class EditorInfoAction extends Action
     {
@@ -80,6 +84,8 @@ public class XWikiEditorActionContributor extends TextEditorActionContributor
         ResourceBundle bundle = ResourceBundle.getBundle("org.xwiki.eclipse.ui.editors.Editor");
 
         contentAssistProposal = new RetargetTextEditorAction(bundle, "ContentAssistProposal.");
+        
+		formatProposal = new RetargetTextEditorAction(bundle, "ContentFormatProposal.");
 
         editorInfoAction = new RetargetTextEditorAction(bundle, "EditorInfo.");
     }
@@ -91,6 +97,7 @@ public class XWikiEditorActionContributor extends TextEditorActionContributor
         if (editMenu != null) {
             editMenu.add(new Separator());
             editMenu.add(contentAssistProposal);
+            editMenu.add(formatProposal);
             editMenu.add(editorInfoAction);
         }
     }
@@ -106,6 +113,7 @@ public class XWikiEditorActionContributor extends TextEditorActionContributor
         }
 
         contentAssistProposal.setAction(getAction(editor, "ContentAssistProposal"));
+        formatProposal.setAction(getAction(editor, "ContentFormatProposal"));
         editorInfoAction.setAction(new EditorInfoAction(editor));
     }
 

@@ -28,9 +28,19 @@ import org.eclipse.jface.text.rules.IToken;
 import org.eclipse.jface.text.rules.MultiLineRule;
 import org.eclipse.jface.text.rules.RuleBasedPartitionScanner;
 import org.eclipse.jface.text.rules.Token;
+import org.xwiki.eclipse.ui.editors.PageDocumentProvider;
 import org.xwiki.eclipse.ui.editors.scanners.rules.BalancedParenthesisRule;
+import org.xwiki.eclipse.ui.editors.scanners.rules.RegExRule;
 
 /**
+ * This partition scanner is a simple XWiki partition scanner
+ * which detected XWiki Syntax + Velocity and Groovy Macro blocks
+ * 
+ * It is used to perform syntax highlighting on the XWiki pages
+ * 
+ * The partitioner is activated in createDocument in PageDocumentProvider.java
+ * @see PageDocumentProvider#createDocument(Object)
+ * 
  * @version $Id$
  */
 public class XWikiPartitionScanner extends RuleBasedPartitionScanner
@@ -67,16 +77,15 @@ public class XWikiPartitionScanner extends RuleBasedPartitionScanner
 
         List<IPredicateRule> rules = new ArrayList<IPredicateRule>();
 
-        rules.add(new MultiLineRule("{{html}}", "{{/html}}", htmlToken));
+        rules.add(new MultiLineRule("{{html}}", "/html}}", htmlToken));
         rules.add(new MultiLineRule("{code}", "{code}", codeToken));
         rules.add(new MultiLineRule("{pre}", "{/pre}", preToken));
         rules.add(new MultiLineRule("{{{", "}}}", preToken));
         rules.add(new MultiLineRule("{table}", "{table}", tableToken));
         rules.add(new MultiLineRule("{style:", "{style}", styleToken));
         rules.add(new MultiLineRule("<dl>", "</dl>", dlToken));
-        rules.add(new MultiLineRule("{{velocity", "{{/velocity}}", velocityToken));
-        rules.add(new BalancedParenthesisRule('#', velocityToken));
-        rules.add(new MultiLineRule("{{groovy", "{{/groovy}}", groovyToken));
+        rules.add(new MultiLineRule("{{velocity", "/velocity}}", velocityToken));
+        rules.add(new MultiLineRule("{{groovy", "/groovy}}", groovyToken));
 
         setPredicateRules(rules.toArray(new IPredicateRule[rules.size()]));
     }

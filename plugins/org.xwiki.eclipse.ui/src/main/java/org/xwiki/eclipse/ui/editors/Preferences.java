@@ -71,24 +71,27 @@ public class Preferences
     {
         stylesToTextAttributeMap = new HashMap<Style, TextAttribute>();
 
-        Font headingFont =
+        /* Font headingFont =
             new Font(Display.getDefault(), JFaceResources.getDefaultFont().getFontData()[0].getName(), 18, SWT.BOLD);
+            */
         stylesToTextAttributeMap.put(Style.HEADING1,
-            new TextAttribute(Display.getDefault().getSystemColor(SWT.COLOR_DARK_YELLOW), null, SWT.BOLD, headingFont));
-        headingFont =
+            new TextAttribute(Display.getDefault().getSystemColor(SWT.COLOR_DARK_YELLOW), null, SWT.BOLD));
+        /* headingFont =
             new Font(Display.getDefault(), JFaceResources.getDefaultFont().getFontData()[0].getName(), 16, SWT.BOLD);
+            */
         stylesToTextAttributeMap.put(Style.HEADING2,
-            new TextAttribute(Display.getDefault().getSystemColor(SWT.COLOR_DARK_YELLOW), null, SWT.BOLD, headingFont));
-        headingFont =
+            new TextAttribute(Display.getDefault().getSystemColor(SWT.COLOR_DARK_YELLOW), null, SWT.BOLD));
+        /* headingFont =
             new Font(Display.getDefault(), JFaceResources.getDefaultFont().getFontData()[0].getName(), 14, SWT.BOLD);
+            */
         stylesToTextAttributeMap.put(Style.HEADING3,
-            new TextAttribute(Display.getDefault().getSystemColor(SWT.COLOR_DARK_YELLOW), null, SWT.BOLD, headingFont));
+            new TextAttribute(Display.getDefault().getSystemColor(SWT.COLOR_DARK_YELLOW), null, SWT.BOLD));
         stylesToTextAttributeMap.put(Style.HEADING4,
-            new TextAttribute(Display.getDefault().getSystemColor(SWT.COLOR_DARK_YELLOW), null, SWT.BOLD, headingFont));
+            new TextAttribute(Display.getDefault().getSystemColor(SWT.COLOR_DARK_YELLOW), null, SWT.BOLD));
         stylesToTextAttributeMap.put(Style.HEADING5,
-            new TextAttribute(Display.getDefault().getSystemColor(SWT.COLOR_DARK_YELLOW), null, SWT.BOLD, headingFont));
+            new TextAttribute(Display.getDefault().getSystemColor(SWT.COLOR_DARK_YELLOW), null, SWT.BOLD));
         stylesToTextAttributeMap.put(Style.HEADING6,
-            new TextAttribute(Display.getDefault().getSystemColor(SWT.COLOR_DARK_YELLOW), null, SWT.BOLD, headingFont));
+            new TextAttribute(Display.getDefault().getSystemColor(SWT.COLOR_DARK_YELLOW), null, SWT.BOLD));
 
         stylesToTextAttributeMap.put(Style.BOLD, new TextAttribute(Display.getDefault().getSystemColor(SWT.COLOR_BLUE),
             null, SWT.BOLD));

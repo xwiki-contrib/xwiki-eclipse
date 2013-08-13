@@ -49,7 +49,19 @@ import org.eclipse.jface.text.rules.MultiLineRule;
 import org.eclipse.jface.text.rules.RuleBasedPartitionScanner;
 import org.eclipse.jface.text.rules.SingleLineRule;
 import org.eclipse.jface.text.rules.Token;
+import org.xwiki.eclipse.ui.editors.PageDocumentProvider;
 
+/**
+ * This Groovy partition scanner is used to perform partition of pure Groovy code
+ * It is used for syntax highlighting of Groovy classes stored in XWiki pages
+ * 
+ * The partitioner is activated in createDocument in PageDocumentProvider.java
+ * @see PageDocumentProvider#createDocument(Object)
+ * 
+ * Modified from GroovyPartitionScanner from Groovy Eclipse Plugin
+ * http://groovy.codehaus.org/Eclipse+Plugin 
+ * 
+ */
 public class GroovyPartitionScanner extends RuleBasedPartitionScanner {
 
     public final static String GROOVY_MULTILINE_STRINGS= "__groovy_multiline_string"; //$NON-NLS-1$
