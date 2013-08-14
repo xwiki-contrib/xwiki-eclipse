@@ -22,6 +22,8 @@ package org.xwiki.eclipse.storage.rest;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -47,6 +49,7 @@ import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.xwiki.eclipse.core.CoreLog;
+import org.xwiki.eclipse.storage.utils.StorageUtils;
 import org.xwiki.rest.model.jaxb.Attachment;
 import org.xwiki.rest.model.jaxb.Attachments;
 import org.xwiki.rest.model.jaxb.Class;
@@ -72,6 +75,9 @@ import org.xwiki.rest.model.jaxb.Tags;
 import org.xwiki.rest.model.jaxb.Wiki;
 import org.xwiki.rest.model.jaxb.Wikis;
 import org.xwiki.rest.model.jaxb.Xwiki;
+
+import com.google.gson.Gson;
+import com.google.gson.stream.JsonReader;
 
 /**
  * @version $Id$
@@ -165,6 +171,23 @@ public class XWikiRestClient
         return response;
     }
 
+    protected HttpResponse executePostString(URI uri, String content) throws Exception
+    {
+        DefaultHttpClient httpClient = new DefaultHttpClient();
+
+        UsernamePasswordCredentials creds = new UsernamePasswordCredentials(username, password);
+
+        HttpPost request = new HttpPost(uri);
+        request.addHeader(new BasicScheme().authenticate(creds, request));
+        request.addHeader("Content-type", "text/plain; charset=UTF-8");
+        request.addHeader("Accept", MediaType.APPLICATION_XML);
+
+        HttpEntity entity = new ByteArrayEntity(content.getBytes());
+        request.setEntity(entity);
+        HttpResponse response = httpClient.execute(request);
+
+        return response;
+    }
     protected HttpResponse executePutXml(URI uri, java.lang.Object object) throws Exception
     {
         DefaultHttpClient httpClient = new DefaultHttpClient();
@@ -653,5 +676,29 @@ public class XWikiRestClient
 
         // FIXME: REFACTORING: Handle error codes
         executeDelete(attachmentURI);
+    }
+    
+    /**
+     * This method returns possible hints. It will return null if the auto-completion extension is not install on the server
+     * @param content
+     * @param offset
+     * @param syntax
+     * @return
+     */
+    public Hints getAutoCompleteHints(String content, int offset, String syntax)
+    {
+    	try {
+            URI autocompletionURI =
+                getURI("/autocomplete", String.format("media=json&syntax=%s&offset=%s", syntax, offset), null);
+
+            HttpResponse response = executePostString(autocompletionURI, content);
+            Gson gson = StorageUtils.getGson();
+            JsonReader reader = new JsonReader(new InputStreamReader(response.getEntity().getContent()));
+            Hints hints = gson.fromJson(reader, Hints.class);
+            return hints;
+    	} catch (Exception e) {
+            e.printStackTrace();
+            return null;
+    	}
     }
 }

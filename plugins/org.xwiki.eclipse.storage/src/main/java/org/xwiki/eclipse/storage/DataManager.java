@@ -25,10 +25,10 @@ import org.xwiki.eclipse.model.XWikiEclipseObjectSummary;
 import org.xwiki.eclipse.model.XWikiEclipsePage;
 import org.xwiki.eclipse.model.XWikiEclipsePageHistorySummary;
 import org.xwiki.eclipse.model.XWikiEclipsePageSummary;
-import org.xwiki.eclipse.model.XWikiEclipseServerInfo;
 import org.xwiki.eclipse.model.XWikiEclipseSpaceSummary;
 import org.xwiki.eclipse.model.XWikiEclipseTag;
 import org.xwiki.eclipse.model.XWikiEclipseWikiSummary;
+import org.xwiki.eclipse.storage.rest.Hints;
 import org.xwiki.eclipse.storage.utils.IdProcessor;
 import org.xwiki.eclipse.storage.utils.PersistentMap;
 
@@ -1281,4 +1281,14 @@ public class DataManager
         }
 
     }
+    
+    public Hints getAutoCompleteHints(String content, int offset, String syntax)
+    {
+    	if (isConnected()) {
+    		return remoteXWikiDataStorage.getAutoCompleteHints(content, offset, syntax);
+    	} else {
+    		return null;
+    	}
+    }
+    
 }
