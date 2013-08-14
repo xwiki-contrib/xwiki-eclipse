@@ -82,7 +82,7 @@ public class StorageUtils
         return folder;
     }
 
-    private static Gson getGson()
+    public static Gson getGson()
     {
         if (gson == null) {
             gson = new GsonBuilder().setExclusionStrategies(new XEclipseExclusionStrategy(DataManager.class)).create();

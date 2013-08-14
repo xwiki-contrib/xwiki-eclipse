@@ -44,6 +44,7 @@ import org.xwiki.eclipse.model.XWikiEclipseServerInfo;
 import org.xwiki.eclipse.model.XWikiEclipseSpaceSummary;
 import org.xwiki.eclipse.model.XWikiEclipseTag;
 import org.xwiki.eclipse.model.XWikiEclipseWikiSummary;
+import org.xwiki.eclipse.storage.rest.Hints;
 import org.xwiki.eclipse.storage.rest.XWikiRestClient;
 import org.xwiki.eclipse.storage.utils.IdProcessor;
 import org.xwiki.rest.model.jaxb.Attachment;
@@ -1179,5 +1180,10 @@ public class RestRemoteXWikiDataStorage implements IRemoteXWikiDataStorage
         } catch (Exception e) {
             throw new XWikiEclipseStorageException(e);
         }
+    }
+    
+    public Hints getAutoCompleteHints(String content, int offset, String syntax)
+    {
+    	return restClient.getAutoCompleteHints(content, offset, syntax);
     }
 }

@@ -36,6 +36,8 @@ import org.xwiki.eclipse.model.XWikiEclipseServerInfo;
 import org.xwiki.eclipse.model.XWikiEclipseSpaceSummary;
 import org.xwiki.eclipse.model.XWikiEclipseTag;
 import org.xwiki.eclipse.model.XWikiEclipseWikiSummary;
+import org.xwiki.eclipse.storage.rest.Hints;
+import org.xwiki.rest.model.jaxb.Object;
 
 /**
  * remote data storage interface for different backend implementation, e.g., xmlrpc or rest
@@ -130,4 +132,6 @@ public interface IRemoteXWikiDataStorage
      */
     XWikiEclipsePage movePage(XWikiEclipsePage sourcePage, String newWiki, String newSpace, String newPageName)
         throws XWikiEclipseStorageException;
+    
+    Hints getAutoCompleteHints(String content, int offset, String syntax);
 }
