@@ -94,11 +94,7 @@ public class XWikiEclipsePageSummaryAdapter extends WorkbenchAdapter implements 
             XWikiEclipsePageSummary pageSummary = (XWikiEclipsePageSummary) object;
 
             String title = pageSummary.getTitle();
-            if (title == null) {
-                title = pageSummary.getId();
-            }
-
-            return title + (pageSummary.getLanguage().equals("") ? "" : "[" + pageSummary.getLanguage() + "]");
+            return pageSummary.getName() + " (" + title + ") " + (pageSummary.getLanguage().equals("") ? "" : "[" + pageSummary.getLanguage() + "]");
         }
 
         return super.getLabel(object);
