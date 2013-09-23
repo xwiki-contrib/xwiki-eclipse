@@ -142,7 +142,7 @@ public class NewPageWizard extends Wizard implements INewWizard
             return false;
         }
 
-        if (newPageWizardState.getTitle() == null || newPageWizardState.getTitle().length() == 0) {
+        if (newPageWizardState.getTitle() == null) {
             return false;
         }
 
