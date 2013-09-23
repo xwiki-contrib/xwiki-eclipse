@@ -36,7 +36,7 @@ public class NewPageWizardState
     public String getTitle()
     {
         if (title == null || title.length() == 0) {
-            return name;
+            return "";
         }
 
         return title;
