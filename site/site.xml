@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/org.xwiki.eclipse.feature_2.0.0.qualifier.jar" id="org.xwiki.eclipse.feature" version="2.0.0.qualifier">
+   <feature url="features/org.xwiki.eclipse.feature_2.0.0.milestone1.jar" id="org.xwiki.eclipse.feature" version="2.0.0.milestone1">
       <category name="org.xwiki.eclipse.category"/>
    </feature>
    <category-def name="org.xwiki.eclipse.category" label="org.xwiki.eclipse.category">
