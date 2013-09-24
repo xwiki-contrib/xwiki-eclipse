@@ -1,9 +1,0 @@
-source.. = src/main/java/,target/generated-sources/javacc
-output.. = target/classes/
-bin.includes = META-INF/,\
-               .,\
-               lib,\
-               plugin.xml,\
-               icons/,\
-               xwikiApi/
-
